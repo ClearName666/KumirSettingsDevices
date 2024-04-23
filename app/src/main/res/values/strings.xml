@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">KumirSettingUpDevices</string>
+
+    <string name="Usb_NoneConnect">Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ</string>
+    <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
+    <string name="Usb_ErrorConnect">Произошла ошибка при попытки подключения</string>
+    <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
+
+    <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
+
+    <string name="title_activity_main">main_activity</string>
+    <string name="TextTitleMain">Настройка устройств</string>
+    <string name="versionApp">Версия: 0.0.1</string>
+    <string name="todo">TODO</string>
+    <string name="TextHiMain">Для начала работы выберете COM порт, а затем устройство</string>
+    <string name="selectedComPort">Выберете COM порт</string>
+    <string name="ok">Ок</string>
+    <string name="at">at</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="textColor">#FF000000</color>
+    <color name="fonElement">#D9D9D9</color>
+    <color name="fon2Element">#919191</color>
+    <color name="fonDarkMenu">#A64F4F4F</color>
+</resources>

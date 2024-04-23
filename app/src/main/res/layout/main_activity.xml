@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <ImageView
+        android:id="@+id/iconKumir"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon" />
+
+    <TextView
+        android:id="@+id/textMainTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TextTitleMain"
+        android:textSize="16sp"
+        android:textColor="@color/textColor"
+        app:layout_constraintEnd_toEndOf="@+id/iconKumir"
+        app:layout_constraintStart_toStartOf="@+id/iconKumir"
+        app:layout_constraintTop_toBottomOf="@+id/iconKumir" />
+
+    <TextView
+        android:id="@+id/textVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/versionApp"
+        android:textColor="@color/textColor"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageButtonSettings"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/todo"
+        android:onClick="onClickSettings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/settings" />
+
+    <ImageView
+        android:id="@+id/imageButtonUsbComs"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/todo"
+        android:onClick="onClickUsbComs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/usb" />
+
+    <TextView
+        android:id="@+id/TextHiMain"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="@string/TextHiMain"
+        android:textColor="@color/textColor"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonUsbComs"
+        app:layout_constraintStart_toEndOf="@+id/imageButtonSettings"
+        app:layout_constraintTop_toBottomOf="@+id/imageButtonSettings" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fonMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fonDarkMenu"
+        android:clickable="true"
+        android:onClick="onClickFonDarkMenu"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container_usb_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="151dp"
+        android:layout_marginEnd="41dp"
+        android:layout_marginBottom="151dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textDeviceName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textColor"
+        android:textSize="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/imageButtonUsbComs"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imageButtonUsbComs"
+        app:layout_constraintTop_toBottomOf="@+id/imageButtonUsbComs" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
