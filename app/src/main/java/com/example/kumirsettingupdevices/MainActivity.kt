@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
 import com.example.kumirsettingupdevices.usb.Usb
 import com.example.kumirsettingupdevices.usb.UsbActivityInterface
@@ -26,6 +28,7 @@ class MainActivity() : AppCompatActivity(), UsbActivityInterface {
 
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
     }
 
     override fun onDestroy() {
@@ -33,9 +36,32 @@ class MainActivity() : AppCompatActivity(), UsbActivityInterface {
         super.onDestroy()
     }
 
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+        if (binding.navigationDevices.visibility == View.VISIBLE) {
+            binding.navigationDevices.visibility = View.GONE
+            ActivationFonDarkMenu(false)
+        } else {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(getString(R.string.mainActivityExitCheck))
+
+            builder.setPositiveButton(getString(R.string.Yes)) { dialog, _ ->
+                dialog.dismiss()
+                super.onBackPressed()
+            }
+            builder.setNegativeButton(getString(R.string.No)) { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+    }
+
     // клик конпки настроек
     fun onClickSettings(view: View) {
-
+        ActivationFonDarkMenu(true)
+        binding.navigationDevices.visibility = View.VISIBLE
     }
 
     // клик конпки выбора usb
@@ -56,11 +82,16 @@ class MainActivity() : AppCompatActivity(), UsbActivityInterface {
 
     // клик по фону уничтожение фрагментов меню
     fun onClickFonDarkMenu(view: View) {
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
+        try {
+            val fragmentManager = supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
 
-        transaction.remove(usbComsMenu!!)
-        transaction.commit()
+            transaction.remove(usbComsMenu!!)
+            transaction.commit()
+        } catch (e: Exception) {}
+
+        binding.navigationDevices.visibility = View.GONE
+        ActivationFonDarkMenu(false)
     }
 
     // активация затеменного экрана
