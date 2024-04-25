@@ -4,10 +4,12 @@
     <string name="Usb_NoneConnect">Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ</string>
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
     <string name="Usb_ErrorConnect">Произошла ошибка при попытки подключения</string>
+    <string name="UsbNoneConnectDevice">Нету подключения, пожалуйста выберете com порт и подлючитесь!</string>
+
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>]
-    <string name="mainActivityExitCheck">Вы уверены что хотите выйти из приложения?</string>
+    <string name="mainActivityExitCheck">Вы уверены что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
     <string name="versionApp">Версия: 0.0.1</string>
@@ -31,4 +33,12 @@
     <string name="accb030Core">Взлет ACCB030 Ядро</string>
     <string name="accb030Firmware">Взлет ACCB030 Прошивка</string>
     <string name="controller_p_101">Пульт П101</string>
+    <string name="title_activity_settings_device">SettingsDeviceActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="serinerNumber">Серийный номер:</string>
+    <string name="versionProgram">Версия прошивки:</string>
+    <string name="read">Чтение</string>
+    <string name="write">Запись</string>
+    <string name="noneTypeDevice">Не реализовано! В разработке</string>
 </resources>

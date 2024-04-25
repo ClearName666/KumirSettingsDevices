@@ -1,541 +1,551 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/MainActivity"
+    android:id="@+id/drawerMenuSelectTypeDevice"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
-
-    <ImageView
-        android:id="@+id/iconKumir"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon" />
-
-    <TextView
-        android:id="@+id/textMainTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/TextTitleMain"
-        android:textColor="@color/textColor"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/iconKumir"
-        app:layout_constraintStart_toStartOf="@+id/iconKumir"
-        app:layout_constraintTop_toBottomOf="@+id/iconKumir" />
-
-    <TextView
-        android:id="@+id/textVersion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/versionApp"
-        android:textColor="@color/textColor"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageButtonSettings"
-        android:layout_width="53dp"
-        android:layout_height="53dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/todo"
-        android:onClick="onClickSettings"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/settings" />
-
-    <ImageView
-        android:id="@+id/imageButtonUsbComs"
-        android:layout_width="53dp"
-        android:layout_height="53dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/todo"
-        android:onClick="onClickUsbComs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/usb" />
-
-    <TextView
-        android:id="@+id/TextHiMain"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:text="@string/TextHiMain"
-        android:textColor="@color/textColor"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButtonUsbComs"
-        app:layout_constraintStart_toEndOf="@+id/imageButtonSettings"
-        app:layout_constraintTop_toBottomOf="@+id/imageButtonSettings" />
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fonMenu"
+        android:id="@+id/MainActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/fonDarkMenu"
-        android:clickable="true"
-        android:onClick="onClickFonDarkMenu"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/background">
+
+
+        <ImageView
+            android:id="@+id/imageButtonSettings"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:onClick="onClickSettings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/settings" />
+
+        <ImageView
+            android:id="@+id/imageButtonUsbComs"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:onClick="onClickUsbComs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/usb" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fonMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/fonDarkMenu"
+            android:clickable="true"
+            android:onClick="onClickFonDarkMenu"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container_main_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageButtonSettings">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!-- Основной контент -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container_usb_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="41dp"
+            android:layout_marginTop="151dp"
+            android:layout_marginEnd="41dp"
+            android:layout_marginBottom="151dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!-- Основной контент -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textDeviceName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/textColor"
+            android:textSize="4dp"
+            app:layout_constraintEnd_toEndOf="@+id/imageButtonUsbComs"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/imageButtonUsbComs"
+            app:layout_constraintTop_toBottomOf="@+id/imageButtonUsbComs" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container_usb_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="151dp"
-        android:layout_marginEnd="41dp"
-        android:layout_marginBottom="151dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <!-- Основной контент -->
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/textDeviceName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/textColor"
-        android:textSize="4dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageButtonUsbComs"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/imageButtonUsbComs"
-        app:layout_constraintTop_toBottomOf="@+id/imageButtonUsbComs" />
-
-
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationDevices"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_gravity="end"
-        android:layout_marginEnd="80dp"
-        android:background="@color/fonElement"
-        android:fitsSystemWindows="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layoutNavigationDevices"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textSelectTypyDevice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:text="@string/selectTypeDevice"
-                android:textColor="@color/textColor"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageSelectTypeDevice"
-                app:layout_constraintStart_toEndOf="@+id/imageSelectTypeDevice"
-                app:layout_constraintTop_toTopOf="@+id/imageSelectTypeDevice" />
-
-            <ImageView
-                android:id="@+id/imageSelectTypeDevice"
-                android:layout_width="53dp"
-                android:layout_height="53dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/selectdevicestypy" />
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/fonElement">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/line"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="@color/fon2Element"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageSelectTypeDevice">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/textDevices"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="39dp"
-                android:text="@string/devices"
-                android:textColor="@color/textColor"
-                android:textSize="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/line" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lineDevices"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/fon2Element"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textDevices">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Enforma1318"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lineDevices">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                android:id="@+id/layoutNavigationDevices"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textEnforma1318"
+                    android:id="@+id/textSelectTypyDevice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/enforma1318"
+                    android:layout_marginStart="18dp"
+                    android:text="@string/selectTypeDevice"
                     android:textColor="@color/textColor"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/M31"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Enforma1318">
+                    app:layout_constraintBottom_toBottomOf="@+id/imageSelectTypeDevice"
+                    app:layout_constraintStart_toEndOf="@+id/imageSelectTypeDevice"
+                    app:layout_constraintTop_toTopOf="@+id/imageSelectTypeDevice" />
 
                 <ImageView
-                    android:id="@+id/imageDevoceLogo1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/imageSelectTypeDevice"
+                    android:layout_width="53dp"
+                    android:layout_height="53dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:srcCompat="@drawable/selectdevicestypy" />
 
-                <TextView
-                    android:id="@+id/textM31"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/m31"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo1"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo1"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo1" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/K21_K23"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/M31">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lineEnforma1318"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:background="@color/fon2Element"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageSelectTypeDevice">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/textK21_K23"
+                    android:id="@+id/textDevices"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/k21_k23"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="39dp"
+                    android:text="@string/devices"
                     android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo2"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo2"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo2" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/M32"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/K21_K23">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="8dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/lineEnforma1318" />
 
-                <TextView
-                    android:id="@+id/textM32"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/m32"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo3"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo3"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo3" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/M32Lite"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/M32">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lineDevices"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/fon2Element"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/textDevices">
 
-                <TextView
-                    android:id="@+id/textM32Lite"
-                    android:layout_width="wrap_content"
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/Enforma1318"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/m32lite"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo4"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo4"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo4" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/A61"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/M32Lite">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/lineDevices"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickEnforma1318">
 
-                <TextView
-                    android:id="@+id/textA61"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textEnforma1318"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/enforma1318"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/M31"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/a61"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo5"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo5"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo5" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/PM81"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/A61">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/Enforma1318"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickM31">
 
-                <TextView
-                    android:id="@+id/textPM81"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textM31"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/m31"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo1"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo1"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/K21_K23"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/pm81"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo6"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo6"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo6" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/ACCB030Core"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/PM81">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/M31"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickK21K23">
 
-                <TextView
-                    android:id="@+id/textACCB030Core"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textK21_K23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/k21_k23"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo2"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo2"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo2" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/M32"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/accb030Core"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo7"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo7"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo7" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/ACCB030Firmware"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ACCB030Core">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/K21_K23"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickM32">
 
-                <TextView
-                    android:id="@+id/textACCB030Firmware"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textM32"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/m32"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo3"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo3"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo3" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/M32Lite"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/accb030Firmware"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo8"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo8"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo8" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/P101"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ACCB030Firmware">
-
-                <ImageView
-                    android:id="@+id/imageDevoceLogo9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/todo"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/devidelogo" />
+                    app:layout_constraintTop_toBottomOf="@+id/M32"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickM32Lite">
 
-                <TextView
-                    android:id="@+id/textP101"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textM32Lite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/m32lite"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo4"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo4"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo4" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/A61"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/controller_p_101"
-                    android:textColor="@color/textColor"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo9"
-                    app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo9"
-                    app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo9" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/M32Lite"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickA61">
+
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textA61"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/a61"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo5"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo5"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo5" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/PM81"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/A61"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickPM81">
+
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textPM81"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/pm81"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo6"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo6"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo6" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ACCB030Core"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/PM81"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickACCB030Core">
+
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textACCB030Core"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/accb030Core"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo7"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo7"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo7" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ACCB030Firmware"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ACCB030Core"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickACCB030">
+
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textACCB030Firmware"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/accb030Firmware"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo8"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo8"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo8" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/P101"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ACCB030Firmware"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickP101">
+
+                    <ImageView
+                        android:id="@+id/imageDevoceLogo9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/devidelogo" />
+
+                    <TextView
+                        android:id="@+id/textP101"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/controller_p_101"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo9"
+                        app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo9"
+                        app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo9" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
