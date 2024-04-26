@@ -2,11 +2,13 @@
     <string name="app_name">KumirSettingUpDevices</string>
 
     <string name="Usb_NoneConnect">Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ</string>
+    <string name="Disconnected">Подключение разорвано!</string>
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
     <string name="Usb_ErrorConnect">Произошла ошибка при попытки подключения</string>
     <string name="UsbNoneConnectDevice">Нету подключения, пожалуйста выберете com порт и подлючитесь!</string>
-
+    <string name="ConnectSuccess">Подключение успешно установлено</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
+    <string name="identifyDeviceFailed">Индитифицировать девайс не удалось!</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>]
     <string name="mainActivityExitCheck">Вы уверены что хотите выйти?</string>
@@ -41,4 +43,9 @@
     <string name="read">Чтение</string>
     <string name="write">Запись</string>
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
+
+
+
+    <string name="conmmandGetSerialNum">AT$MDMID?</string>
+    <string name="conmmandGetVersionFirmware">AT$VERSION?</string>
 </resources>

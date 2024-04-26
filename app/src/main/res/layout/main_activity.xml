@@ -57,6 +57,7 @@
             android:id="@+id/fragment_container_main_content"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +142,7 @@
                     app:srcCompat="@drawable/selectdevicestypy" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/lineEnforma1318"
+                    android:id="@+id/lineSet"
                     android:layout_width="0dp"
                     android:layout_height="2dp"
                     android:background="@color/fon2Element"
@@ -161,7 +162,7 @@
                     android:textColor="@color/textColor"
                     android:textSize="8dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lineEnforma1318" />
+                    app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lineDevices"

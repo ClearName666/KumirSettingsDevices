@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Enforma1318"
+    android:id="@+id/M31"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Enforma1318Fragment">
+    tools:context=".M31Fragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSet"
@@ -124,7 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/enforma1318"
+        android:text="@string/m31"
         android:textColor="@color/textColor"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

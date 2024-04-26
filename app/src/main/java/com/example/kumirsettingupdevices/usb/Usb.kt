@@ -290,7 +290,7 @@ class Usb(private val context: Context) {
 
 
                     if (flagPrint) {
-                        printUIThread("input>>>$message\n")
+                        printUIThread(message)
                     }
                 } catch (e: Exception) {
                     printWithdrawalsShow("${context.getString(R.string.Usb_ErrorWriteData)} ${e.message}")

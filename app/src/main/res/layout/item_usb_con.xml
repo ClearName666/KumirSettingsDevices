@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lineEnforma1318"
+        android:id="@+id/lineSet"
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:layout_marginTop="13dp"
