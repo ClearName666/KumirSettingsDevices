@@ -5,7 +5,7 @@
     android:id="@+id/A61"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".A61Fragment">
+    tools:context=".usbFragments.A61Fragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSet"

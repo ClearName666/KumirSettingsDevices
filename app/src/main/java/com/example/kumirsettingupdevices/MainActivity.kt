@@ -17,6 +17,16 @@ import androidx.fragment.app.Fragment
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
 import com.example.kumirsettingupdevices.usb.Usb
 import com.example.kumirsettingupdevices.usb.UsbActivityInterface
+import com.example.kumirsettingupdevices.usbFragments.A61Fragment
+import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
+import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
+import com.example.kumirsettingupdevices.usbFragments.Enforma1318Fragment
+import com.example.kumirsettingupdevices.usbFragments.K21K23Fragment
+import com.example.kumirsettingupdevices.usbFragments.M31Fragment
+import com.example.kumirsettingupdevices.usbFragments.M32Fragment
+import com.example.kumirsettingupdevices.usbFragments.M32LiteFragment
+import com.example.kumirsettingupdevices.usbFragments.P101Fragment
+import com.example.kumirsettingupdevices.usbFragments.PM81Fragment
 import com.example.testappusb.settings.ConstUsbSettings
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
@@ -135,7 +145,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     fun onClickM32(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val m32 = M31Fragment()
+        val m32 = M32Fragment()
         createSettingFragment(m32)
     }
     fun onClickM32Lite(view: View) {
@@ -255,7 +265,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun printData(data: String) {
-        curentData = data
+        binding.textCurentDataPrint.text = data
+        curentData += data
     }
 
     override fun printDSR_CTS(dsr: Int, cts: Int) {
@@ -263,6 +274,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun disconnected() {
+        binding.textCurentDataPrint.text = ""
         val mainFragment = MainFragment()
 
         val fragmentManager = supportFragmentManager

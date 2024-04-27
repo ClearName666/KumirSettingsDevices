@@ -48,4 +48,6 @@
 
     <string name="conmmandGetSerialNum">AT$MDMID?</string>
     <string name="conmmandGetVersionFirmware">AT$VERSION?</string>
+    <string name="NetworkSettings">Настройки сетевого подключения</string>
+    <string name="modeWork">Режим работы</string>
 </resources>

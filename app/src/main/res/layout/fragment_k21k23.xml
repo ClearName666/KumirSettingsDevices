@@ -4,7 +4,7 @@
     android:id="@+id/k21k23"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".K21K23Fragment">
+    tools:context=".usbFragments.K21K23Fragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSet"

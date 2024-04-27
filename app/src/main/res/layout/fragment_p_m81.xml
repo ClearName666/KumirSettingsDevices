@@ -5,7 +5,7 @@
     android:id="@+id/PM81"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PM81Fragment">
+    tools:context=".usbFragments.PM81Fragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSet"

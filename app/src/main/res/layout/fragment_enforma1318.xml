@@ -5,7 +5,7 @@
     android:id="@+id/Enforma1318"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Enforma1318Fragment">
+    tools:context=".usbFragments.Enforma1318Fragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSet"
