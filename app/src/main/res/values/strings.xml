@@ -46,8 +46,71 @@
 
 
 
-    <string name="conmmandGetSerialNum">AT$MDMID?</string>
-    <string name="conmmandGetVersionFirmware">AT$VERSION?</string>
+    <string name="commandGetSerialNum">AT$MDMID?</string>
+    <string name="commandGetVersionFirmware">AT$VERSION?</string>
+
+    <string name="commandGetApn">AT$APN?</string>
+    <string name="commandGetServer1">AT$SERVER1?</string>
+    <string name="commandGetServer2">AT$SERVER2?</string>
+    <string name="commandGetKeepAlive">AT$KEEPALIVE?</string>
+    <string name="commandGetConnectionTimeout">AT$CTIMEOUT?</string>
+    <string name="commandGetTcpPort">AT$TCPPORT?</string>
+    <string name="commandGetLogin">AT$LOGIN?</string>
+    <string name="commandGetPassword">AT$PASSW?</string>
+    <string name="commandGetDeviceMode">AT$DEVMODE?</string>
+    <string name="commandGetSmsPin">AT$SMSPIN?</string>
+    <string name="commandGetSimPin">AT$SIMPIN?</string>
+    <string name="commandGetPort1Config">AT$PORT1?</string>
+    <string name="commandGetPort2Config">AT$PORT2?</string>
+    <string name="commandGetActivePort">AT$ACTPORT?</string>
+    <string name="commandGetProfile1">AT$PROFILE1?</string>
+    <string name="commandGetProfile2">AT$PROFILE2?</string>
+    <string name="commandGetTimezoneData">AT$TZDATA?</string>
+    <string name="commandGetSettings">AT$VIEW</string>
+
+    <string name="commandSetApn">AT$APN=</string>
+    <string name="commandSetServer1">AT$SERVER1=</string>
+    <string name="commandSetServer2">AT$SERVER2=</string>
+    <string name="commandSetKeepAlive">AT$KEEPALIVE=</string>
+    <string name="commandSetConnectionTimeout">AT$CTIMEOUT=</string>
+    <string name="commandSetTcpPort">AT$TCPPORT=</string>
+    <string name="commandSetLogin">AT$LOGIN=</string>
+    <string name="commandSetPassword">AT$PASSW=</string>
+    <string name="commandClearPpp">AT$PPPCLR</string>
+    <string name="commandSetDeviceMode">AT$DEVMODE=</string>
+    <string name="commandSetSmsPin">AT$SMSPIN=</string>
+    <string name="commandSetSimPin">AT$SIMPIN=</string>
+    <string name="commandSetPort1Config">AT$PORT1=</string>
+    <string name="commandSetPort2Config">AT$PORT2=</string>
+    <string name="commandSetActivePort">AT$ACTPORT=</string>
+    <string name="commandSetProfile1">AT$PROFILE1=</string>
+    <string name="commandSetProfile2">AT$PROFILE2=</string>
+    <string name="commandSetTimezoneData">AT$TZDATA=</string>
+    <string name="commandFactoryReset">AT$DEFAULT</string>
+    <string name="commandLoadSettings">AT$LOAD</string>
+    <string name="commandSaveSettings">AT$SAVE</string>
+    <string name="commandExitSettingsMode">AT$EXIT</string>
+    <string name="commandRunDiagnostics">AT$DIAG</string>
+
+
+
+
+
     <string name="NetworkSettings">Настройки сетевого подключения</string>
     <string name="modeWork">Режим работы</string>
+    <string name="apnTitle">APN (Имя точки доступа)</string>
+    <string name="ip_dnsTitle">Адрес сервера (ip-адрес или DNS</string>
+    <string name="tcpTitle">TCP порт</string>
+    <string name="gprsLoginTitle">Логин для досупа к GPRS</string>
+    <string name="gprsPasswordTitle">Пароль для доступа к GPRS</string>
+    <string name="keepliveTitle">Время отправки сигнала Keeplive, сек</string>
+    <string name="timeoutConnectTitle">Время ожидания подключения, мин</string>
+    <string name="timeoutStartModem">Время ожидания запуска модема</string>
+    <string name="initTimeLTtle">Время инициализации, мс</string>
+    <string name="unplugTimeTitle">Время отключения, мс</string>
+    <string name="activPortTitle">Активный порт</string>
+    <string name="YesNo">Вкл/Выкл</string>
+    <string name="sms_commandPinCode">Пин код для sms команд (4 символа)</string>
+    <string name="smsPinCodeCard">Пин код для sms карты (4 символа)</string>
+    <string name="smsMonitoringTitle">Мониторинг сигнала и Sms</string>
 </resources>

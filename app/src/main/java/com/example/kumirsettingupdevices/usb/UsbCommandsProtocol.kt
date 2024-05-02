@@ -11,16 +11,20 @@ class UsbCommandsProtocol {
         const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
     }
 
+
+    // метод для получеия сериного номера и версии прошивки
     fun serinerNumberAndVersionFirmware(context: Context, usbFragment: UsbFragment) {
         // поток считывания сериного номера и прошивки
         Thread {
+
+            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*20)
             if (context is MainActivity) {
 
                 // очищение прошлых данных
                 context.curentData = ""
 
                 // серйный номер-------------------------------------------------
-                context.usb.writeDevice(context.getString(R.string.conmmandGetSerialNum),
+                context.usb.writeDevice(context.getString(R.string.commandGetSerialNum),
                     false)
 
                 Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
@@ -45,7 +49,7 @@ class UsbCommandsProtocol {
                 }
 
                 // версия прошивки-------------------------------------------------
-                context.usb.writeDevice(context.getString(R.string.conmmandGetVersionFirmware),
+                context.usb.writeDevice(context.getString(R.string.commandGetVersionFirmware),
                     false)
 
                 Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
@@ -68,11 +72,42 @@ class UsbCommandsProtocol {
                         context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
                     }
                 }
-
             }
         }.start()
     }
+
+
+
+    // метод для получения настроек устройства
+    fun readSettingDevice(commands: List<String>, context: Context, usbFragment: UsbFragment) {
+        val settingData: MutableMap<String, String> = mutableMapOf()
+
+        Thread {
+            if (context is MainActivity) {
+                for (command in commands) {
+
+                    // очищение прошлых данных
+                    (context as Activity).runOnUiThread {
+                        context.curentData = ""
+                    }
+
+                    context.usb.writeDevice(command, false)
+                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+
+                    if (context.curentData.isNotEmpty()) {
+                        settingData[command] = formatDataCommandsNormolize(context.curentData)
+                    }
+                }
+
+                (context as Activity).runOnUiThread {
+                    usbFragment.printSettingDevice(settingData)
+                }
+            }
+        }.start()
+    }
+
     private fun formatDataCommandsNormolize(data: String): String {
         return data.substringAfter(": ").substringBefore("\n")
     }
+
 }

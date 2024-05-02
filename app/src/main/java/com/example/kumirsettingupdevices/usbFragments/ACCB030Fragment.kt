@@ -36,4 +36,8 @@ class ACCB030Fragment : Fragment(), UsbFragment {
     override fun printVersionProgram(versionProgram: String) {
         binding.textVersionFirmware.text = versionProgram
     }
+
+    override fun printSettingDevice(settingMap: Map<String, String>) {
+        TODO("Not yet implemented")
+    }
 }

@@ -43,5 +43,9 @@ class Enforma1318Fragment : Fragment(), UsbFragment {
         binding.textVersionFirmware.text = versionProgram
     }
 
+    override fun printSettingDevice(settingMap: Map<String, String>) {
+        TODO("Not yet implemented")
+    }
+
 
 }
