@@ -8,7 +8,7 @@ import com.example.kumirsettingupdevices.R
 class UsbCommandsProtocol {
 
     companion object {
-        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
+        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 30
     }
 
 
@@ -17,7 +17,7 @@ class UsbCommandsProtocol {
         // поток считывания сериного номера и прошивки
         Thread {
 
-            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*20)
+            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*10)
             if (context is MainActivity) {
 
                 // очищение прошлых данных
@@ -87,9 +87,7 @@ class UsbCommandsProtocol {
                 for (command in commands) {
 
                     // очищение прошлых данных
-                    (context as Activity).runOnUiThread {
-                        context.curentData = ""
-                    }
+                    context.curentData = ""
 
                     context.usb.writeDevice(command, false)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)

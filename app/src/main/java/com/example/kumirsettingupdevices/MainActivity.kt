@@ -9,7 +9,11 @@ import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -58,6 +62,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // смена настроек usb ---------------------------------------------------
         ConstUsbSettings.speedIndex = 9 // скорость 115200
+        usb.flagAtCommandYesNo = true
 
     }
 
@@ -245,6 +250,43 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val dialog = builder.create()
         dialog.show()
     }
+
+
+    fun showTimerDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_timer, null)
+        val timerTextView = dialogView.findViewById<TextView>(R.id.timer_text)
+
+        val handler = Handler(Looper.getMainLooper())
+        lateinit var alertDialog: AlertDialog  // Используем lateinit для поздней инициализации
+
+        val startTime = 30  // начальное время в секундах
+        var timeLeft = startTime
+
+        val updateRunnable = object : Runnable {
+            override fun run() {
+                timerTextView.text = timeLeft.toString()
+                if (timeLeft > 0) {
+                    timeLeft--
+                    handler.postDelayed(this, 1000)
+                } else {
+                    alertDialog.dismiss() // Закрыть диалог после завершения отсчета
+                }
+            }
+        }
+
+        alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .setNegativeButton("Отмена") { dialog, which ->
+                handler.removeCallbacks(updateRunnable) // Остановить Runnable при отмене
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+        handler.postDelayed(updateRunnable, 1000)  // Начать обратный отсчёт
+    }
+
 
 
     override fun showDeviceName(deviceName: String) {

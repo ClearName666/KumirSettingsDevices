@@ -61,16 +61,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+
         <ImageView
             android:id="@+id/imagedischarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="107dp"
-            android:clickable="true"
-            android:onClick="onClickReadSettings"
             android:src="@drawable/discharge"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/todo" />
 
         <ImageView
             android:id="@+id/imageDownLoad"
@@ -79,7 +79,8 @@
             android:layout_marginEnd="107dp"
             android:src="@drawable/download"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:id="@+id/textRead"
@@ -140,7 +141,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/containerSettingsDevice"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/textMonitoringSignalSms"
@@ -184,7 +186,7 @@
                 <Switch
                     android:id="@+id/switchPinCodeSmsCard"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="70dp"
                     android:layout_marginTop="5dp"
                     android:text="@string/YesNo"
                     android:textColor="@color/textColor"
@@ -212,7 +214,7 @@
                 <Switch
                     android:id="@+id/switchPinCodeSmsCommand"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="70dp"
                     android:layout_marginTop="30dp"
                     android:outlineSpotShadowColor="@color/textColor"
                     android:text="@string/YesNo"
@@ -232,88 +234,8 @@
                     android:id="@+id/textSelectActivPort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="30dp"
                     android:text="@string/activPortTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputTimeUnplugLayout" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputTimeUnplugLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textTimeUnplug">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inputTimeUnplug"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/unplugTimeTitle"
-                        android:textColor="@color/textColor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/textTimeUnplug"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/unplugTimeTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputTimeInitLayout" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputTimeInitLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInitTime">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inputTimeInit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/initTimeLTtle"
-                        android:inputType="number"
-                        android:textColor="@color/textColor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/textInitTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/initTimeLTtle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputTimeOutStartModemLayout" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputTimeOutStartModemLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textTimeOutStartModem">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inputTimeOutStartModem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/timeoutStartModem"
-                        android:inputType="number"
-                        android:textColor="@color/textColor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/textTimeOutStartModem"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/timeoutStartModem"
                     android:textColor="@color/textColor"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/inputTimeoutConnectionLayout" />

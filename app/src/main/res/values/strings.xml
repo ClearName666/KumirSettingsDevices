@@ -9,6 +9,7 @@
     <string name="ConnectSuccess">Подключение успешно установлено</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Индитифицировать девайс не удалось!</string>
+    <string name="notReadDevModeDevice">Не удалось получить режим работы девайса!</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>]
     <string name="mainActivityExitCheck">Вы уверены что хотите выйти?</string>
@@ -45,7 +46,15 @@
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
 
 
-
+    <string name="disabled">DISABLED</string>
+    
+    <string name="devmodeKumirNet">kumirNet</string>
+    <string name="devmodeClient">TCPClient</string>
+    <string name="devmodeTCPServer">TCPServer</string>
+    <string name="devmodeGSMmodem">GSMmodem</string>
+    <string name="devmodePipeClient">PipeClient</string>
+    <string name="devdodePipeServer">PipeServer</string>
+    
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
 
