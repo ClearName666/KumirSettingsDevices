@@ -1,32 +1,33 @@
 <resources>
     <string name="app_name">KumirSettingUpDevices</string>
 
-    <string name="Usb_NoneConnect">Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ</string>
+    <string name="Usb_NoneConnect">Отсутствует подключение, воспользуйтесь кнопкой "ПОДКЛЮЧИТЬСЯ"</string>
     <string name="Disconnected">Подключение разорвано!</string>
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
-    <string name="Usb_ErrorConnect">Произошла ошибка при попытки подключения</string>
-    <string name="UsbNoneConnectDevice">Нету подключения, пожалуйста выберете com порт и подлючитесь!</string>
+    <string name="Usb_ErrorConnect">Произошла ошибка при попытке подключения</string>
+    <string name="UsbNoneConnectDevice">Нет подключения, пожалуйста, выберите COM-порт и подключитесь!</string>
     <string name="ConnectSuccess">Подключение успешно установлено</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
-    <string name="identifyDeviceFailed">Индитифицировать девайс не удалось!</string>
-    <string name="notReadDevModeDevice">Не удалось получить режим работы девайса!</string>
+    <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
+    <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
+    <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохренены!</string>
 
-    <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>]
-    <string name="mainActivityExitCheck">Вы уверены что хотите выйти?</string>
+    <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
+    <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
     <string name="versionApp">Версия: 0.0.1</string>
     <string name="todo">TODO</string>
-    <string name="TextHiMain">Для начала работы выберете COM порт, а затем устройство</string>
-    <string name="selectedComPort">Выберете COM порт</string>
+    <string name="TextHiMain">Для начала работы выберите COM-порт, а затем устройство</string>
+    <string name="selectedComPort">Выберите COM-порт</string>
     <string name="ok">Ок</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
     <string name="at">at</string>
     <string name="title_activity_loading">LoadingActivity</string>
-    <string name="selectTypeDevice">Выберете устройство</string>
+    <string name="selectTypeDevice">Выберите устройство</string>
     <string name="devices">Устройства</string>
-    <string name="enforma1318">Enforma1318</string>
+    <string name="enforma1318">Enfora1318</string>
     <string name="m31">КУМИР M31</string>
     <string name="k21_k23">КУМИР K21/K23</string>
     <string name="m32">КУМИР M32</string>
@@ -37,23 +38,25 @@
     <string name="accb030Firmware">Взлет ACCB030 Прошивка</string>
     <string name="controller_p_101">Пульт П101</string>
     <string name="title_activity_settings_device">SettingsDeviceActivity</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="serinerNumber">Серийный номер:</string>
     <string name="versionProgram">Версия прошивки:</string>
     <string name="read">Чтение</string>
     <string name="write">Запись</string>
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
+    <string name="restartDevicePlease">Перезагрузите устройство!!! Ожидание перезагрузки! 00.00.</string>
 
 
     <string name="disabled">DISABLED</string>
-    
+
     <string name="devmodeKumirNet">kumirNet</string>
     <string name="devmodeClient">TCPClient</string>
     <string name="devmodeTCPServer">TCPServer</string>
     <string name="devmodeGSMmodem">GSMmodem</string>
     <string name="devmodePipeClient">PipeClient</string>
     <string name="devdodePipeServer">PipeServer</string>
+
+    <string name="error">ERROR</string>
     
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
@@ -108,9 +111,9 @@
     <string name="NetworkSettings">Настройки сетевого подключения</string>
     <string name="modeWork">Режим работы</string>
     <string name="apnTitle">APN (Имя точки доступа)</string>
-    <string name="ip_dnsTitle">Адрес сервера (ip-адрес или DNS</string>
+    <string name="ip_dnsTitle">Адрес сервера (IP-адрес или DNS)</string>
     <string name="tcpTitle">TCP порт</string>
-    <string name="gprsLoginTitle">Логин для досупа к GPRS</string>
+    <string name="gprsLoginTitle">Логин для доступа к GPRS</string>
     <string name="gprsPasswordTitle">Пароль для доступа к GPRS</string>
     <string name="keepliveTitle">Время отправки сигнала Keeplive, сек</string>
     <string name="timeoutConnectTitle">Время ожидания подключения, мин</string>
@@ -119,7 +122,7 @@
     <string name="unplugTimeTitle">Время отключения, мс</string>
     <string name="activPortTitle">Активный порт</string>
     <string name="YesNo">Вкл/Выкл</string>
-    <string name="sms_commandPinCode">Пин код для sms команд (4 символа)</string>
-    <string name="smsPinCodeCard">Пин код для sms карты (4 символа)</string>
-    <string name="smsMonitoringTitle">Мониторинг сигнала и Sms</string>
+    <string name="sms_commandPinCode">Пин-код для SMS-команд (4 символа)</string>
+    <string name="smsPinCodeCard">Пин-код для SMS-карты (4 символа)</string>
+    <string name="smsMonitoringTitle">Мониторинг сигнала и SMS</string>
 </resources>

@@ -405,7 +405,7 @@ class Usb(private val context: Context) {
                                     while (flagAtCommand) {
                                         while (flagAtCommandYesNo) {
                                             Thread.sleep(TIMEOUT_MOVE_AT)
-                                            if (checkConnectToDevice() && flagAtCommand) {
+                                            if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
                                                 writeDevice(context.getString(R.string.at), false)
                                                 flagIgnorRead = true
                                                 Thread.sleep(TIMEOUT_IGNORE_AT)

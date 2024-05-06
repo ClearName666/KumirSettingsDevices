@@ -18,14 +18,6 @@ class M32Fragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentM32Binding
 
-    override fun onResume() {
-        super.onResume()
-
-        // вызов метода который выведет серийник и версию
-        val usbCommandsProtocol = UsbCommandsProtocol()
-        usbCommandsProtocol.serinerNumberAndVersionFirmware(requireContext(), this)
-
-    }
 
 
     override fun onCreateView(
@@ -34,9 +26,8 @@ class M32Fragment : Fragment(), UsbFragment {
     ): View {
         binding = FragmentM32Binding.inflate(inflater)
 
-
         // адаптер для выбора режима работы модема
-        val items = listOf(
+        val itemsSpinnerDevMode = listOf(
             getString(R.string.devmodeKumirNet),
             getString(R.string.devmodeClient),
             getString(R.string.devmodeTCPServer),
@@ -44,7 +35,8 @@ class M32Fragment : Fragment(), UsbFragment {
             getString(R.string.devmodePipeClient),
             getString(R.string.devdodePipeServer)
         )
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
+
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, itemsSpinnerDevMode)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerServer.adapter = adapter
 
@@ -52,33 +44,27 @@ class M32Fragment : Fragment(), UsbFragment {
             onClickReadSettingsDevice(it)
         }
 
+        binding.imageDownLoad.setOnClickListener {
+            onClickWriteSettingsDevice(it)
+        }
+
         return binding.root
     }
 
     private fun onClickReadSettingsDevice(view: View) {
-        // вызываем метод для получения данных о девайсе
+        val context: Context = requireContext()
 
-        /*val context: Context = requireContext()
         if (context is MainActivity) {
-            context.showTimerDialog()
-        }*/
+            context.showTimerDialog(this)
+        }
+    }
 
-        val command: List<String> = arrayListOf(
-            getString(R.string.commandGetDeviceMode),
-            getString(R.string.commandGetApn),
-            getString(R.string.commandGetServer1),
-            getString(R.string.commandGetTcpPort),
-            getString(R.string.commandGetLogin),
-            getString(R.string.commandGetPassword),
-            getString(R.string.commandGetKeepAlive),
-            getString(R.string.commandGetConnectionTimeout),
-            getString(R.string.commandGetPort1Config),
-            getString(R.string.commandGetSmsPin),
-            getString(R.string.commandGetSimPin)
-        )
+    private fun onClickWriteSettingsDevice(view: View) {
+        val context: Context = requireContext()
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
-        usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
+        if (context is MainActivity) {
+            context.showTimerDialog(this, true)
+        }
     }
 
 
@@ -92,6 +78,15 @@ class M32Fragment : Fragment(), UsbFragment {
 
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        // верийный номер и версия прошибки
+        val serNum: String = getString(R.string.serinerNumber) +
+                "\n" + settingMap[getString(R.string.commandGetSerialNum)]
+        binding.serinerNumber.text = serNum
+
+        val version: String = getString(R.string.versionProgram) +
+                "\n" + settingMap[getString(R.string.commandGetVersionFirmware)]
+        binding.textVersionFirmware.text = version
 
         binding.inputAPN.setText(settingMap[getString(R.string.commandGetApn)])
         binding.inputIPDNS.setText(settingMap[getString(R.string.commandGetServer1)])
@@ -108,7 +103,7 @@ class M32Fragment : Fragment(), UsbFragment {
         } else {
             binding.switchPinCodeSmsCommand.isChecked = true
 
-            binding.inputPinCodeCommand.setText(settingMap[getString(R.string.commandGetSmsPin)])
+            binding.inputPinCodeSmsCard.setText(settingMap[getString(R.string.commandGetSmsPin)])
         }
 
         if (settingMap[getString(R.string.commandGetSimPin)]?.
@@ -117,7 +112,7 @@ class M32Fragment : Fragment(), UsbFragment {
         } else {
             binding.switchPinCodeSmsCard.isChecked = true
 
-            binding.inputPinCodeSmsCard.setText(settingMap[getString(R.string.commandGetSimPin)])
+            binding.inputPinCodeCommand.setText(settingMap[getString(R.string.commandGetSimPin)])
         }
 
         // работа со spiner (ражим работы)
@@ -139,44 +134,53 @@ class M32Fragment : Fragment(), UsbFragment {
                 context.showAlertDialog(getString(R.string.notReadDevModeDevice))
             }
         }
+    }
 
+    override fun readSettingStart() {
+        val command: List<String> = arrayListOf(
+            getString(R.string.commandGetSerialNum),
+            getString(R.string.commandGetVersionFirmware),
+            getString(R.string.commandGetDeviceMode),
+            getString(R.string.commandGetApn),
+            getString(R.string.commandGetServer1),
+            getString(R.string.commandGetTcpPort),
+            getString(R.string.commandGetLogin),
+            getString(R.string.commandGetPassword),
+            getString(R.string.commandGetKeepAlive),
+            getString(R.string.commandGetConnectionTimeout),
+            getString(R.string.commandGetPort1Config),
+            getString(R.string.commandGetSmsPin),
+            getString(R.string.commandGetSimPin)
+        )
 
+        val usbCommandsProtocol = UsbCommandsProtocol()
+        usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
+    }
 
+    // запись данных в устройство
+    override fun writeSettingStart() {
+        val dataMap: MutableMap<String, String> = mutableMapOf(
+            getString(R.string.commandSetDeviceMode) to binding.spinnerServer.selectedItemPosition.toString(),
+            getString(R.string.commandSetApn) to binding.inputAPN.text.toString(),
+            getString(R.string.commandSetServer1) to binding.inputIPDNS.text.toString(),
+            getString(R.string.commandSetTcpPort) to binding.inputTCP.text.toString(),
+            getString(R.string.commandSetLogin) to binding.inputTextLoginGPRS.text.toString(),
+            getString(R.string.commandSetPassword) to binding.inputPasswordGPRS.text.toString(),
+            getString(R.string.commandSetKeepAlive) to binding.inputTimeOutKeeplive.text.toString(),
+            getString(R.string.commandSetConnectionTimeout) to binding.inputTimeoutConnection.text.toString(),
+            /*getString(R.string.commandSetPort1Config) to "СЮДА ПОСТАВИТЬ ВЫВОД С АДАПТЕРА ПОРТ",*/
+        )
+        if (binding.switchPinCodeSmsCard.isChecked) {
+            dataMap[getString(R.string.commandSetSimPin)] =
+                binding.inputPinCodeCommand.text.toString()
+        }
+        if (binding.switchPinCodeSmsCommand.isChecked) {
+            dataMap[getString(R.string.commandSetSmsPin)] =
+                binding.inputPinCodeSmsCard.text.toString()
+        }
 
-        /*if (settingMap.containsValue(getString(R.string.commandGetDeviceMode))) {
-            // сдесь в будещем дописать когда будет адаптер для спинера
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetApn))) {
-            binding.inputAPN.setText(settingMap[getString(R.string.commandGetApn)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetServer1))) {
-            binding.inputIPDNS.setText(settingMap[getString(R.string.commandGetServer1)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetTcpPort))) {
-            binding.inputTCP.setText(settingMap[getString(R.string.commandGetTcpPort)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetLogin))) {
-            binding.inputTextLoginGPRS.setText(settingMap[getString(R.string.commandGetLogin)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetPassword))) {
-            binding.inputPasswordGPRS.setText(settingMap[getString(R.string.commandGetPassword)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetKeepAlive))) {
-            binding.inputTimeOutKeeplive.setText(settingMap[getString(R.string.commandGetKeepAlive)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetConnectionTimeout))) {
-            binding.inputTimeoutConnection.setText(getString(R.string.commandGetConnectionTimeout))
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetPort1Config))) {
-            // сдесь в будещем дописать когда будет адаптер для спинера
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetSmsPin))) {
-            binding.inputPinCodeCommand.setText(settingMap[getString(R.string.commandGetSmsPin)])
-        }
-        if (settingMap.containsValue(getString(R.string.commandGetSimPin))) {
-            binding.inputPinCodeSmsCard.setText(settingMap[getString(R.string.commandGetSimPin)])
-        }*/
-
+        val usbCommandsProtocol = UsbCommandsProtocol()
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext())
     }
 
 }

@@ -171,7 +171,7 @@
                     android:layout_marginTop="39dp"
                     android:text="@string/devices"
                     android:textColor="@color/textColor"
-                    android:textSize="8dp"
+                    android:textSize="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 

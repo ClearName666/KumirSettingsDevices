@@ -13,13 +13,6 @@ class ACCB030Fragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentACCB030Binding
 
-    override fun onResume() {
-        super.onResume()
-
-        // вызов метода который выведет серийник и версию
-        val usbCommandsProtocol = UsbCommandsProtocol()
-        usbCommandsProtocol.serinerNumberAndVersionFirmware(requireContext(), this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +31,14 @@ class ACCB030Fragment : Fragment(), UsbFragment {
     }
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun readSettingStart() {
+        TODO("Not yet implemented")
+    }
+
+    override fun writeSettingStart() {
         TODO("Not yet implemented")
     }
 }

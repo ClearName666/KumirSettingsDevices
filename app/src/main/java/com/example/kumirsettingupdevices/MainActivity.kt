@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
 import com.example.kumirsettingupdevices.usb.Usb
 import com.example.kumirsettingupdevices.usb.UsbActivityInterface
+import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usbFragments.A61Fragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
@@ -40,6 +41,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     private var usbComsMenu: UsbComsMenu? = null
     var curentData: String = ""
+
+    companion object {
+        const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 30 // секудны
+    }
 
 
 
@@ -252,21 +257,44 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
 
-    fun showTimerDialog() {
+    fun showTimerDialog(usbFragment: UsbFragment, flagWrite: Boolean = false) {
+
+        // очищение данных
+        curentData = ""
+
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_timer, null)
         val timerTextView = dialogView.findViewById<TextView>(R.id.timer_text)
 
         val handler = Handler(Looper.getMainLooper())
         lateinit var alertDialog: AlertDialog  // Используем lateinit для поздней инициализации
 
-        val startTime = 30  // начальное время в секундах
+        val startTime = TIMEOUT_TOWAIT_RESTART_DEVICE  // начальное время в секундах
         var timeLeft = startTime
 
         val updateRunnable = object : Runnable {
             override fun run() {
-                timerTextView.text = timeLeft.toString()
+
+                val timerText: String = getString(R.string.restartDevicePlease) +
+                        timeLeft.toString()
+                timerTextView.text = timerText
+
                 if (timeLeft > 0) {
                     timeLeft--
+                    if (curentData.isNotEmpty()) {
+
+                        if (flagWrite) {
+                            runOnUiThread {
+                                usbFragment.writeSettingStart()
+                            }
+                        } else {
+                            runOnUiThread {
+                                usbFragment.readSettingStart()
+                            }
+                        }
+
+                        timeLeft = 0
+                        alertDialog.dismiss()
+                    }
                     handler.postDelayed(this, 1000)
                 } else {
                     alertDialog.dismiss() // Закрыть диалог после завершения отсчета

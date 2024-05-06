@@ -89,7 +89,7 @@
             android:gravity="center_horizontal"
             android:text="@string/read"
             android:textColor="@color/textColor"
-            android:textSize="8sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imagedischarge"
             app:layout_constraintStart_toStartOf="@+id/imagedischarge"
@@ -102,7 +102,7 @@
             android:gravity="center"
             android:text="@string/write"
             android:textColor="@color/textColor"
-            android:textSize="8sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageDownLoad"
             app:layout_constraintStart_toStartOf="@+id/imageDownLoad"
@@ -178,6 +178,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputPinCodeSmsCard"
                         android:layout_width="match_parent"
+                        android:inputType="number"
                         android:layout_height="wrap_content"
                         android:hint="@string/smsPinCodeCard"
                         android:textColor="@color/textColor" />
@@ -206,6 +207,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputPinCodeCommand"
                         android:layout_width="match_parent"
+                        android:inputType="number"
                         android:layout_height="wrap_content"
                         android:hint="@string/sms_commandPinCode"
                         android:textColor="@color/textColor" />
@@ -252,7 +254,6 @@
                         android:id="@+id/inputTimeoutConnection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/timeoutConnectTitle"
                         android:inputType="number"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -280,7 +281,6 @@
                         android:id="@+id/inputTimeOutKeeplive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/keepliveTitle"
                         android:inputType="number"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -307,7 +307,6 @@
                         android:id="@+id/inputPasswordGPRS"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/gprsPasswordTitle"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -333,7 +332,6 @@
                         android:id="@+id/inputTextLoginGPRS"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/gprsLoginTitle"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -358,9 +356,9 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputTCP"
+                        android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/tcpTitle"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -386,7 +384,6 @@
                         android:id="@+id/inputIPDNS"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/ip_dnsTitle"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -412,7 +409,6 @@
                         android:id="@+id/inputAPN"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/apnTitle"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
