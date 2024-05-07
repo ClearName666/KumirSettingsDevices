@@ -11,6 +11,10 @@
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохренены!</string>
+    
+    <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
+    <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
+    <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>

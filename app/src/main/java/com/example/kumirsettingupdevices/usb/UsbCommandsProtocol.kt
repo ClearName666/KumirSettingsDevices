@@ -9,7 +9,7 @@ class UsbCommandsProtocol {
 
     companion object {
         const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 30
-        const val TIMEOUT_START_DEVICE: Long = 500
+        const val TIMEOUT_START_DEVICE: Long = 1000
     }
 
 

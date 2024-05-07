@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.databinding.FragmentM32Binding
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -17,7 +18,6 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 class M32Fragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentM32Binding
-
 
 
     override fun onCreateView(
@@ -129,10 +129,7 @@ class M32Fragment : Fragment(), UsbFragment {
                 binding.spinnerServer.setSelection(it.trim().toInt())
             }
         } catch (e: NumberFormatException) {
-            val context: Context = requireContext()
-            if (context is MainActivity) {
-                context.showAlertDialog(getString(R.string.notReadDevModeDevice))
-            }
+            showAlertDialog(getString(R.string.notReadDevModeDevice))
         }
     }
 
@@ -159,6 +156,24 @@ class M32Fragment : Fragment(), UsbFragment {
 
     // запись данных в устройство
     override fun writeSettingStart() {
+
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+
+        // проверки на валидность keepalive ctimeout tcpPort
+        if (!validDataSettingsDevice.keepaliveValid(getString(R.string.commandSetKeepAlive))) {
+            showAlertDialog(getString(R.string.errorKEEPALIVE))
+            return
+
+        } else if (!validDataSettingsDevice.ctimeoutValid(getString(R.string.commandSetConnectionTimeout))) {
+            showAlertDialog(getString(R.string.errorCTIMEOUT))
+            return
+
+        } else if (!validDataSettingsDevice.tcpPortValid(getString(R.string.commandSetTcpPort))) {
+            showAlertDialog(getString(R.string.errorTCPPORT))
+            return
+        }
+
         val dataMap: MutableMap<String, String> = mutableMapOf(
             getString(R.string.commandSetDeviceMode) to binding.spinnerServer.selectedItemPosition.toString(),
             getString(R.string.commandSetApn) to binding.inputAPN.text.toString(),
@@ -181,6 +196,13 @@ class M32Fragment : Fragment(), UsbFragment {
 
         val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext())
+    }
+
+    private fun showAlertDialog(text: String) {
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.showAlertDialog(text)
+        }
     }
 
 }
