@@ -1,6 +1,5 @@
 package com.example.kumirsettingupdevices
 
-import com.example.kumirsettingupdevices.usbFragments.M32Fragment
 
 
 // проверки на валидность данных

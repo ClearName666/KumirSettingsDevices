@@ -40,6 +40,16 @@ class M32Fragment : Fragment(), UsbFragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerServer.adapter = adapter
 
+        // адаптер для выбора порта
+        val itemsSpinnerActPort = listOf(
+            "1",
+            "2"
+        )
+
+        val adapterActPort = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, itemsSpinnerActPort)
+        adapterActPort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerSelectActivPort.adapter = adapterActPort
+
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
         }
@@ -131,6 +141,15 @@ class M32Fragment : Fragment(), UsbFragment {
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadDevModeDevice))
         }
+
+
+        try {
+            settingMap[getString(R.string.commandGetActivePort)]?.let {
+                binding.spinnerSelectActivPort.setSelection(it.trim().toInt()-1)
+            }
+        } catch (e: NumberFormatException) {
+            showAlertDialog(getString(R.string.notReadActPortDevice))
+        }
     }
 
     override fun readSettingStart() {
@@ -147,7 +166,8 @@ class M32Fragment : Fragment(), UsbFragment {
             getString(R.string.commandGetConnectionTimeout),
             getString(R.string.commandGetPort1Config),
             getString(R.string.commandGetSmsPin),
-            getString(R.string.commandGetSimPin)
+            getString(R.string.commandGetSimPin),
+            getString(R.string.commandGetActivePort)
         )
 
         val usbCommandsProtocol = UsbCommandsProtocol()
@@ -159,17 +179,20 @@ class M32Fragment : Fragment(), UsbFragment {
 
         val validDataSettingsDevice = ValidDataSettingsDevice()
 
-
         // проверки на валидность keepalive ctimeout tcpPort
-        if (!validDataSettingsDevice.keepaliveValid(getString(R.string.commandSetKeepAlive))) {
+        if (!validDataSettingsDevice.keepaliveValid(
+                binding.inputTimeOutKeeplive.text.toString().replace("\\s+".toRegex(), ""))) {
+
             showAlertDialog(getString(R.string.errorKEEPALIVE))
             return
 
-        } else if (!validDataSettingsDevice.ctimeoutValid(getString(R.string.commandSetConnectionTimeout))) {
+        } else if (!validDataSettingsDevice.ctimeoutValid(
+                binding.inputTimeoutConnection.text.toString().replace("\\s+".toRegex(), ""))) {
             showAlertDialog(getString(R.string.errorCTIMEOUT))
             return
 
-        } else if (!validDataSettingsDevice.tcpPortValid(getString(R.string.commandSetTcpPort))) {
+        } else if (!validDataSettingsDevice.tcpPortValid(
+                binding.inputTCP.text.toString().replace("\\s+".toRegex(), ""))) {
             showAlertDialog(getString(R.string.errorTCPPORT))
             return
         }
@@ -183,7 +206,7 @@ class M32Fragment : Fragment(), UsbFragment {
             getString(R.string.commandSetPassword) to binding.inputPasswordGPRS.text.toString(),
             getString(R.string.commandSetKeepAlive) to binding.inputTimeOutKeeplive.text.toString(),
             getString(R.string.commandSetConnectionTimeout) to binding.inputTimeoutConnection.text.toString(),
-            /*getString(R.string.commandSetPort1Config) to "СЮДА ПОСТАВИТЬ ВЫВОД С АДАПТЕРА ПОРТ",*/
+            getString(R.string.commandSetActivePort) to binding.spinnerSelectActivPort.selectedItem.toString()
         )
         if (binding.switchPinCodeSmsCard.isChecked) {
             dataMap[getString(R.string.commandSetSimPin)] =
@@ -195,7 +218,8 @@ class M32Fragment : Fragment(), UsbFragment {
         }
 
         val usbCommandsProtocol = UsbCommandsProtocol()
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext())
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+
     }
 
     private fun showAlertDialog(text: String) {

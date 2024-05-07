@@ -8,8 +8,8 @@ import com.example.kumirsettingupdevices.R
 class UsbCommandsProtocol {
 
     companion object {
-        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 30
-        const val TIMEOUT_START_DEVICE: Long = 1000
+        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
+        const val TIMEOUT_START_DEVICE: Long = 1500
     }
 
 
@@ -55,12 +55,11 @@ class UsbCommandsProtocol {
                 }
 
                 context.curentData = ""
-
             }
         }.start()
     }
 
-    fun writeSettingDevice(data: Map<String, String>, context: Context) {
+    fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment) {
 
         Thread {
 
@@ -85,7 +84,8 @@ class UsbCommandsProtocol {
 
                     // проверка принялись ли данные
                     if (context.curentData.isEmpty() ||
-                        context.curentData.contains(context.getString(R.string.error))) {
+                        context.curentData.contains(context.getString(R.string.error)) ||
+                        !context.curentData.contains(context.getString(R.string.okSand))) {
                         flagError = true
 
                         (context as Activity).runOnUiThread {
@@ -102,6 +102,7 @@ class UsbCommandsProtocol {
                     // сохранение данных AT$SAVE
                     context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                    usbFragment.readSettingStart()
                 }
 
                 context.curentData = ""

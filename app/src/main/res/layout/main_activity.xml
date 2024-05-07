@@ -49,21 +49,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/usb" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fonMenu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/fonDarkMenu"
-            android:clickable="true"
-            android:onClick="onClickFonDarkMenu"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <FrameLayout
             android:id="@+id/fragment_container_main_content"
             android:layout_width="0dp"
@@ -81,6 +66,21 @@
                 <!-- Основной контент -->
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fonMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/fonDarkMenu"
+            android:clickable="true"
+            android:onClick="onClickFonDarkMenu"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout
             android:id="@+id/fragment_container_usb_menu"
@@ -171,7 +171,7 @@
                     android:layout_marginTop="39dp"
                     android:text="@string/devices"
                     android:textColor="@color/textColor"
-                    android:textSize="10sp"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 

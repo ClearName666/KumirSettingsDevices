@@ -10,6 +10,7 @@
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
+    <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохренены!</string>
     
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
@@ -39,7 +40,7 @@
     <string name="a61">КУМИР A61</string>
     <string name="pm81">КУМИР PM81</string>
     <string name="accb030Core">Взлет ACCB030 Ядро</string>
-    <string name="accb030Firmware">Взлет ACCB030 Прошивка</string>
+    <string name="accb030Firmware">Взлет ACCB030 \nПрошивка</string>
     <string name="controller_p_101">Пульт П101</string>
     <string name="title_activity_settings_device">SettingsDeviceActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -61,6 +62,7 @@
     <string name="devdodePipeServer">PipeServer</string>
 
     <string name="error">ERROR</string>
+    <string name="okSand">OK</string>
     
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
