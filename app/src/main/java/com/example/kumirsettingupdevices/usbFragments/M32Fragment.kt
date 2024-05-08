@@ -164,7 +164,6 @@ class M32Fragment : Fragment(), UsbFragment {
             getString(R.string.commandGetPassword),
             getString(R.string.commandGetKeepAlive),
             getString(R.string.commandGetConnectionTimeout),
-            getString(R.string.commandGetPort1Config),
             getString(R.string.commandGetSmsPin),
             getString(R.string.commandGetSimPin),
             getString(R.string.commandGetActivePort)

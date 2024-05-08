@@ -19,8 +19,16 @@ class UsbCommandsProtocol {
         val settingData: MutableMap<String, String> = mutableMapOf()
         var flagsSuccess: Boolean = true
         Thread {
-            Thread.sleep(TIMEOUT_START_DEVICE)
             if (context is MainActivity) {
+                // открываем диалог с загрузочным меню
+                (context as Activity).runOnUiThread {
+                    context.openCloseLoadingView(true)
+                }
+
+                Thread.sleep(TIMEOUT_START_DEVICE)
+
+                // прогресс на единицу то есть каждая команда сколько то процентов
+                var progressUnit: Int = 100 / commands.size
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
@@ -36,6 +44,16 @@ class UsbCommandsProtocol {
 
                     if (context.curentData.isNotEmpty()) {
                         settingData[command] = formatDataCommandsNormolize(context.curentData)
+
+                        val curentData: String = context.curentData
+                        // вывод в загрузочное диалог информации
+                        (context as Activity).runOnUiThread {
+                            context.printInfoTermAndLoaging(command, progressUnit)
+                            context.printInfoTermAndLoaging(curentData, progressUnit)
+                        }
+
+                        progressUnit += progressUnit
+
                     } else {
                         (context as Activity).runOnUiThread {
                             context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
@@ -62,11 +80,18 @@ class UsbCommandsProtocol {
     fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment) {
 
         Thread {
+            if (context is MainActivity){
+                var flagError: Boolean = false
 
-            var flagError: Boolean = false
+                // открываем диалог с загрузочным меню
+                (context as Activity).runOnUiThread {
+                    context.openCloseLoadingView(true)
+                }
 
-            Thread.sleep(TIMEOUT_START_DEVICE)
-            if (context is MainActivity) {
+                Thread.sleep(TIMEOUT_START_DEVICE)
+
+                // прогресс на единицу то есть каждая команда сколько то процентов
+                var progressUnit: Int = 100 / data.size
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
@@ -95,6 +120,14 @@ class UsbCommandsProtocol {
 
                         break
                     }
+
+                    val curentData: String = context.curentData
+                    // вывод в загрузочное диалог информации
+                    (context as Activity).runOnUiThread {
+                        context.printInfoTermAndLoaging(key + value, progressUnit)
+                        context.printInfoTermAndLoaging(curentData, progressUnit)
+                    }
+                    progressUnit += progressUnit
 
                 }
 

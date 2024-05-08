@@ -146,13 +146,237 @@
                 android:layout_marginEnd="20dp"
                 android:visibility="visible">
 
+                <Spinner
+                    android:id="@+id/spinnerSelectParityPort2"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textParity1" />
+
+                <Spinner
+                    android:id="@+id/spinnerSelectStopBitPort2"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textStopBit1" />
+
+                <TextView
+                    android:id="@+id/textParity1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/parityTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort2"
+                    app:layout_constraintTop_toTopOf="@+id/textStopBit1" />
+
+                <TextView
+                    android:id="@+id/textStopBit1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/stopDitTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerSpeedPort2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSpeedPort2" />
+
+                <TextView
+                    android:id="@+id/textBit1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bitDataTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toTopOf="@+id/spinnerBitDataPort2"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort2"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort2"
+                    app:layout_constraintTop_toTopOf="@+id/textSpeedPort2" />
+
+                <Spinner
+                    android:id="@+id/spinnerBitDataPort2"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/spinnerSpeedPort2" />
+
+                <Spinner
+                    android:id="@+id/spinnerSpeedPort2"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort2" />
+
+                <TextView
+                    android:id="@+id/textSpeedPort2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/speedTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerSpeed"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectPort2MeteringDevice" />
+
+                <Spinner
+                    android:id="@+id/spinnerSelectPort2MeteringDevice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice1" />
+
+                <TextView
+                    android:id="@+id/textPort2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/port_2Title"
+                    android:textColor="@color/textColor"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/spinnerSelectPort2MeteringDevice"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textSelectMeteringDevice1" />
+
+                <TextView
+                    android:id="@+id/textSelectMeteringDevice1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:text="@string/selectMeteringDeviceTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort1" />
+
+                <Spinner
+                    android:id="@+id/spinnerSelectParityPort1"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textParity" />
+
+                <Spinner
+                    android:id="@+id/spinnerSelectStopBitPort1"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textStopBit" />
+
+                <TextView
+                    android:id="@+id/textParity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/parityTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerBitDataPort1" />
+
+                <TextView
+                    android:id="@+id/textStopBit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/stopDitTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerSpeed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSpeed" />
+
+                <Spinner
+                    android:id="@+id/spinnerBitDataPort1"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textBit" />
+
+                <TextView
+                    android:id="@+id/textBit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bitDataTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toTopOf="@+id/spinnerSpeed"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
+                    app:layout_constraintTop_toTopOf="@+id/textSpeedPort" />
+
+                <Spinner
+                    android:id="@+id/spinnerSpeed"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort" />
+
+                <TextView
+                    android:id="@+id/textSpeedPort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/speedTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerSpeed"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectPort1MeteringDevice" />
+
+                <Spinner
+                    android:id="@+id/spinnerSelectPort1MeteringDevice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice" />
+
+                <TextView
+                    android:id="@+id/textSelectMeteringDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/selectMeteringDeviceTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSettingPorts" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lineSettingsPort1"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/fon2Element"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSettingPorts">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textSettingPorts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/settingInterfTitle"
+                    android:textColor="@color/textColor"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputTimeOutKeepliveLayout" />
+
                 <TextView
                     android:id="@+id/textMonitoringSignalSms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/smsMonitoringTitle"
                     android:textColor="@color/textColor"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/switchMonitoringSmsSifnal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/switchMonitoringSmsSifnal"
                     app:layout_constraintTop_toTopOf="@+id/switchMonitoringSmsSifnal" />
@@ -466,6 +690,20 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textServer" />
+
+                <TextView
+                    android:id="@+id/textPort1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:text="Порт 1"
+                    android:textColor="@color/textColor"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSelectMeteringDevice"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textSelectMeteringDevice"
+                    app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Добавьте другие элементы здесь -->

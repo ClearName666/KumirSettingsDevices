@@ -131,4 +131,13 @@
     <string name="sms_commandPinCode">Пин-код для SMS-команд (4 символа)</string>
     <string name="smsPinCodeCard">Пин-код для SMS-карты (4 символа)</string>
     <string name="smsMonitoringTitle">Мониторинг сигнала и SMS</string>
+    <string name="loadingTitle">Загрузка... Подождите!</string>
+    <string name="closeViewTitle">Закрыть окно</string>
+    <string name="settingInterfTitle">Настройки интерфейса</string>
+    <string name="selectMeteringDeviceTitle">Выбор прибора учета</string>
+    <string name="speedTitle">Скорость</string>
+    <string name="bitDataTitle">Биты данных</string>
+    <string name="stopDitTitle">Стоп биты</string>
+    <string name="parityTitle">Четность</string>
+    <string name="port_2Title">Порт 2</string>
 </resources>

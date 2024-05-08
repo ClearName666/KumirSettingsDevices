@@ -226,6 +226,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         workFonDarkMenu()
     }
 
+    // клик по кнопке закрытия диалога с загрузкой
+    fun onClickCloseDialogLoading(view: View) {
+        openCloseLoadingView(false)
+
+    }
+
     private fun workFonDarkMenu() {
         try {
             val fragmentManager = supportFragmentManager
@@ -319,6 +325,30 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
 
+    // метод для отображения загрузки и информации
+    fun printInfoTermAndLoaging(data: String, progression: Int) {
+        if (binding.fonLodingView.isVisible) {
+            val textTerm: String = binding.textTerm.text.toString() + data
+            binding.textTerm.text = textTerm
+
+            binding.progressBarLoading.progress = progression
+        }
+    }
+
+    // метод для открытия и закрытия меню с терменалом
+    fun openCloseLoadingView(flag: Boolean) {
+        binding.fonLodingView.visibility =
+            if (flag) {
+                View.VISIBLE
+            }
+            else {
+                binding.progressBarLoading.progress = 0
+                binding.textTerm.text = getString(R.string.loadingTitle)
+                View.GONE
+            }
+    }
+
+
 
     override fun showDeviceName(deviceName: String) {
         binding.textDeviceName.text = deviceName
@@ -353,6 +383,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     override fun printData(data: String) {
         binding.textCurentDataPrint.text = data
         curentData += data
+
+        // прокурчивание вниз
+        binding.ScrollWriteLoadingForDevice.post {
+            binding.ScrollWriteLoadingForDevice.scrollTo(0,
+                binding.ScrollWriteLoadingForDevice.bottom)
+        }
     }
 
     override fun printDSR_CTS(dsr: Int, cts: Int) {
@@ -373,6 +409,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // при отключении выводиться предупреждение о том что подлючение разорвано
         showAlertDialog(getString(R.string.Disconnected))
+
+        // закрытие диалога с загрузкой
+        openCloseLoadingView(false)
     }
 
     // подключения и регистрация широковещятельного приемника
