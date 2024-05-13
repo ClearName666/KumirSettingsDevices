@@ -704,6 +704,34 @@
                     app:layout_constraintStart_toEndOf="@+id/textSelectMeteringDevice"
                     app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/port2DisActivFon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/fonDarkMenu"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textPort2">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/port1DisActivFon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/fonDarkMenu"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerSelectPort1MeteringDevice"
+                    app:layout_constraintTop_toTopOf="@+id/textPort1">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Добавьте другие элементы здесь -->

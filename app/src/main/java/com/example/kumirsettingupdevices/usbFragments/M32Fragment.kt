@@ -26,29 +26,14 @@ class M32Fragment : Fragment(), UsbFragment {
     ): View {
         binding = FragmentM32Binding.inflate(inflater)
 
-        // адаптер для выбора режима работы модема
-        val itemsSpinnerDevMode = listOf(
-            getString(R.string.devmodeKumirNet),
-            getString(R.string.devmodeClient),
-            getString(R.string.devmodeTCPServer),
-            getString(R.string.devmodeGSMmodem),
-            getString(R.string.devmodePipeClient),
-            getString(R.string.devdodePipeServer)
-        )
+        createAdapters()
 
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, itemsSpinnerDevMode)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerServer.adapter = adapter
-
-        // адаптер для выбора порта
-        val itemsSpinnerActPort = listOf(
-            "1",
-            "2"
-        )
-
-        val adapterActPort = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, itemsSpinnerActPort)
-        adapterActPort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerSelectActivPort.adapter = adapterActPort
+        binding.port1DisActivFon.setOnClickListener {
+            showAlertDialog(getString(R.string.nonPortEdit))
+        }
+        binding.port2DisActivFon.setOnClickListener {
+            showAlertDialog(getString(R.string.nonPortEdit))
+        }
 
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
@@ -59,6 +44,105 @@ class M32Fragment : Fragment(), UsbFragment {
         }
 
         return binding.root
+    }
+
+    private fun createAdapters() {
+        // адаптер для выбора режима работы модема
+        val itemsSpinnerDevMode = listOf(
+            getString(R.string.devmodeKumirNet),
+            getString(R.string.devmodeClient),
+            getString(R.string.devmodeTCPServer),
+            getString(R.string.devmodeGSMmodem),
+            getString(R.string.devmodePipeClient),
+            getString(R.string.devdodePipeServer)
+        )
+        // адаптер для выбора порта
+        val itemsSpinnerActPort = listOf(
+            "1",
+            "2"
+        )
+        // адаптер для выбора приборра учета
+        val itemPortDeviceAccounting = listOf(
+            getString(R.string.deviceAccountingAdvancedSettings),
+            getString(R.string.deviceAccountingSPT941),
+            getString(R.string.deviceAccountingSPT944),
+            getString(R.string.deviceAccountingTSP025),
+            getString(R.string.deviceAccountingPSCH4TMV23),
+            getString(R.string.deviceAccountingTSP027),
+            getString(R.string.deviceAccountingPowerCE102M),
+            getString(R.string.deviceAccountingMercury206)
+        )
+        // адаптер для выбора скорости
+        val itemSelectSpeed = listOf(
+            getString(R.string.speed_300),
+            getString(R.string.speed_600),
+            getString(R.string.speed_1200),
+            getString(R.string.speed_2400),
+            getString(R.string.speed_4800),
+            getString(R.string.speed_9600),
+            getString(R.string.speed_19200),
+            getString(R.string.speed_38400),
+            getString(R.string.speed_57600),
+            getString(R.string.speed_115200)
+        )
+        // адаптер для выбора четности
+        val itemSelectParity = listOf(
+            getString(R.string.none),
+            getString(R.string.even),
+            getString(R.string.odd)
+        )
+        // адаптер для выбора стоп бит
+        val itemSelectStopBit = listOf(
+            getString(R.string.one),
+            getString(R.string.two)
+        )
+        // адаптер дл я выбора битов данных
+        val itemSelectBitData = listOf(
+            getString(R.string.eight),
+            getString(R.string.seven)
+        )
+
+        val adapter = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemsSpinnerDevMode)
+        val adapterActPort = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemsSpinnerActPort)
+        val adapterPortDeviceAccounting = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemPortDeviceAccounting)
+        val adapterSelectSpeed = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemSelectSpeed)
+        val adapterSelectParity = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemSelectParity)
+        val adapterSelectStopBit = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemSelectStopBit)
+        val adapterSelectBitData = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, itemSelectBitData)
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        adapterActPort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterPortDeviceAccounting.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
+        adapterSelectSpeed.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
+        adapterSelectParity.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
+        adapterSelectStopBit.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
+        adapterSelectBitData.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
+
+        binding.spinnerSelectActivPort.adapter = adapterActPort
+        binding.spinnerServer.adapter = adapter
+        binding.spinnerSelectPort1MeteringDevice.adapter = adapterPortDeviceAccounting
+        binding.spinnerSelectPort2MeteringDevice.adapter = adapterPortDeviceAccounting
+        binding.spinnerSpeed.adapter = adapterSelectSpeed
+        binding.spinnerSpeedPort2.adapter = adapterSelectSpeed
+        binding.spinnerSelectParityPort1.adapter = adapterSelectParity
+        binding.spinnerSelectParityPort2.adapter = adapterSelectParity
+        binding.spinnerSelectStopBitPort1.adapter = adapterSelectStopBit
+        binding.spinnerSelectStopBitPort2.adapter = adapterSelectStopBit
+        binding.spinnerBitDataPort1.adapter = adapterSelectBitData
+        binding.spinnerBitDataPort2.adapter = adapterSelectBitData
     }
 
     private fun onClickReadSettingsDevice(view: View) {
@@ -72,9 +156,7 @@ class M32Fragment : Fragment(), UsbFragment {
     private fun onClickWriteSettingsDevice(view: View) {
         val context: Context = requireContext()
 
-        if (context is MainActivity) {
-            context.showTimerDialog(this, true)
-        }
+        writeSettingStart()
     }
 
 
@@ -107,22 +189,24 @@ class M32Fragment : Fragment(), UsbFragment {
         binding.inputTimeoutConnection.setText(settingMap[getString(R.string.commandGetConnectionTimeout)])
 
         // установка переключетелей
-        if (settingMap[getString(R.string.commandGetSmsPin)]?.
-            contains(getString(R.string.disabled)) == true) {
-            binding.switchPinCodeSmsCommand.isChecked = false
-        } else {
-            binding.switchPinCodeSmsCommand.isChecked = true
-
-            binding.inputPinCodeSmsCard.setText(settingMap[getString(R.string.commandGetSmsPin)])
-        }
-
         if (settingMap[getString(R.string.commandGetSimPin)]?.
-            contains(getString(R.string.disabled)) == true) {
+            contains(getString(R.string.disabled)) == true){
             binding.switchPinCodeSmsCard.isChecked = false
+
+            binding.inputPinCodeSmsCard.setText("")
         } else {
             binding.switchPinCodeSmsCard.isChecked = true
 
-            binding.inputPinCodeCommand.setText(settingMap[getString(R.string.commandGetSimPin)])
+        }
+
+        if (settingMap[getString(R.string.commandGetSmsPin)]?.
+            contains(getString(R.string.disabled)) == true) {
+            binding.switchPinCodeSmsCommand.isChecked = false
+
+            binding.inputPinCodeCommand.setText("")
+        } else {
+            binding.switchPinCodeSmsCommand.isChecked = true
+
         }
 
         // работа со spiner (ражим работы)
@@ -144,9 +228,90 @@ class M32Fragment : Fragment(), UsbFragment {
 
 
         try {
+            var activPort: Int = 0
             settingMap[getString(R.string.commandGetActivePort)]?.let {
-                binding.spinnerSelectActivPort.setSelection(it.trim().toInt()-1)
+                activPort = it.trim().toInt()-1
+                binding.spinnerSelectActivPort.setSelection(activPort)
             }
+
+            if (activPort == 0) {
+
+                // отоюражения настроек порта 1-------------------------------------------------------------
+                val port1Config = settingMap[getString(R.string.commandGetPort1Config)]?.split(",")
+
+                // скорость -----------------------------------------
+                val adapterSpeed = binding.spinnerSpeed.adapter as ArrayAdapter<String>
+                val indexSpeed = adapterSpeed.getPosition(port1Config?.get(0))
+                if (indexSpeed != -1) {
+                    binding.spinnerSpeed.setSelection(indexSpeed)
+                }
+
+                // количество бит -----------------------------------------
+                val adapterBitData = binding.spinnerBitDataPort1.adapter as ArrayAdapter<String>
+                val indexBitData = adapterBitData.getPosition(port1Config?.get(1))
+                if (indexBitData != -1) {
+                    binding.spinnerSelectStopBitPort1.setSelection(indexBitData)
+                }
+
+                // четность -----------------------------------------
+                if (port1Config?.get(2) == "N") {
+                    binding.spinnerSelectParityPort1.setSelection(0)
+                } else if (port1Config?.get(2) == "O") {
+                    binding.spinnerSelectParityPort1.setSelection(1)
+                } else {
+                    binding.spinnerSelectParityPort1.setSelection(2)
+                }
+
+                // стоп биты---------------------------------------------------
+                val adapterStopBit = binding.spinnerSelectStopBitPort1.adapter as ArrayAdapter<String>
+                val indexStopBit = adapterStopBit.getPosition(port1Config?.get(3))
+                if (indexBitData != -1) {
+                    binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
+                }
+
+                binding.port1DisActivFon.visibility = View.GONE
+                binding.port2DisActivFon.visibility = View.VISIBLE
+
+            } else {
+
+
+                // отоюражения настроек порта 2-------------------------------------------------------------
+                val port2Config = settingMap[getString(R.string.commandGetPort2Config)]?.split(",")
+
+                // скорость -----------------------------------------
+                val adapterSpeed2 = binding.spinnerSpeedPort2.adapter as ArrayAdapter<String>
+                val indexSpeed2 = adapterSpeed2.getPosition(port2Config?.get(0))
+                if (indexSpeed2 != -1) {
+                    binding.spinnerSpeedPort2.setSelection(indexSpeed2)
+                }
+
+                // количество бит -----------------------------------------
+                val adapterBitData2 = binding.spinnerBitDataPort2.adapter as ArrayAdapter<String>
+                val indexBitData2 = adapterBitData2.getPosition(port2Config?.get(1))
+                if (indexBitData2 != -1) {
+                    binding.spinnerSelectStopBitPort2.setSelection(indexBitData2)
+                }
+
+                // четность -----------------------------------------
+                if (port2Config?.get(2) == "N") {
+                    binding.spinnerSelectParityPort2.setSelection(0)
+                } else if (port2Config?.get(2) == "O") {
+                    binding.spinnerSelectParityPort2.setSelection(1)
+                } else {
+                    binding.spinnerSelectParityPort2.setSelection(2)
+                }
+
+                // стоп биты---------------------------------------------------
+                val adapterStopBit2 = binding.spinnerSelectStopBitPort2.adapter as ArrayAdapter<String>
+                val indexStopBit2 = adapterStopBit2.getPosition(port2Config?.get(3))
+                if (indexBitData2 != -1) {
+                    binding.spinnerSelectStopBitPort2.setSelection(indexStopBit2)
+                }
+
+                binding.port1DisActivFon.visibility = View.VISIBLE
+                binding.port2DisActivFon.visibility = View.GONE
+            }
+
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadActPortDevice))
         }
@@ -166,7 +331,9 @@ class M32Fragment : Fragment(), UsbFragment {
             getString(R.string.commandGetConnectionTimeout),
             getString(R.string.commandGetSmsPin),
             getString(R.string.commandGetSimPin),
-            getString(R.string.commandGetActivePort)
+            getString(R.string.commandGetActivePort),
+            getString(R.string.commandGetPort1Config),
+            getString(R.string.commandGetPort2Config)
         )
 
         val usbCommandsProtocol = UsbCommandsProtocol()
@@ -196,6 +363,23 @@ class M32Fragment : Fragment(), UsbFragment {
             return
         }
 
+        var parityPort1 = "N"
+        when(binding.spinnerSelectParityPort1.selectedItemPosition) {
+            0 -> parityPort1  = "N"
+            1 -> parityPort1  = "E"
+            2 -> parityPort1  = "O"
+        }
+
+        var parityPort2 = "N"
+        when(binding.spinnerSelectParityPort2.selectedItemPosition) {
+            0 -> parityPort2  = "N"
+            1 -> parityPort2  = "E"
+            2 -> parityPort2  = "O"
+        }
+
+
+
+
         val dataMap: MutableMap<String, String> = mutableMapOf(
             getString(R.string.commandSetDeviceMode) to binding.spinnerServer.selectedItemPosition.toString(),
             getString(R.string.commandSetApn) to binding.inputAPN.text.toString(),
@@ -205,15 +389,42 @@ class M32Fragment : Fragment(), UsbFragment {
             getString(R.string.commandSetPassword) to binding.inputPasswordGPRS.text.toString(),
             getString(R.string.commandSetKeepAlive) to binding.inputTimeOutKeeplive.text.toString(),
             getString(R.string.commandSetConnectionTimeout) to binding.inputTimeoutConnection.text.toString(),
-            getString(R.string.commandSetActivePort) to binding.spinnerSelectActivPort.selectedItem.toString()
+            getString(R.string.commandSetActivePort) to binding.spinnerSelectActivPort.selectedItem.toString(),
         )
-        if (binding.switchPinCodeSmsCard.isChecked) {
-            dataMap[getString(R.string.commandSetSimPin)] =
-                binding.inputPinCodeCommand.text.toString()
+
+        // смотря какой активный порт такие данные и будут аписываться
+        if (binding.spinnerSelectActivPort.selectedItem.toString() == "1") {
+            dataMap[getString(R.string.commandSetPort1Config)] =
+                    binding.spinnerSpeed.selectedItem.toString() + "," +
+                    binding.spinnerBitDataPort1.selectedItem.toString() + "," +
+                    parityPort1  + "," +
+                    binding.spinnerSelectStopBitPort1.selectedItem.toString() +
+                    ",200,2000"
+        } else {
+            dataMap[getString(R.string.commandSetPort2Config)] =
+                    binding.spinnerSpeedPort2.selectedItem.toString() + "," +
+                    binding.spinnerBitDataPort2.selectedItem.toString() + "," +
+                    parityPort2  + "," +
+                    binding.spinnerSelectStopBitPort2.selectedItem.toString() +
+                    ",200,2000"
         }
+
         if (binding.switchPinCodeSmsCommand.isChecked) {
-            dataMap[getString(R.string.commandSetSmsPin)] =
-                binding.inputPinCodeSmsCard.text.toString()
+            if (binding.inputPinCodeCommand.text?.isNotEmpty() != false) {
+                dataMap[getString(R.string.commandSetSmsPin)] =
+                    binding.inputPinCodeCommand.text.toString()
+            }
+        } else {
+            dataMap[getString(R.string.commandSetSmsPin)] = "0000"
+        }
+
+        if (binding.switchPinCodeSmsCard.isChecked) {
+            if (binding.inputPinCodeSmsCard.text?.isNotEmpty() != false) {
+                dataMap[getString(R.string.commandSetSimPin)] =
+                    binding.inputPinCodeSmsCard.text.toString()
+            }
+        } else {
+            dataMap[getString(R.string.commandSetSimPin)] = "0000"
         }
 
         val usbCommandsProtocol = UsbCommandsProtocol()
