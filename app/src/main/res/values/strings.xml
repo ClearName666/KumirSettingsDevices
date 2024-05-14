@@ -13,6 +13,7 @@
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохренены!</string>
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
+    <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
     
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>

@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.databinding.FragmentM32Binding
+import com.example.kumirsettingupdevices.settings.DeviceAccountingPrisets
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
@@ -28,6 +30,139 @@ class M32Fragment : Fragment(), UsbFragment {
 
         createAdapters()
 
+        // изменения блакировки изменения настроек портов
+        binding.spinnerSelectActivPort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                when(position) {
+                    0 -> {
+                        binding.port1DisActivFon.visibility = View.GONE
+                        binding.port2DisActivFon.visibility = View.VISIBLE
+                    }
+                    1 -> {
+                        binding.port1DisActivFon.visibility = View.VISIBLE
+                        binding.port2DisActivFon.visibility = View.GONE
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Действия, если ничего не выбрано
+                binding.port1DisActivFon.visibility = View.VISIBLE
+                binding.port2DisActivFon.visibility = View.VISIBLE
+            }
+        }
+
+        // выбор присетов устройства учета порт 1
+        binding.spinnerSelectPort1MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                when(position) {
+                    1 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT941Speed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT941Parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT941StopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT941BitData)
+                    }
+                    2 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT944Speed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT944Parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT944StopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT944BitData)
+                    }
+                    3 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.TSP025Speed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP025Parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP025StopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP025BitData)
+                    }
+                    4 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.PSCH4TMV23Speed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23Parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23StopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23BitData)
+                    }
+                    5 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.TSP027Speed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP027Parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP027StopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP027BitData)
+                    }
+                    6 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.PowerCE102MSpeed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PowerCE102MParity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PowerCE102MStopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PowerCE102MBitData)
+                    }
+                    7 -> {
+                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.Mercury206Speed)
+                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.Mercury206Parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.Mercury206StopBit)
+                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.Mercury206BitData)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        // выбор присетов устройства учета порт 2
+        binding.spinnerSelectPort2MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                when(position) {
+                    1 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.SPT941Speed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.SPT941Parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.SPT941StopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.SPT941BitData)
+                    }
+                    2 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.SPT944Speed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.SPT944Parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.SPT944StopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.SPT944BitData)
+                    }
+                    3 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.TSP025Speed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.TSP025Parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.TSP025StopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.TSP025BitData)
+                    }
+                    4 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23Speed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23Parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23StopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23BitData)
+                    }
+                    5 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.TSP027Speed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.TSP027Parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.TSP027StopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.TSP027BitData)
+                    }
+                    6 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.PowerCE102MSpeed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.PowerCE102MParity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.PowerCE102MStopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.PowerCE102MBitData)
+                    }
+                    7 -> {
+                        binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.Mercury206Speed)
+                        binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.Mercury206Parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.Mercury206StopBit)
+                        binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.Mercury206BitData)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+
+
+        // назначение кликов
         binding.port1DisActivFon.setOnClickListener {
             showAlertDialog(getString(R.string.nonPortEdit))
         }
@@ -37,12 +172,15 @@ class M32Fragment : Fragment(), UsbFragment {
 
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
-        }
 
+            // только после чтения
+            binding.imageDownLoad.setOnClickListener {
+                onClickWriteSettingsDevice(it)
+            }
+        }
         binding.imageDownLoad.setOnClickListener {
-            onClickWriteSettingsDevice(it)
+            showAlertDialog(getString(R.string.nonWriteSetting))
         }
-
         return binding.root
     }
 
@@ -154,8 +292,6 @@ class M32Fragment : Fragment(), UsbFragment {
     }
 
     private fun onClickWriteSettingsDevice(view: View) {
-        val context: Context = requireContext()
-
         writeSettingStart()
     }
 
