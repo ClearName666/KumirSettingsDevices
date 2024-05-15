@@ -15,12 +15,13 @@
 
 
         <TextView
-            android:id="@+id/textCurentDataPrint"
+            android:id="@+id/textNameDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text=""
             android:textColor="@color/textColor"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_container_main_content"
             app:layout_constraintEnd_toStartOf="@+id/imageButtonUsbComs"
             app:layout_constraintStart_toEndOf="@+id/imageButtonSettings"
             app:layout_constraintTop_toTopOf="parent" />
@@ -202,18 +203,6 @@
                 <!-- Основной контент -->
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
-
-        <TextView
-            android:id="@+id/textDeviceName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/textColor"
-            android:textSize="4dp"
-            app:layout_constraintEnd_toEndOf="@+id/imageButtonUsbComs"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/imageButtonUsbComs"
-            app:layout_constraintTop_toBottomOf="@+id/imageButtonUsbComs" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

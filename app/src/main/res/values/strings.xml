@@ -11,8 +11,10 @@
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
-    <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохренены!</string>
+    <string name="notDeviceType">Вы перепутали устройство у вас - </string>
+    <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
+    <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
     
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
@@ -51,7 +53,7 @@
     <string name="read">Чтение</string>
     <string name="write">Запись</string>
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
-    <string name="restartDevicePlease">Перезагрузите устройство!!! Ожидание перезагрузки! 00.00.</string>
+    <string name="restartDevicePlease">Перезагрузите устройство!!! Ожидание перезагрузки! 00.00.30</string>
 
 
     <string name="disabled">DISABLED</string>

@@ -83,6 +83,7 @@
             android:id="@+id/textRead"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
             android:text="@string/read"
             android:textColor="@color/textColor"
@@ -96,6 +97,7 @@
             android:id="@+id/textDownLoad"
             android:layout_width="57dp"
             android:layout_height="14dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="@string/write"
             android:textColor="@color/textColor"
@@ -106,28 +108,15 @@
             app:layout_constraintTop_toBottomOf="@+id/imageDownLoad" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/textNameTypeDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/m32lite"
-        android:textColor="@color/textColor"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
-
     <ScrollView
         android:id="@+id/ScrollSetting"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toTopOf="@+id/futerSettingsDevice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textNameTypeDevice">
+        app:layout_constraintTop_toBottomOf="@+id/line2Set">
 
         <LinearLayout
             android:id="@+id/LineLayout"
@@ -254,11 +243,11 @@
                     android:id="@+id/textSettingPorts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
                     android:text="@string/settingInterfTitle"
                     android:textColor="@color/textColor"
-                    android:textSize="12sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/inputTimeoutConnectionLayout" />
 
@@ -504,13 +493,15 @@
                     android:id="@+id/textNetSettings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="1dp"
                     android:layout_marginBottom="2dp"
                     android:text="@string/NetworkSettings"
                     android:textColor="@color/textColor"
-                    android:textSize="12sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@+id/lineSettingsNet"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lineSettingsNet"
@@ -543,18 +534,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textServer" />
 
-                <TextView
-                    android:id="@+id/textPort1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:text="Порт"
-                    android:textColor="@color/textColor"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textSelectMeteringDevice"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/DisActivPort1SetiingsPriset"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/fonDarkMenu"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort1"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textSelectMeteringDevice"
-                    app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textSpeedPort">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

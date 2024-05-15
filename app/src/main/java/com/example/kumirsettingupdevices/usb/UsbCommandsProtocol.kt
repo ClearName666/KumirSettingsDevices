@@ -132,6 +132,11 @@ class UsbCommandsProtocol {
                 }
 
                 if (!flagError) {
+
+                    // сохранение данных AT$LOAD
+                    /*context.usb.writeDevice(context.getString(R.string.commandLoadSettings), false)
+                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)*/
+
                     // сохранение данных AT$SAVE
                     context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
@@ -148,7 +153,7 @@ class UsbCommandsProtocol {
 
 
     private fun formatDataCommandsNormolize(data: String): String {
-        return data.substringAfter(": ").substringBefore("\n")
+        return data.substringAfter(": ").substringBefore("\n").dropLast(1)
     }
 
 }

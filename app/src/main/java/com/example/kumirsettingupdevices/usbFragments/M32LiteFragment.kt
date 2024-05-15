@@ -1,6 +1,7 @@
 package com.example.kumirsettingupdevices.usbFragments
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
@@ -20,6 +23,8 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 class M32LiteFragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentM32LiteBinding
+
+    private var NAME_TYPE_DEVICE = "KUMIR-M32 Lite READY"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +44,17 @@ class M32LiteFragment : Fragment(), UsbFragment {
             ) {
 
                 when (position) {
+                    0 -> {
+                        // в случае если расширенныйе настроки то можно менять их
+                        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+                    }
                     1 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT941Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT941Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT941StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT941BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
                     2 -> {
@@ -51,6 +62,8 @@ class M32LiteFragment : Fragment(), UsbFragment {
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT944Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT944StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT944BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
                     3 -> {
@@ -58,6 +71,8 @@ class M32LiteFragment : Fragment(), UsbFragment {
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP025Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP025StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP025BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
                     4 -> {
@@ -65,6 +80,8 @@ class M32LiteFragment : Fragment(), UsbFragment {
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
                     5 -> {
@@ -72,6 +89,8 @@ class M32LiteFragment : Fragment(), UsbFragment {
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP027Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP027StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP027BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
                     6 -> {
@@ -79,6 +98,8 @@ class M32LiteFragment : Fragment(), UsbFragment {
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PowerCE102MParity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PowerCE102MStopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PowerCE102MBitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
                     7 -> {
@@ -86,6 +107,8 @@ class M32LiteFragment : Fragment(), UsbFragment {
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.Mercury206Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.Mercury206StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.Mercury206BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                 }
             }
@@ -95,8 +118,43 @@ class M32LiteFragment : Fragment(), UsbFragment {
             }
         }
 
+        // вывод названия типа устройства
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.printDeviceTypeName(getString(R.string.m32lite))
+        }
+
+
+        // настройки кликов
+        binding.DisActivPort1SetiingsPriset.setOnClickListener {
+            showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
+        }
+
+        //------------------------------------------------------------------------------------------
+        // покраска кнопки записи в серый
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+
+        // Обертываем наш Drawable для совместимости и изменяем цвет
+        drawable?.let {
+            val wrappedDrawable = DrawableCompat.wrap(it)
+
+            DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+
+            binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+        }
+        //------------------------------------------------------------------------------------------
+
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
+
+            // Обертываем наш Drawable для совместимости и изменяем цвет
+            drawable?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+
+                DrawableCompat.setTint(wrappedDrawable, Color.RED)
+
+                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+            }
 
             // только после чтения
             binding.imageDownLoad.setOnClickListener {
@@ -202,7 +260,7 @@ class M32LiteFragment : Fragment(), UsbFragment {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
-            context.showTimerDialog(this)
+            context.showTimerDialog(this, NAME_TYPE_DEVICE)
         }
     }
 
@@ -222,6 +280,12 @@ class M32LiteFragment : Fragment(), UsbFragment {
 
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        // сброс присетов настроек
+        binding.spinnerSelectPort1MeteringDevice.setSelection(0)
+
+        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+
         // верийный номер и версия прошибки
         val serNum: String = getString(R.string.serinerNumber) +
                 "\n" + settingMap[getString(R.string.commandGetSerialNum)]

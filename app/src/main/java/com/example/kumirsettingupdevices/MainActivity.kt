@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     var curentData: String = ""
 
     companion object {
-        const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 30 // секудны
+        const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
+        const val NORM_LENGHT_DATA_START = 5
     }
 
 
@@ -109,6 +110,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             val dialog = builder.create()
             dialog.show()
         }
+    }
+
+    // вункция для вывода имени устроства
+    fun printDeviceTypeName(name: String) {
+        binding.textNameDevice.text = name
     }
 
     // клик конпки настроек
@@ -266,7 +272,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
 
-    fun showTimerDialog(usbFragment: UsbFragment, flagWrite: Boolean = false) {
+    fun showTimerDialog(usbFragment: UsbFragment, nameTypeDevice: String, flagWrite: Boolean = false) {
 
         // очищение данных
         curentData = ""
@@ -283,23 +289,33 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val updateRunnable = object : Runnable {
             override fun run() {
 
-                val timerText: String = getString(R.string.restartDevicePlease) +
+                val timerText: String = getString(R.string.restartDevicePlease).dropLast(2) +
                         timeLeft.toString()
                 timerTextView.text = timerText
 
                 if (timeLeft > 0) {
                     timeLeft--
-                    if (curentData.isNotEmpty()) {
 
-                        if (flagWrite) {
-                            runOnUiThread {
-                                usbFragment.writeSettingStart()
+                    if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
+
+                        // проверка на соответсвие девайса
+                        if (curentData.contains(nameTypeDevice)) {
+                            if (flagWrite) {
+                                runOnUiThread {
+                                    usbFragment.writeSettingStart()
+                                }
+                            } else {
+                                runOnUiThread {
+                                    usbFragment.readSettingStart()
+                                }
                             }
                         } else {
                             runOnUiThread {
-                                usbFragment.readSettingStart()
+                                showAlertDialog(getString(R.string.notDeviceType) +
+                                        "<" + curentData + ">")
                             }
                         }
+
 
                         timeLeft = 0
                         alertDialog.dismiss()
@@ -351,7 +367,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
 
     override fun showDeviceName(deviceName: String) {
-        binding.textDeviceName.text = deviceName
 
         // изменение цвета если есть подлючение
         val drawable = ContextCompat.getDrawable(this, R.drawable.usb)
@@ -381,7 +396,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun printData(data: String) {
-        binding.textCurentDataPrint.text = data
+
         curentData += data
 
         // прокурчивание вниз
@@ -396,7 +411,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun disconnected() {
-        binding.textCurentDataPrint.text = ""
         val mainFragment = MainFragment()
 
         val fragmentManager = supportFragmentManager
@@ -412,6 +426,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // закрытие диалога с загрузкой
         openCloseLoadingView(false)
+
+        // сброс имени типа устроства
+        printDeviceTypeName("")
     }
 
     // подключения и регистрация широковещятельного приемника

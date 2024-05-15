@@ -1,6 +1,7 @@
 package com.example.kumirsettingupdevices.usbFragments
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
@@ -21,7 +24,7 @@ class M32Fragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentM32Binding
 
-
+    private var NAME_TYPE_DEVICE = "KUMIR-M32 READY"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,25 +33,59 @@ class M32Fragment : Fragment(), UsbFragment {
 
         createAdapters()
 
-        // изменения блакировки изменения настроек портов
-        binding.spinnerSelectActivPort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        // мониторинг изменений режима работы
+        binding.spinnerServer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                when(position) {
-                    0 -> {
-                        binding.port1DisActivFon.visibility = View.GONE
-                        binding.port2DisActivFon.visibility = View.VISIBLE
+
+                // если режим кумир нэт
+                if (position == 0) {
+                    when(binding.spinnerSelectActivPort.selectedItemPosition) {
+                        0 -> {
+                            binding.port1DisActivFon.visibility = View.GONE
+                            binding.port2DisActivFon.visibility = View.VISIBLE
+                        }
+                        1 -> {
+                            binding.port1DisActivFon.visibility = View.VISIBLE
+                            binding.port2DisActivFon.visibility = View.GONE
+                        }
                     }
-                    1 -> {
-                        binding.port1DisActivFon.visibility = View.VISIBLE
-                        binding.port2DisActivFon.visibility = View.GONE
-                    }
+                } else {
+                    binding.port1DisActivFon.visibility = View.GONE
+                    binding.port2DisActivFon.visibility = View.GONE
                 }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Действия, если ничего не выбрано
-                binding.port1DisActivFon.visibility = View.VISIBLE
-                binding.port2DisActivFon.visibility = View.VISIBLE
+
+            }
+        }
+
+        // изменения блакировки изменения настроек портов
+        binding.spinnerSelectActivPort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                // если режим кумир нет
+                if (binding.spinnerServer.selectedItemPosition == 0) {
+                    when(position) {
+                        0 -> {
+                            binding.port1DisActivFon.visibility = View.GONE
+                            binding.port2DisActivFon.visibility = View.VISIBLE
+                        }
+                        1 -> {
+                            binding.port1DisActivFon.visibility = View.VISIBLE
+                            binding.port2DisActivFon.visibility = View.GONE
+                        }
+                    }
+                } else {
+                    binding.port1DisActivFon.visibility = View.GONE
+                    binding.port2DisActivFon.visibility = View.GONE
+                }
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
             }
         }
 
@@ -57,47 +94,65 @@ class M32Fragment : Fragment(), UsbFragment {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
                 when(position) {
+                    0 -> {
+                        // в случае если расширенныйе настроки то можно менять их
+                        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+                    }
                     1 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT941Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT941Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT941StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT941BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                     2 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT944Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT944Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT944StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT944BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                     3 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.TSP025Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP025Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP025StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP025BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                     4 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.PSCH4TMV23Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                     5 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.TSP027Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP027Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP027StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP027BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                     6 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.PowerCE102MSpeed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PowerCE102MParity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PowerCE102MStopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PowerCE102MBitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                     7 -> {
                         binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.Mercury206Speed)
                         binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.Mercury206Parity)
                         binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.Mercury206StopBit)
                         binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.Mercury206BitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
                 }
             }
@@ -111,47 +166,65 @@ class M32Fragment : Fragment(), UsbFragment {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
                 when(position) {
+                    0 -> {
+                        // в случае если расширенныйе настроки то можно менять их
+                        binding.DisActivPort2SetiingsPriset.visibility = View.GONE
+                    }
                     1 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.SPT941Speed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.SPT941Parity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.SPT941StopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.SPT941BitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                     2 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.SPT944Speed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.SPT944Parity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.SPT944StopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.SPT944BitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                     3 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.TSP025Speed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.TSP025Parity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.TSP025StopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.TSP025BitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                     4 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23Speed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23Parity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23StopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.PSCH4TMV23BitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                     5 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.TSP027Speed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.TSP027Parity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.TSP027StopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.TSP027BitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                     6 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.PowerCE102MSpeed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.PowerCE102MParity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.PowerCE102MStopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.PowerCE102MBitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                     7 -> {
                         binding.spinnerSpeedPort2.setSelection(DeviceAccountingPrisets.Mercury206Speed)
                         binding.spinnerSelectParityPort2.setSelection(DeviceAccountingPrisets.Mercury206Parity)
                         binding.spinnerSelectStopBitPort2.setSelection(DeviceAccountingPrisets.Mercury206StopBit)
                         binding.spinnerBitDataPort2.setSelection(DeviceAccountingPrisets.Mercury206BitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
                     }
                 }
             }
@@ -160,7 +233,27 @@ class M32Fragment : Fragment(), UsbFragment {
             }
         }
 
+        // вывод названия типа устройства
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.printDeviceTypeName(getString(R.string.m32))
+        }
 
+
+
+        //------------------------------------------------------------------------------------------
+        // покраска кнопки записи в серый
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+
+        // Обертываем наш Drawable для совместимости и изменяем цвет
+        drawable?.let {
+            val wrappedDrawable = DrawableCompat.wrap(it)
+
+            DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+
+            binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+        }
+        //------------------------------------------------------------------------------------------
 
         // назначение кликов
         binding.port1DisActivFon.setOnClickListener {
@@ -170,8 +263,25 @@ class M32Fragment : Fragment(), UsbFragment {
             showAlertDialog(getString(R.string.nonPortEdit))
         }
 
+        binding.DisActivPort1SetiingsPriset.setOnClickListener {
+            showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
+        }
+        binding.DisActivPort2SetiingsPriset.setOnClickListener {
+            showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
+        }
+
+
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
+
+            // Обертываем наш Drawable для совместимости и изменяем цвет
+            drawable?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+
+                DrawableCompat.setTint(wrappedDrawable, Color.RED)
+
+                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+            }
 
             // только после чтения
             binding.imageDownLoad.setOnClickListener {
@@ -287,7 +397,7 @@ class M32Fragment : Fragment(), UsbFragment {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
-            context.showTimerDialog(this)
+            context.showTimerDialog(this, NAME_TYPE_DEVICE)
         }
     }
 
@@ -306,6 +416,13 @@ class M32Fragment : Fragment(), UsbFragment {
 
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        // сброс присетов настроек
+        binding.spinnerSelectPort1MeteringDevice.setSelection(0)
+        binding.spinnerSelectPort2MeteringDevice.setSelection(0)
+
+        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+        binding.DisActivPort2SetiingsPriset.visibility = View.GONE
 
         // верийный номер и версия прошибки
         val serNum: String = getString(R.string.serinerNumber) +
@@ -370,7 +487,10 @@ class M32Fragment : Fragment(), UsbFragment {
                 binding.spinnerSelectActivPort.setSelection(activPort)
             }
 
-            if (activPort == 0) {
+            binding.port1DisActivFon.visibility = View.VISIBLE
+            binding.port2DisActivFon.visibility = View.VISIBLE
+
+            if (activPort == 0 || binding.spinnerServer.selectedItemPosition != 0) {
 
                 // отоюражения настроек порта 1-------------------------------------------------------------
                 val port1Config = settingMap[getString(R.string.commandGetPort1Config)]?.split(",")
@@ -406,9 +526,9 @@ class M32Fragment : Fragment(), UsbFragment {
                 }
 
                 binding.port1DisActivFon.visibility = View.GONE
-                binding.port2DisActivFon.visibility = View.VISIBLE
 
-            } else {
+            }
+            if (activPort == 1  || binding.spinnerServer.selectedItemPosition != 0){
 
 
                 // отоюражения настроек порта 2-------------------------------------------------------------
@@ -444,7 +564,6 @@ class M32Fragment : Fragment(), UsbFragment {
                     binding.spinnerSelectStopBitPort2.setSelection(indexStopBit2)
                 }
 
-                binding.port1DisActivFon.visibility = View.VISIBLE
                 binding.port2DisActivFon.visibility = View.GONE
             }
 
@@ -529,14 +648,17 @@ class M32Fragment : Fragment(), UsbFragment {
         )
 
         // смотря какой активный порт такие данные и будут аписываться
-        if (binding.spinnerSelectActivPort.selectedItem.toString() == "1") {
+        if (binding.spinnerSelectActivPort.selectedItem.toString() == "1" ||
+            binding.spinnerServer.selectedItemPosition != 0) {
             dataMap[getString(R.string.commandSetPort1Config)] =
                     binding.spinnerSpeed.selectedItem.toString() + "," +
                     binding.spinnerBitDataPort1.selectedItem.toString() + "," +
                     parityPort1  + "," +
                     binding.spinnerSelectStopBitPort1.selectedItem.toString() +
                     ",200,2000"
-        } else {
+        }
+        if (binding.spinnerSelectActivPort.selectedItem.toString() == "2" ||
+            binding.spinnerServer.selectedItemPosition != 0) {
             dataMap[getString(R.string.commandSetPort2Config)] =
                     binding.spinnerSpeedPort2.selectedItem.toString() + "," +
                     binding.spinnerBitDataPort2.selectedItem.toString() + "," +
