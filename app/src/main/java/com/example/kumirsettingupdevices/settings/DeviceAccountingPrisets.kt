@@ -99,6 +99,12 @@ class DeviceAccountingPrisets {
         val SPT961StopBit = 0 // 1
         val SPT961BitData = 0 // 8
 
+        // ------------------KT7Abacan-----------------
+        val KT7AbacanSpeed = 3 // 2400
+        val KT7AbacanParity = 0 // none
+        val KT7AbacanStopBit = 0 // 1
+        val KT7AbacanBitData = 0 // 8
+
         // ------------------MT200DS-----------------
         val MT200DSSpeed = 6 // 19200
         val MT200DSParity = 0 // none
@@ -182,6 +188,12 @@ class DeviceAccountingPrisets {
         val CKM2Parity = 0 // none
         val CKM2StopBit = 0 // 1
         val CKM2BitData = 0 // 8
+
+        // ------------------DYMETIC5102-----------------
+        val DYMETIC5102Speed = 2 // 1200
+        val DYMETIC5102Parity = 0 // none
+        val DYMETIC5102StopBit = 0 // 1
+        val DYMETIC5102BitData = 0 // 8
 
         // ----------TEPLOVACHESLITELTB7------------
         val TEPLOVACHESLITELTB7Speed = 5 // 9600

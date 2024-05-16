@@ -43,73 +43,21 @@ class M32LiteFragment : Fragment(), UsbFragment {
                 id: Long
             ) {
 
-                when (position) {
-                    0 -> {
-                        // в случае если расширенныйе настроки то можно менять их
-                        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
-                    }
-                    1 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT941Speed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT941Parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT941StopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT941BitData)
+                val context: Context = requireContext()
+
+                if (position == 0) {
+                    // в случае если расширенныйе настроки то можно менять их
+                    binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+                } else {
+                    if (context is MainActivity) {
+                        binding.spinnerSpeed.setSelection(context.portsDeviceSetting[position-1].speed)
+                        binding.spinnerSelectParityPort1.setSelection(context.portsDeviceSetting[position-1].parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(context.portsDeviceSetting[position-1].stopBit)
+                        binding.spinnerBitDataPort1.setSelection(context.portsDeviceSetting[position-1].bitData)
 
                         binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
                     }
 
-                    2 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.SPT944Speed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.SPT944Parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.SPT944StopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.SPT944BitData)
-
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
-                    }
-
-                    3 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.TSP025Speed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP025Parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP025StopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP025BitData)
-
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
-                    }
-
-                    4 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.PSCH4TMV23Speed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23Parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23StopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PSCH4TMV23BitData)
-
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
-                    }
-
-                    5 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.TSP027Speed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.TSP027Parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.TSP027StopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.TSP027BitData)
-
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
-                    }
-
-                    6 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.PowerCE102MSpeed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.PowerCE102MParity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.PowerCE102MStopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.PowerCE102MBitData)
-
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
-                    }
-
-                    7 -> {
-                        binding.spinnerSpeed.setSelection(DeviceAccountingPrisets.Mercury206Speed)
-                        binding.spinnerSelectParityPort1.setSelection(DeviceAccountingPrisets.Mercury206Parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(DeviceAccountingPrisets.Mercury206StopBit)
-                        binding.spinnerBitDataPort1.setSelection(DeviceAccountingPrisets.Mercury206BitData)
-
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
-                    }
                 }
             }
 
@@ -190,7 +138,48 @@ class M32LiteFragment : Fragment(), UsbFragment {
             getString(R.string.deviceAccountingPSCH4TMV23),
             getString(R.string.deviceAccountingTSP027),
             getString(R.string.deviceAccountingPowerCE102M),
-            getString(R.string.deviceAccountingMercury206)
+            getString(R.string.deviceAccountingMercury206),
+            getString(R.string.deviceAccountingKM5PM5),
+            getString(R.string.deviceAccountingTEM104),
+            getString(R.string.deviceAccountingTEM106),
+            getString(R.string.deviceAccountingBKT5),
+            getString(R.string.deviceAccountingBKT7),
+            getString(R.string.deviceAccountingTePOCC),
+            getString(R.string.deviceAccountingSPT943),
+            getString(R.string.deviceAccountingSPT961),
+            getString(R.string.deviceAccountingKT7Abacan),
+            getString(R.string.deviceAccountingMT200DS),
+            getString(R.string.deviceAccountingTCP010),
+            getString(R.string.deviceAccountingTCP010M),
+            getString(R.string.deviceAccountingTCP023),
+            getString(R.string.deviceAccountingTCPB024),
+            getString(R.string.deviceAccountingTCP026),
+            getString(R.string.deviceAccountingTCPB03X),
+            getString(R.string.deviceAccountingTCPB042),
+            getString(R.string.deviceAccountingYCPB5XX),
+            getString(R.string.deviceAccountingPCL212),
+            getString(R.string.deviceAccountingSA942M),
+            getString(R.string.deviceAccountingSA943),
+            getString(R.string.deviceAccountingMKTC),
+            getString(R.string.deviceAccountingCKM2),
+            getString(R.string.deviceAccountingDymetic5102),
+            getString(R.string.deviceAccountingTEPLOVACHESLITELTB7),
+            getString(R.string.deviceAccountingELF),
+            getString(R.string.deviceAccountingSTU1),
+            getString(R.string.deviceAccountingTURBOFLOUGFGF),
+            getString(R.string.deviceAccountingEK260),
+            getString(R.string.deviceAccountingEK270),
+            getString(R.string.deviceAccountingBKG2),
+            getString(R.string.deviceAccountingCPG741),
+            getString(R.string.deviceAccountingCPG742),
+            getString(R.string.deviceAccountingTC2015),
+            getString(R.string.deviceAccountingMERCURI230ART5),
+            getString(R.string.deviceAccountingPULSAR2M),
+            getString(R.string.deviceAccountingPULSAR10M),
+            getString(R.string.deviceAccountingKUMIRK21K22),
+            getString(R.string.deviceAccountingIM2300),
+            getString(R.string.deviceAccountingENERGOMERACE303),
+            getString(R.string.deviceAccountingTEM116)
         )
         // адаптер для выбора скорости
         val itemSelectSpeed = listOf(

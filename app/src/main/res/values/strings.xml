@@ -10,6 +10,7 @@
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
+    <string name="notReadRange">Не удалось получить диапазон устройства устройства!</string>
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
     <string name="notDeviceType">Вы перепутали устройство у вас - </string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
@@ -20,6 +21,7 @@
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
     <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
+    <string name="errorPOWER">Значение POWER должно быть в диапазоне от -16 до 14</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
@@ -65,6 +67,16 @@
     <string name="devmodePipeClient">PipeClient</string>
     <string name="devdodePipeServer">PipeServer</string>
 
+    <string name="devmodeROUTER">ROUTER</string>
+    <string name="devmodeCANPROXY">CANPROXY</string>
+    <string name="devmodeRS485">RS485</string>
+    <string name="devmodeMONITOR">MONITOR</string>
+
+
+    <string name="rangeMod1">1) 864 865МГц</string>
+    <string name="rangeMod2">2) 866 868МГц</string>
+    <string name="rangeMod3">3) 868.7 869.2МГц</string>
+
     <string name="deviceAccountingSPT941">СПТ-941</string>
     <string name="deviceAccountingSPT944">СПТ-944</string>
     <string name="deviceAccountingTSP025">Взлет TCP-025</string>
@@ -72,7 +84,55 @@
     <string name="deviceAccountingTSP027">Взлет TCP-027</string>
     <string name="deviceAccountingPowerCE102M">Энергомера CE102M</string>
     <string name="deviceAccountingMercury206">Меркурий 206</string>
+
+    <string name="deviceAccountingKM5PM5">КМ-5 (РМ-5)</string>
+    <string name="deviceAccountingTEM104">ТЭМ-104</string>
+    <string name="deviceAccountingTEM106">ТЭМ-106</string>
+    <string name="deviceAccountingBKT5">ВКТ-5</string>
+    <string name="deviceAccountingBKT7">ВКТ-7</string>
+    <string name="deviceAccountingTePOCC">ТеРОСС</string>
+    <string name="deviceAccountingSPT943">СПТ-943</string>
+    <string name="deviceAccountingSPT961">СПТ-961</string>
+    <string name="deviceAccountingKT7Abacan">7КТ-Абакан</string>
+    <string name="deviceAccountingMT200DS">MT200DS</string>
+    <string name="deviceAccountingTCP010">Взлет ТСР-010</string>
+    <string name="deviceAccountingTCP010M">Взлет ТСР-010M</string>
+    <string name="deviceAccountingTCP023">Взлет ТСР-023</string>
+    <string name="deviceAccountingTCPB024">Взлет ТСРB-024</string>
+    <string name="deviceAccountingTCP026">Взлет ТСР-026</string>
+    <string name="deviceAccountingTCPB03X">Взлет ТСРВ-03Х</string>
+    <string name="deviceAccountingTCPB042">Взлет ТСРВ-042</string>
+    <string name="deviceAccountingYCPB5XX">Взлет УСРВ-5ХХ ц</string>
+    <string name="deviceAccountingPCL212">Взлет РСЛ-212</string>
+    <string name="deviceAccountingSA942M">SA94/2(M)</string>
+    <string name="deviceAccountingSA943">SA94/3</string>
+    <string name="deviceAccountingMKTC">МКТС</string>
+    <string name="deviceAccountingCKM2">СКМ-2</string>
+    <string name="deviceAccountingDymetic5102">Dymetic 5102</string>
+    <string name="deviceAccountingTEPLOVACHESLITELTB7">Тепловычислитель ТВ7</string>
+    <string name="deviceAccountingELF">Эльф</string>
+    <string name="deviceAccountingSTU1">СТУ-1</string>
+    <string name="deviceAccountingTURBOFLOUGFGF">Turbo Flou GFG-F</string>
+    <string name="deviceAccountingEK260">ЕК260</string>
+    <string name="deviceAccountingEK270">ЕК270</string>
+    <string name="deviceAccountingBKG2">ВКГ-2</string>
+    <string name="deviceAccountingCPG741">СПГ-741</string>
+    <string name="deviceAccountingCPG742">СПГ-742</string>
+    <string name="deviceAccountingTC2015">ТС-215</string>
+    <string name="deviceAccountingMERCURI230ART5">Меркурий 230ART</string>
+    <string name="deviceAccountingPULSAR2M">Пульсар 2М</string>
+    <string name="deviceAccountingPULSAR10M">Пульсар 10М</string>
+    <string name="deviceAccountingKUMIRK21K22">"КУМИР" К21/К22</string>
+    <string name="deviceAccountingIM2300">ИМ2300</string>
+    <string name="deviceAccountingENERGOMERACE303">Энергомера СЭ303</string>
+    <string name="deviceAccountingTEM116">ТЭМ-116</string>
+
+
     <string name="deviceAccountingAdvancedSettings">Расширенные настройки</string>
+
+
+    
+
 
     <string name="error">ERROR</string>
     <string name="okSand">OK</string>
@@ -122,6 +182,19 @@
     <string name="commandSaveSettings">AT$SAVE</string>
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
+    
+    <string name="commandGetNetKey">AT$NETKEY?</string>
+    <string name="commandGetPower">AT$POWER?</string>
+    <string name="commandGetRange">AT$BAND?</string>
+    <string name="commandGetMode">AT$MODE?</string>
+
+    <string name="commandSetNetKey">AT$NETKEY=</string>
+    <string name="commandSetPower">AT$POWER=</string>
+    <string name="commandSetRange">AT$BAND=</string>
+    <string name="commandSetMode">AT$MODE=</string>
+
+
+
 
 
     <string name="none">none</string>
@@ -143,7 +216,10 @@
     <string name="speed_115200">115200</string>
 
 
-
+    
+    <string name="rangeTitle">Диапазон</string>
+    <string name="keyNetTitle">Ключ доступа к сети (макс. 60 симв.)</string>
+    <string name="powerCures">Мощность излучения(-16dBm .. 14bBm)</string>
     <string name="NetworkSettings">Настройки сетевого подключения</string>
     <string name="modeWork">Режим работы</string>
     <string name="apnTitle">APN (Имя точки доступа)</string>
