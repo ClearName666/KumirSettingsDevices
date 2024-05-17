@@ -8,14 +8,28 @@ import com.example.kumirsettingupdevices.R
 class UsbCommandsProtocol {
 
     companion object {
-        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
+        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 100
         const val TIMEOUT_START_DEVICE: Long = 1500
+
+        // для поиска скорости
+        private const val SPEED_INDEX_MAX = 9
+        private const val SPEED_INDEX_MIN = 0
+
+        private const val PARITY_INDEX_MAX = 2
+        private const val PARITY_INDEX_MIN = 0
+
+        private const val STOPBIT_INDEX_MAX = 1
+        private const val STOPBIT_INDEX_MIN = 0
+
+        private const val BITDATA_INDEX_MAX = 1
+        private const val BITDATA_INDEX_MIN = 0
     }
 
 
 
     // метод для получения настроек устройства
-    fun readSettingDevice(commands: List<String>, context: Context, usbFragment: UsbFragment) {
+    fun readSettingDevice(commands: List<String>, context: Context,
+                          usbFragment: UsbFragment, speedFind: Boolean = false) {
         val settingData: MutableMap<String, String> = mutableMapOf()
         var flagsSuccess: Boolean = true
         Thread {
@@ -32,6 +46,40 @@ class UsbCommandsProtocol {
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
+
+                // если нужно нати скорость перед использованием то
+                if (speedFind) {
+                    // ищем нужную скорость для общения
+                    outer@ for (bitData in BITDATA_INDEX_MIN..BITDATA_INDEX_MAX) {
+                        for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
+                            for (parity in PARITY_INDEX_MIN..PARITY_INDEX_MAX) {
+                                for (speed in SPEED_INDEX_MIN..SPEED_INDEX_MAX) {
+                                    context.usb.onSelectUumBit(bitData == 0)
+                                    context.usb.onSerialParity(parity)
+                                    context.usb.onSerialStopBits(stopBit)
+                                    context.usb.onSerialSpeed(speed)
+
+                                    // вывод в загрузочное диалог информации
+                                    (context as Activity).runOnUiThread {
+                                        context.printInfoTermAndLoaging(
+                                            speed.toString() + parity.toString() +
+                                            stopBit.toString() + bitData.toString() + "\n", progressUnit)
+                                    }
+
+                                    // отправка тестовой команды
+                                    context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
+
+                                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+
+                                    // если скорость найдена то выходим
+                                    if (context.curentData.contains(context.getString(R.string.okSand))) {
+                                        break@outer
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // перебор всех команд и получение ответов устройства
                 for (command in commands) {
@@ -150,6 +198,8 @@ class UsbCommandsProtocol {
             }
         }.start()
     }
+
+
 
 
     private fun formatDataCommandsNormolize(data: String): String {

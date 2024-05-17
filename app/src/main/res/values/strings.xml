@@ -194,6 +194,13 @@
     <string name="commandSetMode">AT$MODE=</string>
 
 
+    <string name="commandSpeedFind">AT+IPR?</string>
+    <string name="commandGetApnEnforaM31">AT+CGDCONT?</string>
+    <string name="commandGetServerTcpPortEnforaM31">AT$PADDST?</string>
+
+    <string name="commandIDEnforaOrM31">AT+CGSN</string>
+
+
 
 
 
@@ -246,4 +253,9 @@
     <string name="stopDitTitle">Стоп биты</string>
     <string name="parityTitle">Четность</string>
     <string name="port_2Title">Порт 2</string>
+    <string name="chackSignalTitle">Проверка сигнала</string>
+    <string name="communicationOperatorTitle">Оператор мобильной связи: </string>
+    <string name="LevelSignalTitle">Уровень сигнала: </string>
+    <string name="errorsSignalTitle">Ошибки сигнала: </string>
+    <string name="ipAdressTitle">IP-адрес</string>
 </resources>

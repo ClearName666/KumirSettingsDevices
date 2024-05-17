@@ -30,7 +30,7 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usbFragments.A61Fragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
-import com.example.kumirsettingupdevices.usbFragments.Enforma1318Fragment
+import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 import com.example.kumirsettingupdevices.usbFragments.K21K23Fragment
 import com.example.kumirsettingupdevices.usbFragments.M31Fragment
 import com.example.kumirsettingupdevices.usbFragments.M32Fragment
@@ -202,7 +202,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     fun onClickEnforma1318(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val enforma1318 = Enforma1318Fragment()
+        val enforma1318 = Enfora1318Fragment()
         createSettingFragment(enforma1318)
     }
     fun onClickM31(view: View) {
@@ -328,10 +328,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
 
-    fun showTimerDialog(usbFragment: UsbFragment, nameTypeDevice: String, flagWrite: Boolean = false) {
+    fun showTimerDialog(usbFragment: UsbFragment, nameTypeDevice: String,
+                        flagWrite: Boolean = false, clearData: Boolean = true) {
 
         // очищение данных
-        curentData = ""
+        if (clearData)
+            curentData = ""
 
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_timer, null)
         val timerTextView = dialogView.findViewById<TextView>(R.id.timer_text)
