@@ -16,6 +16,7 @@
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
+    <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
     
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
@@ -195,10 +196,22 @@
 
 
     <string name="commandSpeedFind">AT+IPR?</string>
-    <string name="commandGetApnEnforaM31">AT+CGDCONT?</string>
-    <string name="commandGetServerTcpPortEnforaM31">AT$PADDST?</string>
 
-    <string name="commandIDEnforaOrM31">AT+CGSN</string>
+    <string name="commandGetSerialNumberEnforaM31">AT+CGSN?</string>
+    <string name="commandGetApnEnforaM31">AT+CGDCONT?</string>
+    <string name="commandGetTcpPortEnforaM31">AT$PADSRC?</string>
+    <string name="commandGetLoginPasswordEnforaM31">AT%CGPPP?</string>
+    <string name="commandServer1EnforaOrM31">AT$PADDST?</string>
+    <string name="commandServer2EnforaOrM31">AT$FRIEND?</string>
+    <string name="commandGetOperatirGSM">AT+COPS?</string>
+    <string name="commandGetLevelSignalAndErrors">AT+CSQ</string>
+
+
+    <!--Деффолтные настроки модемов enfora и M31 -->
+    <string name="deffoltAPN">kumir.dv</string>
+    <string name="deffoltSERVER1">172.27.0.15</string>
+    <string name="deffoltSERVER2">172.27.0.14</string>
+    <string name="deffoltTCPPORT">6502</string>
 
 
 
@@ -254,6 +267,7 @@
     <string name="parityTitle">Четность</string>
     <string name="port_2Title">Порт 2</string>
     <string name="chackSignalTitle">Проверка сигнала</string>
+    <string name="ActivChackSignalTitle">Отключить проверку</string>
     <string name="communicationOperatorTitle">Оператор мобильной связи: </string>
     <string name="LevelSignalTitle">Уровень сигнала: </string>
     <string name="errorsSignalTitle">Ошибки сигнала: </string>

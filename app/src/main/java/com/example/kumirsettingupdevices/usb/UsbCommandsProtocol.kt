@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Context
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 
 class UsbCommandsProtocol {
 
+    var flagWorkChackSignal: Boolean = false
     companion object {
-        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 100
+        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
+        const val WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED: Long = 100
         const val TIMEOUT_START_DEVICE: Long = 1500
 
         // для поиска скорости
@@ -23,6 +26,7 @@ class UsbCommandsProtocol {
 
         private const val BITDATA_INDEX_MAX = 1
         private const val BITDATA_INDEX_MIN = 0
+
     }
 
 
@@ -49,6 +53,8 @@ class UsbCommandsProtocol {
 
                 // если нужно нати скорость перед использованием то
                 if (speedFind) {
+                    flagsSuccess = false
+
                     // ищем нужную скорость для общения
                     outer@ for (bitData in BITDATA_INDEX_MIN..BITDATA_INDEX_MAX) {
                         for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
@@ -69,10 +75,11 @@ class UsbCommandsProtocol {
                                     // отправка тестовой команды
                                     context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
 
-                                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED)
 
                                     // если скорость найдена то выходим
                                     if (context.curentData.contains(context.getString(R.string.okSand))) {
+                                        flagsSuccess = true
                                         break@outer
                                     }
                                 }
@@ -82,13 +89,36 @@ class UsbCommandsProtocol {
                 }
 
                 // перебор всех команд и получение ответов устройства
-                for (command in commands) {
+                outer@ for (command in commands) {
 
                     // очищение прошлых данных
                     context.curentData = ""
 
                     context.usb.writeDevice(command, false)
-                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+
+                    // система получения ответа и ожидание полной отправки данных
+                    var maxCntIter: Int = 10
+                    while (context.curentData.isEmpty()) {
+                        if (maxCntIter == 0) {
+                            flagsSuccess = true
+                            break@outer
+                        }
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        maxCntIter--
+                    }
+
+
+                    var cnt: Int = context.curentData.length
+                    while (context.curentData.isNotEmpty()) {
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        val newCnt = context.curentData.length
+                        if (cnt == newCnt) {
+                            break
+                        } else {
+                            cnt = newCnt
+                        }
+                    }
+
 
                     if (context.curentData.isNotEmpty()) {
                         settingData[command] = formatDataCommandsNormolize(context.curentData)
@@ -145,7 +175,7 @@ class UsbCommandsProtocol {
                 context.usb.flagAtCommandYesNo = false
 
                 // отправка всех настроек в устройство
-                for ((key, value) in data) {
+                out@for ((key, value) in data) {
 
                     // очищение прошлых данных
                     context.curentData = ""
@@ -153,7 +183,28 @@ class UsbCommandsProtocol {
                     val dataSend: String = key + value
                     context.usb.writeDevice(dataSend, false)
 
-                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                    // система получения ответа и ожидание полной отправки данных
+                    var maxCntIter: Int = 10
+                    while (context.curentData.isEmpty()) {
+                        if (maxCntIter == 0) {
+                            flagError = true
+                            break@out
+                        }
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        maxCntIter--
+                    }
+
+
+                    var cnt: Int = context.curentData.length
+                    while (context.curentData.isNotEmpty()) {
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        val newCnt = context.curentData.length
+                        if (cnt == newCnt) {
+                            break
+                        } else {
+                            cnt = newCnt
+                        }
+                    }
 
                     // проверка принялись ли данные
                     if (context.curentData.isEmpty() ||
@@ -195,6 +246,78 @@ class UsbCommandsProtocol {
 
                 // включение ат команд
                 context.usb.flagAtCommandYesNo = true
+            }
+        }.start()
+    }
+
+    // метод для получения настроек устройства
+    fun readSignalEnfora(command: String, context: Context, usbFragment: UsbFragment) {
+        var flagsSuccess: Boolean = true
+        flagWorkChackSignal = true
+        Thread {
+            if (context is MainActivity) {
+                // отключение ат команд
+                context.usb.flagAtCommandYesNo = false
+
+                out@while (flagWorkChackSignal) {
+                    // очищение прошлых данных
+                    context.curentData = ""
+
+                    context.usb.writeDevice(command, false)
+
+                    // система получения ответа и ожидание полной отправки данных
+                    var maxCntIter: Int = 10
+                    while (context.curentData.isEmpty()) {
+                        if (maxCntIter == 0) {
+                            flagsSuccess = true
+                            break@out
+                        }
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        maxCntIter--
+                    }
+
+
+                    var cnt: Int = context.curentData.length
+                    while (context.curentData.isNotEmpty()) {
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        val newCnt = context.curentData.length
+                        if (cnt == newCnt) {
+                            break
+                        } else {
+                            cnt = newCnt
+                        }
+                    }
+
+                    // нормаизируем данняе и разделяем
+                    val data: List<String> = formatDataCommandsNormolize(context.curentData).split(",")
+
+                    // после получения данных отправляем их на отображение
+                    (context as Activity).runOnUiThread {
+                        if (usbFragment is Enfora1318Fragment) {
+                            try {
+                                usbFragment.onPrintSignal(data[0], data[1])
+                            } catch (e: Exception) {
+                                flagsSuccess = true
+                            }
+                        }
+                    }
+                }
+
+
+                // подкл ат команд
+                context.usb.flagAtCommandYesNo = true
+
+                if (!flagsSuccess)  {
+                    (context as Activity).runOnUiThread {
+                        context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
+
+                        // меняем текст кнопки
+                        if (usbFragment is Enfora1318Fragment) {
+                            usbFragment.onErrorStopChackSignal()
+                        }
+                    }
+                }
+                context.curentData = ""
             }
         }.start()
     }

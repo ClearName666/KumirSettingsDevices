@@ -24,6 +24,9 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentEnforma1318Binding
 
+    private val usbCommandsProtocol = UsbCommandsProtocol()
+    private var flagClickChackSignal: Boolean = false
+
     private var NAME_TYPE_DEVICE = "Enfora1318"
 
 
@@ -81,6 +84,10 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
         }
 
+        binding.buttonChackSignal.setOnClickListener {
+            onClickChackSignal()
+        }
+
         //------------------------------------------------------------------------------------------
         // покраска кнопки записи в серый
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.download)
@@ -116,6 +123,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
+
         return binding.root
     }
 
@@ -130,6 +138,8 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             context.usb.onSerialStopBits(0)
             context.usb.onSerialSpeed(9)
         }
+
+        usbCommandsProtocol.flagWorkChackSignal = false
 
         super.onDestroyView()
     }
@@ -261,6 +271,31 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
         writeSettingStart()
     }
 
+    private fun onClickChackSignal() {
+        if (!flagClickChackSignal) {
+            usbCommandsProtocol.readSignalEnfora(getString(R.string.commandGetLevelSignalAndErrors),
+                requireContext(), this)
+            binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
+
+            flagClickChackSignal = true
+        } else {
+            usbCommandsProtocol.flagWorkChackSignal = false
+            binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
+
+            flagClickChackSignal = false
+        }
+
+    }
+    fun onErrorStopChackSignal() {
+        binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
+    }
+
+    fun onPrintSignal(signal: String, errors: String) {
+        binding.textLevelSignal.text = getString(R.string.LevelSignalTitle) + signal
+        binding.textErrorSignal.text = getString(R.string.errorsSignalTitle) + errors
+
+    }
+
     override fun printSerifalNumber(serialNumber: String) {
         binding.serinerNumber.text = serialNumber
     }
@@ -271,7 +306,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        if (settingMap[getString(R.string.commandIDEnforaOrM31)]?.contains("01152600") == true) {
+        if (settingMap[getString(R.string.commandGetSerialNumberEnforaM31)]?.contains("01152600") == true) {
             showAlertDialog(getString(R.string.notDeviceType) + getString(R.string.m31))
             return
         }
@@ -281,21 +316,66 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
                 "\n" + settingMap[getString(R.string.commandGetSerialNum)]
         binding.serinerNumber.text = serNum
 
+        // оеператор связи
+        val operationGSM: String = getString(R.string.communicationOperatorTitle) +
+                settingMap[getString(R.string.commandGetOperatirGSM)]
+        binding.textCommunicationOperator.text = operationGSM
+
 
         // отоюражения настроек интерфейса----------------------------------------------------------
         binding.spinnerSpeed.setSelection(ConstUsbSettings.speedIndex)
         binding.spinnerBitDataPort1.setSelection(if (ConstUsbSettings.numBit) 0 else 1)
         binding.spinnerSelectParityPort1.setSelection(ConstUsbSettings.parityIndex)
         binding.spinnerSelectStopBitPort1.setSelection(ConstUsbSettings.stopBit)
+
+        // проверка что данные настроек соответсвуют нужным
+        /*
+            * apn - kumir.dv
+            * server1 - 172.27.0.15
+            * server2 - 172.27.0.14
+            * login пусто
+            * password - пусто
+            * tcpport - 6502
+        */
+
+        if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.contains(getString(R.string.deffoltAPN)) == false ||
+            settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.deffoltSERVER1)) == false ||
+            settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.deffoltSERVER2)) == false ||
+            settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)] == "0" ||
+            settingMap[getString(R.string.commandGetTcpPortEnforaM31)] == getString(R.string.deffoltTCPPORT)) {
+
+            showAlertDialog(getString(R.string.nonSettingDeviceNeedsFlashed) +
+                    getString(R.string.commandGetApnEnforaM31) + "-" +
+                    settingMap[getString(R.string.commandGetApnEnforaM31)] + "\n" +
+
+                    getString(R.string.commandServer1EnforaOrM31) + "-" +
+                    settingMap[getString(R.string.commandServer1EnforaOrM31)] + "\n" +
+
+                    getString(R.string.commandServer2EnforaOrM31) + "-" +
+                    settingMap[getString(R.string.commandServer2EnforaOrM31)] + "\n" +
+
+                    getString(R.string.commandGetLoginPasswordEnforaM31) + "-" +
+                    settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)] + "\n" +
+
+                    getString(R.string.commandGetTcpPortEnforaM31) + "-" +
+                    settingMap[getString(R.string.commandGetTcpPortEnforaM31)]
+            )
+            return
+        }
+
     }
 
     override fun readSettingStart() {
         val command: List<String> = arrayListOf(
             getString(R.string.commandGetSerialNum),
-            getString(R.string.commandIDEnforaOrM31)
+            getString(R.string.commandServer1EnforaOrM31),
+            getString(R.string.commandServer2EnforaOrM31),
+            getString(R.string.commandGetApnEnforaM31),
+            getString(R.string.commandGetTcpPortEnforaM31),
+            getString(R.string.commandGetLoginPasswordEnforaM31),
+            getString(R.string.commandGetOperatirGSM)
         )
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this, true)
     }
 
@@ -309,6 +389,8 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             context.showAlertDialog(text)
         }
     }
+
+
 
 
 }
