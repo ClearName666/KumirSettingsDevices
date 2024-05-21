@@ -27,6 +27,10 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
     private val usbCommandsProtocol = UsbCommandsProtocol()
     private var flagClickChackSignal: Boolean = false
 
+    companion object {
+        const val TIMEOUT_THREAD: Long = 20
+    }
+
     private var NAME_TYPE_DEVICE = "Enfora1318"
 
 
@@ -338,11 +342,11 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             * tcpport - 6502
         */
 
-        if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.contains(getString(R.string.deffoltAPN)) == false ||
-            settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.deffoltSERVER1)) == false ||
-            settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.deffoltSERVER2)) == false ||
+        if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.contains(getString(R.string.defaultAPN)) == false ||
+            settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.defaultSERVER1)) == false ||
+            settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultSERVER2)) == false ||
             settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)] == "0" ||
-            settingMap[getString(R.string.commandGetTcpPortEnforaM31)] == getString(R.string.deffoltTCPPORT)) {
+            settingMap[getString(R.string.commandGetTcpPortEnforaM31)] == getString(R.string.defaultTCPPORT)) {
 
             showAlertDialog(getString(R.string.nonSettingDeviceNeedsFlashed) +
                     getString(R.string.commandGetApnEnforaM31) + "-" +
@@ -381,6 +385,84 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
     override fun writeSettingStart() {
 
+        // отдельный поток что бы не замедлять основной поток пока идет сброс настроек
+        Thread {
+            // сброс настроек до деффолтных
+            val dataMap_F_Setting: MutableMap<String, String> = mutableMapOf(
+                getString(R.string.commandSetDeffoltSetting) to ""
+            )
+            usbCommandsProtocol.writeSettingDevice(dataMap_F_Setting, requireContext(), this, false, 10)
+
+            // ожидание сброса настроек при помощи обработки флага
+            while (!usbCommandsProtocol.flagWorkWrite) {
+                Thread.sleep(TIMEOUT_THREAD)
+            }
+            while (usbCommandsProtocol.flagWorkWrite) {
+                Thread.sleep(TIMEOUT_THREAD)
+            }
+
+            // отправить данные настроек
+            val dataMap: MutableMap<String, String> = mutableMapOf(
+                getString(R.string.commandSetDisableAutoAttach) to getString(R.string.defaultDisableAutoAttach),
+                getString(R.string.commandSetConfigurePPP) to getString(R.string.defaultConfigurePPP),
+                getString(R.string.commandSetAutoRegistration) to getString(R.string.defaultAutoRegistration),
+                getString(R.string.commandSetDefinePDPContext) to getString(R.string.defaultDefinePDPContext),
+                getString(R.string.commandSetConfigureHostInterface) to getString(R.string.defaultConfigureHostInterface),
+                getString(R.string.commandSetDestinationAddress) to getString(R.string.defaultSERVER1),
+                getString(R.string.commandSetSourcePort) to getString(R.string.defaultTCPPORT),
+                getString(R.string.commandSetPadBlockSize) to getString(R.string.defaultSetPadBlockSize),
+                getString(R.string.commandSetPadTimeout) to getString(R.string.defaultSetPadTimeout),
+                getString(R.string.commandSetConfigureWakeup) to getString(R.string.defaultConfigureWakeup),
+                getString(R.string.commandSetConfigureAck) to getString(R.string.defaultConfigureAck),
+                getString(R.string.commandSetExecutePadCommand) to getString(R.string.defaultExecutePadCommand),
+                getString(R.string.commandSetActivatePadConnection) to getString(R.string.defaultActivatePadConnection),
+                getString(R.string.commandSetConnectionTimeoutEnfora) to getString(R.string.defaultSetIdleTimeout),
+                getString(R.string.commandSetIdleTimeout) to getString(R.string.defaultSetIdleTimeout),
+                getString(R.string.commandSetNetworkMonitor) to getString(R.string.defaultNetworkMonitor),
+                getString(R.string.commandSetStoreAtEvents) to getString(R.string.defaultStoreAtEvents),
+                getString(R.string.commandSetEventTimer) to getString(R.string.defaultSetEventTimer),
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent1) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent2) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent3) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent4) to "",
+                getString(R.string.commandSetConfigureGPIO) to getString(R.string.defaultConfigureGPIO),
+                getString(R.string.commandSetGPIOValue) to getString(R.string.defaultSetGPIOValue),
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent5) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent6) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent7) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent8) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent9) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent10) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent11) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent12) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent13) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent14) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent15) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent16) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent17) to "",
+                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent18) to "",
+            )
+
+            // добавление команд сброса AT$FRIEND
+            for (itemFRIEND in 1..10) {
+                dataMap[getString(R.string.commandSetFriend) + itemFRIEND.toString() + getString(R.string.defaultFriend)] = ""
+            }
+
+            // добавления нужных друзей
+            dataMap[getString(R.string.commandSetFriend) + getString(R.string.defaultSetFriend1)] = ""
+            dataMap[getString(R.string.commandSetFriend) + getString(R.string.defaultSetFriend2)] = ""
+
+            // последняя команда для сохранения данных
+            dataMap[getString(R.string.commandSetSaveSettings)] = ""
+            dataMap[getString(R.string.commandSetResetModem)] = ""
+
+
+            // отправка команд
+            usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false, 5)
+
+
+
+        }.start()
     }
 
     private fun showAlertDialog(text: String) {

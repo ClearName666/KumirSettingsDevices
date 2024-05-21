@@ -9,6 +9,7 @@ import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 class UsbCommandsProtocol {
 
     var flagWorkChackSignal: Boolean = false
+    var flagWorkWrite: Boolean = false
     companion object {
         const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
         const val WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED: Long = 100
@@ -155,9 +156,11 @@ class UsbCommandsProtocol {
         }.start()
     }
 
-    fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment) {
+    fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment,
+                            saveFlag: Boolean = true, longSleepX: Int = 1) {
 
         Thread {
+            flagWorkWrite = true
             if (context is MainActivity){
                 var flagError: Boolean = false
 
@@ -206,18 +209,27 @@ class UsbCommandsProtocol {
                         }
                     }
 
+                    // дополнительное услоие если не пришло не ERROR не OK
+                    if (!context.curentData.contains(context.getString(R.string.error)) && !context.curentData.contains(context.getString(R.string.okSand))) {
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE * longSleepX * longSleepX)
+                    }
+
                     // проверка принялись ли данные
                     if (context.curentData.isEmpty() ||
                         context.curentData.contains(context.getString(R.string.error)) ||
                         !context.curentData.contains(context.getString(R.string.okSand))) {
-                        flagError = true
 
-                        (context as Activity).runOnUiThread {
-                            context.showAlertDialog(key + value +
-                                    context.getString(R.string.errorSendDataWrite))
+                        // если команда не входит в список команд которые не должны давать ответа то ерорим все
+                        if (key != context.getString(R.string.commandSetResetModem)) {
+                            flagError = true
+
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(key + value +
+                                        context.getString(R.string.errorSendDataWrite))
+                            }
+                            flagWorkWrite = false
+                            break
                         }
-
-                        break
                     }
 
                     val curentData: String = context.curentData
@@ -230,7 +242,7 @@ class UsbCommandsProtocol {
 
                 }
 
-                if (!flagError) {
+                if (!flagError && saveFlag) {
 
                     // сохранение данных AT$LOAD
                     /*context.usb.writeDevice(context.getString(R.string.commandLoadSettings), false)
@@ -247,6 +259,7 @@ class UsbCommandsProtocol {
                 // включение ат команд
                 context.usb.flagAtCommandYesNo = true
             }
+            flagWorkWrite = false
         }.start()
     }
 
@@ -321,7 +334,6 @@ class UsbCommandsProtocol {
             }
         }.start()
     }
-
 
 
 
