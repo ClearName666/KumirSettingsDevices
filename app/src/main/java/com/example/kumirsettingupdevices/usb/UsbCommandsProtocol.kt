@@ -48,6 +48,7 @@ class UsbCommandsProtocol {
 
                 // прогресс на единицу то есть каждая команда сколько то процентов
                 var progressUnit: Int = 100 / commands.size
+                var prograss: Int = 0
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
@@ -127,11 +128,11 @@ class UsbCommandsProtocol {
                         val curentData: String = context.curentData
                         // вывод в загрузочное диалог информации
                         (context as Activity).runOnUiThread {
-                            context.printInfoTermAndLoaging(command, progressUnit)
-                            context.printInfoTermAndLoaging(curentData, progressUnit)
+                            context.printInfoTermAndLoaging(command, prograss)
+                            context.printInfoTermAndLoaging(curentData, prograss)
                         }
 
-                        progressUnit += progressUnit
+                        prograss += progressUnit
 
                     } else {
                         (context as Activity).runOnUiThread {
@@ -173,6 +174,7 @@ class UsbCommandsProtocol {
 
                 // прогресс на единицу то есть каждая команда сколько то процентов
                 var progressUnit: Int = 100 / data.size
+                var prograss: Int = 0
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
@@ -191,6 +193,7 @@ class UsbCommandsProtocol {
                     while (context.curentData.isEmpty()) {
                         if (maxCntIter == 0) {
                             flagError = true
+                            flagWorkWrite = false
                             break@out
                         }
                         Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
@@ -214,13 +217,22 @@ class UsbCommandsProtocol {
                         Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE * longSleepX * longSleepX)
                     }
 
+                    val curentData: String = context.curentData
+                    // вывод в загрузочное диалог информации
+                    (context as Activity).runOnUiThread {
+                        context.printInfoTermAndLoaging(key + value, prograss)
+                        context.printInfoTermAndLoaging(curentData, prograss)
+                    }
+                    prograss += progressUnit * 2
+
                     // проверка принялись ли данные
                     if (context.curentData.isEmpty() ||
                         context.curentData.contains(context.getString(R.string.error)) ||
                         !context.curentData.contains(context.getString(R.string.okSand))) {
 
                         // если команда не входит в список команд которые не должны давать ответа то ерорим все
-                        if (key != context.getString(R.string.commandSetResetModem)) {
+                        if (key != context.getString(R.string.commandSetResetModem) &&
+                            key != context.getString(R.string.commandSetFormatParity)) {
                             flagError = true
 
                             (context as Activity).runOnUiThread {
@@ -232,14 +244,51 @@ class UsbCommandsProtocol {
                         }
                     }
 
-                    val curentData: String = context.curentData
-                    // вывод в загрузочное диалог информации
-                    (context as Activity).runOnUiThread {
-                        context.printInfoTermAndLoaging(key + value, progressUnit)
-                        context.printInfoTermAndLoaging(curentData, progressUnit)
-                    }
-                    progressUnit += progressUnit
 
+
+                    // проверка на ккоманды изменения скорости или настроек передачи
+                    when(key) {
+                        context.getString(R.string.commandSetSpeed) -> {
+                            context.usb.onSerialSpeed(getSpeedIndax(value))
+                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        }
+                        context.getString(R.string.commandSetFormatParity) -> {
+                            try {
+                                // получения format и четности
+                                val formatAndParity: List<String> = value.split(",")
+
+                                // преобразование farmat в настроки битов данных и стоп биты а так же наличие четности
+                                val setPortList = reCalculateFormat(formatAndParity[0])
+
+                                // применение настроек
+                                context.usb.onSerialStopBits(setPortList[1])
+                                context.usb.onSelectUumBit(setPortList[0] == 0)
+
+                                // если есть четность то устанавливаем нужную
+                                if (setPortList[2] == 1) {
+                                    if (formatAndParity[1].toInt() == 0) {
+                                        context.usb.onSerialParity(2) // утсновка odd
+                                    } else {
+                                        context.usb.onSerialParity(1) // установкаа even
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                flagError = true
+                                flagWorkWrite = false
+
+                                break@out
+                            }
+                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        }
+                        context.getString(R.string.commandSetDeffoltSetting) -> {
+
+                            // сброс на настроки т к модем переключился на деффолтные настроки
+                            context.usb.onSerialParity(0)
+                            context.usb.onSelectUumBit(true)
+                            context.usb.onSerialStopBits(0)
+                            context.usb.onSerialSpeed(9)
+                        }
+                    }
                 }
 
                 if (!flagError && saveFlag) {
@@ -314,6 +363,7 @@ class UsbCommandsProtocol {
                             }
                         }
                     }
+
                 }
 
 
@@ -334,6 +384,53 @@ class UsbCommandsProtocol {
             }
         }.start()
     }
+
+
+
+    fun calculateFormat(bitsData: Int, stopBits: Int, parity: Int): Int {
+        return when {
+            bitsData == 0 && stopBits == 1 && parity == 0 -> 1 // 8 данных, 2 стопа, без четности
+            bitsData == 0 && stopBits == 0 && parity == 1 -> 2 // 8 данных, 1 стоп, с четностью
+            bitsData == 0 && stopBits == 0 && parity == 0 -> 3 // 8 данных, 1 стоп, без четности
+            bitsData == 1 && stopBits == 1 && parity == 0 -> 4 // 7 данных, 2 стопа, без четности
+            bitsData == 1 && stopBits == 0 && parity == 1 -> 5 // 7 данных, 1 стоп, с четностью
+            bitsData == 1 && stopBits == 0 && parity == 0 -> 6 // 7 данных, 1 стоп, без четности
+            else -> 0
+        }
+    }
+
+    fun reCalculateFormat(state: String): List<Int> {
+        return when (state) {
+            "1" -> listOf(0, 1, 0) // 8 данных, 2 стопа, без четности
+            "2" -> listOf(0, 0, 1) // 8 данных, 1 стоп, с четностью
+            "3" -> listOf(0, 0, 0) // 8 данных, 1 стоп, без четности
+            "4" -> listOf(1, 1, 0) // 7 данных, 2 стопа, без четности
+            "5" -> listOf(1, 0, 1) // 7 данных, 1 стоп, с четностью
+            "6" -> listOf(1, 0, 0) // 7 данных, 1 стоп, без четности
+            else -> throw IllegalArgumentException("Invalid reCalculateFormat ${javaClass.name}")
+        }
+    }
+
+    fun getSpeedIndax(speed: String): Int {
+        try {
+            return when(speed) {
+                "300" -> 0
+                "600" -> 1
+                "1200" -> 2
+                "2400" -> 3
+                "4800" -> 4
+                "9600" -> 5
+                "19200" -> 6
+                "38400" -> 7
+                "57600" -> 8
+                "115200" -> 9
+                else -> -1
+            }
+        } catch (e: Exception) {
+            return -1
+        }
+    }
+
 
 
 

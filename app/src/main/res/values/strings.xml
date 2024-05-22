@@ -297,6 +297,9 @@
     <string name="commandSetConfigureGPIO">AT$IOCFG=</string>
     <string name="commandSetGPIOValue">AT$IOGPA=</string>
 
+    <string name="commandSetSpeed">AT+IPR=</string>
+    <string name="commandSetFormatParity">AT+ICF=</string>
+
 
 
     <!--Деффолтные настроки модемов enfora и M31 -->
@@ -304,6 +307,13 @@
     <string name="defaultSERVER1">\"172.27.0.15\",0</string>
     <string name="defaultSERVER2">\"172.27.0.14\",0</string>
     <string name="defaultTCPPORT">6502</string>
+
+    <!--Деффолтные настроки модемов вспомогательные строки для проверки-->
+    <string name="defaultHelpCheckSERVER1">\"172.027.000.015\", 0</string>
+    <string name="defaultHelpCheckSERVER2">\"172.027.000.014\"</string>
+
+
+
     
     <string name="defaultFriend">,0,\"0.0.0.0\"</string>
     <string name="defaultDisableAutoAttach">0,0</string>

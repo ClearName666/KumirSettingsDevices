@@ -343,10 +343,10 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
         */
 
         if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.contains(getString(R.string.defaultAPN)) == false ||
-            settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.defaultSERVER1)) == false ||
-            settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultSERVER2)) == false ||
-            settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)] == "0" ||
-            settingMap[getString(R.string.commandGetTcpPortEnforaM31)] == getString(R.string.defaultTCPPORT)) {
+            settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER1)) == false ||
+            settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER2)) == false ||
+            settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false ||
+            settingMap[getString(R.string.commandGetTcpPortEnforaM31)]?.contains(getString(R.string.defaultTCPPORT)) == false) {
 
             showAlertDialog(getString(R.string.nonSettingDeviceNeedsFlashed) +
                     getString(R.string.commandGetApnEnforaM31) + "-" +
@@ -384,6 +384,30 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
     }
 
     override fun writeSettingStart() {
+
+        // для начала читаем настроки порта
+        /*
+            <format>
+            1 = 8 data, 2 stop, no parity
+            2 = 8 data, 1 stop,1 parity
+            3 = 8 data, 1 stop,  no parity
+            4 = 7 data, 2 stop, no parity
+            5 = 7 data, 1 stop, 1 parity
+            6 = 7 data, 1 stop, no parity
+
+            <parity>
+            0  = odd
+            1 =  even
+            2 = mark
+        */
+
+        // формула для вычисления нужного формата
+        val format: Int = usbCommandsProtocol.calculateFormat(binding.spinnerBitDataPort1.selectedItemPosition,
+            binding.spinnerSelectStopBitPort1.selectedItemPosition,
+            if (binding.spinnerSelectParityPort1.selectedItemPosition == 0) 0 else 1)
+        val parity: Int = if (binding.spinnerSelectParityPort1.selectedItemPosition == 2) 0 else 1
+
+
 
         // отдельный поток что бы не замедлять основной поток пока идет сброс настроек
         Thread {
@@ -452,10 +476,14 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             dataMap[getString(R.string.commandSetFriend) + getString(R.string.defaultSetFriend1)] = ""
             dataMap[getString(R.string.commandSetFriend) + getString(R.string.defaultSetFriend2)] = ""
 
+
+            // изменения скоростей работы
+            dataMap[getString(R.string.commandSetSpeed)] = binding.spinnerSpeed.selectedItem.toString()
+            dataMap[getString(R.string.commandSetFormatParity)] = "$format,$parity"
+
             // последняя команда для сохранения данных
             dataMap[getString(R.string.commandSetSaveSettings)] = ""
             dataMap[getString(R.string.commandSetResetModem)] = ""
-
 
             // отправка команд
             usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false, 5)
