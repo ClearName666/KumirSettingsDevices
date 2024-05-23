@@ -344,6 +344,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
         if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.contains(getString(R.string.defaultAPN)) == false ||
             settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER1)) == false ||
+            settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER2copySERVER1)) == false ||
             settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER2)) == false ||
             settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false ||
             settingMap[getString(R.string.commandGetTcpPortEnforaM31)]?.contains(getString(R.string.defaultTCPPORT)) == false) {

@@ -21,18 +21,32 @@ class ValidDataSettingsDevice {
 
     // проверка errorKEEPALIVE диопазона от 10 до 600
     fun keepaliveValid(keepalive: String): Boolean {
-        return !(keepalive.toInt() >= KEEPALIVE_MAX ||
-                keepalive.toInt() <= KEEPALIVE_MIN)
+        return try {
+            !(keepalive.toInt() >= KEEPALIVE_MAX ||
+                    keepalive.toInt() <= KEEPALIVE_MIN)
+        } catch (e: Exception) {
+            false
+        }
+
     }
 
     fun ctimeoutValid(ctimeout: String): Boolean {
-        return !(ctimeout.toInt() >= CTIMEOUT_MAX ||
-                ctimeout.toInt() <= CTIMEOUT_MIN)
+        return try {
+            !(ctimeout.toInt() >= CTIMEOUT_MAX ||
+                    ctimeout.toInt() <= CTIMEOUT_MIN)
+        } catch (e: Exception) {
+            false
+        }
     }
 
+
     fun tcpPortValid(tcpPort: String): Boolean {
-        return !(tcpPort.toInt() >= TCPPORT_MAX ||
-                tcpPort.toInt() <= TCPPORT_MIN)
+        return try {
+            !(tcpPort.toInt() >= TCPPORT_MAX ||
+                    tcpPort.toInt() <= TCPPORT_MIN)
+        } catch (e: Exception) {
+            false
+        }
     }
 
     fun powerValid(power: String): Boolean {

@@ -445,7 +445,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // при подключении уберестся фрагмент и вывод успеха подкл
         if (con) {
             workFonDarkMenu()
-            showAlertDialog(getString(R.string.ConnectSuccess))
+            //showAlertDialog(getString(R.string.ConnectSuccess))
         }
     }
 
@@ -459,8 +459,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // прокурчивание вниз
         binding.ScrollWriteLoadingForDevice.post {
-            binding.ScrollWriteLoadingForDevice.scrollTo(0,
-                binding.ScrollWriteLoadingForDevice.bottom)
+            binding.ScrollWriteLoadingForDevice.fullScroll(View.FOCUS_DOWN)
         }
     }
 

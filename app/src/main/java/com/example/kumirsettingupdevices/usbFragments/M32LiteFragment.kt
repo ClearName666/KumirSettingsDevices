@@ -24,7 +24,7 @@ class M32LiteFragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentM32LiteBinding
 
-    private var NAME_TYPE_DEVICE = "KUMIR-M32 Lite READY"
+    private var NAME_TYPE_DEVICE = "KUMIR-M32LITE READY"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

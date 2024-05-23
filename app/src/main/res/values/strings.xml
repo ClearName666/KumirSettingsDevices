@@ -9,11 +9,15 @@
     <string name="ConnectSuccess">Подключение успешно установлено</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
+    <string name="errorTimeOutSand">Время ожидание ответа слишком большое, наверное вы отсоединили модем!</string>
+    <string name="errorFindSpeedSerial">Поиск скорости не дал результата! Убедитесь что кабель подключен надежно и имеет контакты для связи с serial port!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
     <string name="notReadRange">Не удалось получить диапазон устройства устройства!</string>
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
     <string name="notDeviceType">Вы перепутали устройство у вас - </string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
+    <string name="errorSpeed">Неполадка перключения скоростей!</string>
+    <string name="errorSendDataRead"> - не прочелся по какой то причине!</string>
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
@@ -23,6 +27,7 @@
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
     <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
     <string name="errorPOWER">Значение POWER должно быть в диапазоне от -16 до 14</string>
+    <string name="errorNETKEY">Значение NETKEY не должно привышать 60 символов</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
@@ -310,7 +315,8 @@
 
     <!--Деффолтные настроки модемов вспомогательные строки для проверки-->
     <string name="defaultHelpCheckSERVER1">\"172.027.000.015\", 0</string>
-    <string name="defaultHelpCheckSERVER2">\"172.027.000.014\"</string>
+    <string name="defaultHelpCheckSERVER2copySERVER1">01, 1, \"172.027.000.015\"</string>
+    <string name="defaultHelpCheckSERVER2">02, 1, \"172.027.000.014\"</string>
 
 
 
@@ -324,7 +330,7 @@
     <string name="defaultSetPadBlockSize">512</string>
     <string name="defaultSetPadTimeout">3</string>
     <string name="defaultSetFriend1">1,1,\"172.27.0.15\"</string>
-    <string name="defaultSetFriend2">1,1,\"172.27.0.14\"</string>
+    <string name="defaultSetFriend2">2,1,\"172.27.0.14\"</string>
     <string name="defaultConfigureWakeup">2,5</string>
     <string name="defaultConfigureAck">8,15,0</string>
     <string name="defaultExecutePadCommand">0</string>

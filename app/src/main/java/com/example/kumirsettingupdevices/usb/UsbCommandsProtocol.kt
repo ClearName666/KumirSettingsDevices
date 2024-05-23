@@ -10,10 +10,19 @@ class UsbCommandsProtocol {
 
     var flagWorkChackSignal: Boolean = false
     var flagWorkWrite: Boolean = false
+
+    private val listCommandNotFormater: List<String> = listOf(
+        "AT\$FRIEND?"
+    )
+
     companion object {
-        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 50
+        const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 90
         const val WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED: Long = 100
-        const val TIMEOUT_START_DEVICE: Long = 1500
+
+        const val MAX_CNT_EXPECTATION_SAND: Int = 30
+        const val MAX_RATIO_EXPECTATION_NEW_SPEED: Int = 15
+
+        //const val TIMEOUT_START_DEVICE: Long = 1500
 
         // для поиска скорости
         private const val SPEED_INDEX_MAX = 9
@@ -28,6 +37,7 @@ class UsbCommandsProtocol {
         private const val BITDATA_INDEX_MAX = 1
         private const val BITDATA_INDEX_MIN = 0
 
+
     }
 
 
@@ -37,6 +47,8 @@ class UsbCommandsProtocol {
                           usbFragment: UsbFragment, speedFind: Boolean = false) {
         val settingData: MutableMap<String, String> = mutableMapOf()
         var flagsSuccess: Boolean = true
+
+
         Thread {
             if (context is MainActivity) {
                 // открываем диалог с загрузочным меню
@@ -44,106 +56,87 @@ class UsbCommandsProtocol {
                     context.openCloseLoadingView(true)
                 }
 
-                Thread.sleep(TIMEOUT_START_DEVICE)
-
                 // прогресс на единицу то есть каждая команда сколько то процентов
-                var progressUnit: Int = 100 / commands.size
+                val progressUnit: Int = 100 / commands.size
                 var prograss: Int = 0
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
 
                 // если нужно нати скорость перед использованием то
-                if (speedFind) {
-                    flagsSuccess = false
-
-                    // ищем нужную скорость для общения
-                    outer@ for (bitData in BITDATA_INDEX_MIN..BITDATA_INDEX_MAX) {
-                        for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
-                            for (parity in PARITY_INDEX_MIN..PARITY_INDEX_MAX) {
-                                for (speed in SPEED_INDEX_MIN..SPEED_INDEX_MAX) {
-                                    context.usb.onSelectUumBit(bitData == 0)
-                                    context.usb.onSerialParity(parity)
-                                    context.usb.onSerialStopBits(stopBit)
-                                    context.usb.onSerialSpeed(speed)
-
-                                    // вывод в загрузочное диалог информации
-                                    (context as Activity).runOnUiThread {
-                                        context.printInfoTermAndLoaging(
-                                            speed.toString() + parity.toString() +
-                                            stopBit.toString() + bitData.toString() + "\n", progressUnit)
-                                    }
-
-                                    // отправка тестовой команды
-                                    context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
-
-                                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED)
-
-                                    // если скорость найдена то выходим
-                                    if (context.curentData.contains(context.getString(R.string.okSand))) {
-                                        flagsSuccess = true
-                                        break@outer
-                                    }
-                                }
-                            }
-                        }
+                if (speedFind && !findSpeed(context)) {
+                    // все скорости переброны и нет ответа ошибка
+                    (context as Activity).runOnUiThread {
+                        context.showAlertDialog(context.getString(R.string.errorFindSpeedSerial))
                     }
+                    flagsSuccess = false
                 }
 
                 // перебор всех команд и получение ответов устройства
                 outer@ for (command in commands) {
+                    // 2 попытки на отправку
+                    for (i in 1..2) {
+                        // очищение прошлых данных
+                        context.curentData = ""
 
-                    // очищение прошлых данных
-                    context.curentData = ""
+                        context.usb.writeDevice(command, false)
 
-                    context.usb.writeDevice(command, false)
+                        // система получения ответа и ожидание полной отправки данных
+                        if (!expectationSand(context)) {
 
-                    // система получения ответа и ожидание полной отправки данных
-                    var maxCntIter: Int = 10
-                    while (context.curentData.isEmpty()) {
-                        if (maxCntIter == 0) {
-                            flagsSuccess = true
+                            // достигнуто ваксимальное время и нет ответа ошибка
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                            }
+                            flagsSuccess = false
                             break@outer
                         }
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        maxCntIter--
-                    }
 
 
-                    var cnt: Int = context.curentData.length
-                    while (context.curentData.isNotEmpty()) {
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        val newCnt = context.curentData.length
-                        if (cnt == newCnt) {
-                            break
+                        if (context.curentData.isNotEmpty()) {
+
+                            // нормализуем только если не входит в список команд которые не нужно нормализовать
+                            settingData[command] = if (command !in listCommandNotFormater)
+                                formatDataCommandsNormolize(context.curentData) else context.curentData
+
+                            val curentData: String = context.curentData
+                            // вывод в загрузочное диалог информации
+                            (context as Activity).runOnUiThread {
+                                context.printInfoTermAndLoaging(command, prograss)
+                                context.printInfoTermAndLoaging(curentData, prograss)
+                            }
+
+                            prograss += progressUnit
+
                         } else {
-                            cnt = newCnt
-                        }
-                    }
-
-
-                    if (context.curentData.isNotEmpty()) {
-                        settingData[command] = formatDataCommandsNormolize(context.curentData)
-
-                        val curentData: String = context.curentData
-                        // вывод в загрузочное диалог информации
-                        (context as Activity).runOnUiThread {
-                            context.printInfoTermAndLoaging(command, prograss)
-                            context.printInfoTermAndLoaging(curentData, prograss)
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
+                            }
+                            flagsSuccess = false
+                            break
                         }
 
-                        prograss += progressUnit
+                        // проверка на валидность принатых данных возможно нужно еще раз опрасить
+                        // проверка принялись ли данные
+                        if (!sandOkCommand(context, command)) {
 
-                    } else {
-                        (context as Activity).runOnUiThread {
-                            context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
+                            // если 2 попытка не сработала то выбрасываемся
+                            if (i == 2) {
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(
+                                        command + context.getString(R.string.errorSendDataRead)
+                                    )
+                                }
+                                flagsSuccess = false
+                                break@outer
+                            }
+                        } else {
+                            break
                         }
-                        flagsSuccess = false
-                        break
                     }
                 }
 
-                // отключение ат команд
+                // включение ат команд
                 context.usb.flagAtCommandYesNo = true
 
                 if (flagsSuccess) {
@@ -170,10 +163,8 @@ class UsbCommandsProtocol {
                     context.openCloseLoadingView(true)
                 }
 
-                Thread.sleep(TIMEOUT_START_DEVICE)
-
                 // прогресс на единицу то есть каждая команда сколько то процентов
-                var progressUnit: Int = 100 / data.size
+                val progressUnit: Int = 100 / data.size
                 var prograss: Int = 0
 
                 // отключение ат команд
@@ -181,112 +172,71 @@ class UsbCommandsProtocol {
 
                 // отправка всех настроек в устройство
                 out@for ((key, value) in data) {
+                    // 2 попытки на отправку
+                    for (i in 1..2) {
+                        // очищение прошлых данных
+                        context.curentData = ""
 
-                    // очищение прошлых данных
-                    context.curentData = ""
+                        val dataSend: String = key + value
+                        context.usb.writeDevice(dataSend, false)
 
-                    val dataSend: String = key + value
-                    context.usb.writeDevice(dataSend, false)
 
-                    // система получения ответа и ожидание полной отправки данных
-                    var maxCntIter: Int = 10
-                    while (context.curentData.isEmpty()) {
-                        if (maxCntIter == 0) {
+                        // система получения ответа и ожидание полной отправки данных
+                        if (!expectationSand(context)) {
+
+                            // достигнуто ваксимальное время и нет ответа ошибка
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                            }
                             flagError = true
                             flagWorkWrite = false
                             break@out
                         }
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        maxCntIter--
-                    }
 
-
-                    var cnt: Int = context.curentData.length
-                    while (context.curentData.isNotEmpty()) {
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        val newCnt = context.curentData.length
-                        if (cnt == newCnt) {
-                            break
-                        } else {
-                            cnt = newCnt
+                        // дополнительное услоие если не пришло не ERROR не OK
+                        if (!context.curentData.contains(context.getString(R.string.error)) && !context.curentData.contains(
+                                context.getString(R.string.okSand)
+                            )
+                        ) {
+                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE * longSleepX * longSleepX)
                         }
-                    }
 
-                    // дополнительное услоие если не пришло не ERROR не OK
-                    if (!context.curentData.contains(context.getString(R.string.error)) && !context.curentData.contains(context.getString(R.string.okSand))) {
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE * longSleepX * longSleepX)
-                    }
+                        val curentData: String = context.curentData
+                        // вывод в загрузочное диалог информации
+                        (context as Activity).runOnUiThread {
+                            prograss += progressUnit
+                            context.printInfoTermAndLoaging(key + value, prograss)
+                            context.printInfoTermAndLoaging(curentData, prograss)
+                        }
 
-                    val curentData: String = context.curentData
-                    // вывод в загрузочное диалог информации
-                    (context as Activity).runOnUiThread {
-                        context.printInfoTermAndLoaging(key + value, prograss)
-                        context.printInfoTermAndLoaging(curentData, prograss)
-                    }
-                    prograss += progressUnit * 2
 
-                    // проверка принялись ли данные
-                    if (context.curentData.isEmpty() ||
-                        context.curentData.contains(context.getString(R.string.error)) ||
-                        !context.curentData.contains(context.getString(R.string.okSand))) {
-
-                        // если команда не входит в список команд которые не должны давать ответа то ерорим все
-                        if (key != context.getString(R.string.commandSetResetModem) &&
-                            key != context.getString(R.string.commandSetFormatParity)) {
-                            flagError = true
-
+                        // проверка принялись ли данные
+                        if (!sandOkCommand(context, key)) {
                             (context as Activity).runOnUiThread {
-                                context.showAlertDialog(key + value +
-                                        context.getString(R.string.errorSendDataWrite))
+                                context.showAlertDialog(
+                                    key + value + context.getString(R.string.errorSendDataWrite)
+                                )
                             }
                             flagWorkWrite = false
+                            flagError = true
                             break
                         }
-                    }
 
+                        // проверка на ккоманды изменения скорости или настроек передачи
+                        if (!commandNewSpeed(context, key, value)) {
 
-
-                    // проверка на ккоманды изменения скорости или настроек передачи
-                    when(key) {
-                        context.getString(R.string.commandSetSpeed) -> {
-                            context.usb.onSerialSpeed(getSpeedIndax(value))
-                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        }
-                        context.getString(R.string.commandSetFormatParity) -> {
-                            try {
-                                // получения format и четности
-                                val formatAndParity: List<String> = value.split(",")
-
-                                // преобразование farmat в настроки битов данных и стоп биты а так же наличие четности
-                                val setPortList = reCalculateFormat(formatAndParity[0])
-
-                                // применение настроек
-                                context.usb.onSerialStopBits(setPortList[1])
-                                context.usb.onSelectUumBit(setPortList[0] == 0)
-
-                                // если есть четность то устанавливаем нужную
-                                if (setPortList[2] == 1) {
-                                    if (formatAndParity[1].toInt() == 0) {
-                                        context.usb.onSerialParity(2) // утсновка odd
-                                    } else {
-                                        context.usb.onSerialParity(1) // установкаа even
-                                    }
-                                }
-                            } catch (e: Exception) {
+                            // если 2 попытка не сработала то выбрасываемся
+                            if (i == 2) {
                                 flagError = true
                                 flagWorkWrite = false
 
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(context.getString(R.string.errorSpeed))
+                                }
                                 break@out
                             }
-                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        }
-                        context.getString(R.string.commandSetDeffoltSetting) -> {
-
-                            // сброс на настроки т к модем переключился на деффолтные настроки
-                            context.usb.onSerialParity(0)
-                            context.usb.onSelectUumBit(true)
-                            context.usb.onSerialStopBits(0)
-                            context.usb.onSerialSpeed(9)
+                        } else {
+                            break
                         }
                     }
                 }
@@ -328,26 +278,14 @@ class UsbCommandsProtocol {
                     context.usb.writeDevice(command, false)
 
                     // система получения ответа и ожидание полной отправки данных
-                    var maxCntIter: Int = 10
-                    while (context.curentData.isEmpty()) {
-                        if (maxCntIter == 0) {
-                            flagsSuccess = true
-                            break@out
-                        }
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        maxCntIter--
-                    }
+                    if (!expectationSand(context)) {
 
-
-                    var cnt: Int = context.curentData.length
-                    while (context.curentData.isNotEmpty()) {
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                        val newCnt = context.curentData.length
-                        if (cnt == newCnt) {
-                            break
-                        } else {
-                            cnt = newCnt
+                        // достигнуто ваксимальное время и нет ответа ошибка
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
                         }
+                        flagsSuccess = false
+                        break@out
                     }
 
                     // нормаизируем данняе и разделяем
@@ -359,7 +297,7 @@ class UsbCommandsProtocol {
                             try {
                                 usbFragment.onPrintSignal(data[0], data[1])
                             } catch (e: Exception) {
-                                flagsSuccess = true
+                                flagsSuccess = false
                             }
                         }
                     }
@@ -386,6 +324,136 @@ class UsbCommandsProtocol {
     }
 
 
+    private fun commandNewSpeed(context: MainActivity, key: String, value: String): Boolean {
+        // проверка на ккоманды изменения скорости или настроек передачи
+        when(key) {
+            context.getString(R.string.commandSetSpeed) -> {
+                val speedIndex: Int = getSpeedIndax(value)
+                // дополнительная задержка в случае если скорость слишком мала
+                val sleepForMinSpeed = if (speedIndex < 5) (MAX_RATIO_EXPECTATION_NEW_SPEED - speedIndex + 1) else 1
+
+                context.usb.onSerialSpeed(speedIndex)
+                Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE * sleepForMinSpeed)
+            }
+            context.getString(R.string.commandSetFormatParity) -> {
+                try {
+                    // получения format и четности
+                    val formatAndParity: List<String> = value.split(",")
+
+                    // преобразование farmat в настроки битов данных и стоп биты а так же наличие четности
+                    val setPortList = reCalculateFormat(formatAndParity[0])
+
+                    // применение настроек
+                    context.usb.onSerialStopBits(setPortList[1])
+                    context.usb.onSelectUumBit(setPortList[0] == 0)
+
+                    // если есть четность то устанавливаем нужную
+                    if (setPortList[2] == 1) {
+                        if (formatAndParity[1].toInt() == 0) {
+                            context.usb.onSerialParity(2) // утсновка odd
+                        } else {
+                            context.usb.onSerialParity(1) // установкаа even
+                        }
+                    }
+                } catch (e: Exception) {
+                    return false
+                }
+                Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+            }
+            context.getString(R.string.commandSetDeffoltSetting) -> {
+
+                // сброс на настроки т к модем переключился на деффолтные настроки
+                context.usb.onSerialParity(0)
+                context.usb.onSelectUumBit(true)
+                context.usb.onSerialStopBits(0)
+                context.usb.onSerialSpeed(9)
+            }
+        }
+        return true
+    }
+
+
+    // поиск скорости
+    private fun findSpeed(context: MainActivity): Boolean {
+        // ищем нужную скорость для общения
+        for (bitData in BITDATA_INDEX_MIN..BITDATA_INDEX_MAX) {
+            for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
+                for (parity in PARITY_INDEX_MIN..PARITY_INDEX_MAX) {
+                    for (speed in SPEED_INDEX_MIN..SPEED_INDEX_MAX) {
+                        context.usb.onSelectUumBit(bitData == 0)
+                        context.usb.onSerialParity(parity)
+                        context.usb.onSerialStopBits(stopBit)
+                        context.usb.onSerialSpeed(speed)
+
+                        // вывод в загрузочное диалог информации
+                        (context as Activity).runOnUiThread {
+                            context.printInfoTermAndLoaging(
+                                speed.toString() + parity.toString() +
+                                        stopBit.toString() + bitData.toString() + "\n", 0)
+                        }
+
+                        // отправка тестовой команды
+                        context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
+
+                        // дополнительная задержка в случае если скорость слишком мала
+                        val sleepForMinSpeed = if (speed < 5) (MAX_RATIO_EXPECTATION_NEW_SPEED - speed + 1) else 1
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED * sleepForMinSpeed)
+
+                        // если скорость найдена то выходим
+                        if (context.curentData.contains(context.getString(R.string.okSand))) {
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+
+    // система получения ответа и ожидание полной отправки данных
+    private fun expectationSand(context: MainActivity): Boolean {
+
+        // Ожидание что устройство отправит хоть что то максимум ждет 500 мс
+        var maxCntIter: Int = MAX_CNT_EXPECTATION_SAND
+        while (context.curentData.isEmpty()) {
+            if (maxCntIter == 0) {
+                return false
+            }
+            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+            maxCntIter--
+        }
+
+        // ожидание что бы все данные были отправлены
+        var cnt: Int = context.curentData.length
+        while (context.curentData.isNotEmpty()) {
+            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+            val newCnt = context.curentData.length
+            if (cnt == newCnt) {
+                return true
+            } else {
+                cnt = newCnt
+            }
+        }
+        return false
+    }
+
+    private fun sandOkCommand(context: MainActivity, command: String = ""): Boolean {
+        // проверка принялись ли данные
+        if (context.curentData.isEmpty() ||
+            context.curentData.contains(context.getString(R.string.error)) ||
+            !context.curentData.contains(context.getString(R.string.okSand))) {
+
+            // если команда не входит в список команд которые не должны давать ответа то ерорим все
+            if (command != context.getString(R.string.commandSetResetModem) &&
+                command != context.getString(R.string.commandSetFormatParity)) {
+                return false
+            }
+
+        }
+        return true
+    }
+
 
     fun calculateFormat(bitsData: Int, stopBits: Int, parity: Int): Int {
         return when {
@@ -399,7 +467,7 @@ class UsbCommandsProtocol {
         }
     }
 
-    fun reCalculateFormat(state: String): List<Int> {
+    private fun reCalculateFormat(state: String): List<Int> {
         return when (state) {
             "1" -> listOf(0, 1, 0) // 8 данных, 2 стопа, без четности
             "2" -> listOf(0, 0, 1) // 8 данных, 1 стоп, с четностью
@@ -411,7 +479,7 @@ class UsbCommandsProtocol {
         }
     }
 
-    fun getSpeedIndax(speed: String): Int {
+    private fun getSpeedIndax(speed: String): Int {
         try {
             return when(speed) {
                 "300" -> 0

@@ -392,6 +392,9 @@ class PM81Fragment : Fragment(), UsbFragment {
             showAlertDialog(getString(R.string.errorPOWER))
             return
 
+        } else if (binding.inputNetKey.text?.length!! > 60) {
+            showAlertDialog(getString(R.string.errorPOWER))
+            return
         }
 
         var parityPort1 = "N"

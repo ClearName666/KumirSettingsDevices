@@ -38,7 +38,7 @@ class M32Fragment : Fragment(), UsbFragment {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
                 // если режим кумир нэт
-                if (position == 0) {
+                if (position != 0) {
                     when(binding.spinnerSelectActivPort.selectedItemPosition) {
                         0 -> {
                             binding.port1DisActivFon.visibility = View.GONE
@@ -66,7 +66,7 @@ class M32Fragment : Fragment(), UsbFragment {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
                 // если режим кумир нет
-                if (binding.spinnerServer.selectedItemPosition == 0) {
+                if (binding.spinnerServer.selectedItemPosition != 0) {
                     when(position) {
                         0 -> {
                             binding.port1DisActivFon.visibility = View.GONE
@@ -440,82 +440,83 @@ class M32Fragment : Fragment(), UsbFragment {
             binding.port1DisActivFon.visibility = View.VISIBLE
             binding.port2DisActivFon.visibility = View.VISIBLE
 
-            if (activPort == 0 || binding.spinnerServer.selectedItemPosition != 0) {
 
-                // отоюражения настроек порта 1-------------------------------------------------------------
-                val port1Config = settingMap[getString(R.string.commandGetPort1Config)]?.split(",")
+            // отоюражения настроек порта 1-------------------------------------------------------------
+            val port1Config = settingMap[getString(R.string.commandGetPort1Config)]?.split(",")
 
-                // скорость -----------------------------------------
-                val adapterSpeed = binding.spinnerSpeed.adapter as ArrayAdapter<String>
-                val indexSpeed = adapterSpeed.getPosition(port1Config?.get(0))
-                if (indexSpeed != -1) {
-                    binding.spinnerSpeed.setSelection(indexSpeed)
-                }
-
-                // количество бит -----------------------------------------
-                val adapterBitData = binding.spinnerBitDataPort1.adapter as ArrayAdapter<String>
-                val indexBitData = adapterBitData.getPosition(port1Config?.get(1))
-                if (indexBitData != -1) {
-                    binding.spinnerSelectStopBitPort1.setSelection(indexBitData)
-                }
-
-                // четность -----------------------------------------
-                if (port1Config?.get(2) == "N") {
-                    binding.spinnerSelectParityPort1.setSelection(0)
-                } else if (port1Config?.get(2) == "O") {
-                    binding.spinnerSelectParityPort1.setSelection(1)
-                } else {
-                    binding.spinnerSelectParityPort1.setSelection(2)
-                }
-
-                // стоп биты---------------------------------------------------
-                val adapterStopBit = binding.spinnerSelectStopBitPort1.adapter as ArrayAdapter<String>
-                val indexStopBit = adapterStopBit.getPosition(port1Config?.get(3))
-                if (indexBitData != -1) {
-                    binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
-                }
-
-                binding.port1DisActivFon.visibility = View.GONE
-
+            // скорость -----------------------------------------
+            val adapterSpeed = binding.spinnerSpeed.adapter as ArrayAdapter<String>
+            val indexSpeed = adapterSpeed.getPosition(port1Config?.get(0))
+            if (indexSpeed != -1) {
+                binding.spinnerSpeed.setSelection(indexSpeed)
             }
-            if (activPort == 1  || binding.spinnerServer.selectedItemPosition != 0){
 
-
-                // отоюражения настроек порта 2-------------------------------------------------------------
-                val port2Config = settingMap[getString(R.string.commandGetPort2Config)]?.split(",")
-
-                // скорость -----------------------------------------
-                val adapterSpeed2 = binding.spinnerSpeedPort2.adapter as ArrayAdapter<String>
-                val indexSpeed2 = adapterSpeed2.getPosition(port2Config?.get(0))
-                if (indexSpeed2 != -1) {
-                    binding.spinnerSpeedPort2.setSelection(indexSpeed2)
-                }
-
-                // количество бит -----------------------------------------
-                val adapterBitData2 = binding.spinnerBitDataPort2.adapter as ArrayAdapter<String>
-                val indexBitData2 = adapterBitData2.getPosition(port2Config?.get(1))
-                if (indexBitData2 != -1) {
-                    binding.spinnerSelectStopBitPort2.setSelection(indexBitData2)
-                }
-
-                // четность -----------------------------------------
-                if (port2Config?.get(2) == "N") {
-                    binding.spinnerSelectParityPort2.setSelection(0)
-                } else if (port2Config?.get(2) == "O") {
-                    binding.spinnerSelectParityPort2.setSelection(1)
-                } else {
-                    binding.spinnerSelectParityPort2.setSelection(2)
-                }
-
-                // стоп биты---------------------------------------------------
-                val adapterStopBit2 = binding.spinnerSelectStopBitPort2.adapter as ArrayAdapter<String>
-                val indexStopBit2 = adapterStopBit2.getPosition(port2Config?.get(3))
-                if (indexBitData2 != -1) {
-                    binding.spinnerSelectStopBitPort2.setSelection(indexStopBit2)
-                }
-
-                binding.port2DisActivFon.visibility = View.GONE
+            // количество бит -----------------------------------------
+            val adapterBitData = binding.spinnerBitDataPort1.adapter as ArrayAdapter<String>
+            val indexBitData = adapterBitData.getPosition(port1Config?.get(1))
+            if (indexBitData != -1) {
+                binding.spinnerSelectStopBitPort1.setSelection(indexBitData)
             }
+
+            // четность -----------------------------------------
+            if (port1Config?.get(2) == "N") {
+                binding.spinnerSelectParityPort1.setSelection(0)
+            } else if (port1Config?.get(2) == "O") {
+                binding.spinnerSelectParityPort1.setSelection(1)
+            } else {
+                binding.spinnerSelectParityPort1.setSelection(2)
+            }
+
+            // стоп биты---------------------------------------------------
+            val adapterStopBit = binding.spinnerSelectStopBitPort1.adapter as ArrayAdapter<String>
+            val indexStopBit = adapterStopBit.getPosition(port1Config?.get(3))
+            if (indexBitData != -1) {
+                binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
+            }
+
+            binding.port1DisActivFon.visibility = View.GONE
+
+
+
+
+
+
+
+
+            // отоюражения настроек порта 2-------------------------------------------------------------
+            val port2Config = settingMap[getString(R.string.commandGetPort2Config)]?.split(",")
+
+            // скорость -----------------------------------------
+            val adapterSpeed2 = binding.spinnerSpeedPort2.adapter as ArrayAdapter<String>
+            val indexSpeed2 = adapterSpeed2.getPosition(port2Config?.get(0))
+            if (indexSpeed2 != -1) {
+                binding.spinnerSpeedPort2.setSelection(indexSpeed2)
+            }
+
+            // количество бит -----------------------------------------
+            val adapterBitData2 = binding.spinnerBitDataPort2.adapter as ArrayAdapter<String>
+            val indexBitData2 = adapterBitData2.getPosition(port2Config?.get(1))
+            if (indexBitData2 != -1) {
+                binding.spinnerSelectStopBitPort2.setSelection(indexBitData2)
+            }
+
+            // четность -----------------------------------------
+            if (port2Config?.get(2) == "N") {
+                binding.spinnerSelectParityPort2.setSelection(0)
+            } else if (port2Config?.get(2) == "O") {
+                binding.spinnerSelectParityPort2.setSelection(1)
+            } else {
+                binding.spinnerSelectParityPort2.setSelection(2)
+            }
+
+            // стоп биты---------------------------------------------------
+            val adapterStopBit2 = binding.spinnerSelectStopBitPort2.adapter as ArrayAdapter<String>
+            val indexStopBit2 = adapterStopBit2.getPosition(port2Config?.get(3))
+            if (indexBitData2 != -1) {
+                binding.spinnerSelectStopBitPort2.setSelection(indexStopBit2)
+            }
+
+            binding.port2DisActivFon.visibility = View.GONE
 
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadActPortDevice))
@@ -599,7 +600,7 @@ class M32Fragment : Fragment(), UsbFragment {
 
         // смотря какой активный порт такие данные и будут аписываться
         if (binding.spinnerSelectActivPort.selectedItem.toString() == "1" ||
-            binding.spinnerServer.selectedItemPosition != 0) {
+            binding.spinnerServer.selectedItemPosition == 0) {
             dataMap[getString(R.string.commandSetPort1Config)] =
                     binding.spinnerSpeed.selectedItem.toString() + "," +
                     binding.spinnerBitDataPort1.selectedItem.toString() + "," +
@@ -608,7 +609,7 @@ class M32Fragment : Fragment(), UsbFragment {
                     ",200,2000"
         }
         if (binding.spinnerSelectActivPort.selectedItem.toString() == "2" ||
-            binding.spinnerServer.selectedItemPosition != 0) {
+            binding.spinnerServer.selectedItemPosition == 0) {
             dataMap[getString(R.string.commandSetPort2Config)] =
                     binding.spinnerSpeedPort2.selectedItem.toString() + "," +
                     binding.spinnerBitDataPort2.selectedItem.toString() + "," +
