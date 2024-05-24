@@ -11,8 +11,12 @@ class UsbCommandsProtocol {
     var flagWorkChackSignal: Boolean = false
     var flagWorkWrite: Boolean = false
 
+    // потоки
+    lateinit var threadChackSignalEnfora: Thread
+
     private val listCommandNotFormater: List<String> = listOf(
-        "AT\$FRIEND?"
+        "AT\$FRIEND?",
+        "AT\$PKG?"
     )
 
     companion object {
@@ -21,6 +25,8 @@ class UsbCommandsProtocol {
 
         const val MAX_CNT_EXPECTATION_SAND: Int = 30
         const val MAX_RATIO_EXPECTATION_NEW_SPEED: Int = 15
+
+        const val TIMEOUT: Long = 1
 
         //const val TIMEOUT_START_DEVICE: Long = 1500
 
@@ -51,9 +57,11 @@ class UsbCommandsProtocol {
 
         Thread {
             if (context is MainActivity) {
+
                 // открываем диалог с загрузочным меню
                 (context as Activity).runOnUiThread {
                     context.openCloseLoadingView(true)
+                    context.flagThreadSerialCommands = true // говорим что работает поток чтения
                 }
 
                 // прогресс на единицу то есть каждая команда сколько то процентов
@@ -74,6 +82,10 @@ class UsbCommandsProtocol {
 
                 // перебор всех команд и получение ответов устройства
                 outer@ for (command in commands) {
+
+                    // прогресс продливается
+                    prograss += progressUnit
+
                     // 2 попытки на отправку
                     for (i in 1..2) {
                         // очищение прошлых данных
@@ -105,8 +117,6 @@ class UsbCommandsProtocol {
                                 context.printInfoTermAndLoaging(command, prograss)
                                 context.printInfoTermAndLoaging(curentData, prograss)
                             }
-
-                            prograss += progressUnit
 
                         } else {
                             (context as Activity).runOnUiThread {
@@ -146,6 +156,13 @@ class UsbCommandsProtocol {
                 }
 
                 context.curentData = ""
+
+                context.flagThreadSerialCommands = false // говорим что не работает поток чтения
+
+                // окончание прогресса
+                (context as Activity).runOnUiThread {
+                    context.printInfoTermAndLoaging("", 100)
+                }
             }
         }.start()
     }
@@ -154,13 +171,16 @@ class UsbCommandsProtocol {
                             saveFlag: Boolean = true, longSleepX: Int = 1) {
 
         Thread {
+
             flagWorkWrite = true
             if (context is MainActivity){
+
                 var flagError: Boolean = false
 
                 // открываем диалог с загрузочным меню
                 (context as Activity).runOnUiThread {
                     context.openCloseLoadingView(true)
+                    context.flagThreadSerialCommands = true // говорим что аботает поток ввода
                 }
 
                 // прогресс на единицу то есть каждая команда сколько то процентов
@@ -172,6 +192,10 @@ class UsbCommandsProtocol {
 
                 // отправка всех настроек в устройство
                 out@for ((key, value) in data) {
+
+                    // прогресс продливается
+                    prograss += progressUnit
+
                     // 2 попытки на отправку
                     for (i in 1..2) {
                         // очищение прошлых данных
@@ -204,7 +228,6 @@ class UsbCommandsProtocol {
                         val curentData: String = context.curentData
                         // вывод в загрузочное диалог информации
                         (context as Activity).runOnUiThread {
-                            prograss += progressUnit
                             context.printInfoTermAndLoaging(key + value, prograss)
                             context.printInfoTermAndLoaging(curentData, prograss)
                         }
@@ -257,6 +280,13 @@ class UsbCommandsProtocol {
 
                 // включение ат команд
                 context.usb.flagAtCommandYesNo = true
+
+                context.flagThreadSerialCommands = false // говорим что не работает поток ввода
+
+                // окончание прогресса
+                (context as Activity).runOnUiThread {
+                    context.printInfoTermAndLoaging("", 100)
+                }
             }
             flagWorkWrite = false
         }.start()
@@ -264,10 +294,13 @@ class UsbCommandsProtocol {
 
     // метод для получения настроек устройства
     fun readSignalEnfora(command: String, context: Context, usbFragment: UsbFragment) {
-        var flagsSuccess: Boolean = true
         flagWorkChackSignal = true
-        Thread {
+
+        threadChackSignalEnfora = Thread {
             if (context is MainActivity) {
+
+                context.flagThreadSerialCommands = true // говорим что работает поток ввода
+
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
 
@@ -283,8 +316,12 @@ class UsbCommandsProtocol {
                         // достигнуто ваксимальное время и нет ответа ошибка
                         (context as Activity).runOnUiThread {
                             context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+
+                            // меняем текст кнопки
+                            if (usbFragment is Enfora1318Fragment) {
+                                usbFragment.onErrorStopChackSignal()
+                            }
                         }
-                        flagsSuccess = false
                         break@out
                     }
 
@@ -292,35 +329,32 @@ class UsbCommandsProtocol {
                     val data: List<String> = formatDataCommandsNormolize(context.curentData).split(",")
 
                     // после получения данных отправляем их на отображение
-                    (context as Activity).runOnUiThread {
-                        if (usbFragment is Enfora1318Fragment) {
-                            try {
-                                usbFragment.onPrintSignal(data[0], data[1])
-                            } catch (e: Exception) {
-                                flagsSuccess = false
+                    if (flagWorkChackSignal) {
+                        (context as Activity).runOnUiThread {
+                            if (usbFragment is Enfora1318Fragment) {
+                                try {
+                                    usbFragment.onPrintSignal(data[0], data[1])
+                                } catch (e: Exception) {
+                                    context.showAlertDialog(context.getString(R.string.notValidData))
+                                }
                             }
                         }
+                        break@out
                     }
-
                 }
 
 
                 // подкл ат команд
                 context.usb.flagAtCommandYesNo = true
 
-                if (!flagsSuccess)  {
-                    (context as Activity).runOnUiThread {
-                        context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
-
-                        // меняем текст кнопки
-                        if (usbFragment is Enfora1318Fragment) {
-                            usbFragment.onErrorStopChackSignal()
-                        }
-                    }
-                }
                 context.curentData = ""
+
+                context.flagThreadSerialCommands = false // говорим что не работает поток ввода
+
             }
-        }.start()
+        }
+        // запуск потока проверки сигнала
+        threadChackSignalEnfora.start()
     }
 
 

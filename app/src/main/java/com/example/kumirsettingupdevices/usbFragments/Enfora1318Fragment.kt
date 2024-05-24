@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentEnforma1318Binding
+import com.example.kumirsettingupdevices.modems.ModemDataW
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.testappusb.settings.ConstUsbSettings
@@ -26,6 +27,10 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
     private val usbCommandsProtocol = UsbCommandsProtocol()
     private var flagClickChackSignal: Boolean = false
+
+    private var readOk: Boolean = false
+
+    private var curentDataModem: Map<String, String> = mapOf()
 
     companion object {
         const val TIMEOUT_THREAD: Long = 20
@@ -103,25 +108,38 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
 
             binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+
+
         }
         //------------------------------------------------------------------------------------------
 
         binding.imagedischarge.setOnClickListener {
-            onClickReadSettingsDevice(it)
 
-            // Обертываем наш Drawable для совместимости и изменяем цвет
-            drawable?.let {
-                val wrappedDrawable = DrawableCompat.wrap(it)
+            if (!flagClickChackSignal) {
+                onClickReadSettingsDevice(it)
 
-                DrawableCompat.setTint(wrappedDrawable, Color.RED)
+                // Обертываем наш Drawable для совместимости и изменяем цвет
+                drawable?.let {
+                    val wrappedDrawable = DrawableCompat.wrap(it)
 
-                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+                    DrawableCompat.setTint(wrappedDrawable, Color.RED)
+
+                    binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+                }
+
+                // только после чтения
+                binding.imageDownLoad.setOnClickListener {
+                    // если выключено прослушивание порта
+                    if (!flagClickChackSignal) {
+                        onClickWriteSettingsDevice(it)
+                    } else {
+                        showAlertDialog(getString(R.string.notUseSerialPort))
+                    }
+                }
+            } else {
+                showAlertDialog(getString(R.string.notUseSerialPort))
             }
 
-            // только после чтения
-            binding.imageDownLoad.setOnClickListener {
-                onClickWriteSettingsDevice(it)
-            }
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
@@ -136,14 +154,22 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
     override fun onDestroyView() {
         val context: Context = requireContext()
 
+        try {
+            // отключения потока прочитки сигнала если он включен
+            if (usbCommandsProtocol.flagWorkChackSignal) {
+                usbCommandsProtocol.flagWorkChackSignal = false
+                usbCommandsProtocol.threadChackSignalEnfora.interrupt()
+            }
+        } catch (e: Exception) {}
+
+
+
         if (context is MainActivity) {
             context.usb.onSelectUumBit(true)
             context.usb.onSerialParity(0)
             context.usb.onSerialStopBits(0)
             context.usb.onSerialSpeed(9)
         }
-
-        usbCommandsProtocol.flagWorkChackSignal = false
 
         super.onDestroyView()
     }
@@ -276,22 +302,26 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
     }
 
     private fun onClickChackSignal() {
-        if (!flagClickChackSignal) {
-            usbCommandsProtocol.readSignalEnfora(getString(R.string.commandGetLevelSignalAndErrors),
-                requireContext(), this)
-            binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
+        if (readOk) {
+            if (!flagClickChackSignal) {
+                usbCommandsProtocol.readSignalEnfora(getString(R.string.commandGetLevelSignalAndErrors),
+                    requireContext(), this)
+                binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
 
-            flagClickChackSignal = true
+                flagClickChackSignal = true
+            } else {
+                usbCommandsProtocol.flagWorkChackSignal = false
+                binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
+
+                flagClickChackSignal = false
+            }
         } else {
-            usbCommandsProtocol.flagWorkChackSignal = false
-            binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-
-            flagClickChackSignal = false
+            showAlertDialog(getString(R.string.notReadDevice))
         }
-
     }
     fun onErrorStopChackSignal() {
-        binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
+        flagClickChackSignal = false
+        binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
     }
 
     fun onPrintSignal(signal: String, errors: String) {
@@ -310,6 +340,12 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
+        // прочтение прошло успешно
+        readOk = true
+
+        // текущие настройки сохраняются для сравнения в будещем
+        curentDataModem = settingMap
+
         if (settingMap[getString(R.string.commandGetSerialNumberEnforaM31)]?.contains("01152600") == true) {
             showAlertDialog(getString(R.string.notDeviceType) + getString(R.string.m31))
             return
@@ -317,8 +353,16 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
         // верийный номер и версия прошибки
         val serNum: String = getString(R.string.serinerNumber) +
-                "\n" + settingMap[getString(R.string.commandGetSerialNum)]
+                "\n" + settingMap[getString(R.string.commandGetSerialNum)]?.replace("\"", "")
         binding.serinerNumber.text = serNum
+
+        val version: String = getString(R.string.versionProgram) +
+                "\n" + settingMap[getString(R.string.commandGetVersionProgramEnfora)]?.
+                        // peplace для того что бы убрать из ответа лишние и оставить только прошивку
+                        replace("\n", "")?.
+                        replace(getString(R.string.okSand), "")?.
+                        replace(getString(R.string.commandGetVersionProgramEnfora), "")
+        binding.textVersionFirmware.text = version
 
         // оеператор связи
         val operationGSM: String = getString(R.string.communicationOperatorTitle) +
@@ -371,21 +415,41 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
     }
 
     override fun readSettingStart() {
+        // чтение тольуо тогда когда отключен проверка сигнала
         val command: List<String> = arrayListOf(
             getString(R.string.commandGetSerialNum),
+            getString(R.string.commandGetVersionProgramEnfora),
             getString(R.string.commandServer1EnforaOrM31),
             getString(R.string.commandServer2EnforaOrM31),
             getString(R.string.commandGetApnEnforaM31),
             getString(R.string.commandGetTcpPortEnforaM31),
             getString(R.string.commandGetLoginPasswordEnforaM31),
-            getString(R.string.commandGetOperatirGSM)
+            getString(R.string.commandGetOperatirGSM),
+
+
+            getString(R.string.commandGetDisableAutoAttach),
+            getString(R.string.commandGetAutoRegistration),
+            getString(R.string.commandGetConfigureHostInterface),
+            getString(R.string.commandGetPadBlockSize),
+            getString(R.string.commandGetPadTimeout),
+            getString(R.string.commandGetConfigureWakeup),
+            getString(R.string.commandGetConfigureAck),
+            getString(R.string.commandGetExecutePadCommand),
+            getString(R.string.commandGetActivatePadConnection),
+            getString(R.string.commandGetConnectionTimeoutEnfora),
+            getString(R.string.commandGetIdleTimeout),
+            getString(R.string.commandGetNetworkMonitor),
+            getString(R.string.commandGetStoreAtEvents),
+            getString(R.string.commandGetEventTimer),
+            getString(R.string.commandGetEvent),
+            getString(R.string.commandGetConfigureGPIO),
+            getString(R.string.commandGetGPIOValue)
         )
 
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this, true)
     }
 
     override fun writeSettingStart() {
-
         // для начала читаем настроки порта
         /*
             <format>
@@ -406,12 +470,28 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
         val format: Int = usbCommandsProtocol.calculateFormat(binding.spinnerBitDataPort1.selectedItemPosition,
             binding.spinnerSelectStopBitPort1.selectedItemPosition,
             if (binding.spinnerSelectParityPort1.selectedItemPosition == 0) 0 else 1)
+
+        // если введены не валидные настроки порта
+        if (format == 0) {
+            showAlertDialog(getString(R.string.errorSettingPort))
+            return
+        }
+
         val parity: Int = if (binding.spinnerSelectParityPort1.selectedItemPosition == 2) 0 else 1
 
+        val modemDataW = ModemDataW(requireContext())
+        val dataWrite: MutableMap<String, String> = modemDataW.getEnfora1318DataWrite(curentDataModem)
+
+        dataWrite[getString(R.string.commandSetSpeed)] = binding.spinnerSpeed.selectedItem.toString()
+        dataWrite[getString(R.string.commandSetFormatParity)] = "$format,$parity"
+        dataWrite[getString(R.string.commandSetSaveSettings)] = ""
+        dataWrite[getString(R.string.commandSetResetModem)] = ""
+
+        usbCommandsProtocol.writeSettingDevice(dataWrite, requireContext(), this, false, 5)
 
 
         // отдельный поток что бы не замедлять основной поток пока идет сброс настроек
-        Thread {
+        /*Thread {
             // сброс настроек до деффолтных
             val dataMap_F_Setting: MutableMap<String, String> = mutableMapOf(
                 getString(R.string.commandSetDeffoltSetting) to ""
@@ -441,7 +521,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
                 getString(R.string.commandSetConfigureAck) to getString(R.string.defaultConfigureAck),
                 getString(R.string.commandSetExecutePadCommand) to getString(R.string.defaultExecutePadCommand),
                 getString(R.string.commandSetActivatePadConnection) to getString(R.string.defaultActivatePadConnection),
-                getString(R.string.commandSetConnectionTimeoutEnfora) to getString(R.string.defaultSetIdleTimeout),
+                getString(R.string.commandSetConnectionTimeoutEnfora) to getString(R.string.defaultSetConnectionTimeout),
                 getString(R.string.commandSetIdleTimeout) to getString(R.string.defaultSetIdleTimeout),
                 getString(R.string.commandSetNetworkMonitor) to getString(R.string.defaultNetworkMonitor),
                 getString(R.string.commandSetStoreAtEvents) to getString(R.string.defaultStoreAtEvents),
@@ -491,7 +571,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
 
 
-        }.start()
+        }.start()*/
     }
 
     private fun showAlertDialog(text: String) {

@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     private var usbComsMenu: UsbComsMenu? = null
     var curentData: String = ""
 
+    // flag Для контроля передачи информации
+    var flagThreadSerialCommands: Boolean = false
+
     companion object {
         const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
         const val NORM_LENGHT_DATA_START = 5
@@ -411,15 +414,17 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // метод для открытия и закрытия меню с терменалом
     fun openCloseLoadingView(flag: Boolean) {
-        binding.fonLodingView.visibility =
-            if (flag) {
-                View.VISIBLE
-            }
-            else {
-                binding.progressBarLoading.progress = 0
-                binding.textTerm.text = getString(R.string.loadingTitle)
-                View.GONE
-            }
+        if (!flagThreadSerialCommands) {
+            binding.fonLodingView.visibility =
+                if (flag) {
+                    View.VISIBLE
+                }
+                else {
+                    binding.progressBarLoading.progress = 0
+                    binding.textTerm.text = getString(R.string.loadingTitle)
+                    View.GONE
+                }
+        }
     }
 
 

@@ -10,7 +10,11 @@
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="errorTimeOutSand">Время ожидание ответа слишком большое, наверное вы отсоединили модем!</string>
+    <string name="notValidData">Похоже что пришедщие данные не валидны!</string>
+    <string name="errorSettingPort">Для данного модема такие настройки порта не валидны!</string>
     <string name="errorFindSpeedSerial">Поиск скорости не дал результата! Убедитесь что кабель подключен надежно и имеет контакты для связи с serial port!</string>
+    <string name="notReadDevice">Вы еще не прочитали устройство!</string>
+    <string name="notUseSerialPort">Нельзя читать или записывать во время проверки сигнала!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
     <string name="notReadRange">Не удалось получить диапазон устройства устройства!</string>
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
@@ -265,6 +269,7 @@
 
     <string name="commandSpeedFind">AT+IPR?</string>
 
+    <string name="commandGetVersionProgramEnfora">AT$PKG?</string>
     <string name="commandGetSerialNumberEnforaM31">AT+CGSN?</string>
     <string name="commandGetApnEnforaM31">AT+CGDCONT?</string>
     <string name="commandGetTcpPortEnforaM31">AT$PADSRC?</string>
@@ -273,6 +278,27 @@
     <string name="commandServer2EnforaOrM31">AT$FRIEND?</string>
     <string name="commandGetOperatirGSM">AT+COPS?</string>
     <string name="commandGetLevelSignalAndErrors">AT+CSQ</string>
+
+    <string name="commandGetDisableAutoAttach">AT%CGAATT?</string>
+    <string name="commandGetAutoRegistration">AT$AREG?</string>g>
+    <string name="commandGetConfigureHostInterface">AT$HOSTIF?</string>
+    <string name="commandGetPadBlockSize">AT$PADBLK?</string>
+    <string name="commandGetPadTimeout">AT$PADTO?</string>
+    <string name="commandGetConfigureWakeup">AT$WAKEUP?</string>
+    <string name="commandGetConfigureAck">AT$ACKTM?</string>
+    <string name="commandGetExecutePadCommand">AT$PADCMD?</string>
+    <string name="commandGetActivatePadConnection">AT$ACTIVE?</string>
+    <string name="commandGetConnectionTimeoutEnfora">AT$CONNTO?</string>
+    <string name="commandGetIdleTimeout">AT$IDLETO?</string>
+    <string name="commandGetNetworkMonitor">AT$NETMON?</string>
+    <string name="commandGetStoreAtEvents">AT$STOATEV?</string>
+    <string name="commandGetEventTimer">AT$EVTIM1?</string>
+    <string name="commandGetEvent">AT$EVENT?</string>
+    <string name="commandGetConfigureGPIO">AT$IOCFG?</string>
+    <string name="commandGetGPIOValue">AT$IOGPA?</string>
+
+
+
 
     <string name="commandSetDeffoltSetting">AT&amp;F</string>
     <string name="commandSetFriend">AT$FRIEND=</string>

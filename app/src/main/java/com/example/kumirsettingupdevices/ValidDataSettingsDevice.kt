@@ -52,7 +52,7 @@ class ValidDataSettingsDevice {
     fun powerValid(power: String): Boolean {
         try {
             val powerNum: Int = power.toInt()
-            if (powerNum >= POWER_MIN && powerNum <= POWER_MAX) {
+            if (powerNum in POWER_MIN..POWER_MAX) {
                 return true
             }
         } catch (e: Exception) {}
