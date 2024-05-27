@@ -16,7 +16,8 @@ class UsbCommandsProtocol {
 
     private val listCommandNotFormater: List<String> = listOf(
         "AT\$FRIEND?",
-        "AT\$PKG?"
+        "AT\$PKG?",
+        "AT\$EVENT?"
     )
 
     companion object {

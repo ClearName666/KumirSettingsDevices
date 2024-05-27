@@ -106,6 +106,17 @@
             app:layout_constraintEnd_toEndOf="@+id/imageDownLoad"
             app:layout_constraintStart_toStartOf="@+id/imageDownLoad"
             app:layout_constraintTop_toBottomOf="@+id/imageDownLoad" />
+
+        <ImageView
+            android:id="@+id/imageSelectPriset"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/done_music_collection_svgrepo_com"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
@@ -136,10 +147,11 @@
                     android:id="@+id/spinnerSelectParityPort1"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="68dp"
+                    android:background="@drawable/spinner_border"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textParity"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textParity" />
 
                 <Spinner
                     android:id="@+id/spinnerSelectStopBitPort1"
@@ -187,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bitDataTitle"
                     android:textColor="@color/textColor"
-                    app:layout_constraintBottom_toTopOf="@+id/spinnerSpeed"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSpeedPort"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintTop_toTopOf="@+id/textSpeedPort" />

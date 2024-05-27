@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     private lateinit var binding: MainActivityBinding
 
     private var usbComsMenu: UsbComsMenu? = null
+    private var selectMenuPrisetSettings: SelectMenuPrisetSettings? = null
     var curentData: String = ""
 
     // flag Для контроля передачи информации
@@ -130,7 +131,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // смена настроек usb ---------------------------------------------------
         ConstUsbSettings.speedIndex = 9 // скорость 115200
-        usb.flagAtCommandYesNo = true
+
+        // usb.flagAtCommandYesNo = true
+
 
     }
 
@@ -174,6 +177,21 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // вункция для вывода имени устроства
     fun printDeviceTypeName(name: String) {
         binding.textNameDevice.text = name
+    }
+
+    // клик по кнопке выбора присета настроек
+    fun onClickPrisetSettingFor() {
+        selectMenuPrisetSettings = SelectMenuPrisetSettings()
+
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+
+        // Новый фрагент
+        transaction.replace(binding.fragmentSelectPrisetSettings.id, selectMenuPrisetSettings!!)
+        //transaction.addToBackStack("UsbComsMenu")
+        transaction.commit()
+
+        ActivationFonDarkMenu(true)
     }
 
     // клик конпки настроек
@@ -303,6 +321,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             val transaction = fragmentManager.beginTransaction()
 
             transaction.remove(usbComsMenu!!)
+            transaction.commit()
+        } catch (e: Exception) {}
+
+        try {
+            val fragmentManager = supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+
+            transaction.remove(selectMenuPrisetSettings!!)
             transaction.commit()
         } catch (e: Exception) {}
 

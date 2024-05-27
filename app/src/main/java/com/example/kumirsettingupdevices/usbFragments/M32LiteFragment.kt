@@ -77,6 +77,11 @@ class M32LiteFragment : Fragment(), UsbFragment {
         binding.DisActivPort1SetiingsPriset.setOnClickListener {
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
         }
+        binding.imageSelectPriset.setOnClickListener {
+            if (context is MainActivity) {
+                context.onClickPrisetSettingFor()
+            }
+        }
 
         //------------------------------------------------------------------------------------------
         // покраска кнопки записи в серый
@@ -116,6 +121,16 @@ class M32LiteFragment : Fragment(), UsbFragment {
 
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        val context: Context = requireContext()
+
+        if (context is MainActivity) {
+            context.usb.flagAtCommandYesNo = false
+        }
+
+        super.onDestroyView()
     }
 
     private fun createAdapters() {

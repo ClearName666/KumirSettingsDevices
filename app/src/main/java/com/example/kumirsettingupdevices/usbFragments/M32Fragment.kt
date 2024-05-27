@@ -177,6 +177,11 @@ class M32Fragment : Fragment(), UsbFragment {
         binding.DisActivPort2SetiingsPriset.setOnClickListener {
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
         }
+        binding.imageSelectPriset.setOnClickListener {
+            if (context is MainActivity) {
+                context.onClickPrisetSettingFor()
+            }
+        }
 
 
         binding.imagedischarge.setOnClickListener {
@@ -200,6 +205,16 @@ class M32Fragment : Fragment(), UsbFragment {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        val context: Context = requireContext()
+
+        if (context is MainActivity) {
+            context.usb.flagAtCommandYesNo = false
+        }
+
+        super.onDestroyView()
     }
 
     private fun createAdapters() {

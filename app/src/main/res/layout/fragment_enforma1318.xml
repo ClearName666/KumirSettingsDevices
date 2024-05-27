@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bitDataTitle"
                     android:textColor="@color/textColor"
-                    app:layout_constraintBottom_toTopOf="@+id/spinnerSpeed"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSpeedPort"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintTop_toTopOf="@+id/textSpeedPort" />
@@ -160,13 +160,13 @@
                     android:id="@+id/textChackSignal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/chackSignalTitle"
                     android:textColor="@color/textColor"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort1" />
+                    app:layout_constraintTop_toBottomOf="@+id/textSizeBuffer" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lineChaclkSignal"
@@ -251,6 +251,153 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textInputIPAdressLayout" />
+
+                <TextView
+                    android:id="@+id/textAPN"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/apnTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort1" />
+
+                <TextView
+                    android:id="@+id/textLogin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gprsLoginTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textAPN" />
+
+                <TextView
+                    android:id="@+id/textPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gprsPasswordTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textLogin" />
+
+                <TextView
+                    android:id="@+id/textServer1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/server_1Title"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textPassword" />
+
+                <TextView
+                    android:id="@+id/textServer2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/server_2Title"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textServer1" />
+
+                <TextView
+                    android:id="@+id/textTimeOut"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timeoutTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textServer2" />
+
+                <TextView
+                    android:id="@+id/textSizeBuffer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sizeBufferTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textTimeOut" />
+
+                <TextView
+                    android:id="@+id/APN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="apn"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textAPN"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textAPN"
+                    app:layout_constraintTop_toTopOf="@+id/textAPN" />
+
+                <TextView
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="login"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textLogin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textLogin"
+                    app:layout_constraintTop_toTopOf="@+id/textLogin" />
+
+                <TextView
+                    android:id="@+id/password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="password"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textPassword"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textPassword"
+                    app:layout_constraintTop_toTopOf="@+id/textPassword" />
+
+                <TextView
+                    android:id="@+id/server1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="server 1"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textServer1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textServer1"
+                    app:layout_constraintTop_toTopOf="@+id/textServer1" />
+
+                <TextView
+                    android:id="@+id/server2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="server 2"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textServer2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textServer2"
+                    app:layout_constraintTop_toBottomOf="@+id/textServer1" />
+
+                <TextView
+                    android:id="@+id/timeout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="timeout"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textTimeOut"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textTimeOut"
+                    app:layout_constraintTop_toBottomOf="@+id/textServer2" />
+
+                <TextView
+                    android:id="@+id/buffer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="buffer"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSizeBuffer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textSizeBuffer"
+                    app:layout_constraintTop_toBottomOf="@+id/textTimeOut" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

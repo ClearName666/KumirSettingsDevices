@@ -26,7 +26,7 @@
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
-    
+
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
     <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
@@ -48,6 +48,7 @@
     <string name="title_activity_loading">LoadingActivity</string>
     <string name="selectTypeDevice">Выберите устройство</string>
     <string name="devices">Устройства</string>
+
     <string name="enforma1318">Enfora1318</string>
     <string name="m31">КУМИР M31</string>
     <string name="k21_k23">КУМИР K21/K23</string>
@@ -76,6 +77,12 @@
     <string name="devmodeGSMmodem">GSMmodem</string>
     <string name="devmodePipeClient">PipeClient</string>
     <string name="devdodePipeServer">PipeServer</string>
+
+    <string name="priset1">По умолчанию</string>
+    <string name="priset2">Открытый «Билайн»</string>
+    <string name="priset3">Открытый «Мегафон»</string>
+    <string name="priset4">Открытый «МТС»</string>
+    <string name="priset5">Открытый «Ростелеком»</string>
 
     <string name="devmodeROUTER">ROUTER</string>
     <string name="devmodeCANPROXY">CANPROXY</string>
@@ -160,7 +167,6 @@
     <string name="speed_115200">115200</string>
 
 
-
     <string name="rangeTitle">Диапазон</string>
     <string name="keyNetTitle">Ключ доступа к сети (макс. 60 симв.)</string>
     <string name="powerCures">Мощность излучения(-16dBm .. 14bBm)</string>
@@ -198,18 +204,12 @@
     <string name="ipAdressTitle">IP-адрес</string>
 
 
-
-
-
     <!--ВСЕ ЧТО ИДЕТ ДАЛЬШЕ СЕРВИСНОЕ НЕ ДЛЯ ОТОБРАЖЕНИЯ-->
-
-
-    
 
 
     <string name="error">ERROR</string>
     <string name="okSand">OK</string>
-    
+
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
 
@@ -255,7 +255,7 @@
     <string name="commandSaveSettings">AT$SAVE</string>
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
-    
+
     <string name="commandGetNetKey">AT$NETKEY?</string>
     <string name="commandGetPower">AT$POWER?</string>
     <string name="commandGetRange">AT$BAND?</string>
@@ -298,8 +298,6 @@
     <string name="commandGetGPIOValue">AT$IOGPA?</string>
 
 
-
-
     <string name="commandSetDeffoltSetting">AT&amp;F</string>
     <string name="commandSetFriend">AT$FRIEND=</string>
     <string name="commandSetSaveSettings">AT&amp;W</string>
@@ -332,7 +330,6 @@
     <string name="commandSetFormatParity">AT+ICF=</string>
 
 
-
     <!--Деффолтные настроки модемов enfora и M31 -->
     <string name="defaultAPN">kumir.dv</string>
     <string name="defaultSERVER1">\"172.27.0.15\",0</string>
@@ -340,13 +337,11 @@
     <string name="defaultTCPPORT">6502</string>
 
     <!--Деффолтные настроки модемов вспомогательные строки для проверки-->
-    <string name="defaultHelpCheckSERVER1">\"172.027.000.015\", 0</string>
-    <string name="defaultHelpCheckSERVER2copySERVER1">01, 1, \"172.027.000.015\"</string>
-    <string name="defaultHelpCheckSERVER2">02, 1, \"172.027.000.014\"</string>
+    <string name="defaultHelpCheckSERVER1">172.027.000.015</string> <!--\"172.027.000.015\", 0-->
+    <string name="defaultHelpCheckSERVER2copySERVER1">172.027.000.015</string> <!--01, 1, \"172.027.000.015\"-->
+    <string name="defaultHelpCheckSERVER2">172.027.000.014</string><!--02, 1, \"172.027.000.014\"-->
 
 
-
-    
     <string name="defaultFriend">,0,\"0.0.0.0\"</string>
     <string name="defaultDisableAutoAttach">0,0</string>
     <string name="defaultConfigurePPP">0</string>
@@ -359,11 +354,14 @@
     <string name="defaultSetFriend2">2,1,\"172.27.0.14\"</string>
     <string name="defaultConfigureWakeup">2,5</string>
     <string name="defaultConfigureAck">8,15,0</string>
+    <string name="defaultReadConfigureAck">8, 15, 0</string>
     <string name="defaultExecutePadCommand">0</string>
+    <string name="defaultReadExecutePadCommand">0000</string>
     <string name="defaultActivatePadConnection">0</string>
     <string name="defaultSetConnectionTimeout">60</string>
     <string name="defaultSetIdleTimeout">60</string>
     <string name="defaultNetworkMonitor">5,2,10,1</string>
+    <string name="defaultReadNetworkMonitor">5, 2, 10, 1</string>
     <string name="defaultStoreAtEvents">1,AT$RESET</string>
     <string name="defaultSetEventTimer">45000</string>
     <string name="defaultConfigureEvent1">5,1,12,1,1</string>
@@ -386,6 +384,11 @@
     <string name="defaultConfigureEvent16">95,3,18,0,0</string>
     <string name="defaultConfigureEvent17">96,1,11,0,0</string>
     <string name="defaultConfigureEvent18">96,3,10,0,0</string>
-<!--............................................................................-->
+    <string name="server_1Title">Сервер 1</string>
+    <string name="server_2Title">Сервер 2</string>
+    <string name="timeoutTitle">Время ожидания</string>
+    <string name="sizeBufferTitle">Размер буфера</string>
+    <string name="selectPrisetSettings">Выберете присет настроек</string>
+    <!--............................................................................-->
 
 </resources>

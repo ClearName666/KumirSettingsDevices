@@ -117,6 +117,16 @@ class PM81Fragment : Fragment(), UsbFragment {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        val context: Context = requireContext()
+
+        if (context is MainActivity) {
+            context.usb.flagAtCommandYesNo = false
+        }
+
+        super.onDestroyView()
+    }
+
     private fun createAdapters() {
         // адаптер для выбора режима работы модема
         val itemsSpinnerDevMode = listOf(

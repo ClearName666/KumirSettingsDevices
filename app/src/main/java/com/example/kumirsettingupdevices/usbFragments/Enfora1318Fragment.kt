@@ -169,6 +169,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             context.usb.onSerialParity(0)
             context.usb.onSerialStopBits(0)
             context.usb.onSerialSpeed(9)
+            context.usb.flagAtCommandYesNo = false
         }
 
         super.onDestroyView()
@@ -364,6 +365,17 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
                         replace(getString(R.string.commandGetVersionProgramEnfora), "")
         binding.textVersionFirmware.text = version
 
+        // вывод настроек
+        binding.APN.text = settingMap[getString(R.string.commandGetApnEnforaM31)]
+        binding.login.text = settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]
+        binding.password.text = settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]
+        binding.server1.text = settingMap[getString(R.string.commandServer1EnforaOrM31)]
+        binding.server2.text = settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
+            substringAfter("02, 1,")?.substringBefore("\n")
+        binding.timeout.text = settingMap[getString(R.string.commandGetPadTimeout)]
+        binding.buffer.text = settingMap[getString(R.string.commandGetPadBlockSize)]
+
+
         // оеператор связи
         val operationGSM: String = getString(R.string.communicationOperatorTitle) +
                 settingMap[getString(R.string.commandGetOperatirGSM)]
@@ -489,89 +501,6 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
         usbCommandsProtocol.writeSettingDevice(dataWrite, requireContext(), this, false, 5)
 
-
-        // отдельный поток что бы не замедлять основной поток пока идет сброс настроек
-        /*Thread {
-            // сброс настроек до деффолтных
-            val dataMap_F_Setting: MutableMap<String, String> = mutableMapOf(
-                getString(R.string.commandSetDeffoltSetting) to ""
-            )
-            usbCommandsProtocol.writeSettingDevice(dataMap_F_Setting, requireContext(), this, false, 10)
-
-            // ожидание сброса настроек при помощи обработки флага
-            while (!usbCommandsProtocol.flagWorkWrite) {
-                Thread.sleep(TIMEOUT_THREAD)
-            }
-            while (usbCommandsProtocol.flagWorkWrite) {
-                Thread.sleep(TIMEOUT_THREAD)
-            }
-
-            // отправить данные настроек
-            val dataMap: MutableMap<String, String> = mutableMapOf(
-                getString(R.string.commandSetDisableAutoAttach) to getString(R.string.defaultDisableAutoAttach),
-                getString(R.string.commandSetConfigurePPP) to getString(R.string.defaultConfigurePPP),
-                getString(R.string.commandSetAutoRegistration) to getString(R.string.defaultAutoRegistration),
-                getString(R.string.commandSetDefinePDPContext) to getString(R.string.defaultDefinePDPContext),
-                getString(R.string.commandSetConfigureHostInterface) to getString(R.string.defaultConfigureHostInterface),
-                getString(R.string.commandSetDestinationAddress) to getString(R.string.defaultSERVER1),
-                getString(R.string.commandSetSourcePort) to getString(R.string.defaultTCPPORT),
-                getString(R.string.commandSetPadBlockSize) to getString(R.string.defaultSetPadBlockSize),
-                getString(R.string.commandSetPadTimeout) to getString(R.string.defaultSetPadTimeout),
-                getString(R.string.commandSetConfigureWakeup) to getString(R.string.defaultConfigureWakeup),
-                getString(R.string.commandSetConfigureAck) to getString(R.string.defaultConfigureAck),
-                getString(R.string.commandSetExecutePadCommand) to getString(R.string.defaultExecutePadCommand),
-                getString(R.string.commandSetActivatePadConnection) to getString(R.string.defaultActivatePadConnection),
-                getString(R.string.commandSetConnectionTimeoutEnfora) to getString(R.string.defaultSetConnectionTimeout),
-                getString(R.string.commandSetIdleTimeout) to getString(R.string.defaultSetIdleTimeout),
-                getString(R.string.commandSetNetworkMonitor) to getString(R.string.defaultNetworkMonitor),
-                getString(R.string.commandSetStoreAtEvents) to getString(R.string.defaultStoreAtEvents),
-                getString(R.string.commandSetEventTimer) to getString(R.string.defaultSetEventTimer),
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent1) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent2) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent3) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent4) to "",
-                getString(R.string.commandSetConfigureGPIO) to getString(R.string.defaultConfigureGPIO),
-                getString(R.string.commandSetGPIOValue) to getString(R.string.defaultSetGPIOValue),
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent5) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent6) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent7) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent8) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent9) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent10) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent11) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent12) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent13) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent14) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent15) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent16) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent17) to "",
-                getString(R.string.commandSetEvent) + getString(R.string.defaultConfigureEvent18) to "",
-            )
-
-            // добавление команд сброса AT$FRIEND
-            for (itemFRIEND in 1..10) {
-                dataMap[getString(R.string.commandSetFriend) + itemFRIEND.toString() + getString(R.string.defaultFriend)] = ""
-            }
-
-            // добавления нужных друзей
-            dataMap[getString(R.string.commandSetFriend) + getString(R.string.defaultSetFriend1)] = ""
-            dataMap[getString(R.string.commandSetFriend) + getString(R.string.defaultSetFriend2)] = ""
-
-
-            // изменения скоростей работы
-            dataMap[getString(R.string.commandSetSpeed)] = binding.spinnerSpeed.selectedItem.toString()
-            dataMap[getString(R.string.commandSetFormatParity)] = "$format,$parity"
-
-            // последняя команда для сохранения данных
-            dataMap[getString(R.string.commandSetSaveSettings)] = ""
-            dataMap[getString(R.string.commandSetResetModem)] = ""
-
-            // отправка команд
-            usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false, 5)
-
-
-
-        }.start()*/
     }
 
     private fun showAlertDialog(text: String) {

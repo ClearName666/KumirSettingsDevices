@@ -1,6 +1,7 @@
 package com.example.kumirsettingupdevices.modems
 
 import android.content.Context
+import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 
 // класс в котором функции которые возвращяют
@@ -11,7 +12,7 @@ class ModemDataW(val context: Context) {
     fun getEnfora1318DataWrite(data: Map<String, String>): MutableMap<String, String> {
         val dataWrite: MutableMap<String, String> = mutableMapOf()
 
-        // сервер 1
+        // сервер 1 -----------------------------------------
         if (data[context.getString(R.string.commandServer1EnforaOrM31)]?.
             contains(context.getString(R.string.defaultHelpCheckSERVER1)) == false) {
 
@@ -19,7 +20,7 @@ class ModemDataW(val context: Context) {
                 context.getString(R.string.defaultSERVER1)
         }
 
-        // сервер 2
+        // сервер 2 ------------------------------------------
         if (data[context.getString(R.string.commandServer2EnforaOrM31)]?.
             contains(context.getString(R.string.defaultHelpCheckSERVER2copySERVER1)) == false ||
             data[context.getString(R.string.commandServer2EnforaOrM31)]?.
@@ -109,7 +110,7 @@ class ModemDataW(val context: Context) {
 
         // AT$ACKTM
         if (data[context.getString(R.string.commandGetConfigureAck)]?.
-            contains(context.getString(R.string.defaultConfigureAck)) == false) {
+            contains(context.getString(R.string.defaultReadConfigureAck)) == false) {
 
             dataWrite[context.getString(R.string.commandSetConfigureAck)] =
                 context.getString(R.string.defaultConfigureAck)
@@ -117,7 +118,7 @@ class ModemDataW(val context: Context) {
 
         // AT$PADCMD
         if (data[context.getString(R.string.commandGetExecutePadCommand)]?.
-            contains(context.getString(R.string.defaultExecutePadCommand)) == false) {
+            contains(context.getString(R.string.defaultReadExecutePadCommand)) == false) {
 
             dataWrite[context.getString(R.string.commandSetExecutePadCommand)] =
                 context.getString(R.string.defaultExecutePadCommand)
@@ -149,19 +150,19 @@ class ModemDataW(val context: Context) {
 
         // AT$NETMON
         if (data[context.getString(R.string.commandGetNetworkMonitor)]?.
-            contains(context.getString(R.string.defaultNetworkMonitor)) == false) {
+            contains(context.getString(R.string.defaultReadNetworkMonitor)) == false) {
 
             dataWrite[context.getString(R.string.commandSetNetworkMonitor)] =
                 context.getString(R.string.defaultNetworkMonitor)
         }
 
-        // AT$STOATEV
+        /*// AT$STOATEV
         if (data[context.getString(R.string.commandGetStoreAtEvents)]?.
             contains(context.getString(R.string.defaultStoreAtEvents)) == false) {
 
             dataWrite[context.getString(R.string.commandSetStoreAtEvents)] =
                 context.getString(R.string.defaultStoreAtEvents)
-        }
+        }*/
 
         // AT$EVTIM1
         if (data[context.getString(R.string.commandGetEventTimer)]?.
@@ -172,41 +173,108 @@ class ModemDataW(val context: Context) {
         }
 
         // AT$IOCFG
-        if (data[context.getString(R.string.commandGetConfigureGPIO)]?.
-            contains(context.getString(R.string.defaultConfigureGPIO)) == false) {
+        /*if (data[context.getString(R.string.commandGetConfigureGPIO)]?.
+            contains(context.getString(R.string.defaultConfigureGPIO)) == false) {*/
 
             dataWrite[context.getString(R.string.commandSetConfigureGPIO)] =
                 context.getString(R.string.defaultConfigureGPIO)
-        }
+        /*}*/
 
         // AT$IOGPA
-        if (data[context.getString(R.string.commandGetGPIOValue)]?.
-            contains(context.getString(R.string.defaultSetGPIOValue)) == false) {
+        /*if (data[context.getString(R.string.commandGetGPIOValue)]?.
+            contains(context.getString(R.string.defaultSetGPIOValue)) == false) {*/
 
             dataWrite[context.getString(R.string.commandSetGPIOValue)] =
                 context.getString(R.string.defaultSetGPIOValue)
-        }
+        /*}*/
 
         // EVENT
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent1)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent2)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent3)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent4)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent5)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent6)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent7)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent8)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent9)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent10)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent11)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent12)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent13)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent14)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent15)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent16)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent17)] = ""
-        dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent18)] = ""
+        val eventsList: Map<String, Boolean> = eventValidator(data[context.getString(R.string.commandGetEvent)]!!)
+
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent1))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent1)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent2))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent2)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent3))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent3)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent4))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent4)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent5))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent5)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent6))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent6)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent7))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent7)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent8))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent8)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent9))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent9)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent10))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent10)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent11))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent11)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent12))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent12)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent13))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent13)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent14))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent14)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent15))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent15)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent16))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent16)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent17))) {
+            dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent17)] = ""
+        }
+        if (!eventsList.containsKey(context.getString(R.string.defaultConfigureEvent18))) {
+                dataWrite[context.getString(R.string.commandSetEvent) + context.getString(R.string.defaultConfigureEvent8)] = ""
+        }
 
         return dataWrite
+    }
+
+
+    // функция для получения стуруктурированых events
+    private fun eventValidator(events: String): Map<String, Boolean> {
+        val eventsList: MutableMap<String, Boolean> = mutableMapOf()
+
+        // разделенныу \n event для того что бы перебрать их в цикле и преобразовать
+        val eventsSplit: List<String> = events.split("\n").drop(1)
+
+        // перебор всех строк
+        for (event in eventsSplit) {
+            val eventData: List<String> = event.split("\\s+".toRegex())
+
+            try {
+                val eventResult: String = "${eventData[1].dropLast(1)}," +
+                        "${eventData[2]},${eventData[3]},${eventData[4]},${eventData[5]}"
+
+                eventsList[eventResult] = true
+            } catch (e: Exception) {
+                // при ошибки возвращяем пустой масив
+                // return mapOf()
+            }
+        }
+        if (context is MainActivity) {
+            context.showAlertDialog(eventsList.toString())
+        }
+
+        return eventsList
     }
 }

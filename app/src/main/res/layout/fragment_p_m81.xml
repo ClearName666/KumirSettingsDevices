@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bitDataTitle"
                     android:textColor="@color/textColor"
-                    app:layout_constraintBottom_toTopOf="@+id/spinnerSpeed"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSpeedPort"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintTop_toTopOf="@+id/textSpeedPort" />

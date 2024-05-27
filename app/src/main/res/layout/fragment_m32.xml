@@ -63,6 +63,16 @@
 
 
         <ImageView
+            android:id="@+id/imageSelectPriset"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/done_music_collection_svgrepo_com"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
             android:id="@+id/imagedischarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -194,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bitDataTitle"
                     android:textColor="@color/textColor"
-                    app:layout_constraintBottom_toTopOf="@+id/spinnerBitDataPort2"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSpeedPort2"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort2"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort2"
                     app:layout_constraintTop_toTopOf="@+id/textSpeedPort2" />
@@ -314,7 +324,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bitDataTitle"
                     android:textColor="@color/textColor"
-                    app:layout_constraintBottom_toTopOf="@+id/spinnerSpeed"
+                    app:layout_constraintBottom_toBottomOf="@+id/textSpeedPort"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintTop_toTopOf="@+id/textSpeedPort" />
