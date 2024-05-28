@@ -7,14 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kumirsettingupdevices.adapters.itemUsbComAdapter.ItemUsbComsAdapter
+import com.example.kumirsettingupdevices.adapters.itemPrisetsAdapter.ItemPrisetsAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentSelectMenuPrisetSettingsBinding
-import com.example.kumirsettingupdevices.databinding.FragmentUsbComsMenuBinding
-import com.example.kumirsettingupdevices.model.recyclerModel.ItemUsbComsView
-import com.example.kumirsettingupdevices.usb.UsbStaticMethods
+import com.example.kumirsettingupdevices.model.recyclerModel.ItemPrisetsView
+import com.example.kumirsettingupdevices.settings.PrisetsValue
+import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
 
 
-class SelectMenuPrisetSettings : Fragment() {
+class SelectMenuPrisetSettings(val context: PrisetFragment) : Fragment() {
 
     private lateinit var showElements: FragmentSelectMenuPrisetSettingsBinding
 
@@ -27,17 +27,12 @@ class SelectMenuPrisetSettings : Fragment() {
 
         // вывод всех присетов
 
-        /*val usbDeviceItems: List<ItemUsbComsView> = listOf(
-            ItemUsbComsView(context.getString(R.string.priset1)),
-            ItemUsbComsView(context.getString(R.string.priset2)),
-            ItemUsbComsView(context.getString(R.string.priset3)),
-            ItemUsbComsView(context.getString(R.string.priset4)),
-            ItemUsbComsView(context.getString(R.string.priset5))
-        )
+        val itemPrisetsView: List<ItemPrisetsView> = PrisetsValue.prisets.keys.map { ItemPrisetsView(it) }
 
-        val itemUsbComsAdapter = ItemUsbComsAdapter(requireContext(), usbDeviceItems)
-        showElements.prisetItem.adapter = itemUsbComsAdapter
-        showElements.prisetItem.layoutManager = LinearLayoutManager(requireContext())*/
+
+        val itemPrisetsAdapter = ItemPrisetsAdapter(requireContext(), context, itemPrisetsView)
+        showElements.prisetItem.adapter = itemPrisetsAdapter
+        showElements.prisetItem.layoutManager = LinearLayoutManager(requireContext())
 
 
         return showElements.root

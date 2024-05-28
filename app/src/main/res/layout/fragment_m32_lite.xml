@@ -148,9 +148,9 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:layout_marginEnd="68dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
                     app:layout_constraintTop_toBottomOf="@+id/textParity" />
 
                 <Spinner
@@ -158,9 +158,9 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textStopBit"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textStopBit" />
 
                 <TextView
                     android:id="@+id/textParity"
@@ -189,9 +189,9 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textBit"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textBit" />
 
                 <TextView
                     android:id="@+id/textBit"
@@ -209,9 +209,9 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort" />
 
                 <TextView
                     android:id="@+id/textSpeedPort"
@@ -229,10 +229,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice" />
 
                 <TextView
                     android:id="@+id/textSelectMeteringDevice"
@@ -547,7 +547,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textServer" />

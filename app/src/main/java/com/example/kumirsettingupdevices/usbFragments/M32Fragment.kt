@@ -15,12 +15,13 @@ import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.databinding.FragmentM32Binding
+import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.DeviceAccountingPrisets
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
 
-class M32Fragment : Fragment(), UsbFragment {
+class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
 
     private lateinit var binding: FragmentM32Binding
 
@@ -179,7 +180,7 @@ class M32Fragment : Fragment(), UsbFragment {
         }
         binding.imageSelectPriset.setOnClickListener {
             if (context is MainActivity) {
-                context.onClickPrisetSettingFor()
+                context.onClickPrisetSettingFor(this)
             }
         }
 
@@ -316,19 +317,19 @@ class M32Fragment : Fragment(), UsbFragment {
         )
 
         val adapter = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemsSpinnerDevMode)
+            R.layout.item_spinner, itemsSpinnerDevMode)
         val adapterActPort = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemsSpinnerActPort)
+            R.layout.item_spinner, itemsSpinnerActPort)
         val adapterPortDeviceAccounting = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemPortDeviceAccounting)
+            R.layout.item_spinner, itemPortDeviceAccounting)
         val adapterSelectSpeed = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectSpeed)
+            R.layout.item_spinner, itemSelectSpeed)
         val adapterSelectParity = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectParity)
+            R.layout.item_spinner, itemSelectParity)
         val adapterSelectStopBit = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectStopBit)
+            R.layout.item_spinner, itemSelectStopBit)
         val adapterSelectBitData = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectBitData)
+            R.layout.item_spinner, itemSelectBitData)
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -661,6 +662,21 @@ class M32Fragment : Fragment(), UsbFragment {
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    override fun printPriset(priset: Priset) {
+
+        // закрытие меню
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.workFonDarkMenu()
+        }
+        // подставление данных в поля
+        binding.inputAPN.setText(priset.apn)
+        binding.inputTCP.setText(priset.tcpPort)
+        binding.inputIPDNS.setText(priset.server1)
+        binding.inputTextLoginGPRS.setText(priset.login)
+        binding.inputPasswordGPRS.setText(priset.password)
     }
 
 }

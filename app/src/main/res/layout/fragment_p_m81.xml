@@ -36,7 +36,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textParity" />
 
@@ -45,7 +45,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textStopBit" />
 
@@ -76,7 +76,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textBit" />
 
@@ -96,7 +96,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textSpeedPort" />
 
@@ -116,7 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice" />
@@ -263,7 +263,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textServer" />
@@ -272,7 +272,7 @@
                     android:id="@+id/spinnerRange"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_border"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textRange" />

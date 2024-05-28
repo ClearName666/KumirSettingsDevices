@@ -225,19 +225,19 @@ class PM81Fragment : Fragment(), UsbFragment {
         )
 
         val adapter = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemsSpinnerDevMode)
+            R.layout.item_spinner, itemsSpinnerDevMode)
         val adapterPortDeviceAccounting = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemPortDeviceAccounting)
+            R.layout.item_spinner, itemPortDeviceAccounting)
         val adapterSelectSpeed = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectSpeed)
+            R.layout.item_spinner, itemSelectSpeed)
         val adapterSelectParity = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectParity)
+            R.layout.item_spinner, itemSelectParity)
         val adapterSelectStopBit = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectStopBit)
+            R.layout.item_spinner, itemSelectStopBit)
         val adapterSelectBitData = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectBitData)
+            R.layout.item_spinner, itemSelectBitData)
         val adapterSelectRange = ArrayAdapter(requireContext(),
-            android.R.layout.simple_spinner_item, itemSelectRange)
+            R.layout.item_spinner, itemSelectRange)
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 

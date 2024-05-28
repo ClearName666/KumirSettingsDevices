@@ -77,20 +77,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="107dp"
+            android:contentDescription="@string/todo"
             android:src="@drawable/discharge"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/todo" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageDownLoad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="107dp"
+            android:contentDescription="@string/todo"
             android:src="@drawable/download"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/todo" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textRead"
@@ -164,18 +164,18 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textParity1"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textParity1" />
 
                 <Spinner
                     android:id="@+id/spinnerSelectStopBitPort2"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textStopBit1"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textStopBit1" />
 
                 <TextView
                     android:id="@+id/textParity1"
@@ -213,18 +213,18 @@
                     android:id="@+id/spinnerBitDataPort2"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/spinnerSpeedPort2"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toTopOf="@+id/spinnerSpeedPort2" />
 
                 <Spinner
                     android:id="@+id/spinnerSpeedPort2"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort2"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort2" />
 
                 <TextView
                     android:id="@+id/textSpeedPort2"
@@ -242,10 +242,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice1"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice1" />
 
                 <TextView
                     android:id="@+id/textPort2"
@@ -274,18 +274,18 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textParity"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textParity" />
 
                 <Spinner
                     android:id="@+id/spinnerSelectStopBitPort1"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textStopBit"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textStopBit" />
 
                 <TextView
                     android:id="@+id/textParity"
@@ -314,9 +314,9 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textBit"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textBit" />
 
                 <TextView
                     android:id="@+id/textBit"
@@ -334,9 +334,9 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPort" />
 
                 <TextView
                     android:id="@+id/textSpeedPort"
@@ -354,10 +354,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice" />
 
                 <TextView
                     android:id="@+id/textSelectMeteringDevice"
@@ -385,13 +385,13 @@
                     android:id="@+id/textSettingPorts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
                     android:text="@string/settingInterfTitle"
                     android:textColor="@color/textColor"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputTimeOutKeepliveLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/switchPinCodeSmsCard" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputPinCodeSmsCardLayout"
@@ -456,10 +456,10 @@
                     android:id="@+id/spinnerSelectActivPort"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSelectActivPort"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectActivPort" />
 
                 <TextView
                     android:id="@+id/textSelectActivPort"
@@ -692,10 +692,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
+                    android:background="@android:drawable/btn_dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textServer"
-                    android:background="@drawable/spinner_border"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textServer" />
 
                 <TextView
                     android:id="@+id/textPort1"

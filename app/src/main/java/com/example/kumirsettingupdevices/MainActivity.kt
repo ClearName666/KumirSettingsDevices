@@ -37,6 +37,7 @@ import com.example.kumirsettingupdevices.usbFragments.M32Fragment
 import com.example.kumirsettingupdevices.usbFragments.M32LiteFragment
 import com.example.kumirsettingupdevices.usbFragments.P101Fragment
 import com.example.kumirsettingupdevices.usbFragments.PM81Fragment
+import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
 import com.example.testappusb.settings.ConstUsbSettings
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
@@ -58,55 +59,55 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // устройства прибора учета
     val portsDeviceSetting: List<PortDeviceSetting> = listOf(
-        PortDeviceSetting(DeviceAccountingPrisets.SPT941Speed, DeviceAccountingPrisets.SPT941BitData, DeviceAccountingPrisets.SPT941StopBit, DeviceAccountingPrisets.SPT941Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.SPT944Speed, DeviceAccountingPrisets.SPT944BitData, DeviceAccountingPrisets.SPT944StopBit, DeviceAccountingPrisets.SPT944Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TSP025Speed, DeviceAccountingPrisets.TSP025BitData, DeviceAccountingPrisets.TSP025StopBit, DeviceAccountingPrisets.TSP025Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.PSCH4TMV23Speed, DeviceAccountingPrisets.PSCH4TMV23BitData, DeviceAccountingPrisets.PSCH4TMV23StopBit, DeviceAccountingPrisets.PSCH4TMV23Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TSP027Speed, DeviceAccountingPrisets.TSP027BitData, DeviceAccountingPrisets.TSP027StopBit, DeviceAccountingPrisets.TSP027Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.PowerCE102MSpeed, DeviceAccountingPrisets.PowerCE102MBitData, DeviceAccountingPrisets.PowerCE102MStopBit, DeviceAccountingPrisets.PowerCE102MParity),
-        PortDeviceSetting(DeviceAccountingPrisets.Mercury206Speed, DeviceAccountingPrisets.Mercury206BitData, DeviceAccountingPrisets.Mercury206StopBit, DeviceAccountingPrisets.Mercury206Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.KM5PM5Speed, DeviceAccountingPrisets.KM5PM5BitData, DeviceAccountingPrisets.KM5PM5StopBit, DeviceAccountingPrisets.KM5PM5Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TEM104Speed, DeviceAccountingPrisets.TEM104BitData, DeviceAccountingPrisets.TEM104StopBit, DeviceAccountingPrisets.TEM104Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TEM106Speed, DeviceAccountingPrisets.TEM106BitData, DeviceAccountingPrisets.TEM106StopBit, DeviceAccountingPrisets.TEM106Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.BKT5Speed, DeviceAccountingPrisets.BKT5BitData, DeviceAccountingPrisets.BKT5StopBit, DeviceAccountingPrisets.BKT5Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.BKT7Speed, DeviceAccountingPrisets.BKT7BitData, DeviceAccountingPrisets.BKT7StopBit, DeviceAccountingPrisets.BKT7Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TePOCCSpeed, DeviceAccountingPrisets.TePOCCBitData, DeviceAccountingPrisets.TePOCCStopBit, DeviceAccountingPrisets.TePOCCParity),
-        PortDeviceSetting(DeviceAccountingPrisets.SPT942Speed, DeviceAccountingPrisets.SPT942BitData, DeviceAccountingPrisets.SPT942StopBit, DeviceAccountingPrisets.SPT942Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.SPT943Speed, DeviceAccountingPrisets.SPT943BitData, DeviceAccountingPrisets.SPT943StopBit, DeviceAccountingPrisets.SPT943Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.SPT961Speed, DeviceAccountingPrisets.SPT961BitData, DeviceAccountingPrisets.SPT961StopBit, DeviceAccountingPrisets.SPT961Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.KT7AbacanSpeed, DeviceAccountingPrisets.KT7AbacanBitData, DeviceAccountingPrisets.KT7AbacanStopBit, DeviceAccountingPrisets.KT7AbacanParity),
-        PortDeviceSetting(DeviceAccountingPrisets.MT200DSSpeed, DeviceAccountingPrisets.MT200DSBitData, DeviceAccountingPrisets.MT200DSStopBit, DeviceAccountingPrisets.MT200DSParity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCP010Speed, DeviceAccountingPrisets.TCP010BitData, DeviceAccountingPrisets.TCP010StopBit, DeviceAccountingPrisets.TCP010Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCP010MSpeed, DeviceAccountingPrisets.TCP010MBitData, DeviceAccountingPrisets.TCP010MStopBit, DeviceAccountingPrisets.TCP010MParity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCP023Speed, DeviceAccountingPrisets.TCP023BitData, DeviceAccountingPrisets.TCP023StopBit, DeviceAccountingPrisets.TCP023Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCPB024Speed, DeviceAccountingPrisets.TCPB024BitData, DeviceAccountingPrisets.TCPB024StopBit, DeviceAccountingPrisets.TCPB024Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCP026Speed, DeviceAccountingPrisets.TCP026BitData, DeviceAccountingPrisets.TCP026StopBit, DeviceAccountingPrisets.TCP026Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCPB03XSpeed, DeviceAccountingPrisets.TCPB03XBitData, DeviceAccountingPrisets.TCPB03XStopBit, DeviceAccountingPrisets.TCPB03XParity),
-        PortDeviceSetting(DeviceAccountingPrisets.TCPB042Speed, DeviceAccountingPrisets.TCPB042BitData, DeviceAccountingPrisets.TCPB042StopBit, DeviceAccountingPrisets.TCPB042Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.YCPB5XXSpeed, DeviceAccountingPrisets.YCPB5XXBitData, DeviceAccountingPrisets.YCPB5XXStopBit, DeviceAccountingPrisets.YCPB5XXParity),
-        PortDeviceSetting(DeviceAccountingPrisets.PCL212Speed, DeviceAccountingPrisets.PCL212BitData, DeviceAccountingPrisets.PCL212StopBit, DeviceAccountingPrisets.PCL212Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.SA942MSpeed, DeviceAccountingPrisets.SA942MBitData, DeviceAccountingPrisets.SA942MStopBit, DeviceAccountingPrisets.SA942MParity),
-        PortDeviceSetting(DeviceAccountingPrisets.SA943Speed, DeviceAccountingPrisets.SA943BitData, DeviceAccountingPrisets.SA943StopBit, DeviceAccountingPrisets.SA943Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.MKTCSpeed, DeviceAccountingPrisets.MKTCBitData, DeviceAccountingPrisets.MKTCStopBit, DeviceAccountingPrisets.MKTCParity),
-        PortDeviceSetting(DeviceAccountingPrisets.CKM2Speed, DeviceAccountingPrisets.CKM2BitData, DeviceAccountingPrisets.CKM2StopBit, DeviceAccountingPrisets.CKM2Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.DYMETIC5102Speed, DeviceAccountingPrisets.DYMETIC5102BitData, DeviceAccountingPrisets.DYMETIC5102StopBit, DeviceAccountingPrisets.DYMETIC5102Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TEPLOVACHESLITELTB7Speed, DeviceAccountingPrisets.TEPLOVACHESLITELTB7BitData, DeviceAccountingPrisets.TEPLOVACHESLITELTB7StopBit, DeviceAccountingPrisets.TEPLOVACHESLITELTB7Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.ELFSpeed, DeviceAccountingPrisets.ELFBitData, DeviceAccountingPrisets.ELFStopBit, DeviceAccountingPrisets.ELFParity),
-        PortDeviceSetting(DeviceAccountingPrisets.STU1Speed, DeviceAccountingPrisets.STU1BitData, DeviceAccountingPrisets.STU1StopBit, DeviceAccountingPrisets.STU1Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TURBOFLOUGFGFSpeed, DeviceAccountingPrisets.TURBOFLOUGFGFBitData, DeviceAccountingPrisets.TURBOFLOUGFGFStopBit, DeviceAccountingPrisets.TURBOFLOUGFGFParity),
-        PortDeviceSetting(DeviceAccountingPrisets.EK260Speed, DeviceAccountingPrisets.EK260BitData, DeviceAccountingPrisets.EK260StopBit, DeviceAccountingPrisets.EK260Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.EK270Speed, DeviceAccountingPrisets.EK270BitData, DeviceAccountingPrisets.EK270StopBit, DeviceAccountingPrisets.EK270Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.BKG2Speed, DeviceAccountingPrisets.BKG2BitData, DeviceAccountingPrisets.BKG2StopBit, DeviceAccountingPrisets.BKG2Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.CPG741Speed, DeviceAccountingPrisets.CPG741BitData, DeviceAccountingPrisets.CPG741StopBit, DeviceAccountingPrisets.CPG741Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.CPG742Speed, DeviceAccountingPrisets.CPG742BitData, DeviceAccountingPrisets.CPG742StopBit, DeviceAccountingPrisets.CPG742Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TC2015Speed, DeviceAccountingPrisets.TC2015BitData, DeviceAccountingPrisets.TC2015StopBit, DeviceAccountingPrisets.TC2015Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.MERCURI230ARTSpeed, DeviceAccountingPrisets.MERCURI230ARTBitData, DeviceAccountingPrisets.MERCURI230ARTStopBit, DeviceAccountingPrisets.MERCURI230ARTParity),
-        PortDeviceSetting(DeviceAccountingPrisets.PULSAR2MSpeed, DeviceAccountingPrisets.PULSAR2MBitData, DeviceAccountingPrisets.PULSAR2MStopBit, DeviceAccountingPrisets.PULSAR2MParity),
-        PortDeviceSetting(DeviceAccountingPrisets.PULSAR10MSpeed, DeviceAccountingPrisets.PULSAR10MBitData, DeviceAccountingPrisets.PULSAR10MStopBit, DeviceAccountingPrisets.PULSAR10MParity),
-        PortDeviceSetting(DeviceAccountingPrisets.KUMIRK21K22Speed, DeviceAccountingPrisets.KUMIRK21K22BitData, DeviceAccountingPrisets.KUMIRK21K22StopBit, DeviceAccountingPrisets.KUMIRK21K22Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.IM2300Speed, DeviceAccountingPrisets.IM2300BitData, DeviceAccountingPrisets.IM2300StopBit, DeviceAccountingPrisets.IM2300Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.ENERGOMERACE303Speed, DeviceAccountingPrisets.ENERGOMERACE303BitData, DeviceAccountingPrisets.ENERGOMERACE303StopBit, DeviceAccountingPrisets.ENERGOMERACE303Parity),
-        PortDeviceSetting(DeviceAccountingPrisets.TEM116Speed, DeviceAccountingPrisets.TEM116BitData, DeviceAccountingPrisets.TEM116StopBit, DeviceAccountingPrisets.TEM116Parity)
+        PortDeviceSetting(DeviceAccountingPrisets.SPT941Speed, DeviceAccountingPrisets.SPT941BitData, DeviceAccountingPrisets.SPT941StopBit, DeviceAccountingPrisets.SPT941Parity, DeviceAccountingPrisets.SPT941Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.SPT944Speed, DeviceAccountingPrisets.SPT944BitData, DeviceAccountingPrisets.SPT944StopBit, DeviceAccountingPrisets.SPT944Parity, DeviceAccountingPrisets.SPT944Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TSP025Speed, DeviceAccountingPrisets.TSP025BitData, DeviceAccountingPrisets.TSP025StopBit, DeviceAccountingPrisets.TSP025Parity, DeviceAccountingPrisets.TSP025Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.PSCH4TMV23Speed, DeviceAccountingPrisets.PSCH4TMV23BitData, DeviceAccountingPrisets.PSCH4TMV23StopBit, DeviceAccountingPrisets.PSCH4TMV23Parity, DeviceAccountingPrisets.PSCH4TMV23Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TSP027Speed, DeviceAccountingPrisets.TSP027BitData, DeviceAccountingPrisets.TSP027StopBit, DeviceAccountingPrisets.TSP027Parity, DeviceAccountingPrisets.TSP027Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.PowerCE102MSpeed, DeviceAccountingPrisets.PowerCE102MBitData, DeviceAccountingPrisets.PowerCE102MStopBit, DeviceAccountingPrisets.PowerCE102MParity, DeviceAccountingPrisets.PowerCE102MPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.Mercury206Speed, DeviceAccountingPrisets.Mercury206BitData, DeviceAccountingPrisets.Mercury206StopBit, DeviceAccountingPrisets.Mercury206Parity, DeviceAccountingPrisets.Mercury206Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.KM5PM5Speed, DeviceAccountingPrisets.KM5PM5BitData, DeviceAccountingPrisets.KM5PM5StopBit, DeviceAccountingPrisets.KM5PM5Parity, DeviceAccountingPrisets.KM5PM5Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TEM104Speed, DeviceAccountingPrisets.TEM104BitData, DeviceAccountingPrisets.TEM104StopBit, DeviceAccountingPrisets.TEM104Parity, DeviceAccountingPrisets.TEM104Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TEM106Speed, DeviceAccountingPrisets.TEM106BitData, DeviceAccountingPrisets.TEM106StopBit, DeviceAccountingPrisets.TEM106Parity, DeviceAccountingPrisets.TEM106Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.BKT5Speed, DeviceAccountingPrisets.BKT5BitData, DeviceAccountingPrisets.BKT5StopBit, DeviceAccountingPrisets.BKT5Parity, DeviceAccountingPrisets.BKT5Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.BKT7Speed, DeviceAccountingPrisets.BKT7BitData, DeviceAccountingPrisets.BKT7StopBit, DeviceAccountingPrisets.BKT7Parity, DeviceAccountingPrisets.BKT7Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TePOCCSpeed, DeviceAccountingPrisets.TePOCCBitData, DeviceAccountingPrisets.TePOCCStopBit, DeviceAccountingPrisets.TePOCCParity, DeviceAccountingPrisets.TePOCCPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.SPT942Speed, DeviceAccountingPrisets.SPT942BitData, DeviceAccountingPrisets.SPT942StopBit, DeviceAccountingPrisets.SPT942Parity, DeviceAccountingPrisets.SPT942Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.SPT943Speed, DeviceAccountingPrisets.SPT943BitData, DeviceAccountingPrisets.SPT943StopBit, DeviceAccountingPrisets.SPT943Parity, DeviceAccountingPrisets.SPT943Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.SPT961Speed, DeviceAccountingPrisets.SPT961BitData, DeviceAccountingPrisets.SPT961StopBit, DeviceAccountingPrisets.SPT961Parity, DeviceAccountingPrisets.SPT961Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.KT7AbacanSpeed, DeviceAccountingPrisets.KT7AbacanBitData, DeviceAccountingPrisets.KT7AbacanStopBit, DeviceAccountingPrisets.KT7AbacanParity, DeviceAccountingPrisets.KT7AbacanPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.MT200DSSpeed, DeviceAccountingPrisets.MT200DSBitData, DeviceAccountingPrisets.MT200DSStopBit, DeviceAccountingPrisets.MT200DSParity, DeviceAccountingPrisets.MT200DSPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCP010Speed, DeviceAccountingPrisets.TCP010BitData, DeviceAccountingPrisets.TCP010StopBit, DeviceAccountingPrisets.TCP010Parity, DeviceAccountingPrisets.TCP010Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCP010MSpeed, DeviceAccountingPrisets.TCP010MBitData, DeviceAccountingPrisets.TCP010MStopBit, DeviceAccountingPrisets.TCP010MParity, DeviceAccountingPrisets.TCP010MPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCP023Speed, DeviceAccountingPrisets.TCP023BitData, DeviceAccountingPrisets.TCP023StopBit, DeviceAccountingPrisets.TCP023Parity, DeviceAccountingPrisets.TCP023Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCPB024Speed, DeviceAccountingPrisets.TCPB024BitData, DeviceAccountingPrisets.TCPB024StopBit, DeviceAccountingPrisets.TCPB024Parity, DeviceAccountingPrisets.TCPB024Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCP026Speed, DeviceAccountingPrisets.TCP026BitData, DeviceAccountingPrisets.TCP026StopBit, DeviceAccountingPrisets.TCP026Parity, DeviceAccountingPrisets.TCP026Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCPB03XSpeed, DeviceAccountingPrisets.TCPB03XBitData, DeviceAccountingPrisets.TCPB03XStopBit, DeviceAccountingPrisets.TCPB03XParity, DeviceAccountingPrisets.TCPB03XPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.TCPB042Speed, DeviceAccountingPrisets.TCPB042BitData, DeviceAccountingPrisets.TCPB042StopBit, DeviceAccountingPrisets.TCPB042Parity, DeviceAccountingPrisets.TCPB042Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.YCPB5XXSpeed, DeviceAccountingPrisets.YCPB5XXBitData, DeviceAccountingPrisets.YCPB5XXStopBit, DeviceAccountingPrisets.YCPB5XXParity, DeviceAccountingPrisets.YCPB5XXPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.PCL212Speed, DeviceAccountingPrisets.PCL212BitData, DeviceAccountingPrisets.PCL212StopBit, DeviceAccountingPrisets.PCL212Parity, DeviceAccountingPrisets.PCL212Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.SA942MSpeed, DeviceAccountingPrisets.SA942MBitData, DeviceAccountingPrisets.SA942MStopBit, DeviceAccountingPrisets.SA942MParity, DeviceAccountingPrisets.SA942MPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.SA943Speed, DeviceAccountingPrisets.SA943BitData, DeviceAccountingPrisets.SA943StopBit, DeviceAccountingPrisets.SA943Parity, DeviceAccountingPrisets.SA943Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.MKTCSpeed, DeviceAccountingPrisets.MKTCBitData, DeviceAccountingPrisets.MKTCStopBit, DeviceAccountingPrisets.MKTCParity, DeviceAccountingPrisets.MKTCPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.CKM2Speed, DeviceAccountingPrisets.CKM2BitData, DeviceAccountingPrisets.CKM2StopBit, DeviceAccountingPrisets.CKM2Parity, DeviceAccountingPrisets.CKM2Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.DYMETIC5102Speed, DeviceAccountingPrisets.DYMETIC5102BitData, DeviceAccountingPrisets.DYMETIC5102StopBit, DeviceAccountingPrisets.DYMETIC5102Parity, DeviceAccountingPrisets.DYMETIC5102Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TEPLOVACHESLITELTB7Speed, DeviceAccountingPrisets.TEPLOVACHESLITELTB7BitData, DeviceAccountingPrisets.TEPLOVACHESLITELTB7StopBit, DeviceAccountingPrisets.TEPLOVACHESLITELTB7Parity, DeviceAccountingPrisets.TEPLOVACHESLITELTB7Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.ELFSpeed, DeviceAccountingPrisets.ELFBitData, DeviceAccountingPrisets.ELFStopBit, DeviceAccountingPrisets.ELFParity, DeviceAccountingPrisets.ELFPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.STU1Speed, DeviceAccountingPrisets.STU1BitData, DeviceAccountingPrisets.STU1StopBit, DeviceAccountingPrisets.STU1Parity, DeviceAccountingPrisets.STU1Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TURBOFLOUGFGFSpeed, DeviceAccountingPrisets.TURBOFLOUGFGFBitData, DeviceAccountingPrisets.TURBOFLOUGFGFStopBit, DeviceAccountingPrisets.TURBOFLOUGFGFParity, DeviceAccountingPrisets.TURBOFLOUGFGFPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.EK260Speed, DeviceAccountingPrisets.EK260BitData, DeviceAccountingPrisets.EK260StopBit, DeviceAccountingPrisets.EK260Parity, DeviceAccountingPrisets.EK260Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.EK270Speed, DeviceAccountingPrisets.EK270BitData, DeviceAccountingPrisets.EK270StopBit, DeviceAccountingPrisets.EK270Parity, DeviceAccountingPrisets.EK270Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.BKG2Speed, DeviceAccountingPrisets.BKG2BitData, DeviceAccountingPrisets.BKG2StopBit, DeviceAccountingPrisets.BKG2Parity, DeviceAccountingPrisets.BKG2Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.CPG741Speed, DeviceAccountingPrisets.CPG741BitData, DeviceAccountingPrisets.CPG741StopBit, DeviceAccountingPrisets.CPG741Parity, DeviceAccountingPrisets.CPG741Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.CPG742Speed, DeviceAccountingPrisets.CPG742BitData, DeviceAccountingPrisets.CPG742StopBit, DeviceAccountingPrisets.CPG742Parity, DeviceAccountingPrisets.CPG742Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TC2015Speed, DeviceAccountingPrisets.TC2015BitData, DeviceAccountingPrisets.TC2015StopBit, DeviceAccountingPrisets.TC2015Parity, DeviceAccountingPrisets.TC2015Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.MERCURI230ARTSpeed, DeviceAccountingPrisets.MERCURI230ARTBitData, DeviceAccountingPrisets.MERCURI230ARTStopBit, DeviceAccountingPrisets.MERCURI230ARTParity, DeviceAccountingPrisets.MERCURI230ARTPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.PULSAR2MSpeed, DeviceAccountingPrisets.PULSAR2MBitData, DeviceAccountingPrisets.PULSAR2MStopBit, DeviceAccountingPrisets.PULSAR2MParity, DeviceAccountingPrisets.PULSAR2MPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.PULSAR10MSpeed, DeviceAccountingPrisets.PULSAR10MBitData, DeviceAccountingPrisets.PULSAR10MStopBit, DeviceAccountingPrisets.PULSAR10MParity, DeviceAccountingPrisets.PULSAR10MPriset),
+        PortDeviceSetting(DeviceAccountingPrisets.KUMIRK21K22Speed, DeviceAccountingPrisets.KUMIRK21K22BitData, DeviceAccountingPrisets.KUMIRK21K22StopBit, DeviceAccountingPrisets.KUMIRK21K22Parity, DeviceAccountingPrisets.KUMIRK21K22Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.IM2300Speed, DeviceAccountingPrisets.IM2300BitData, DeviceAccountingPrisets.IM2300StopBit, DeviceAccountingPrisets.IM2300Parity, DeviceAccountingPrisets.IM2300Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.ENERGOMERACE303Speed, DeviceAccountingPrisets.ENERGOMERACE303BitData, DeviceAccountingPrisets.ENERGOMERACE303StopBit, DeviceAccountingPrisets.ENERGOMERACE303Parity, DeviceAccountingPrisets.ENERGOMERACE303Priset),
+        PortDeviceSetting(DeviceAccountingPrisets.TEM116Speed, DeviceAccountingPrisets.TEM116BitData, DeviceAccountingPrisets.TEM116StopBit, DeviceAccountingPrisets.TEM116Parity, DeviceAccountingPrisets.TEM116Priset)
     )
 
 
@@ -180,8 +181,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     // клик по кнопке выбора присета настроек
-    fun onClickPrisetSettingFor() {
-        selectMenuPrisetSettings = SelectMenuPrisetSettings()
+    fun onClickPrisetSettingFor(fragment: PrisetFragment) {
+        selectMenuPrisetSettings = SelectMenuPrisetSettings(fragment)
 
         val fragmentManager = supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -315,7 +316,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     }
 
-    private fun workFonDarkMenu() {
+    fun workFonDarkMenu() {
         try {
             val fragmentManager = supportFragmentManager
             val transaction = fragmentManager.beginTransaction()

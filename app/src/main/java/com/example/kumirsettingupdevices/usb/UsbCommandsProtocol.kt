@@ -14,6 +14,7 @@ class UsbCommandsProtocol {
     // потоки
     lateinit var threadChackSignalEnfora: Thread
 
+    // список комманд которые не должны подвергаться форматированию
     private val listCommandNotFormater: List<String> = listOf(
         "AT\$FRIEND?",
         "AT\$PKG?",
@@ -27,9 +28,8 @@ class UsbCommandsProtocol {
         const val MAX_CNT_EXPECTATION_SAND: Int = 30
         const val MAX_RATIO_EXPECTATION_NEW_SPEED: Int = 15
 
-        const val TIMEOUT: Long = 1
+        const val CNT_SAND_COMMAND_OK: Int = 3
 
-        //const val TIMEOUT_START_DEVICE: Long = 1500
 
         // для поиска скорости
         private const val SPEED_INDEX_MAX = 9
@@ -87,8 +87,8 @@ class UsbCommandsProtocol {
                     // прогресс продливается
                     prograss += progressUnit
 
-                    // 2 попытки на отправку
-                    for (i in 1..2) {
+                    // CNT_SAND_COMMAND_OK попытки на отправку
+                    for (i in 1..CNT_SAND_COMMAND_OK) {
                         // очищение прошлых данных
                         context.curentData = ""
 
@@ -131,8 +131,8 @@ class UsbCommandsProtocol {
                         // проверка принялись ли данные
                         if (!sandOkCommand(context, command)) {
 
-                            // если 2 попытка не сработала то выбрасываемся
-                            if (i == 2) {
+                            // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                            if (i == CNT_SAND_COMMAND_OK) {
                                 (context as Activity).runOnUiThread {
                                     context.showAlertDialog(
                                         command + context.getString(R.string.errorSendDataRead)
@@ -197,8 +197,8 @@ class UsbCommandsProtocol {
                     // прогресс продливается
                     prograss += progressUnit
 
-                    // 2 попытки на отправку
-                    for (i in 1..2) {
+                    // CNT_SAND_COMMAND_OK попытки на отправку
+                    for (i in 1..CNT_SAND_COMMAND_OK) {
                         // очищение прошлых данных
                         context.curentData = ""
 
@@ -249,8 +249,8 @@ class UsbCommandsProtocol {
                         // проверка на ккоманды изменения скорости или настроек передачи
                         if (!commandNewSpeed(context, key, value)) {
 
-                            // если 2 попытка не сработала то выбрасываемся
-                            if (i == 2) {
+                            // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                            if (i == CNT_SAND_COMMAND_OK) {
                                 flagError = true
                                 flagWorkWrite = false
 
@@ -474,6 +474,11 @@ class UsbCommandsProtocol {
     }
 
     private fun sandOkCommand(context: MainActivity, command: String = ""): Boolean {
+        // проверка на пустоту в данных     ИСПРАВЛЕНИЕ БАГА С НЕ ПРОЧИТАНЫМ СЕРИНЫМ НОМЕРОМ
+        if (command == context.getString(R.string.commandGetSerialNum) && formatDataCommandsNormolize(context.curentData).isEmpty()) {
+            return false
+        }
+
         // проверка принялись ли данные
         if (context.curentData.isEmpty() ||
             context.curentData.contains(context.getString(R.string.error)) ||
