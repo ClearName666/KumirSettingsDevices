@@ -286,10 +286,37 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        // сброс присетов настроек
-        binding.spinnerSelectPort1MeteringDevice.setSelection(0)
+        // вывод присетов настроек
+        var preset1: Int = 0
+        try {
+            // переводим данные пресетов настроек в инт
+            val profile1: Int = settingMap[getString(R.string.commandGetProfile1)]?.
+            replace("\n", "")?.
+            replace(" ", "")?.toInt()!!
 
-        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+            // находим среди всех присетов индекс номера присета с настройками
+            val context: Context = requireContext()
+            if (context is MainActivity) {
+                for (itemPreset in 0..<context.portsDeviceSetting.size) {
+                    if (profile1 == context.portsDeviceSetting[itemPreset].priset) {
+                        preset1 = itemPreset
+                        break
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // не валидные данные
+            showAlertDialog(getString(R.string.nonValidData) +
+                    "\n${getString(R.string.commandGetProfile1)} = " +
+                    "${settingMap[getString(R.string.commandGetProfile1)]}")
+        }
+
+        binding.spinnerSelectPort1MeteringDevice.setSelection(preset1)
+
+        // если профайл не 0 то
+        if (preset1 != 0) {
+            binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
+        }
 
         // верийный номер и версия прошибки
         val serNum: String = getString(R.string.serinerNumber) +
@@ -401,6 +428,7 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
             getString(R.string.commandGetSmsPin),
             getString(R.string.commandGetSimPin),
             getString(R.string.commandGetPort1Config),
+            getString(R.string.commandGetProfile1)
         )
 
         val usbCommandsProtocol = UsbCommandsProtocol()
@@ -445,6 +473,19 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
             getString(R.string.commandSetKeepAlive) to binding.inputTimeOutKeeplive.text.toString(),
             getString(R.string.commandSetConnectionTimeout) to binding.inputTimeoutConnection.text.toString()
         )
+
+        // загрузкак профайл
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            try {
+                dataMap[getString(R.string.commandSetProfile1)] =
+                    context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].
+                    priset.toString()
+            } catch (e: Exception) {
+                showAlertDialog(getString(R.string.nonValidData))
+                return
+            }
+        }
 
 
         dataMap[getString(R.string.commandSetPort1Config)] =

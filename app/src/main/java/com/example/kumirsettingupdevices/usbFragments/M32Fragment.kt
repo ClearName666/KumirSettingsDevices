@@ -19,11 +19,16 @@ import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.DeviceAccountingPrisets
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
+import java.lang.RuntimeException
 
 
 class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
 
     private lateinit var binding: FragmentM32Binding
+
+    private var serialNumberGlobal: String? = null
+    private var programVersionGlobal: String? = null
+
 
     private var NAME_TYPE_DEVICE = "KUMIR-M32 READY"
     override fun onCreateView(
@@ -181,6 +186,15 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
         binding.imageSelectPriset.setOnClickListener {
             if (context is MainActivity) {
                 context.onClickPrisetSettingFor(this)
+            }
+        }
+        binding.imageDiag.setOnClickListener {
+            // запускаем окно с дигностикой
+
+            if (context is MainActivity && programVersionGlobal != null) {
+                context.onClickDiag(serialNumberGlobal!!, programVersionGlobal!!)
+            } else {
+                showAlertDialog(getString(R.string.nonWriteSetting))
             }
         }
 
@@ -383,21 +397,59 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        // сброс присетов настроек
-        binding.spinnerSelectPort1MeteringDevice.setSelection(0)
-        binding.spinnerSelectPort2MeteringDevice.setSelection(0)
+        // вывод присетов настроек
+        var preset1: Int = 0
+        var preset2: Int = 0
+        try {
+            // переводим данные пресетов настроек в инт
+            val profile1: Int = settingMap[getString(R.string.commandGetProfile1)]?.
+                replace("\n", "")?.
+                replace(" ", "")?.toInt()!!
+            val profile2: Int = settingMap[getString(R.string.commandGetProfile2)]?.
+                replace("\n", "")?.
+                replace(" ", "")?.toInt()!!
 
-        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
-        binding.DisActivPort2SetiingsPriset.visibility = View.GONE
+            // находим среди всех присетов индекс номера присета с настройками
+            val context: Context = requireContext()
+            if (context is MainActivity) {
+                for (itemPreset in 0..<context.portsDeviceSetting.size) {
+                    if (profile1 == context.portsDeviceSetting[itemPreset].priset) {
+                        preset1 = itemPreset
+                    }
+                    if (profile2 == context.portsDeviceSetting[itemPreset].priset) {
+                        preset2 = itemPreset
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // не валидные данные
+            showAlertDialog(getString(R.string.nonValidData) +
+                    "\n${getString(R.string.commandGetProfile1)} = " +
+                    "${settingMap[getString(R.string.commandGetProfile1)]}" +
+                    "\n${getString(R.string.commandGetProfile2)} = " +
+                    "${settingMap[getString(R.string.commandGetProfile2)]}")
+        }
+
+        binding.spinnerSelectPort1MeteringDevice.setSelection(preset1)
+        binding.spinnerSelectPort2MeteringDevice.setSelection(preset2)
+
+        // если профайл не 0 то
+        if (preset1 != 0) {
+            binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
+        }
+        if (preset2 != 0) {
+            binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
+        }
+
 
         // верийный номер и версия прошибки
-        val serNum: String = getString(R.string.serinerNumber) +
+        serialNumberGlobal = getString(R.string.serinerNumber) +
                 "\n" + settingMap[getString(R.string.commandGetSerialNum)]
-        binding.serinerNumber.text = serNum
+        binding.serinerNumber.text = serialNumberGlobal
 
-        val version: String = getString(R.string.versionProgram) +
+        programVersionGlobal = getString(R.string.versionProgram) +
                 "\n" + settingMap[getString(R.string.commandGetVersionFirmware)]
-        binding.textVersionFirmware.text = version
+        binding.textVersionFirmware.text = programVersionGlobal
 
         binding.inputAPN.setText(settingMap[getString(R.string.commandGetApn)])
         binding.inputIPDNS.setText(settingMap[getString(R.string.commandGetServer1)])
@@ -490,7 +542,10 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
                 binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
             }
 
-            binding.port1DisActivFon.visibility = View.GONE
+            if (binding.spinnerServer.selectedItemPosition == 0 || activPort == 0) {
+                binding.port1DisActivFon.visibility = View.GONE
+            }
+
 
 
 
@@ -532,7 +587,9 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
                 binding.spinnerSelectStopBitPort2.setSelection(indexStopBit2)
             }
 
-            binding.port2DisActivFon.visibility = View.GONE
+            if (binding.spinnerServer.selectedItemPosition == 0 || activPort == 1) {
+                binding.port2DisActivFon.visibility = View.GONE
+            }
 
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadActPortDevice))
@@ -555,7 +612,9 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
             getString(R.string.commandGetSimPin),
             getString(R.string.commandGetActivePort),
             getString(R.string.commandGetPort1Config),
-            getString(R.string.commandGetPort2Config)
+            getString(R.string.commandGetPort2Config),
+            getString(R.string.commandGetProfile1),
+            getString(R.string.commandGetProfile2)
         )
 
         val usbCommandsProtocol = UsbCommandsProtocol()
@@ -613,6 +672,24 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
             getString(R.string.commandSetConnectionTimeout) to binding.inputTimeoutConnection.text.toString(),
             getString(R.string.commandSetActivePort) to binding.spinnerSelectActivPort.selectedItem.toString(),
         )
+
+        // загрузкак профайл
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            try {
+                dataMap[getString(R.string.commandSetProfile1)] =
+                    context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].
+                    priset.toString()
+
+                dataMap[getString(R.string.commandSetProfile2)] =
+                    context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition].
+                    priset.toString()
+            } catch (e: Exception) {
+                showAlertDialog(getString(R.string.nonValidData))
+                return
+            }
+        }
+
 
         // смотря какой активный порт такие данные и будут аписываться
         if (binding.spinnerSelectActivPort.selectedItem.toString() == "1" ||

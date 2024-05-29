@@ -245,6 +245,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val m32 = M32Fragment()
         createSettingFragment(m32)
     }
+    fun onClickDiag(serialNumber: String, programVersion: String) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val diag = DiagFragment(serialNumber, programVersion)
+        createSettingFragment(diag)
+    }
     fun onClickM32Lite(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 

@@ -22,6 +22,7 @@
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
     <string name="errorSpeed">Неполадка перключения скоростей!</string>
     <string name="errorSendDataRead"> - не прочелся по какой то причине!</string>
+    <string name="nonValidData">Пришедшие данные не валидны!</string>
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
@@ -388,7 +389,16 @@
     <string name="server_2Title">Сервер 2</string>
     <string name="timeoutTitle">Время ожидания</string>
     <string name="sizeBufferTitle">Размер буфера</string>
-    <string name="selectPrisetSettings">Выберете присет настроек</string>
+    <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
+    <string name="startDiagTitle">Начать диагностику</string>
+    <string name="operatorTitle">Оператор связи:</string>
+    <string name="mccTitle">MCC:</string>
+    <string name="mncTitle">MNC:</string>
+    <string name="rxlevTitle">Rxlev:</string>
+    <string name="cellidTitle">Cellid:</string>
+    <string name="arfcnTitle">Arfcn:</string>
+    <string name="lacTitle">Lac:</string>
+    <string name="bsicTitle">Bsic:</string>
     <!--............................................................................-->
 
 </resources>

@@ -119,6 +119,16 @@
             app:layout_constraintEnd_toEndOf="@+id/imageDownLoad"
             app:layout_constraintStart_toStartOf="@+id/imageDownLoad"
             app:layout_constraintTop_toBottomOf="@+id/imageDownLoad" />
+
+        <ImageView
+            android:id="@+id/imageDiag"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/stethoscope_svgrepo_com"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView

@@ -12,9 +12,9 @@ class PrisetsValue {
                 "6500", "knet.kumir-resurs.ru", "beeline", "beeline"),
             "Открытый «Мегафон»" to Priset("Открытый «Мегафон»", "internet",
                 "6500", "knet.kumir-resurs.ru", "gdata", "gdata"),
-            "Открытый «МТС»" to Priset("Открытый «МТС»", "Открытый «МТС»",
+            "Открытый «МТС»" to Priset("Открытый «МТС»", "internet.mts.ru",
                 "6500", "knet.kumir-resurs.ru", "mts", "mts"),
-            "Открытый «Ростелеком»" to Priset("Открытый «Ростелеком»", "Открытый «Ростелеком»",
+            "Открытый «Ростелеком»" to Priset("Открытый «Ростелеком»", "internet.rtk.ru",
                 "6500", "knet.kumir-resurs.ru", "", ""),
         )
     }
