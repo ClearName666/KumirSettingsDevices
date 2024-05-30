@@ -9,10 +9,12 @@ import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 class UsbCommandsProtocol {
 
     var flagWorkChackSignal: Boolean = false
+    var flagWorkDiag: Boolean = false
     var flagWorkWrite: Boolean = false
 
     // потоки
     lateinit var threadChackSignalEnfora: Thread
+    lateinit var threadDiag: Thread
 
     // список комманд которые не должны подвергаться форматированию
     private val listCommandNotFormater: List<String> = listOf(
@@ -358,6 +360,75 @@ class UsbCommandsProtocol {
         threadChackSignalEnfora.start()
     }
 
+    // провидение дисгностики
+    fun readDiag(command: String, end: String, context: Context, usbDiag: UsbDiag) {
+        flagWorkDiag = true
+
+        threadDiag = Thread {
+            if (context is MainActivity) {
+                context.curentData = ""
+
+                context.flagThreadSerialCommands = true // говорим что работает поток ввода
+
+                // отключение ат команд
+                context.usb.flagAtCommandYesNo = false
+
+                context.usb.writeDevice(command, false)
+
+                // ожидание полной отправки данных (end - конец данных)
+                while (!context.curentData.contains(end) && flagWorkDiag) {
+                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                }
+
+                // проверка работает ли поток
+                if (flagWorkDiag) {
+                    // вывод данных и ожидание для отображения
+                    val dataInfo: String = context.curentData
+                    (context as Activity).runOnUiThread {
+                        usbDiag.printAllInfo(dataInfo)
+                    }
+                }
+
+
+                Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*5)
+
+                // отчистка данных
+                context.curentData = ""
+
+                // ожидание данных и вывод до тех пор пока флаг отключения не сработает
+                while (flagWorkDiag) {
+
+                    if (expectationSand(context, 30, true)) {
+                        val dataOperators: String = context.curentData
+                        (context as Activity).runOnUiThread {
+                            usbDiag.printAllOperator(dataOperators)
+                        }
+                    } else {
+                        if (flagWorkDiag) {
+                            flagWorkDiag = false
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                            }
+                        }
+                    }
+
+                    // отчистка данных
+                    context.curentData = ""
+                }
+
+                // отчистка данных
+                context.curentData = ""
+
+                context.flagThreadSerialCommands = false
+
+                flagWorkDiag = false
+            }
+        }
+
+        // старт потока
+        threadDiag.start()
+    }
+
 
     private fun commandNewSpeed(context: MainActivity, key: String, value: String): Boolean {
         // проверка на ккоманды изменения скорости или настроек передачи
@@ -447,15 +518,21 @@ class UsbCommandsProtocol {
 
 
     // система получения ответа и ожидание полной отправки данных
-    private fun expectationSand(context: MainActivity): Boolean {
+    private fun expectationSand(context: MainActivity, kTime: Int = 1, diag: Boolean = false): Boolean {
 
         // Ожидание что устройство отправит хоть что то максимум ждет 500 мс
         var maxCntIter: Int = MAX_CNT_EXPECTATION_SAND
         while (context.curentData.isEmpty()) {
+
+            // если режим диагностики то
+            if (diag && !flagWorkDiag) {
+                return false
+            }
+
             if (maxCntIter == 0) {
                 return false
             }
-            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE * kTime)
             maxCntIter--
         }
 
@@ -463,6 +540,12 @@ class UsbCommandsProtocol {
         var cnt: Int = context.curentData.length
         while (context.curentData.isNotEmpty()) {
             Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+
+            // если режим диагностики то
+            if (diag && !flagWorkDiag) {
+                return false
+            }
+
             val newCnt = context.curentData.length
             if (cnt == newCnt) {
                 return true

@@ -27,6 +27,8 @@
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
+    <string name="exitDiagRestart">Выход из режима диагностики может быть осуществлент только путем перезагрузки модема!</string>
+
 
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
@@ -256,6 +258,7 @@
     <string name="commandSaveSettings">AT$SAVE</string>
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
+    <string name="endDiagBeginning">CELLSCAN</string>
 
     <string name="commandGetNetKey">AT$NETKEY?</string>
     <string name="commandGetPower">AT$POWER?</string>
@@ -399,6 +402,8 @@
     <string name="arfcnTitle">Arfcn:</string>
     <string name="lacTitle">Lac:</string>
     <string name="bsicTitle">Bsic:</string>
+    <string name="backTitle">Вернуться обратно</string>
+    <string name="savePresetTitle">Сохранить как шаблон</string>
     <!--............................................................................-->
 
 </resources>
