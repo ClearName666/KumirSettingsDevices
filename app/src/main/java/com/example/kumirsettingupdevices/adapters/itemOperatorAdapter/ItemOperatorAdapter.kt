@@ -30,14 +30,28 @@ class ItemOperatorAdapter ( val context: Context,
         val currentItem = list[position]
 
         currentItem.let {
-            holder.textOperator.text = currentItem.operator
-            holder.textMCC.text = currentItem.mcc
-            holder.textMNC.text = currentItem.mnc
-            holder.textRxlev.text = currentItem.rxlev
-            holder.textCellid.text = currentItem.cellid
-            holder.textArfcn.text = currentItem.arfnc
-            holder.textLac.text = currentItem.lac
-            holder.textBsic.text = currentItem.bsic
+            holder.textOperator.text = context.getString(R.string.operatorTitle) + currentItem.operator
+            holder.textMCC.text = context.getString(R.string.mccTitle) + currentItem.mcc
+            holder.textMNC.text = context.getString(R.string.mncTitle) + currentItem.mnc
+            holder.textRxlev.text = context.getString(R.string.rxlevTitle) + currentItem.rxlev
+            holder.textArfcn.text = context.getString(R.string.arfcnTitle) + currentItem.arfnc
+
+            // попытка перевести в 16 ричный код некоторых данных
+            try {
+                holder.textCellid.text = context.getString(R.string.cellidTitle) + currentItem.cellid.toInt(16).toString()
+            } catch (e: Exception) {
+                holder.textCellid.text = context.getString(R.string.cellidTitle)
+            }
+            try {
+                holder.textLac.text = context.getString(R.string.lacTitle) + currentItem.lac.toInt(16).toString()
+            } catch (e: Exception) {
+                holder.textLac.text = context.getString(R.string.lacTitle)
+            }
+            try {
+                holder.textBsic.text = context.getString(R.string.bsicTitle) + currentItem.bsic.toInt(16).toString()
+            } catch (e: Exception) {
+                holder.textBsic.text = context.getString(R.string.bsicTitle)
+            }
 
             // отображения картиночки
             if (currentItem.operator.contains("MegaFon")) {

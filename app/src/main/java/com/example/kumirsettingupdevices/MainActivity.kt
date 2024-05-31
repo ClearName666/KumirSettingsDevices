@@ -21,9 +21,15 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.kumirsettingupdevices.dataBasePreset.AppDatabase
+import com.example.kumirsettingupdevices.dataBasePreset.Preset
+import com.example.kumirsettingupdevices.dataBasePreset.PresetDao
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
+import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.ports.PortDeviceSetting
 import com.example.kumirsettingupdevices.settings.DeviceAccountingPrisets
+import com.example.kumirsettingupdevices.settings.PrisetsValue
 import com.example.kumirsettingupdevices.usb.Usb
 import com.example.kumirsettingupdevices.usb.UsbActivityInterface
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -39,6 +45,9 @@ import com.example.kumirsettingupdevices.usbFragments.P101Fragment
 import com.example.kumirsettingupdevices.usbFragments.PM81Fragment
 import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
 import com.example.testappusb.settings.ConstUsbSettings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
@@ -51,6 +60,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // flag Для контроля передачи информации
     var flagThreadSerialCommands: Boolean = false
+
+    // база данных
+    private lateinit var presetDao: PresetDao
+
 
     companion object {
         const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
@@ -128,6 +141,24 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         transaction.replace(binding.fragmentContainerMainContent.id, mainFragment)
         //transaction.addToBackStack("MainFragment")
         transaction.commit()
+
+        // загрузка базы данных
+        //val database = AppDatabase.getDatabase(this)
+        //presetDao = database.presetDao()
+
+        // загрузка всех присетов из базы данных
+        /*try {
+            val savePreset = SavePreset(this)
+            lifecycleScope.launch {
+                savePreset.getPresets().collect { presets ->
+                    for (preset in presets) {
+                        PrisetsValue.prisets[preset.name] = Priset(preset.name, preset.apn,
+                            preset.port, preset.server, preset.login, preset.password)
+                    }
+                }
+            }
+        } catch (e: Exception) {}*/
+
 
 
         // смена настроек usb ---------------------------------------------------
@@ -287,6 +318,51 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         val p101 = P101Fragment()
         createSettingFragment(p101)
+    }
+
+    // сохрание настроек присета в базу данных
+    fun onClickSavePreset(
+        name: String,
+        mode: Int,
+        apn: String,
+        server: String,
+        port: String,
+        login: String,
+        password: String
+    ) {
+        val preset = Preset(
+            id = 0,  // 0 for autoGenerate
+            name = name,
+            mode = mode,
+            apn = apn,
+            server = server,
+            port = port,
+            login = login,
+            password = password
+        )
+
+        // Вставляем данные в базу данных
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+
+                try {
+                    presetDao.insert(preset)
+
+                    // сразу добовлеям что бы он стал активным и с ним можно было работать
+                    PrisetsValue.prisets[name] = Priset(name, apn, port, server, login, password)
+
+                    runOnUiThread {
+                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        showAlertDialog(getString(R.string.errorDataBase))
+                    }
+                }
+
+            }
+        }
+
     }
 
     private fun createSettingFragment(fragment: Fragment) {

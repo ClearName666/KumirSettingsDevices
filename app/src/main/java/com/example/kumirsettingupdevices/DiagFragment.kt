@@ -21,6 +21,11 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
 
     private var flagStartDiag: Boolean = false
 
+    companion object {
+        const val DROP_START_FOR_DATA: Int = 3
+        const val DROP_END_FOR_DATA: Int = 3
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -103,7 +108,7 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
 
         // насло с ок и заканичается на CELLSCAN
         binding.textDiag.text = info.substringAfter(getString(R.string.okSand)).
-                substringBefore(getString(R.string.endDiagBeginning))
+                substringBefore(getString(R.string.endDiagBeginning)).drop(DROP_START_FOR_DATA).dropLast(DROP_END_FOR_DATA)
     }
 
     override fun printAllOperator(allOperators: String) {
@@ -122,13 +127,13 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
 
                 val itemOperator = ItemOperator(
                     datas[0].substringAfter("\"").substringBefore("\""),
-                    datas[1].substringAfter("\"").substringBefore("\""),
-                    datas[2].substringAfter("\"").substringBefore("\""),
-                    datas[3].substringAfter("\"").substringBefore("\""),
-                    datas[4].substringAfter("\"").substringBefore("\""),
-                    datas[5].substringAfter("\"").substringBefore("\""),
-                    datas[6].substringAfter("\"").substringBefore("\""),
-                    datas[7].substringAfter("\"").substringBefore("\"")
+                    datas[1].substringAfter(":"),
+                    datas[2].substringAfter(":"),
+                    datas[3].substringAfter(":"),
+                    datas[4].substringAfter(":"),
+                    datas[5].substringAfter(":"),
+                    datas[6].substringAfter(":"),
+                    datas[7].substringAfter(":").substringBefore("\n")
                 )
                 itemsOperators.add(itemOperator)
 

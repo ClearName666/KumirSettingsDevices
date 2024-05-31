@@ -727,7 +727,7 @@
                     android:background="@color/fonDarkMenu"
                     android:clickable="true"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textSpeedPort2">
@@ -755,7 +755,7 @@
                     android:background="@color/fonDarkMenu"
                     android:clickable="true"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textPort2">
@@ -793,13 +793,30 @@
                     android:id="@+id/buttonSavePreset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
                     android:backgroundTint="@color/textColor"
                     android:text="@string/savePresetTitle"
                     android:textColor="@color/background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort2" />
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutNameSavePreset" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutNameSavePreset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inputNameSavePreset"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/namePresetTitle" />
+                </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

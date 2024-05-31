@@ -25,15 +25,13 @@ class SelectMenuPrisetSettings(val context: PrisetFragment) : Fragment() {
 
         showElements = FragmentSelectMenuPrisetSettingsBinding.inflate(layoutInflater)
 
-        // вывод всех присетов
 
-        val itemPrisetsView: List<ItemPrisetsView> = PrisetsValue.prisets.keys.map { ItemPrisetsView(it) }
+        // дбавление  присеты
+        val itemPresetsView: List<ItemPrisetsView> = PrisetsValue.prisets.keys.map { ItemPrisetsView(it) }
 
-
-        val itemPrisetsAdapter = ItemPrisetsAdapter(requireContext(), context, itemPrisetsView)
-        showElements.prisetItem.adapter = itemPrisetsAdapter
+        val itemPresetsAdapter = ItemPrisetsAdapter(requireContext(), context, itemPresetsView)
+        showElements.prisetItem.adapter = itemPresetsAdapter
         showElements.prisetItem.layoutManager = LinearLayoutManager(requireContext())
-
 
         return showElements.root
     }

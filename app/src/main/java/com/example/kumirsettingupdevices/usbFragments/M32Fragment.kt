@@ -14,13 +14,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
-import com.example.kumirsettingupdevices.dataBasePreset.SavePreset
 import com.example.kumirsettingupdevices.databinding.FragmentM32Binding
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
-import com.example.kumirsettingupdevices.settings.DeviceAccountingPrisets
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
-import java.lang.RuntimeException
 
 
 class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
@@ -198,17 +195,24 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
                 showAlertDialog(getString(R.string.nonWriteSetting))
             }
         }
+
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
-            val savePreset = SavePreset()
-            savePreset.savePreset(
-                binding.spinnerServer.selectedItemPosition,
-                binding.inputAPN.text.toString(),
-                binding.inputIPDNS.text.toString(),
-                binding.inputTCP.text.toString(),
-                binding.inputTextLoginGPRS.text.toString(),
-                binding.inputPasswordGPRS.text.toString()
-            )
+            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+                if (context is MainActivity) {
+                    context.onClickSavePreset(
+                        binding.inputNameSavePreset.text.toString(),
+                        binding.spinnerServer.selectedItemPosition,
+                        binding.inputAPN.text.toString(),
+                        binding.inputIPDNS.text.toString(),
+                        binding.inputTCP.text.toString(),
+                        binding.inputTextLoginGPRS.text.toString(),
+                        binding.inputPasswordGPRS.text.toString())
+                }
+                binding.inputNameSavePreset.setText("")
+            } else {
+                showAlertDialog(getString(R.string.nonNamePreset))
+            }
         }
 
 

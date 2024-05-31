@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("kotlin-kapt")
 }
 
 android {
@@ -51,8 +52,6 @@ android {
 }
 
 dependencies {
-
-
     implementation("com.github.felHR85:UsbSerial:6.1.0")
     implementation(libs.androidx.drawerlayout)
     implementation(libs.material.v180)
@@ -76,4 +75,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Room dependencies
+    implementation("androidx.room:room-runtime:2.5.0")
+    implementation("androidx.room:room-ktx:2.5.0")
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
+    implementation("androidx.room:room-testing:2.5.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 }

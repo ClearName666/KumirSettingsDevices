@@ -28,7 +28,9 @@
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
     <string name="exitDiagRestart">Выход из режима диагностики может быть осуществлент только путем перезагрузки модема!</string>
-
+    <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
+    <string name="errorDataBase">Ошибка базы данных!</string>
+    <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
 
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
@@ -395,15 +397,17 @@
     <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
     <string name="startDiagTitle">Начать диагностику</string>
     <string name="operatorTitle">Оператор связи:</string>
-    <string name="mccTitle">MCC:</string>
-    <string name="mncTitle">MNC:</string>
-    <string name="rxlevTitle">Rxlev:</string>
-    <string name="cellidTitle">Cellid:</string>
-    <string name="arfcnTitle">Arfcn:</string>
-    <string name="lacTitle">Lac:</string>
-    <string name="bsicTitle">Bsic:</string>
+    <string name="operatorsTitle">Операторы связи:</string>
+    <string name="mccTitle">Kод страны:</string>
+    <string name="mncTitle">Код мобильной сети:</string>
+    <string name="rxlevTitle">Уровень приема:</string>
+    <string name="cellidTitle">Идентификатор ячейки:</string>
+    <string name="arfcnTitle">Номер радиочастотного канала:</string>
+    <string name="lacTitle">Код региона:</string>
+    <string name="bsicTitle">Код базовой станции:</string>
     <string name="backTitle">Вернуться обратно</string>
     <string name="savePresetTitle">Сохранить как шаблон</string>
+    <string name="namePresetTitle">Название шаблона</string>
     <!--............................................................................-->
 
 </resources>
