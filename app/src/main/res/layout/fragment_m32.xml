@@ -815,7 +815,8 @@
                         android:id="@+id/inputNameSavePreset"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/namePresetTitle" />
+                        android:hint="@string/namePresetTitle"
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,8 +22,8 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
     private var flagStartDiag: Boolean = false
 
     companion object {
-        const val DROP_START_FOR_DATA: Int = 3
-        const val DROP_END_FOR_DATA: Int = 3
+        const val DROP_START_FOR_DATA: Int = 2
+        const val DROP_END_FOR_DATA: Int = 2
     }
 
     override fun onCreateView(

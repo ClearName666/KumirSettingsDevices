@@ -143,21 +143,20 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         transaction.commit()
 
         // загрузка базы данных
-        //val database = AppDatabase.getDatabase(this)
-        //presetDao = database.presetDao()
+        val database = AppDatabase.getDatabase(this)
+        presetDao = database.presetDao()
 
         // загрузка всех присетов из базы данных
-        /*try {
-            val savePreset = SavePreset(this)
+        try {
             lifecycleScope.launch {
-                savePreset.getPresets().collect { presets ->
+                presetDao.getAll().collect { presets ->
                     for (preset in presets) {
-                        PrisetsValue.prisets[preset.name] = Priset(preset.name, preset.apn,
-                            preset.port, preset.server, preset.login, preset.password)
+                        PrisetsValue.prisets[preset.name!!] = Priset(preset.name, preset.mode!!, preset.apn!!,
+                            preset.port!!, preset.server!!, preset.login!!, preset.password!!)
                     }
                 }
             }
-        } catch (e: Exception) {}*/
+        } catch (e: Exception) {}
 
 
 
@@ -349,7 +348,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     presetDao.insert(preset)
 
                     // сразу добовлеям что бы он стал активным и с ним можно было работать
-                    PrisetsValue.prisets[name] = Priset(name, apn, port, server, login, password)
+                    PrisetsValue.prisets[name] = Priset(name, mode, apn, port, server, login, password)
 
                     runOnUiThread {
                         showAlertDialog(getString(R.string.sucPresetSaveDataBase))

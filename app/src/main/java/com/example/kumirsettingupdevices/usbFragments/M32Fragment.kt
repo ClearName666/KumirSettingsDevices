@@ -40,24 +40,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
         // мониторинг изменений режима работы
         binding.spinnerServer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-
-                // если режим кумир нэт
-                if (position != 0) {
-                    when(binding.spinnerSelectActivPort.selectedItemPosition) {
-                        0 -> {
-                            binding.port1DisActivFon.visibility = View.GONE
-                            binding.port2DisActivFon.visibility = View.VISIBLE
-                        }
-                        1 -> {
-                            binding.port1DisActivFon.visibility = View.VISIBLE
-                            binding.port2DisActivFon.visibility = View.GONE
-                        }
-                    }
-                } else {
-                    binding.port1DisActivFon.visibility = View.GONE
-                    binding.port2DisActivFon.visibility = View.GONE
-                }
-
+                setPresetSpinnerServer(position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -247,6 +230,26 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
         }
 
         super.onDestroyView()
+    }
+
+    // устанока конкретного режима приведет к ...
+    private fun setPresetSpinnerServer(position: Int) {
+        // если режим кумир нет
+        if (binding.spinnerServer.selectedItemPosition != 0) {
+            when(position) {
+                0 -> {
+                    binding.port1DisActivFon.visibility = View.GONE
+                    binding.port2DisActivFon.visibility = View.VISIBLE
+                }
+                1 -> {
+                    binding.port1DisActivFon.visibility = View.VISIBLE
+                    binding.port2DisActivFon.visibility = View.GONE
+                }
+            }
+        } else {
+            binding.port1DisActivFon.visibility = View.GONE
+            binding.port2DisActivFon.visibility = View.GONE
+        }
     }
 
     private fun createAdapters() {
@@ -771,6 +774,10 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment {
         binding.inputIPDNS.setText(priset.server1)
         binding.inputTextLoginGPRS.setText(priset.login)
         binding.inputPasswordGPRS.setText(priset.password)
+
+        binding.spinnerServer.setSelection(priset.mode)
+        setPresetSpinnerServer(priset.mode)
+
     }
 
 }

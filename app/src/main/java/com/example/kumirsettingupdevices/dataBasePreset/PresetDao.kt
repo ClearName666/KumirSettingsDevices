@@ -2,6 +2,7 @@ package com.example.kumirsettingupdevices.dataBasePreset
 
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
@@ -13,4 +14,7 @@ interface PresetDao {
 
     @Query("SELECT * FROM Preset")
     fun getAll(): Flow<List<Preset>>
+
+    @Delete
+    fun delete(preset: Preset)
 }
