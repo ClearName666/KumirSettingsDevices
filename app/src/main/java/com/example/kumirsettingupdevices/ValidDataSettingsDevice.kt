@@ -17,6 +17,33 @@ class ValidDataSettingsDevice {
 
         const val POWER_MAX: Int = 14
         const val POWER_MIN: Int = -16
+
+
+        // enfora
+        const val PADBLK_MAX: Int = 1472
+        const val PADBLK_MIN: Int = 3
+
+        const val PADTO_MAX: Int = 65535
+        const val PADTO_MIN: Int = 0
+    }
+    // проверка PADTO для enfora
+    fun padtoValid(padto: String): Boolean {
+        return try {
+            !(padto.toInt() >= PADTO_MAX ||
+                    padto.toInt() <= PADTO_MIN)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // проверка PADBLK для enfora
+    fun padblkValid(padto: String): Boolean {
+        return try {
+            !(padto.toInt() >= PADBLK_MAX ||
+                    padto.toInt() <= PADBLK_MIN)
+        } catch (e: Exception) {
+            false
+        }
     }
 
     // проверка errorKEEPALIVE диопазона от 10 до 600

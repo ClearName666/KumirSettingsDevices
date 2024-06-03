@@ -333,16 +333,18 @@ class UsbCommandsProtocol {
 
                     // после получения данных отправляем их на отображение
                     if (flagWorkChackSignal) {
-                        (context as Activity).runOnUiThread {
-                            if (usbFragment is Enfora1318Fragment) {
-                                try {
+                        if (usbFragment is Enfora1318Fragment) {
+                            try {
+                                (context as Activity).runOnUiThread {
                                     usbFragment.onPrintSignal(data[0], data[1])
-                                } catch (e: Exception) {
+                                }
+                            } catch (e: Exception) {
+                                (context as Activity).runOnUiThread {
                                     context.showAlertDialog(context.getString(R.string.notValidData))
                                 }
+                                break@out
                             }
                         }
-                        break@out
                     }
                 }
 

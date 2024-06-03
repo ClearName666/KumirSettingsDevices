@@ -22,6 +22,7 @@
         android:id="@+id/serinerNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="3dp"
         android:text="@string/serinerNumber"
         android:textColor="@color/textColor"
@@ -777,6 +778,19 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lineDataBase"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="60dp"
+                    android:background="@color/fon2Element"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort2">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lineSettingsPort2"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
@@ -805,11 +819,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort2">
+                    app:layout_constraintTop_toBottomOf="@+id/lineDataBase">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputNameSavePreset"
@@ -818,6 +832,17 @@
                         android:hint="@string/namePresetTitle"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/textPresetTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/presetTitle"
+                    android:textColor="@color/textColor"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toTopOf="@+id/lineDataBase"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

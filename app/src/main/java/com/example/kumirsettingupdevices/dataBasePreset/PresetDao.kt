@@ -17,4 +17,7 @@ interface PresetDao {
 
     @Delete
     fun delete(preset: Preset)
+
+    @Query("DELETE FROM Preset WHERE name = :presetName")
+    suspend fun deleteByName(presetName: String)
 }

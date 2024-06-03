@@ -8,4 +8,5 @@
     <color name="fon2Element">#919191</color>
     <color name="fonDarkMenu">#A64F4F4F</color>
     <color name="fun3Element">#A7F1FA</color>
+    <color name="dangerous">#880000</color>
 </resources>

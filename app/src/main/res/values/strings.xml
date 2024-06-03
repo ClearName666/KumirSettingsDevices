@@ -31,6 +31,7 @@
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
+    <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
 
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
@@ -192,7 +193,7 @@
     <string name="sms_commandPinCode">Пин-код для SMS-команд (4 символа)</string>
     <string name="smsPinCodeCard">Пин-код для SIM-карты (4 символа)</string>
     <string name="smsMonitoringTitle">Мониторинг сигнала и SMS</string>
-    <string name="loadingTitle">Загрузка... Подождите!</string>
+    <string name="loadingTitle">Загрузка... Подождите!\n</string>
     <string name="closeViewTitle">Закрыть окно</string>
     <string name="settingInterfTitle">Настройки интерфейса</string>
     <string name="selectMeteringDeviceTitle">Выбор прибора учета</string>
@@ -408,6 +409,11 @@
     <string name="backTitle">Вернуться обратно</string>
     <string name="savePresetTitle">Сохранить как шаблон</string>
     <string name="namePresetTitle">Название шаблона</string>
+    <string name="presetTitle">Шаблонизатор</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settingsTitle">Настройки</string>
+    <string name="presetsTitle">Шаблоны</string>
+    <string name="nonPresetData">Нету записей</string>
     <!--............................................................................-->
 
 </resources>

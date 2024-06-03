@@ -83,6 +83,24 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
                 context.onClickPrisetSettingFor(this)
             }
         }
+        // сохранения пресета настроек
+        binding.buttonSavePreset.setOnClickListener {
+            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+                if (context is MainActivity) {
+                    context.onClickSavePreset(
+                        binding.inputNameSavePreset.text.toString(),
+                        binding.spinnerServer.selectedItemPosition,
+                        binding.inputAPN.text.toString(),
+                        binding.inputIPDNS.text.toString(),
+                        binding.inputTCP.text.toString(),
+                        binding.inputTextLoginGPRS.text.toString(),
+                        binding.inputPasswordGPRS.text.toString())
+                }
+                binding.inputNameSavePreset.setText("")
+            } else {
+                showAlertDialog(getString(R.string.nonNamePreset))
+            }
+        }
 
         //------------------------------------------------------------------------------------------
         // покраска кнопки записи в серый
@@ -133,6 +151,8 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
 
         super.onDestroyView()
     }
+
+
 
     private fun createAdapters() {
         // адаптер для выбора режима работы модема
@@ -526,16 +546,19 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
     }
 
     override fun printPriset(priset: Priset) {
+
         // закрытие меню
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.workFonDarkMenu()
         }
-        // подставление данных в пол
+        // подставление данных в поля
         binding.inputAPN.setText(priset.apn)
         binding.inputTCP.setText(priset.tcpPort)
         binding.inputIPDNS.setText(priset.server1)
         binding.inputTextLoginGPRS.setText(priset.login)
         binding.inputPasswordGPRS.setText(priset.password)
+
+        binding.spinnerServer.setSelection(priset.mode)
     }
 }

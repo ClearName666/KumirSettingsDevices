@@ -95,6 +95,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
         binding.buttonChackSignal.setOnClickListener {
             onClickChackSignal()
+
         }
 
         //------------------------------------------------------------------------------------------
@@ -310,11 +311,19 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
                 binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
 
                 flagClickChackSignal = true
+
+
+                // загруска тип работает проверка связи
+                binding.progressBarChackSignal.visibility = View.VISIBLE
+
             } else {
                 usbCommandsProtocol.flagWorkChackSignal = false
                 binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
 
                 flagClickChackSignal = false
+
+                // не работает проверка связи загрузка отключена
+                binding.progressBarChackSignal.visibility = View.GONE
             }
         } else {
             showAlertDialog(getString(R.string.notReadDevice))
@@ -374,6 +383,17 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             substringAfter("02, 1,")?.substringBefore("\n")
         binding.timeout.text = settingMap[getString(R.string.commandGetPadTimeout)]
         binding.buffer.text = settingMap[getString(R.string.commandGetPadBlockSize)]
+
+        // вывод настроек в inputы
+        binding.inputAPN.setText(settingMap[getString(R.string.commandGetApnEnforaM31)]?.replace(" ", ""))
+        binding.inputLogin.setText(settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.replace(" ", ""))
+        binding.inputPassword.setText(settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.replace(" ", ""))
+        binding.inputServer1.setText(settingMap[getString(R.string.commandServer1EnforaOrM31)]?.replace(" ", ""))
+        binding.inputServer2.setText(settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
+            substringAfter("02, 1,")?.substringBefore("\n")?.replace(" ", ""))
+        binding.inputTimeOut.setText(settingMap[getString(R.string.commandGetPadTimeout)]?.replace(" ", ""))
+        binding.inputSizeBuffer.setText(settingMap[getString(R.string.commandGetPadBlockSize)]?.replace(" ", ""))
+
 
 
         // оеператор связи

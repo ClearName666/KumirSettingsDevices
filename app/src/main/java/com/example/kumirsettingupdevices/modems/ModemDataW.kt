@@ -271,9 +271,9 @@ class ModemDataW(val context: Context) {
                 // return mapOf()
             }
         }
-        if (context is MainActivity) {
+        /*if (context is MainActivity) {
             context.showAlertDialog(eventsList.toString())
-        }
+        }*/
 
         return eventsList
     }

@@ -31,16 +31,17 @@ tools:context=".DiagFragment">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<TextView
-    android:id="@+id/serinerNumber"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
-    android:text="@string/serinerNumber"
-    android:textColor="@color/textColor"
-    android:textSize="12sp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/lineSet" />
+    <TextView
+        android:id="@+id/serinerNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:text="@string/serinerNumber"
+        android:textColor="@color/textColor"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 
 <TextView
     android:id="@+id/textVersionFirmware"

@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     var flagThreadSerialCommands: Boolean = false
 
     // база данных
-    private lateinit var presetDao: PresetDao
+    lateinit var presetDao: PresetDao
 
 
     companion object {
@@ -319,6 +319,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(p101)
     }
 
+    fun onSettings(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        binding.textNameDevice.text = getString(R.string.settingsTitle)
+
+        val settings = SettingsFragment()
+        createSettingFragment(settings, true)
+    }
+
     // сохрание настроек присета в базу данных
     fun onClickSavePreset(
         name: String,
@@ -329,43 +338,37 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         login: String,
         password: String
     ) {
-        val preset = Preset(
-            id = 0,  // 0 for autoGenerate
-            name = name,
-            mode = mode,
-            apn = apn,
-            server = server,
-            port = port,
-            login = login,
-            password = password
-        )
+        if (name.isNotEmpty() && apn.isNotEmpty() && apn.isNotEmpty() && server.isNotEmpty() && port.isNotEmpty())
+        {
+            val preset = Preset(0, name, mode, apn, server, port, login, password)
 
-        // Вставляем данные в базу данных
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
+            // Вставляем данные в базу данных
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
 
-                try {
-                    presetDao.insert(preset)
+                    try {
+                        presetDao.insert(preset)
 
-                    // сразу добовлеям что бы он стал активным и с ним можно было работать
-                    PrisetsValue.prisets[name] = Priset(name, mode, apn, port, server, login, password)
+                        // сразу добовлеям что бы он стал активным и с ним можно было работать
+                        PrisetsValue.prisets[name] = Priset(name, mode, apn, port, server, login, password)
 
-                    runOnUiThread {
-                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                    }
-                } catch (e: Exception) {
-                    runOnUiThread {
-                        showAlertDialog(getString(R.string.errorDataBase))
+                        runOnUiThread {
+                            showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            showAlertDialog(getString(R.string.errorDataBase))
+                        }
                     }
                 }
-
             }
+        } else {
+            showAlertDialog(getString(R.string.nonEmptyData))
         }
-
     }
 
-    private fun createSettingFragment(fragment: Fragment) {
-        if (usb.checkConnectToDevice()) {
+    private fun createSettingFragment(fragment: Fragment, flagChack: Boolean = false) {
+        if (usb.checkConnectToDevice() || flagChack) {
 
             /*if (supportFragmentManager.fragments.size > 1) {
                 supportFragmentManager.popBackStack()
