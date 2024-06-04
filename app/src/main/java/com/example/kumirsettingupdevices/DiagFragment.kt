@@ -118,33 +118,70 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
         val operatorsString: List<String> = allOperators.split("\n")
         val itemsOperators: MutableList<ItemOperator> = mutableListOf()
 
+        // если операторы не найдены то вывоит текст о том что операторы не найдены
+        if (operatorsString.isEmpty()) {
+            binding.textNonFindOperators.visibility = View.VISIBLE
+        } else {
+            binding.textNonFindOperators.visibility = View.GONE
 
-        // разделение строки по отдельным данным
-        for (operatorString in operatorsString) {
-            val datas: List<String> = operatorString.split(",")
+            // разделение строки по отдельным данным
+            for (operatorString in operatorsString) {
+                val datas: List<String> = operatorString.split(",")
 
-            try {
+                try {
+                    val frequency = arfcnToFrequency(datas[5].substringAfter(":").toInt())
 
-                val itemOperator = ItemOperator(
-                    datas[0].substringAfter("\"").substringBefore("\""),
-                    datas[1].substringAfter(":"),
-                    datas[2].substringAfter(":"),
-                    datas[3].substringAfter(":"),
-                    datas[4].substringAfter(":"),
-                    datas[5].substringAfter(":"),
-                    datas[6].substringAfter(":"),
-                    datas[7].substringAfter(":").substringBefore("\n")
-                )
-                itemsOperators.add(itemOperator)
+                    val itemOperator = ItemOperator(
+                        datas[0].substringAfter("\"").substringBefore("\""),
+                        datas[1].substringAfter(":"),
+                        datas[2].substringAfter(":"),
+                        datas[3].substringAfter(":"),
+                        datas[4].substringAfter(":"),
+                        "${frequency?.first}-${frequency?.second}",
+                        datas[6].substringAfter(":"),
+                        datas[7].substringAfter(":")
+                    )
+                    itemsOperators.add(itemOperator)
 
-            } catch (e: Exception) {
+                } catch (e: Exception) {
 
+                }
             }
-        }
 
-        val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), itemsOperators)
-        binding.recyclerItemOperators.adapter = itemOperatorAdapter
-        binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+            val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), itemsOperators)
+            binding.recyclerItemOperators.adapter = itemOperatorAdapter
+            binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+        }
+    }
+
+    override fun printError() {
+        binding.progressBarOperators.visibility = View.GONE
+        binding.textNonFindOperators.visibility = View.VISIBLE
+    }
+
+    // перевод конала в частоту
+    fun arfcnToFrequency(arfcn: Int): Pair<Double, Double>? {
+        return when {
+            // GSM 900 (Primary GSM)
+            arfcn in 1..124 -> {
+                val downlink = 935.0 + 0.2 * (arfcn - 1)
+                val uplink = downlink - 45
+                Pair(downlink, uplink)
+            }
+            // GSM 1800 (DCS 1800)
+            arfcn in 512..885 -> {
+                val downlink = 1805.0 + 0.2 * (arfcn - 512)
+                val uplink = downlink - 95
+                Pair(downlink, uplink)
+            }
+            // GSM 1900 (PCS 1900)
+            arfcn in 512..810 -> {
+                val downlink = 1930.0 + 0.2 * (arfcn - 512)
+                val uplink = downlink - 80
+                Pair(downlink, uplink)
+            }
+            else -> null // ARFCN вне диапазонов GSM 900, 1800, 1900
+        }
     }
 
     private fun showAlertDialog(text: String) {

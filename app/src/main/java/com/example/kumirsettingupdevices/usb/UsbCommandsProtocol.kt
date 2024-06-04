@@ -47,6 +47,10 @@ class UsbCommandsProtocol {
         private const val BITDATA_INDEX_MIN = 0
 
 
+        // максимальная задержка для диагностики
+        private const val MAX_TIMEOUT_DIAG = 20 // 54 сек
+
+
     }
 
 
@@ -378,8 +382,13 @@ class UsbCommandsProtocol {
                 context.usb.writeDevice(command, false)
 
                 // ожидание полной отправки данных (end - конец данных)
+                var timeMaxIndex: Int = 50
                 while (!context.curentData.contains(end) && flagWorkDiag) {
+                    if (timeMaxIndex == 0) {
+                        break
+                    }
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                    timeMaxIndex++
                 }
 
                 // проверка работает ли поток
@@ -400,7 +409,7 @@ class UsbCommandsProtocol {
                 // ожидание данных и вывод до тех пор пока флаг отключения не сработает
                 while (flagWorkDiag) {
 
-                    if (expectationSand(context, 30, true)) {
+                    if (expectationSand(context, MAX_TIMEOUT_DIAG, true)) {
                         val dataOperators: String = context.curentData
                         (context as Activity).runOnUiThread {
                             usbDiag.printAllOperator(dataOperators)
@@ -410,6 +419,7 @@ class UsbCommandsProtocol {
                             flagWorkDiag = false
                             (context as Activity).runOnUiThread {
                                 context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                                usbDiag.printError()
                             }
                         }
                     }

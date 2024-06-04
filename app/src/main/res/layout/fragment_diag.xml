@@ -192,4 +192,17 @@ tools:context=".DiagFragment">
         app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
         app:layout_constraintTop_toTopOf="@+id/recyclerItemOperators" />
 
+    <TextView
+        android:id="@+id/textNonFindOperators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nonFindOperator"
+        android:textColor="@color/dangerous"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerItemOperators"
+        app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
+        app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

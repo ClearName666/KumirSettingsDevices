@@ -26,6 +26,20 @@ class ValidDataSettingsDevice {
         const val PADTO_MAX: Int = 65535
         const val PADTO_MIN: Int = 0
     }
+    // проверка логина и пароля
+    fun loginPasswordValid(loginPassword: String): Boolean {
+        if (loginPassword.split(",").size != 2) {
+            return false
+        }
+        for (c in loginPassword) {
+            if (c == ' ' || c == '\"') {
+                return false
+            }
+        }
+
+        return true
+    }
+
     // проверка PADTO для enfora
     fun padtoValid(padto: String): Boolean {
         return try {
@@ -37,10 +51,10 @@ class ValidDataSettingsDevice {
     }
 
     // проверка PADBLK для enfora
-    fun padblkValid(padto: String): Boolean {
+    fun padblkValid(padblk: String): Boolean {
         return try {
-            !(padto.toInt() >= PADBLK_MAX ||
-                    padto.toInt() <= PADBLK_MIN)
+            !(padblk.toInt() >= PADBLK_MAX ||
+                    padblk.toInt() <= PADBLK_MIN)
         } catch (e: Exception) {
             false
         }

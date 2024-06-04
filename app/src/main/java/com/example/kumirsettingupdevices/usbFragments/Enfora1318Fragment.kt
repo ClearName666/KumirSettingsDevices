@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.databinding.FragmentEnforma1318Binding
 import com.example.kumirsettingupdevices.modems.ModemDataW
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
@@ -146,6 +147,20 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
+        // Установка обработчика нажатия на switch
+        binding.switchCastomSet.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.fonCastomingSettings.visibility = View.GONE
+                binding.switchCastomSet.background = null
+            } else {
+                binding.fonCastomingSettings.visibility = View.VISIBLE
+            }
+        }
+
+        binding.fonCastomingSettings.setOnClickListener {
+            binding.ScrollSetting.scrollTo(0, 200)
+            binding.switchCastomSet.setBackgroundResource(R.color.dangerous)
+        }
 
         return binding.root
     }
@@ -376,21 +391,36 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
         // вывод настроек
         binding.APN.text = settingMap[getString(R.string.commandGetApnEnforaM31)]
-        binding.login.text = settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]
-        binding.password.text = settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]
+
+        val loginPassword: List<String>? = settingMap[getString(R.string.commandGetUsernamePassword)]?.
+        substringAfter("\"")?.substringBefore("\"")?.split(",")
+
+        if (settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false) {
+            binding.login.text = loginPassword?.get(0) ?: ""
+            binding.password.text = loginPassword?.get(1) ?: ""
+        }
+
         binding.server1.text = settingMap[getString(R.string.commandServer1EnforaOrM31)]
         binding.server2.text = settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
             substringAfter("02, 1,")?.substringBefore("\n")
         binding.timeout.text = settingMap[getString(R.string.commandGetPadTimeout)]
         binding.buffer.text = settingMap[getString(R.string.commandGetPadBlockSize)]
 
+
+
         // вывод настроек в inputы
-        binding.inputAPN.setText(settingMap[getString(R.string.commandGetApnEnforaM31)]?.replace(" ", ""))
-        binding.inputLogin.setText(settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.replace(" ", ""))
-        binding.inputPassword.setText(settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.replace(" ", ""))
-        binding.inputServer1.setText(settingMap[getString(R.string.commandServer1EnforaOrM31)]?.replace(" ", ""))
+        binding.inputAPN.setText(settingMap[getString(R.string.commandGetApnEnforaM31)]?.replace(" ", "")?.
+            substringAfter("\",\"")?.substringBefore("\""))
+
+        if (settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false) {
+            binding.inputLogin.setText(loginPassword?.get(0) ?: "")
+            binding.inputPassword.setText(loginPassword?.get(1) ?: "")
+        }
+        binding.inputServer1.setText(settingMap[getString(R.string.commandServer1EnforaOrM31)]?.replace(" ", "")?.
+        substringAfter("\"")?.substringBefore("\""))
         binding.inputServer2.setText(settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
-            substringAfter("02, 1,")?.substringBefore("\n")?.replace(" ", ""))
+            substringAfter("02, 1,")?.substringBefore("\n")?.replace(" ", "")?.
+        substringAfter("\"")?.substringBefore("\""))
         binding.inputTimeOut.setText(settingMap[getString(R.string.commandGetPadTimeout)]?.replace(" ", ""))
         binding.inputSizeBuffer.setText(settingMap[getString(R.string.commandGetPadBlockSize)]?.replace(" ", ""))
 
@@ -443,7 +473,6 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             )
             return
         }
-
     }
 
     override fun readSettingStart() {
@@ -475,7 +504,8 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
             getString(R.string.commandGetEventTimer),
             getString(R.string.commandGetEvent),
             getString(R.string.commandGetConfigureGPIO),
-            getString(R.string.commandGetGPIOValue)
+            getString(R.string.commandGetGPIOValue),
+            getString(R.string.commandGetUsernamePassword)
         )
 
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this, true)
@@ -511,8 +541,44 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
 
         val parity: Int = if (binding.spinnerSelectParityPort1.selectedItemPosition == 2) 0 else 1
 
+        val dataWrite: MutableMap<String, String>
+
+        // если включены кастомные настроки то другая функция
         val modemDataW = ModemDataW(requireContext())
-        val dataWrite: MutableMap<String, String> = modemDataW.getEnfora1318DataWrite(curentDataModem)
+
+        dataWrite = if (binding.switchCastomSet.isChecked) {
+
+            // проверка валидности введенных данных
+            val validDataSettingsDevice = ValidDataSettingsDevice()
+            if (!validDataSettingsDevice.padtoValid(binding.inputSizeBuffer.text.toString())) {
+                showAlertDialog(getString(R.string.errorSizeBuffer))
+                return
+            }
+            if (!validDataSettingsDevice.padblkValid(binding.inputTimeOut.text.toString())) {
+                showAlertDialog(getString(R.string.errorTimeOutEnfora))
+                return
+            }
+
+            // проверка логина и пароля
+            val loginPassword: String = binding.inputLogin.text.toString().replace(" ", "")  +
+                    "," + binding.inputPassword.text.toString().replace(" ", "")
+            if (!validDataSettingsDevice.loginPasswordValid(loginPassword)) {
+                showAlertDialog(getString(R.string.errorLoginPassworsd))
+                return
+            }
+
+
+            modemDataW.getEnfora1318DataWrite(curentDataModem, mapOf(
+                getString(R.string.commandServer1EnforaOrM31) to binding.inputServer1.text.toString(),
+                getString(R.string.commandServer2EnforaOrM31) to binding.inputServer2.text.toString(),
+                getString(R.string.commandGetApnEnforaM31) to binding.inputAPN.text.toString(),
+                getString(R.string.commandGetPadTimeout) to binding.inputTimeOut.text.toString(),
+                getString(R.string.commandGetPadBlockSize) to binding.inputSizeBuffer.text.toString(),
+                getString(R.string.commandGetUsernamePassword) to loginPassword
+            ))
+        } else {
+            modemDataW.getEnfora1318DataWrite(curentDataModem, mapOf())
+        }
 
         dataWrite[getString(R.string.commandSetSpeed)] = binding.spinnerSpeed.selectedItem.toString()
         dataWrite[getString(R.string.commandSetFormatParity)] = "$format,$parity"

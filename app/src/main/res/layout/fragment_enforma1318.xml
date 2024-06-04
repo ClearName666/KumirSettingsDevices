@@ -208,11 +208,11 @@
                     android:id="@+id/textAPNName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/apnTitle"
                     android:textColor="@color/textColor"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSizeBuffer" />
+                    app:layout_constraintTop_toBottomOf="@+id/switchCastomSet" />
 
                 <Spinner
                     android:id="@+id/spinnerSelectParityPort1"
@@ -518,9 +518,8 @@
 
                 <TextView
                     android:id="@+id/login"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="login"
+                    android:layout_width="29dp"
+                    android:layout_height="24dp"
                     android:textColor="@color/textColor"
                     app:layout_constraintBottom_toBottomOf="@+id/textLogin"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -531,7 +530,6 @@
                     android:id="@+id/password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="password"
                     android:textColor="@color/textColor"
                     app:layout_constraintBottom_toBottomOf="@+id/textPassword"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -592,6 +590,30 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/textCommunicationOperator"
                     app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
+
+                <Switch
+                    android:id="@+id/switchCastomSet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/loadCastomSet"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSizeBuffer" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/fonCastomingSettings"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/fonDarkMenu"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/inputSizeBufferLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/textAPNName"
+                    app:layout_constraintTop_toTopOf="@+id/textAPNName">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

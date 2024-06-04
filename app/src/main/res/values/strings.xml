@@ -27,7 +27,7 @@
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
-    <string name="exitDiagRestart">Выход из режима диагностики может быть осуществлент только путем перезагрузки модема!</string>
+    <string name="exitDiagRestart">Выход из режима диагностики возможен только путем перезагрузки модема.</string>
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
@@ -38,6 +38,9 @@
     <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
     <string name="errorPOWER">Значение POWER должно быть в диапазоне от -16 до 14</string>
     <string name="errorNETKEY">Значение NETKEY не должно привышать 60 символов</string>
+    <string name="errorSizeBuffer">Размер буфера должын быть в диапазоне от 0 до 65535</string>
+    <string name="errorTimeOutEnfora">Таймаут должын быть в диапазоне от 3 до 1472</string>
+    <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
@@ -277,6 +280,7 @@
     <string name="commandSpeedFind">AT+IPR?</string>
 
     <string name="commandGetVersionProgramEnfora">AT$PKG?</string>
+    <string name="commandGetUsernamePassword">AT%CGPCO?</string>
     <string name="commandGetSerialNumberEnforaM31">AT+CGSN?</string>
     <string name="commandGetApnEnforaM31">AT+CGDCONT?</string>
     <string name="commandGetTcpPortEnforaM31">AT$PADSRC?</string>
@@ -306,6 +310,7 @@
 
 
     <string name="commandSetDeffoltSetting">AT&amp;F</string>
+    <string name="commandSetUsernamePassword">AT%CGPCO=</string>
     <string name="commandSetFriend">AT$FRIEND=</string>
     <string name="commandSetSaveSettings">AT&amp;W</string>
     <string name="commandSetResetModem">AT$RESET</string>
@@ -399,13 +404,13 @@
     <string name="startDiagTitle">Начать диагностику</string>
     <string name="operatorTitle">Оператор связи:</string>
     <string name="operatorsTitle">Операторы связи:</string>
-    <string name="mccTitle">Kод страны:</string>
-    <string name="mncTitle">Код мобильной сети:</string>
-    <string name="rxlevTitle">Уровень приема:</string>
-    <string name="cellidTitle">Идентификатор ячейки:</string>
-    <string name="arfcnTitle">Номер радиочастотного канала:</string>
-    <string name="lacTitle">Код региона:</string>
-    <string name="bsicTitle">Код базовой станции:</string>
+    <string name="mccTitle">Kод страны(mcc):</string>
+    <string name="mncTitle">Код мобильной сети(mnc):</string>
+    <string name="rxlevTitle">Уровень приема(rxlev):</string>
+    <string name="cellidTitle">Идентификатор ячейки(cellid):</string>
+    <string name="arfcnTitle">Частота(arfnc):</string>
+    <string name="lacTitle">Код региона(lac):</string>
+    <string name="bsicTitle">Код базовой станции(bsic):</string>
     <string name="backTitle">Вернуться обратно</string>
     <string name="savePresetTitle">Сохранить как шаблон</string>
     <string name="namePresetTitle">Название шаблона</string>
@@ -414,6 +419,8 @@
     <string name="settingsTitle">Настройки</string>
     <string name="presetsTitle">Шаблоны</string>
     <string name="nonPresetData">Нету записей</string>
+    <string name="loadCastomSet">Загрузть кастомные настроки</string>
+    <string name="nonFindOperator">Операторы не найдены</string>
     <!--............................................................................-->
 
 </resources>

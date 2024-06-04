@@ -9,22 +9,58 @@ import com.example.kumirsettingupdevices.R
 class ModemDataW(val context: Context) {
 
     // возвращяет только те данные которые нужно перезаписать
-    fun getEnfora1318DataWrite(data: Map<String, String>): MutableMap<String, String> {
+    fun getEnfora1318DataWrite(data: Map<String, String>,
+                               dataCustomMap: Map<String, String>): MutableMap<String, String> {
         val dataWrite: MutableMap<String, String> = mutableMapOf()
+
+        // записываемые данные
+        var server1: String = context.getString(R.string.defaultHelpCheckSERVER1)
+        var server2: String = context.getString(R.string.defaultHelpCheckSERVER2)
+        var apn: String = context.getString(R.string.defaultAPN)
+        var timeOut: String = context.getString(R.string.defaultSetPadTimeout)
+        var sizeBuffer: String = context.getString(R.string.defaultSetPadBlockSize)
+        var loginPassword: String = ""
+        var flagCustom: Boolean = false
+
+        if (dataCustomMap.isNotEmpty()) {
+            server1 = dataCustomMap[context.getString(R.string.commandServer1EnforaOrM31)].toString()
+            server2 = dataCustomMap[context.getString(R.string.commandServer2EnforaOrM31)].toString()
+            apn = dataCustomMap[context.getString(R.string.commandGetApnEnforaM31)].toString()
+            timeOut = dataCustomMap[context.getString(R.string.commandGetPadTimeout)].toString()
+            sizeBuffer = dataCustomMap[context.getString(R.string.commandGetPadBlockSize)].toString()
+            loginPassword = dataCustomMap[context.getString(R.string.commandGetUsernamePassword)].toString()
+            flagCustom = true
+        }
+
+        if (flagCustom && data[context.getString(R.string.commandGetUsernamePassword)]?.
+                contains(loginPassword) == false && loginPassword.isNotEmpty()) {
+
+            dataWrite[context.getString(R.string.commandSetConfigurePPPWithLogin)] = "1"
+            dataWrite[context.getString(R.string.commandSetUsernamePassword)] =
+                "1,\"$loginPassword\",1"
+        } else {
+            if (data[context.getString(R.string.commandGetApnEnforaM31)]?.contains("0") == false
+                    && loginPassword.isNotEmpty()) {
+                dataWrite[context.getString(R.string.commandSetConfigurePPPWithLogin)] = "0"
+            }
+        }
 
         // сервер 1 -----------------------------------------
         if (data[context.getString(R.string.commandServer1EnforaOrM31)]?.
-            contains(context.getString(R.string.defaultHelpCheckSERVER1)) == false) {
+            contains(server1) == false) {
 
-            dataWrite[context.getString(R.string.commandSetDestinationAddress)] =
-                context.getString(R.string.defaultSERVER1)
+            if (!flagCustom) {
+                dataWrite[context.getString(R.string.commandSetDestinationAddress)] =
+                    context.getString(R.string.defaultSERVER1)
+            } else {
+                dataWrite[context.getString(R.string.commandSetDestinationAddress)] = "\"$server1\",0"
+            }
+
         }
 
         // сервер 2 ------------------------------------------
         if (data[context.getString(R.string.commandServer2EnforaOrM31)]?.
-            contains(context.getString(R.string.defaultHelpCheckSERVER2copySERVER1)) == false ||
-            data[context.getString(R.string.commandServer2EnforaOrM31)]?.
-            contains(context.getString(R.string.defaultHelpCheckSERVER2)) == false) {
+            contains(server1) == false || data[context.getString(R.string.commandServer2EnforaOrM31)]?.contains(server2) == false) {
 
             // добавление команд сброса AT$FRIEND
             for (itemFRIEND in 1..10) {
@@ -32,16 +68,27 @@ class ModemDataW(val context: Context) {
             }
 
             // добавления нужных друзей
-            dataWrite[context.getString(R.string.commandSetFriend) + context.getString(R.string.defaultSetFriend1)] = ""
-            dataWrite[context.getString(R.string.commandSetFriend) + context.getString(R.string.defaultSetFriend2)] = ""
+            if (!flagCustom) {
+                dataWrite[context.getString(R.string.commandSetFriend) + context.getString(R.string.defaultSetFriend1)] = ""
+                dataWrite[context.getString(R.string.commandSetFriend) + context.getString(R.string.defaultSetFriend2)] = ""
+            } else {
+                dataWrite[context.getString(R.string.commandSetFriend) + "1,1,\"$server1\""] = ""
+                dataWrite[context.getString(R.string.commandSetFriend) + "2,1,\"$server2\""] = ""
+            }
+
         }
 
         // apn
         if (data[context.getString(R.string.commandGetApnEnforaM31)]?.
-            contains(context.getString(R.string.defaultAPN)) == false) {
+            contains(apn) == false) {
 
-            dataWrite[context.getString(R.string.commandSetDefinePDPContext)] =
-                context.getString(R.string.defaultDefinePDPContext)
+            if (!flagCustom) {
+                dataWrite[context.getString(R.string.commandSetDefinePDPContext)] =
+                    context.getString(R.string.defaultDefinePDPContext)
+            } else {
+                dataWrite[context.getString(R.string.commandSetDefinePDPContext)] =
+                    "1,\"IP\",\"$apn\",\"\",0,0"
+            }
         }
 
         // tcpport
@@ -86,18 +133,29 @@ class ModemDataW(val context: Context) {
 
         // AT$PADBLK
         if (data[context.getString(R.string.commandGetPadBlockSize)]?.
-            contains(context.getString(R.string.defaultSetPadBlockSize)) == false) {
+            contains(sizeBuffer) == false) {
 
-            dataWrite[context.getString(R.string.commandSetPadBlockSize)] =
-                context.getString(R.string.defaultSetPadBlockSize)
+            if (!flagCustom) {
+                dataWrite[context.getString(R.string.commandSetPadBlockSize)] =
+                    context.getString(R.string.defaultSetPadBlockSize)
+            } else {
+                dataWrite[context.getString(R.string.commandSetPadBlockSize)] = sizeBuffer
+            }
+
         }
 
-        // AT$PADT
+        // AT$PADTO
         if (data[context.getString(R.string.commandGetPadTimeout)]?.
-            contains(context.getString(R.string.defaultSetPadTimeout)) == false) {
+            contains(timeOut) == false) {
 
-            dataWrite[context.getString(R.string.commandSetPadTimeout)] =
-                context.getString(R.string.defaultSetPadTimeout)
+            if (!flagCustom) {
+                dataWrite[context.getString(R.string.commandSetPadTimeout)] =
+                    context.getString(R.string.defaultSetPadTimeout)
+            } else {
+                dataWrite[context.getString(R.string.commandSetPadTimeout)] =
+                    timeOut
+            }
+
         }
 
         // AT$WAKEUP
