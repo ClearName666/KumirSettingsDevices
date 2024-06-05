@@ -1,17 +1,22 @@
 package com.example.kumirsettingupdevices
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kumirsettingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentDiagBinding
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemOperator
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbDiag
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class DiagFragment(val serialNumber: String, private val programVersion: String) : Fragment(), UsbDiag {
 
@@ -21,10 +26,22 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
 
     private var flagStartDiag: Boolean = false
 
+    // данные операторов
+    private var listOperators: MutableList<ItemOperator> = mutableListOf()
+
+    // флаг для работы анимации
+    private var flagWorkAnimLoadingOperators: Boolean = true
+    // поток для работы анимации
+    private var animJob: Job? = null
+
     companion object {
         const val DROP_START_FOR_DATA: Int = 2
         const val DROP_END_FOR_DATA: Int = 2
+
+        // задержка для анимации загрузки операторов
+        const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 700
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +64,29 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
             onClickBack()
         }
 
+        binding.switchAdvancedOperators.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) { // рсширеный ражим включен
+                val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOperators)
+                binding.recyclerItemOperators.adapter = itemOperatorAdapter
+                binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+            } else { // краткий режим
+                val itemBriefly: List<ItemOperator> = listOperators.map { ItemOperator(
+                    it.operator,
+                    "",
+                    "",
+                    it.rxlev,
+                    "",
+                    it.arfnc,
+                    "",
+                    ""
+                ) }
+
+                val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), itemBriefly)
+                binding.recyclerItemOperators.adapter = itemOperatorAdapter
+                binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
+
         return binding.root
     }
 
@@ -59,6 +99,9 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
 
     override fun onDestroyView() {
 
+        // закратие анимации загрузки операторов
+        animJob?.cancel()
+
         // отключение систем проверки сигнала и выход из потока
         try {
             // отключения потока прочитки сигнала если он включен
@@ -67,6 +110,7 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
                 usbCommandsProtocol.flagWorkDiag = false
             }
         } catch (e: Exception) {}
+
 
         // очещение буфера данных
         val context: Context = requireContext()
@@ -91,8 +135,23 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
             // выводим прогресс бары
             binding.progressBarData.visibility = View.VISIBLE
             binding.progressBarOperators.visibility = View.VISIBLE
+
+            // Анимация загрузки операторов
+            startLoadingAnimation()
         }
 
+    }
+
+    // Анимация загрузки операторов
+    private fun startLoadingAnimation() {
+        animJob = viewLifecycleOwner.lifecycleScope.launch {
+            while (true) {
+                for (i in 0..3) {
+                    binding.textTitleOperators.text = getString(R.string.operatorsTitle) + ".".repeat(i)
+                    delay(TIMEOUT_ANIM_LOADING_OPERATORS)
+                }
+            }
+        }
     }
 
     // возврат пока что к m32
@@ -131,7 +190,20 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
                 try {
                     val frequency = arfcnToFrequency(datas[5].substringAfter(":").toInt())
 
-                    val itemOperator = ItemOperator(
+                    // Для краткого по умолчанию
+                    var itemOperator: ItemOperator = ItemOperator(
+                        datas[0].substringAfter("\"").substringBefore("\""),
+                        "",
+                        "",
+                        datas[3].substringAfter(":"),
+                        "",
+                        "${frequency?.first}-${frequency?.second}",
+                        "",
+                        ""
+                    )
+
+                    // добавляем все данные опараторов в глобальный лист
+                    val itemOperatorGlobal = ItemOperator(
                         datas[0].substringAfter("\"").substringBefore("\""),
                         datas[1].substringAfter(":"),
                         datas[2].substringAfter(":"),
@@ -141,7 +213,15 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
                         datas[6].substringAfter(":"),
                         datas[7].substringAfter(":")
                     )
-                    itemsOperators.add(itemOperator)
+                    listOperators.add(itemOperatorGlobal)
+
+                    // проверка расширеный или не расширеный
+                    if (binding.switchAdvancedOperators.isChecked) {
+                        itemsOperators.add(itemOperatorGlobal)
+                    } else {
+                        itemsOperators.add(itemOperator)
+                    }
+
 
                 } catch (e: Exception) {
 
@@ -157,9 +237,18 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
     override fun printError() {
         binding.progressBarOperators.visibility = View.GONE
         binding.textNonFindOperators.visibility = View.VISIBLE
+        flagWorkAnimLoadingOperators = false
+
+        // закратие анимации загрузки операторов
+        animJob?.cancel()
+
+        // убераем найденые операторы
+        val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOf())
+        binding.recyclerItemOperators.adapter = itemOperatorAdapter
+        binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    // перевод конала в частоту
+    // перевод кaнала в частоту
     fun arfcnToFrequency(arfcn: Int): Pair<Double, Double>? {
         return when {
             // GSM 900 (Primary GSM)
@@ -168,18 +257,21 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
                 val uplink = downlink - 45
                 Pair(downlink, uplink)
             }
-            // GSM 1800 (DCS 1800)
-            arfcn in 512..885 -> {
-                val downlink = 1805.0 + 0.2 * (arfcn - 512)
-                val uplink = downlink - 95
-                Pair(downlink, uplink)
-            }
+
             // GSM 1900 (PCS 1900)
             arfcn in 512..810 -> {
                 val downlink = 1930.0 + 0.2 * (arfcn - 512)
                 val uplink = downlink - 80
                 Pair(downlink, uplink)
             }
+
+            // GSM 1800 (DCS 1800)
+            arfcn in 512..885 -> {
+                val downlink = 1805.0 + 0.2 * (arfcn - 512)
+                val uplink = downlink - 95
+                Pair(downlink, uplink)
+            }
+
             else -> null // ARFCN вне диапазонов GSM 900, 1800, 1900
         }
     }

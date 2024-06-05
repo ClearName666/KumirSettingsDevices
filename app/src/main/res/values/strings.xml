@@ -403,7 +403,7 @@
     <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
     <string name="startDiagTitle">Начать диагностику</string>
     <string name="operatorTitle">Оператор связи:</string>
-    <string name="operatorsTitle">Операторы связи:</string>
+    <string name="operatorsTitle">Операторы связи</string>
     <string name="mccTitle">Kод страны(mcc):</string>
     <string name="mncTitle">Код мобильной сети(mnc):</string>
     <string name="rxlevTitle">Уровень приема(rxlev):</string>
@@ -421,6 +421,8 @@
     <string name="nonPresetData">Нету записей</string>
     <string name="loadCastomSet">Загрузть кастомные настроки</string>
     <string name="nonFindOperator">Операторы не найдены</string>
+    <string name="dataLoading">Данные...</string>
+    <string name="dataTitle">Данные</string>
     <!--............................................................................-->
 
 </resources>

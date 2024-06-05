@@ -6,122 +6,116 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <HorizontalScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/fun3Element"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="45dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/mts__network_provider__logo_wine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayoutParams" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/main"
+            android:id="@+id/constraintLayoutParams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/fun3Element">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/divider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
-            <View
-                android:id="@+id/divider"
-                android:layout_width="45dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/mts__network_provider__logo_wine"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/constraintLayoutParams" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayoutParams"
+            <TextView
+                android:id="@+id/textMCC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/divider"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                android:text="@string/mccTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textOperator"
+                app:layout_constraintTop_toBottomOf="@+id/textArfcn" />
 
-                <TextView
-                    android:id="@+id/textMCC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mccTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textOperator"
-                    app:layout_constraintTop_toBottomOf="@+id/textOperator" />
+            <TextView
+                android:id="@+id/textMNC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mncTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textMCC"
+                app:layout_constraintTop_toBottomOf="@+id/textMCC" />
 
-                <TextView
-                    android:id="@+id/textMNC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mncTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textMCC"
-                    app:layout_constraintTop_toBottomOf="@+id/textMCC" />
+            <TextView
+                android:id="@+id/textRxlev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rxlevTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textOperator"
+                app:layout_constraintTop_toBottomOf="@+id/textOperator" />
 
-                <TextView
-                    android:id="@+id/textRxlev"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rxlevTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textMNC"
-                    app:layout_constraintTop_toBottomOf="@+id/textMNC" />
+            <TextView
+                android:id="@+id/textCellid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cellidTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textMNC"
+                app:layout_constraintTop_toBottomOf="@+id/textMNC" />
 
-                <TextView
-                    android:id="@+id/textCellid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cellidTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textRxlev"
-                    app:layout_constraintTop_toBottomOf="@+id/textRxlev" />
+            <TextView
+                android:id="@+id/textOperator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/operatorTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textOperator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="@string/operatorTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textArfcn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/arfcnTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textRxlev"
+                app:layout_constraintTop_toBottomOf="@+id/textRxlev" />
 
-                <TextView
-                    android:id="@+id/textArfcn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/arfcnTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textCellid"
-                    app:layout_constraintTop_toBottomOf="@+id/textCellid" />
+            <TextView
+                android:id="@+id/textLac"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lacTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textCellid"
+                app:layout_constraintTop_toBottomOf="@+id/textCellid" />
 
-                <TextView
-                    android:id="@+id/textLac"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lacTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textArfcn"
-                    app:layout_constraintTop_toBottomOf="@+id/textArfcn" />
+            <TextView
+                android:id="@+id/textBsic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="@string/bsicTitle"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="@+id/textLac"
+                app:layout_constraintTop_toBottomOf="@+id/textLac" />
 
-                <TextView
-                    android:id="@+id/textBsic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:text="@string/bsicTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="@+id/textLac"
-                    app:layout_constraintTop_toBottomOf="@+id/textLac" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </HorizontalScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

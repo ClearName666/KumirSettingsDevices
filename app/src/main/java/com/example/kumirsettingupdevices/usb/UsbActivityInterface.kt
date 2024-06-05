@@ -10,6 +10,7 @@ interface UsbActivityInterface {
     fun connectToUsbDevice(device: UsbDevice) // подключения и регистрация широковещятельного приемника
     fun withdrawalsShow(msg: String, notshowdis: Boolean = false) // вывод ошибок при работе с девасом
     fun printData(data: String) // вывод полученых данных из серийного порта
+    fun printDataByte(data: ByteArray)
     fun printDSR_CTS(dsr: Int, cts: Int)
     fun disconnected() // функция которая сробатывает при отсоиденении от устройства насильно
 

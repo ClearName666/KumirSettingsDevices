@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     private var usbComsMenu: UsbComsMenu? = null
     private var selectMenuPrisetSettings: SelectMenuPrisetSettings? = null
     var curentData: String = ""
+    var curentDataByte: ByteArray = byteArrayOf()
 
     // flag Для контроля передачи информации
     var flagThreadSerialCommands: Boolean = false
@@ -572,6 +573,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     override fun printData(data: String) {
 
         curentData += data
+
+        // прокурчивание вниз
+        binding.ScrollWriteLoadingForDevice.post {
+            binding.ScrollWriteLoadingForDevice.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
+    override fun printDataByte(data: ByteArray) {
+        curentDataByte = data
 
         // прокурчивание вниз
         binding.ScrollWriteLoadingForDevice.post {

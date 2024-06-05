@@ -214,6 +214,14 @@ class Usb(private val context: Context) {
         //Log.d("UsbMy", "ОК")
     }
 
+    // вычисление контрольной суммы данных
+    private fun calculateChecksum(data: ByteArray): ByteArray {
+        val crc = CRC16Modbus()
+        crc.update(data)
+        val checkSum = crc.crcBytes
+        return data + checkSum
+    }
+
 
     // проверка подклюения девайса к устройству
     fun checkConnectToDevice(show: Boolean = false): Boolean {
@@ -269,11 +277,15 @@ class Usb(private val context: Context) {
     }
 
     // отправка данных в сериал порт
-    fun writeDevice(message: String, flagPrint: Boolean = true): Boolean {
+    fun writeDevice(message: String, flagPrint: Boolean = true, byteArray: ByteArray? = null): Boolean {
         return if (usbSerialDevice != null) {
             executorUsb.execute {
                 try {
-                    val bytesToSend = (message + lineFeed).toByteArray()
+                    var bytesToSend = (message + lineFeed).toByteArray()
+
+                    if (byteArray != null)
+                        bytesToSend = calculateChecksum(byteArray)
+
                     when (ConstUsbSettings.numDsrCts) {
                         0 -> usbSerialDevice?.write(bytesToSend)
                         1 -> {
@@ -290,7 +302,7 @@ class Usb(private val context: Context) {
 
 
                     if (flagPrint) {
-                        printUIThread(message)
+                        printUIThread(message, bytesToSend)
                     }
                 } catch (e: Exception) {
                     printWithdrawalsShow("${context.getString(R.string.Usb_ErrorWriteData)} ${e.message}")
@@ -304,10 +316,11 @@ class Usb(private val context: Context) {
     }
 
     // отправка полученных и отправленых данных в ui радительский поток
-    private fun printUIThread(msg: String) {
+    private fun printUIThread(msg: String, data: ByteArray) {
         if (context is UsbActivityInterface) {
             (context as Activity).runOnUiThread {
                 context.printData(msg)
+                context.printDataByte(data)
             }
         }
     }
@@ -351,7 +364,7 @@ class Usb(private val context: Context) {
                                     if (it.open()) {
                                         val readCallback = UsbReadCallback { bytes ->
                                             if (!flagIgnorRead) {
-                                                printUIThread(String(bytes, Charsets.UTF_8))
+                                                printUIThread(String(bytes, Charsets.UTF_8), bytes)
                                             }
                                         }
 

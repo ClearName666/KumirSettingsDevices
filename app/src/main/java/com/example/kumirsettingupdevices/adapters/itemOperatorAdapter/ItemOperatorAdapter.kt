@@ -31,27 +31,35 @@ class ItemOperatorAdapter ( val context: Context,
 
         currentItem.let {
             holder.textOperator.text = context.getString(R.string.operatorTitle) + currentItem.operator
-            holder.textMCC.text = context.getString(R.string.mccTitle) + currentItem.mcc
-            holder.textMNC.text = context.getString(R.string.mncTitle) + currentItem.mnc
             holder.textRxlev.text = context.getString(R.string.rxlevTitle) + currentItem.rxlev
             holder.textArfcn.text = context.getString(R.string.arfcnTitle) + currentItem.arfnc
 
-            // попытка перевести в 16 ричный код некоторых данных
-            try {
-                holder.textCellid.text = context.getString(R.string.cellidTitle) + currentItem.cellid.toInt(16).toString()
-            } catch (e: Exception) {
-                holder.textCellid.text = context.getString(R.string.cellidTitle)
+            if (currentItem.mcc.isNotEmpty()) {
+                holder.textMCC.text = context.getString(R.string.mccTitle) + currentItem.mcc
+                holder.textMNC.text = context.getString(R.string.mncTitle) + currentItem.mnc
+
+                // попытка перевести в 16 ричный код некоторых данных
+                try {
+                    holder.textCellid.text = context.getString(R.string.cellidTitle) + currentItem.cellid.toInt(16).toString()
+                } catch (e: Exception) {
+                    holder.textCellid.text = context.getString(R.string.cellidTitle)
+                }
+                try {
+                    holder.textLac.text = context.getString(R.string.lacTitle) + currentItem.lac.toInt(16).toString()
+                } catch (e: Exception) {
+                    holder.textLac.text = context.getString(R.string.lacTitle)
+                }
+
+                holder.textBsic.text = context.getString(R.string.bsicTitle) + currentItem.bsic.toString()
+
+            } else { // включен краткий режим
+                holder.textMCC.visibility = View.GONE
+                holder.textMNC.visibility = View.GONE
+                holder.textCellid.visibility = View.GONE
+                holder.textLac.visibility = View.GONE
+                holder.textBsic.visibility = View.GONE
             }
-            try {
-                holder.textLac.text = context.getString(R.string.lacTitle) + currentItem.lac.toInt(16).toString()
-            } catch (e: Exception) {
-                holder.textLac.text = context.getString(R.string.lacTitle)
-            }
-            try {
-                holder.textBsic.text = context.getString(R.string.bsicTitle) + currentItem.bsic.toInt(16).toString()
-            } catch (e: Exception) {
-                holder.textBsic.text = context.getString(R.string.bsicTitle)
-            }
+
 
             // отображения картиночки
             if (currentItem.operator.contains("MegaFon")) {

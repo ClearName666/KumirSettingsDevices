@@ -8,6 +8,18 @@ android:layout_height="match_parent"
 tools:context=".DiagFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lineSettingsData"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/fon2Element"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textDataDiag">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSettingsPort1"
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -69,11 +81,9 @@ tools:context=".DiagFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/retLayout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="35dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         android:background="@color/fonElement"
-        app:layout_constraintBottom_toTopOf="@+id/scrollDiag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line2Set">
@@ -104,18 +114,18 @@ tools:context=".DiagFragment">
     <ScrollView
         android:id="@+id/scrollDiag"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
-        android:background="@drawable/rounded_background1"
+        android:background="@color/fon4Element"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set">
+        app:layout_constraintTop_toBottomOf="@+id/lineSettingsData">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -125,8 +135,8 @@ tools:context=".DiagFragment">
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="Данные..."
-                android:textColor="@color/textColor" />
+                android:text="@string/dataLoading"
+                android:textColor="@color/background" />
 
             <ProgressBar
                 android:id="@+id/progressBarData"
@@ -147,7 +157,6 @@ tools:context=".DiagFragment">
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/rounded_background1"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -173,7 +182,7 @@ tools:context=".DiagFragment">
         android:id="@+id/textTitleOperators"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:text="@string/operatorsTitle"
         android:textColor="@color/textColor"
         android:textSize="18sp"
@@ -204,5 +213,25 @@ tools:context=".DiagFragment">
         app:layout_constraintEnd_toEndOf="@+id/recyclerItemOperators"
         app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
         app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
+
+    <Switch
+        android:id="@+id/switchAdvancedOperators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toBottomOf="@+id/textTitleOperators"
+        app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators" />
+
+    <TextView
+        android:id="@+id/textDataDiag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/dataTitle"
+        android:textColor="@color/textColor"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/retLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
