@@ -205,6 +205,9 @@
     <string name="stopDitTitle">Стоп биты</string>
     <string name="parityTitle">Четность</string>
     <string name="port_2Title">Порт 2</string>
+    <string name="port_1Title">Порт 1</string>
+    <string name="port_3Title">Порт 3</string>
+    <string name="port_4Title">Порт 4</string>
     <string name="chackSignalTitle">Проверка сигнала</string>
     <string name="ActivChackSignalTitle">Отключить проверку</string>
     <string name="communicationOperatorTitle">Оператор мобильной связи: </string>
