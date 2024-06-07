@@ -21,7 +21,7 @@ import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
 
-class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment {
+class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private lateinit var binding: FragmentM32LiteBinding
 

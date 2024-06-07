@@ -7,33 +7,33 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kumirsettingupdevices.R
-import com.example.kumirsettingupdevices.model.recyclerModel.ItemPrisetsView
-import com.example.kumirsettingupdevices.model.recyclerModel.Priset
-import com.example.kumirsettingupdevices.settings.PrisetsValue
+import com.example.kumirsettingupdevices.dataBasePreset.Enfora
+import com.example.kumirsettingupdevices.model.recyclerModel.ItemPresetsEnforaView
+import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
 import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
 
 // адаптер для отображения списка присетов для настроек
-class ItemPrisetsAdapter(
+class ItemPrisetsEnforaAdapter(
     private val context: Context,
-    private val contextPriset: PrisetFragment<Priset>,
-    private val list: List<ItemPrisetsView>
-) : RecyclerView.Adapter<ItemPrisetsAdapter.ItemPrisetsViewHolder>() {
+    private val contextPriset: PrisetFragment<Enfora>,
+    private val list: List<ItemPresetsEnforaView>
+) : RecyclerView.Adapter<ItemPrisetsEnforaAdapter.ItemPrisetsEnforaViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPrisetsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPrisetsEnforaViewHolder {
         val itemView: View = LayoutInflater.from(context).inflate(
             R.layout.item_usb_con,
             parent, false)
-        return ItemPrisetsViewHolder(itemView)
+        return ItemPrisetsEnforaViewHolder(itemView)
     }
 
     override fun getItemCount():Int = list.size
 
-    override fun onBindViewHolder(holder: ItemPrisetsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemPrisetsEnforaViewHolder, position: Int) {
         val currentItem = list[position]
         currentItem.name.let {name ->
             holder.textName.text = name
 
-            val priset: Priset? = PrisetsValue.prisets[name]
+            val priset: Enfora? = PresetsEnforaValue.presets[name]
 
             // через contextPriset будет выводить при нажатии все данные в поля
             priset.let {
@@ -44,7 +44,7 @@ class ItemPrisetsAdapter(
         }
     }
 
-    class ItemPrisetsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemPrisetsEnforaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textName: TextView = itemView.findViewById(R.id.nameUsb)
     }
 }

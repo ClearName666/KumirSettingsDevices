@@ -14,7 +14,7 @@ class UsbModBasCommandProtocol {
     companion object {
         const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 3
 
-        const val MAX_CNT_EXPECTATION_SAND: Int = 70
+        const val MAX_CNT_EXPECTATION_SAND: Int = 140
 
         const val CNT_SAND_COMMAND_OK: Int = 3
 

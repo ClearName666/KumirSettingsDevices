@@ -7,18 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kumirsettingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsDataAdapter
+import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsEnforaDataAdapter
+import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsPmDataAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentSettingsBinding
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
-import com.example.kumirsettingupdevices.model.recyclerModel.Priset
-import com.example.kumirsettingupdevices.settings.PrisetsValue
 import kotlinx.coroutines.launch
 
-
+// настройки
 class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
@@ -30,22 +28,27 @@ class SettingsFragment : Fragment() {
 
         // обновляем данные в настроках
         updataDataPersetAdapter()
+        updataDataPersetEnforaAdapter() // enfora
+        updataDataPersetPmAdapter() // Pm
 
         return binding.root
     }
 
+    // вывод данных для m32 m32Lite
     fun updataDataPersetAdapter() {
         try {
             lifecycleScope.launch {
                 val context: Context = requireContext()
                 if (context is MainActivity) {
+
                     // получаем все данные шаблонов
                     context.presetDao.getAll().collect { presets ->
+
                         // если нечего нет то выводит данных нет
                         if (presets.isEmpty()) {
                             val itemSettingPreset: List<ItemSettingPreset> = listOf()
 
-                                (context as Activity).runOnUiThread {
+                            (context as Activity).runOnUiThread {
                                 binding.textNonDataPreset.visibility = View.VISIBLE
 
                                     // очищение адаптера то что записей больше нет
@@ -75,8 +78,108 @@ class SettingsFragment : Fragment() {
                             }
                         }
                     }
+
                 }
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
+    }
+
+    // вывод данных для enfora
+    fun updataDataPersetEnforaAdapter() {
+        try {
+            lifecycleScope.launch {
+                val context: Context = requireContext()
+                if (context is MainActivity) {
+
+                    // получаем все данные шаблонов
+                    context.presetEnforaDao.getAll().collect { presets ->
+
+                        // если нечего нет то выводит данных нет
+                        if (presets.isEmpty()) {
+                            val itemSettingPreset: List<ItemSettingPreset> = listOf()
+
+                            (context as Activity).runOnUiThread {
+                                binding.textNonDataPresetEnfora.visibility = View.VISIBLE
+
+                                // очищение адаптера то что записей больше нет
+                                val itemPresetSettingsEnforaDataAdapter =
+                                    ItemPresetSettingsEnforaDataAdapter(
+                                        context, this@SettingsFragment,
+                                        context.presetEnforaDao, itemSettingPreset
+                                    )
+                                binding.reclyclerDataPresetEnfora.adapter = itemPresetSettingsEnforaDataAdapter
+                                binding.reclyclerDataPresetEnfora.layoutManager =
+                                    LinearLayoutManager(requireContext())
+                            }
+                        } else {
+                            // получаем все шаблоны
+                            val itemSettingPreset: List<ItemSettingPreset> = presets.map {
+                                ItemSettingPreset(it.name!!, it.id)
+                            }
+                            (context as Activity).runOnUiThread {
+                                val itemPresetSettingsEnforaDataAdapter =
+                                    ItemPresetSettingsEnforaDataAdapter(
+                                        context, this@SettingsFragment,
+                                        context.presetEnforaDao, itemSettingPreset
+                                    )
+                                binding.reclyclerDataPresetEnfora.adapter = itemPresetSettingsEnforaDataAdapter
+                                binding.reclyclerDataPresetEnfora.layoutManager =
+                                    LinearLayoutManager(requireContext())
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (_: Exception) {}
+    }
+    // вывод данных для Pm
+    fun updataDataPersetPmAdapter() {
+        try {
+            lifecycleScope.launch {
+                val context: Context = requireContext()
+                if (context is MainActivity) {
+
+                    // получаем все данные шаблонов
+                    context.presetPmDao.getAll().collect { presets ->
+
+                        // если нечего нет то выводит данных нет
+                        if (presets.isEmpty()) {
+                            val itemSettingPreset: List<ItemSettingPreset> = listOf()
+
+                            (context as Activity).runOnUiThread {
+                                binding.textNonDataPresetPm.visibility = View.VISIBLE
+
+                                // очищение адаптера то что записей больше нет
+                                val itemPresetSettingsPmDataAdapter =
+                                    ItemPresetSettingsPmDataAdapter(
+                                        context, this@SettingsFragment,
+                                        context.presetPmDao, itemSettingPreset
+                                    )
+                                binding.reclyclerDataPresetPm.adapter = itemPresetSettingsPmDataAdapter
+                                binding.reclyclerDataPresetPm.layoutManager =
+                                    LinearLayoutManager(requireContext())
+                            }
+                        } else {
+                            // получаем все шаблоны
+                            val itemSettingPreset: List<ItemSettingPreset> = presets.map {
+                                ItemSettingPreset(it.name!!, it.id)
+                            }
+                            (context as Activity).runOnUiThread {
+                                val itemPresetSettingsPmDataAdapter =
+                                    ItemPresetSettingsPmDataAdapter(
+                                        context, this@SettingsFragment,
+                                        context.presetPmDao, itemSettingPreset
+                                    )
+                                binding.reclyclerDataPresetPm.adapter = itemPresetSettingsPmDataAdapter
+                                binding.reclyclerDataPresetPm.layoutManager =
+                                    LinearLayoutManager(requireContext())
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (_: Exception) {}
     }
 }

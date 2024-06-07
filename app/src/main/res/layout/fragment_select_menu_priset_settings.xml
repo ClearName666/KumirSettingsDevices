@@ -5,7 +5,7 @@ android:id="@+id/UsbMenu"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@drawable/rounded_background1"
-tools:context=".SelectMenuPrisetSettings">
+tools:context=".presetFragments.SelectMenuPrisetSettings">
 
 <TextView
     android:id="@+id/textView"

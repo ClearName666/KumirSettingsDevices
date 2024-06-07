@@ -1,4 +1,4 @@
-package com.example.kumirsettingupdevices
+package com.example.kumirsettingupdevices.presetFragments
 
 import android.content.Context
 import android.os.Bundle
@@ -7,14 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.adapters.itemPrisetsAdapter.ItemPrisetsAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentSelectMenuPrisetSettingsBinding
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemPrisetsView
+import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.PrisetsValue
 import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
 
 
-class SelectMenuPrisetSettings(val context: PrisetFragment) : Fragment() {
+class SelectMenuPrisetSettings(val context: PrisetFragment<Priset>) : Fragment() {
 
     private lateinit var showElements: FragmentSelectMenuPrisetSettingsBinding
 

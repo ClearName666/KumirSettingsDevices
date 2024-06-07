@@ -7,33 +7,33 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kumirsettingupdevices.R
-import com.example.kumirsettingupdevices.model.recyclerModel.ItemPrisetsView
-import com.example.kumirsettingupdevices.model.recyclerModel.Priset
-import com.example.kumirsettingupdevices.settings.PrisetsValue
+import com.example.kumirsettingupdevices.dataBasePreset.Pm
+import com.example.kumirsettingupdevices.model.recyclerModel.ItemPresetsPmView
+import com.example.kumirsettingupdevices.settings.PrisetsPmValue
 import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
 
 // адаптер для отображения списка присетов для настроек
-class ItemPrisetsAdapter(
+class ItemPrisetsPmAdapter(
     private val context: Context,
-    private val contextPriset: PrisetFragment<Priset>,
-    private val list: List<ItemPrisetsView>
-) : RecyclerView.Adapter<ItemPrisetsAdapter.ItemPrisetsViewHolder>() {
+    private val contextPriset: PrisetFragment<Pm>,
+    private val list: List<ItemPresetsPmView>
+) : RecyclerView.Adapter<ItemPrisetsPmAdapter.ItemPrisetsPmViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPrisetsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPrisetsPmViewHolder {
         val itemView: View = LayoutInflater.from(context).inflate(
             R.layout.item_usb_con,
             parent, false)
-        return ItemPrisetsViewHolder(itemView)
+        return ItemPrisetsPmViewHolder(itemView)
     }
 
     override fun getItemCount():Int = list.size
 
-    override fun onBindViewHolder(holder: ItemPrisetsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemPrisetsPmViewHolder, position: Int) {
         val currentItem = list[position]
         currentItem.name.let {name ->
             holder.textName.text = name
 
-            val priset: Priset? = PrisetsValue.prisets[name]
+            val priset: Pm? = PrisetsPmValue.presets[name]
 
             // через contextPriset будет выводить при нажатии все данные в поля
             priset.let {
@@ -44,7 +44,7 @@ class ItemPrisetsAdapter(
         }
     }
 
-    class ItemPrisetsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemPrisetsPmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textName: TextView = itemView.findViewById(R.id.nameUsb)
     }
 }

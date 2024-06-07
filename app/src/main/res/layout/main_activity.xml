@@ -679,26 +679,15 @@
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo9" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/textSettings"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="60dp"
-                            android:text="@string/settingsTitle"
-                            android:textColor="@color/textColor"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/P101" />
-
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/lineSettings"
                             android:layout_width="0dp"
                             android:layout_height="2dp"
+                            android:layout_marginTop="80dp"
                             android:background="@color/fon2Element"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textSettings">
+                            app:layout_constraintTop_toBottomOf="@+id/P101">
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 

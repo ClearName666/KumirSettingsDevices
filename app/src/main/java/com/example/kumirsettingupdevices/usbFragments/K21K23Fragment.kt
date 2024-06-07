@@ -346,7 +346,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
         val formatModems = FormatModems()
         val command: List<ByteArray> = arrayListOf(
             byteArrayOf(
-                0xA4.toByte(),
+                0xA7.toByte(),
                 0x01.toByte(),
                 formatModems.reverseFormatSpeedModBas(binding.spinnerSpeed.selectedItemPosition),
                 formatModems.reverseFormatBitDataModBas(binding.spinnerBitDataPort1.selectedItemPosition),
@@ -354,7 +354,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
                 formatModems.reverseFormatPatityModBas(binding.spinnerSelectParityPort1.selectedItemPosition)
             ),
             byteArrayOf(
-                0xA4.toByte(),
+                0xA7.toByte(),
                 0x02.toByte(),
                 formatModems.reverseFormatSpeedModBas(binding.spinnerSpeed2.selectedItemPosition),
                 formatModems.reverseFormatBitDataModBas(binding.spinnerBitDataPort2.selectedItemPosition),
@@ -362,7 +362,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
                 formatModems.reverseFormatPatityModBas(binding.spinnerSelectParityPort2.selectedItemPosition)
             ),
             byteArrayOf(
-                0xA4.toByte(),
+                0xA7.toByte(),
                 0x03.toByte(),
                 formatModems.reverseFormatSpeedModBas(binding.spinnerSpeed3.selectedItemPosition),
                 formatModems.reverseFormatBitDataModBas(binding.spinnerBitDataPort3.selectedItemPosition),
@@ -370,7 +370,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
                 formatModems.reverseFormatPatityModBas(binding.spinnerSelectParityPort3.selectedItemPosition)
             ),
             byteArrayOf(
-                0xA4.toByte(),
+                0xA7.toByte(),
                 0x04.toByte(),
                 formatModems.reverseFormatSpeedModBas(binding.spinnerSpeed4.selectedItemPosition),
                 formatModems.reverseFormatBitDataModBas(binding.spinnerBitDataPort4.selectedItemPosition),

@@ -22,13 +22,22 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.kumirsettingupdevices.presetFragments.SelectMenuPrisetSettings
 import com.example.kumirsettingupdevices.dataBasePreset.AppDatabase
+import com.example.kumirsettingupdevices.dataBasePreset.Enfora
+import com.example.kumirsettingupdevices.dataBasePreset.EnforaDao
+import com.example.kumirsettingupdevices.dataBasePreset.Pm
+import com.example.kumirsettingupdevices.dataBasePreset.PmDao
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.dataBasePreset.PresetDao
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.ports.PortDeviceSetting
+import com.example.kumirsettingupdevices.presetFragments.SelectMenuPrisetEnforaSettings
+import com.example.kumirsettingupdevices.presetFragments.SelectMenuPrisetPmSettings
 import com.example.kumirsettingupdevices.settings.DeviceAccountingPrisets
+import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
+import com.example.kumirsettingupdevices.settings.PrisetsPmValue
 import com.example.kumirsettingupdevices.settings.PrisetsValue
 import com.example.kumirsettingupdevices.usb.Usb
 import com.example.kumirsettingupdevices.usb.UsbActivityInterface
@@ -56,6 +65,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     private var usbComsMenu: UsbComsMenu? = null
     private var selectMenuPrisetSettings: SelectMenuPrisetSettings? = null
+    private var selectMenuPrisetEnforaSettings: SelectMenuPrisetEnforaSettings? = null
+    private var selectMenuPrisetPmSettings: SelectMenuPrisetPmSettings? = null
+
+    // буферы денных
     var curentData: String = ""
     var curentDataByte: ByteArray = byteArrayOf()
 
@@ -64,6 +77,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // база данных
     lateinit var presetDao: PresetDao
+    lateinit var presetEnforaDao: EnforaDao
+    lateinit var presetPmDao: PmDao
 
 
     companion object {
@@ -146,10 +161,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // загрузка базы данных
         val database = AppDatabase.getDatabase(this)
         presetDao = database.presetDao()
+        presetEnforaDao = database.enforaDao()
+        presetPmDao = database.pmDao()
 
         // загрузка всех присетов из базы данных
         try {
             lifecycleScope.launch {
+                // присеты m32
                 presetDao.getAll().collect { presets ->
                     for (preset in presets) {
                         PrisetsValue.prisets[preset.name!!] = Priset(preset.name, preset.mode!!, preset.apn!!,
@@ -157,7 +175,39 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     }
                 }
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
+
+        // загрузка всех присетов enfora
+        try {
+            lifecycleScope.launch {
+                // присеты enfora
+                presetEnforaDao.getAll().collect { presets ->
+                    for (enforaPreseet in presets) {
+                        PresetsEnforaValue.presets[enforaPreseet.name!!] =
+                            Enfora(0, enforaPreseet.name, enforaPreseet.apn!!,
+                                enforaPreseet.login!!, enforaPreseet.password!!,
+                                enforaPreseet.server1!!, enforaPreseet.server2!!,
+                                enforaPreseet.timeout!!, enforaPreseet.sizeBuffer!!)
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+
+        // загрузка всех присетов Pm
+        try {
+            lifecycleScope.launch {
+                // присеты enfora
+                presetPmDao.getAll().collect { presets ->
+                    for (PmPreset in presets) {
+                        PrisetsPmValue.presets[PmPreset.name!!] =
+                            Pm(0, PmPreset.name, PmPreset.mode, PmPreset.keyNet!!,
+                                PmPreset.power!!, PmPreset.diopozone)
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+
+
 
 
 
@@ -212,7 +262,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     // клик по кнопке выбора присета настроек
-    fun onClickPrisetSettingFor(fragment: PrisetFragment) {
+    fun onClickPrisetSettingFor(fragment: PrisetFragment<Priset>) {
         selectMenuPrisetSettings = SelectMenuPrisetSettings(fragment)
 
         val fragmentManager = supportFragmentManager
@@ -220,6 +270,36 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // Новый фрагент
         transaction.replace(binding.fragmentSelectPrisetSettings.id, selectMenuPrisetSettings!!)
+        //transaction.addToBackStack("UsbComsMenu")
+        transaction.commit()
+
+        ActivationFonDarkMenu(true)
+    }
+
+    // клик по кнопке выбора присета настроек enfora
+    fun onClickPrisetEnforaSettingFor(fragment: PrisetFragment<Enfora>) {
+        selectMenuPrisetEnforaSettings = SelectMenuPrisetEnforaSettings(fragment)
+
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+
+        // Новый фрагент
+        transaction.replace(binding.fragmentSelectPrisetSettings.id, selectMenuPrisetEnforaSettings!!)
+        //transaction.addToBackStack("UsbComsMenu")
+        transaction.commit()
+
+        ActivationFonDarkMenu(true)
+    }
+
+    // клик по кнопке выбора присета настроек pm
+    fun onClickPrisetPmSettingFor(fragment: PrisetFragment<Pm>) {
+        selectMenuPrisetPmSettings = SelectMenuPrisetPmSettings(fragment)
+
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+
+        // Новый фрагент
+        transaction.replace(binding.fragmentSelectPrisetSettings.id, selectMenuPrisetPmSettings!!)
         //transaction.addToBackStack("UsbComsMenu")
         transaction.commit()
 
@@ -368,6 +448,84 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
 
+    // сохрание настроек присета в базу данных для enfora
+    fun onClickSavePreset(
+        name: String,
+        apn: String,
+        server1: String,
+        server2: String,
+        login: String,
+        password: String,
+        timeout: String,
+        sizeBuffer: String
+    ) {
+        if (name.isNotEmpty() && apn.isNotEmpty() && apn.isNotEmpty() && server1.isNotEmpty() && timeout.isNotEmpty()
+            && sizeBuffer.isNotEmpty())
+        {
+            val preset = Enfora(0, name, apn, login, password, server1, server2, timeout, sizeBuffer)
+
+            // Вставляем данные в базу данных
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+
+                    try {
+                        presetEnforaDao.insert(preset)
+
+                        // сразу добовлеям что бы он стал активным и с ним можно было работать
+                        PresetsEnforaValue.presets[name] = Enfora(0, name, apn, login, password,
+                            server1, server2, timeout, sizeBuffer)
+
+                        runOnUiThread {
+                            showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            showAlertDialog(getString(R.string.errorDataBase))
+                        }
+                    }
+                }
+            }
+        } else {
+            showAlertDialog(getString(R.string.nonEmptyData))
+        }
+    }
+
+    // сохрание настроек присета в базу данных Pm
+    fun onClickSavePreset(
+        name: String,
+        mode: Int,
+        keyNet: String,
+        power: String,
+        range: Int) {
+        if (name.isNotEmpty() && keyNet.isNotEmpty() && power.isNotEmpty())
+        {
+            val preset = Pm(0, name, mode, keyNet, power, range)
+
+            // Вставляем данные в базу данных
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+
+                    try {
+                        presetPmDao.insert(preset)
+
+                        // сразу добовлеям что бы он стал активным и с ним можно было работать
+                        PrisetsPmValue.presets[name] = Pm(0, name, mode, keyNet, power, range)
+
+                        runOnUiThread {
+                            showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            showAlertDialog(getString(R.string.errorDataBase))
+                        }
+                    }
+                }
+            }
+        } else {
+            showAlertDialog(getString(R.string.nonEmptyData))
+        }
+    }
+
     private fun createSettingFragment(fragment: Fragment, flagChack: Boolean = false) {
         if (usb.checkConnectToDevice() || flagChack) {
 
@@ -408,7 +566,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
             transaction.remove(usbComsMenu!!)
             transaction.commit()
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
         try {
             val fragmentManager = supportFragmentManager
@@ -416,7 +574,23 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
             transaction.remove(selectMenuPrisetSettings!!)
             transaction.commit()
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
+
+        try {
+            val fragmentManager = supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+
+            transaction.remove(selectMenuPrisetEnforaSettings!!)
+            transaction.commit()
+        } catch (_: Exception) {}
+
+        try {
+            val fragmentManager = supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+
+            transaction.remove(selectMenuPrisetPmSettings!!)
+            transaction.commit()
+        } catch (_: Exception) {}
 
         ActivationFonDarkMenu(false)
     }

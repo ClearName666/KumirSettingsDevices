@@ -15,14 +15,16 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
+import com.example.kumirsettingupdevices.dataBasePreset.Enfora
 import com.example.kumirsettingupdevices.databinding.FragmentEnforma1318Binding
+import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.modems.ModemDataW
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.testappusb.settings.ConstUsbSettings
 
 
-class Enfora1318Fragment : Fragment(), UsbFragment {
+class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
     private lateinit var binding: FragmentEnforma1318Binding
 
@@ -97,6 +99,31 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
         binding.buttonChackSignal.setOnClickListener {
             onClickChackSignal()
 
+        }
+        binding.imageSelectPriset.setOnClickListener {
+            if (context is MainActivity) {
+                context.onClickPrisetEnforaSettingFor(this)
+            }
+        }
+
+        // сохранения пресета настроек
+        binding.buttonSavePreset.setOnClickListener {
+            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+                if (context is MainActivity) {
+                    context.onClickSavePreset(
+                        binding.inputNameSavePreset.text.toString(),
+                        binding.inputAPN.text.toString(),
+                        binding.inputServer1.text.toString(),
+                        binding.inputServer2.text.toString(),
+                        binding.inputLogin.text.toString(),
+                        binding.inputPassword.text.toString(),
+                        binding.inputTimeOut.text.toString(),
+                        binding.inputSizeBuffer.text.toString())
+                }
+                binding.inputNameSavePreset.setText("")
+            } else {
+                showAlertDialog(getString(R.string.nonNamePreset))
+            }
         }
 
         //------------------------------------------------------------------------------------------
@@ -596,7 +623,21 @@ class Enfora1318Fragment : Fragment(), UsbFragment {
         }
     }
 
-
+    override fun printPriset(priset: Enfora) {
+        // закрытие меню
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.workFonDarkMenu()
+        }
+        // подставление данных в поля
+        binding.inputAPN.setText(priset.apn)
+        binding.inputLogin.setText(priset.login)
+        binding.inputPassword.setText(priset.password)
+        binding.inputServer1.setText(priset.server1)
+        binding.inputServer2.setText(priset.server2)
+        binding.inputTimeOut.setText(priset.timeout)
+        binding.inputSizeBuffer.setText(priset.sizeBuffer)
+    }
 
 
 }

@@ -14,11 +14,13 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.ValidDataSettingsDevice
+import com.example.kumirsettingupdevices.dataBasePreset.Pm
 import com.example.kumirsettingupdevices.databinding.FragmentPM81Binding
+import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class PM81Fragment : Fragment(), UsbFragment {
+class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     private lateinit var binding: FragmentPM81Binding
 
@@ -76,6 +78,28 @@ class PM81Fragment : Fragment(), UsbFragment {
         // настройки кликов
         binding.DisActivPort1SetiingsPriset.setOnClickListener {
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
+        }
+        binding.imageSelectPriset.setOnClickListener {
+            if (context is MainActivity) {
+                context.onClickPrisetPmSettingFor(this)
+            }
+        }
+
+        // сохранения пресета настроек
+        binding.buttonSavePreset.setOnClickListener {
+            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+                if (context is MainActivity) {
+                    context.onClickSavePreset(
+                        binding.inputNameSavePreset.text.toString(),
+                        binding.spinnerServer.selectedItemPosition,
+                        binding.inputNetKey.text.toString(),
+                        binding.inputPowerCures.text.toString(),
+                        binding.spinnerRange.selectedItemPosition)
+                }
+                binding.inputNameSavePreset.setText("")
+            } else {
+                showAlertDialog(getString(R.string.nonNamePreset))
+            }
         }
 
         //------------------------------------------------------------------------------------------
@@ -438,6 +462,20 @@ class PM81Fragment : Fragment(), UsbFragment {
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    override fun printPriset(priset: Pm) {
+        // закрытие меню
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.workFonDarkMenu()
+        }
+        // подставление данных в поля
+        binding.spinnerServer.setSelection(priset.mode)
+        binding.inputNetKey.setText(priset.keyNet)
+        binding.inputPowerCures.setText(priset.power)
+        binding.spinnerRange.setSelection(priset.diopozone)
+
     }
 
 }

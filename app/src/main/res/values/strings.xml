@@ -26,7 +26,7 @@
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
     <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
-    <string name="nonWriteSetting">Воспользуйтесь кнопкой получения настроек прежде чем записывать!</string>
+    <string name="nonWriteSetting">Воспользуйтесь кнопкой \"Чтение\"!</string>
     <string name="exitDiagRestart">Выход из режима диагностики возможен только путем перезагрузки модема.</string>
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
@@ -417,15 +417,18 @@
     <string name="backTitle">Вернуться обратно</string>
     <string name="savePresetTitle">Сохранить как шаблон</string>
     <string name="namePresetTitle">Название шаблона</string>
-    <string name="presetTitle">Шаблонизатор</string>
+    <string name="presetTitle">Создать шаблон</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="settingsTitle">Настройки</string>
     <string name="presetsTitle">Шаблоны</string>
     <string name="nonPresetData">Нету записей</string>
-    <string name="loadCastomSet">Загрузть кастомные настроки</string>
+    <string name="loadCastomSet">Загрузить кастомные настройки</string>
     <string name="nonFindOperator">Операторы не найдены</string>
     <string name="dataLoading">Данные...</string>
     <string name="dataTitle">Данные</string>
+    <string name="m32_m32litePresetTitle">Шаблоны M32, M32Lite</string>
+    <string name="enforaPresetTitle">Шаблоны Enfora</string>
+    <string name="pmPresetTitle">Шаблоны PM81</string>
     <!--............................................................................-->
 
 </resources>

@@ -1,7 +1,5 @@
 package com.example.kumirsettingupdevices.usbFragments
 
-import com.example.kumirsettingupdevices.model.recyclerModel.Priset
-
-interface PrisetFragment {
-    fun printPriset(priset: Priset)
+interface PrisetFragment<T> {
+    fun printPriset(priset: T)
 }
