@@ -768,6 +768,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun disconnected() {
+        /*
         val mainFragment = MainFragment()
 
         val fragmentManager = supportFragmentManager
@@ -785,7 +786,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         openCloseLoadingView(false)
 
         // сброс имени типа устроства
-        printDeviceTypeName("")
+        printDeviceTypeName("")*/
     }
 
     // подключения и регистрация широковещятельного приемника

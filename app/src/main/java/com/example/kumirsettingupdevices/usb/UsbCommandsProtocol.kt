@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 
 class UsbCommandsProtocol {
@@ -328,6 +329,10 @@ class UsbCommandsProtocol {
                             if (usbFragment is Enfora1318Fragment) {
                                 usbFragment.onErrorStopChackSignal()
                             }
+
+                            if (usbFragment is ACCB030CoreFragment) {
+                                usbFragment.onErrorStopChackSignal()
+                            }
                         }
                         break@out
                     }
@@ -338,6 +343,19 @@ class UsbCommandsProtocol {
                     // после получения данных отправляем их на отображение
                     if (flagWorkChackSignal) {
                         if (usbFragment is Enfora1318Fragment) {
+                            try {
+                                (context as Activity).runOnUiThread {
+                                    usbFragment.onPrintSignal(data[0], data[1])
+                                }
+                            } catch (e: Exception) {
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(context.getString(R.string.notValidData))
+                                }
+                                break@out
+                            }
+                        }
+
+                        if (usbFragment is ACCB030CoreFragment) {
                             try {
                                 (context as Activity).runOnUiThread {
                                     usbFragment.onPrintSignal(data[0], data[1])

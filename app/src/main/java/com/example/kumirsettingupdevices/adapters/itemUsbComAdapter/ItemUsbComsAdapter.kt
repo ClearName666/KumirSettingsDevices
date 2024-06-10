@@ -37,19 +37,18 @@ class ItemUsbComsAdapter(
                 val deviceList: HashMap<String, UsbDevice> = usbManager.deviceList
                 val device: UsbDevice? = deviceList[nameUsb]
 
-                device.let {
-                    if (context is UsbActivityInterface) {
-                        context.showDeviceName(nameUsb)
-                        context.connectToUsbDevice(device!!)
+                try {
+                    device.let {
+                        if (context is UsbActivityInterface) {
+                            context.showDeviceName(nameUsb)
+                            context.connectToUsbDevice(device!!)
+                        }
                     }
-                }
-
-                if (device == null) {
+                } catch (e: Exception) {
                     if (context is UsbActivityInterface) {
                         context.withdrawalsShow(context.getString(R.string.mainActivityText_ExtractDevice))
                     }
                 }
-
                 // дописать клик по порту
             }
         }

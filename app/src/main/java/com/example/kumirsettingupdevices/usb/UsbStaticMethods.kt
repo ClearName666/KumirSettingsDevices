@@ -1,10 +1,13 @@
 package com.example.kumirsettingupdevices.usb
 
 import android.content.Context
+import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import androidx.compose.ui.tooling.preview.Device
 
 class UsbStaticMethods {
 
+    // метод для получения всех имен девайсов
     fun getAllDevices(context: Context): ArrayList<String> {
         val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
         val devices = usbManager?.deviceList
@@ -18,6 +21,17 @@ class UsbStaticMethods {
         }
 
         return devicesString
+    }
+
+    // метод для получения всех дивайсов
+    fun getAllUsbDevices(context: Context): ArrayList<UsbDevice> {
+        val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
+        val devices = usbManager?.deviceList
+
+        val devicesRet: ArrayList<UsbDevice> = arrayListOf()
+        devices?.map { devicesRet.add(it.value) }
+
+        return devicesRet
     }
 
 }

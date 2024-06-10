@@ -8,6 +8,8 @@ import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
 import android.util.Log
+import androidx.compose.runtime.remember
+import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
@@ -28,6 +30,10 @@ class Usb(private val context: Context) {
         const val TIMEOUT_MOVE_AT: Long = 3000
         const val TIMEOUT_IGNORE_AT: Long = 30
 
+        // при попытки повторного подключения ...
+        const val CNT_RECONNECT_DEVISE: Int = 250
+        const val TIMEOUT_RECONNECT: Long = 10
+
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
     }
@@ -40,6 +46,8 @@ class Usb(private val context: Context) {
     private var connection: UsbDeviceConnection? = null
     private var usbSerialDevice: UsbSerialDevice? = null
     private var deviceUsb: UsbDevice? = null
+
+    private var curentDeviceName: String? = null
 
     // поток для usb
     private val executorUsb: ExecutorService = Executors.newSingleThreadExecutor()
@@ -236,6 +244,14 @@ class Usb(private val context: Context) {
             }
             onClear()
 
+            // поток попуток пповторного подключения
+            Thread {
+                for (i in 0..CNT_RECONNECT_DEVISE) {
+                    Thread.sleep(TIMEOUT_RECONNECT)
+                    if (attemptConnect()) break
+                }
+            }.start()
+
             // отобрадения статуса отключено
             if (show) {
                 (context as Activity).runOnUiThread {
@@ -246,6 +262,25 @@ class Usb(private val context: Context) {
         }
         return false
     }
+
+    // фукция для попыток повторного подключения
+    private fun attemptConnect(): Boolean {
+        val usbStaticMethods = UsbStaticMethods()
+
+        val listDevice = usbStaticMethods.getAllUsbDevices(context)
+
+        // если хоть что то подключено то
+        for (device in listDevice) {
+            if (context is UsbActivityInterface) {
+                (context as Activity).runOnUiThread {
+                    context.connectToUsbDevice(device) // подключаемся заного
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     // очищение ресурсов после отклчения диваса
     fun onClear() {
         flagReadDsrCts = false
@@ -411,6 +446,7 @@ class Usb(private val context: Context) {
 
                                 onStartSerialSetting()
                                 deviceUsb = device
+                                curentDeviceName = device.deviceId.toString()
 
                                 // поток для отправки в фоновом режиме at команды
                                 Thread {

@@ -343,7 +343,11 @@
 
     <string name="commandSetSpeed">AT+IPR=</string>
     <string name="commandSetFormatParity">AT+ICF=</string>
-
+    
+    <!--Для ядра-->
+    <string name="commandGetGSMOperator">AT+COPS?</string>
+    <string name="commandGetVersionCore">AT$VZLVERSION</string>
+    <string name="commandGetDataCore">AT$VZLREAD</string>
 
     <!--Деффолтные настроки модемов enfora и M31 -->
     <string name="defaultAPN">kumir.dv</string>
@@ -429,6 +433,9 @@
     <string name="m32_m32litePresetTitle">Шаблоны M32, M32Lite</string>
     <string name="enforaPresetTitle">Шаблоны Enfora</string>
     <string name="pmPresetTitle">Шаблоны PM81</string>
+    <string name="numberPhoneDisTitle">Номер телефона диспетчера</string>
+    <string name="IPAdressDisTitle">IP адрес сервера диспетчера</string>
+    <string name="MaxTimeCallTitle">Максимальное время входящего вызова (2-30)мин</string>
     <!--............................................................................-->
 
 </resources>
