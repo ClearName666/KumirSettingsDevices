@@ -13,8 +13,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentK21k23Binding
-import com.example.kumirsettingupdevices.modems.FormatModems
-import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
+import com.example.kumirsettingupdevices.formaters.FormatModems
 import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usb.UsbModBasCommandProtocol
 

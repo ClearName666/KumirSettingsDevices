@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
+import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 
 class UsbCommandsProtocol {
@@ -333,6 +335,10 @@ class UsbCommandsProtocol {
                             if (usbFragment is ACCB030CoreFragment) {
                                 usbFragment.onErrorStopChackSignal()
                             }
+
+                            if (usbFragment is ACCB030Fragment) {
+                                usbFragment.onErrorStopChackSignal()
+                            }
                         }
                         break@out
                     }
@@ -356,6 +362,19 @@ class UsbCommandsProtocol {
                         }
 
                         if (usbFragment is ACCB030CoreFragment) {
+                            try {
+                                (context as Activity).runOnUiThread {
+                                    usbFragment.onPrintSignal(data[0], data[1])
+                                }
+                            } catch (e: Exception) {
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(context.getString(R.string.notValidData))
+                                }
+                                break@out
+                            }
+                        }
+
+                        if (usbFragment is ACCB030Fragment) {
                             try {
                                 (context as Activity).runOnUiThread {
                                     usbFragment.onPrintSignal(data[0], data[1])
@@ -461,10 +480,12 @@ class UsbCommandsProtocol {
 
 
     private fun commandNewSpeed(context: MainActivity, key: String, value: String): Boolean {
+        val formatDataProtocol = FormatDataProtocol()
+
         // проверка на ккоманды изменения скорости или настроек передачи
         when(key) {
             context.getString(R.string.commandSetSpeed) -> {
-                val speedIndex: Int = getSpeedIndax(value)
+                val speedIndex: Int = formatDataProtocol.getSpeedIndax(value)
                 // дополнительная задержка в случае если скорость слишком мала
                 val sleepForMinSpeed = if (speedIndex < 5) (MAX_RATIO_EXPECTATION_NEW_SPEED - speedIndex + 1) else 1
 
@@ -477,7 +498,7 @@ class UsbCommandsProtocol {
                     val formatAndParity: List<String> = value.split(",")
 
                     // преобразование farmat в настроки битов данных и стоп биты а так же наличие четности
-                    val setPortList = reCalculateFormat(formatAndParity[0])
+                    val setPortList = formatDataProtocol.reCalculateFormat(formatAndParity[0])
 
                     // применение настроек
                     context.usb.onSerialStopBits(setPortList[1])
@@ -617,38 +638,6 @@ class UsbCommandsProtocol {
             bitsData == 1 && stopBits == 0 && parity == 1 -> 5 // 7 данных, 1 стоп, с четностью
             bitsData == 1 && stopBits == 0 && parity == 0 -> 6 // 7 данных, 1 стоп, без четности
             else -> 0
-        }
-    }
-
-    private fun reCalculateFormat(state: String): List<Int> {
-        return when (state) {
-            "1" -> listOf(0, 1, 0) // 8 данных, 2 стопа, без четности
-            "2" -> listOf(0, 0, 1) // 8 данных, 1 стоп, с четностью
-            "3" -> listOf(0, 0, 0) // 8 данных, 1 стоп, без четности
-            "4" -> listOf(1, 1, 0) // 7 данных, 2 стопа, без четности
-            "5" -> listOf(1, 0, 1) // 7 данных, 1 стоп, с четностью
-            "6" -> listOf(1, 0, 0) // 7 данных, 1 стоп, без четности
-            else -> throw IllegalArgumentException("Invalid reCalculateFormat ${javaClass.name}")
-        }
-    }
-
-    private fun getSpeedIndax(speed: String): Int {
-        try {
-            return when(speed) {
-                "300" -> 0
-                "600" -> 1
-                "1200" -> 2
-                "2400" -> 3
-                "4800" -> 4
-                "9600" -> 5
-                "19200" -> 6
-                "38400" -> 7
-                "57600" -> 8
-                "115200" -> 9
-                else -> -1
-            }
-        } catch (e: Exception) {
-            return -1
         }
     }
 

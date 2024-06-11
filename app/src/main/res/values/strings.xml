@@ -32,6 +32,9 @@
     <string name="errorDataBase">Ошибка базы данных!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
+    <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>
+    <string name="nonIniFile">Выберите ini файл!</string>
+    <string name="nonValidIniFile">Ваш файл ini не валиден!</string>
 
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
@@ -348,6 +351,7 @@
     <string name="commandGetGSMOperator">AT+COPS?</string>
     <string name="commandGetVersionCore">AT$VZLVERSION</string>
     <string name="commandGetDataCore">AT$VZLREAD</string>
+    <string name="commandSetDataCore">AT$VZLWRITE=</string>
 
     <!--Деффолтные настроки модемов enfora и M31 -->
     <string name="defaultAPN">kumir.dv</string>
@@ -436,6 +440,8 @@
     <string name="numberPhoneDisTitle">Номер телефона диспетчера</string>
     <string name="IPAdressDisTitle">IP адрес сервера диспетчера</string>
     <string name="MaxTimeCallTitle">Максимальное время входящего вызова (2-30)мин</string>
+    <string name="gsmOperatirTitle">GSM оператор: </string>
+
     <!--............................................................................-->
 
 </resources>

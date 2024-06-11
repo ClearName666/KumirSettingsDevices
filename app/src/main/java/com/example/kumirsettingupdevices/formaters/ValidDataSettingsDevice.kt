@@ -1,4 +1,4 @@
-package com.example.kumirsettingupdevices
+package com.example.kumirsettingupdevices.formaters
 
 
 

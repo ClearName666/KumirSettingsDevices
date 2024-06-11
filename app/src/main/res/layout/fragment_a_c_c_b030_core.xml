@@ -460,7 +460,7 @@ tools:context=".usbFragments.ACCB030CoreFragment">
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/textIPAdressDis"
+                android:id="@+id/textGSMOper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -470,15 +470,15 @@ tools:context=".usbFragments.ACCB030CoreFragment">
                 app:layout_constraintTop_toBottomOf="@+id/inputNumberPhoneDisLayout" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputIPAdressDisLayout"
+                android:id="@+id/inputGSMOperLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textIPAdressDis">
+                app:layout_constraintTop_toBottomOf="@+id/textGSMOper">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputIPAdressDis"
+                    android:id="@+id/inputGSMOper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -493,7 +493,7 @@ tools:context=".usbFragments.ACCB030CoreFragment">
                 android:text="@string/MaxTimeCallTitle"
                 android:textColor="@color/textColor"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inputIPAdressDisLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/inputGSMOperLayout" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputMaxTimeCallLayout"

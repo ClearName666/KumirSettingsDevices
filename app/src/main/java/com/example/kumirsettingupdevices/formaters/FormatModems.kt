@@ -1,4 +1,4 @@
-package com.example.kumirsettingupdevices.modems
+package com.example.kumirsettingupdevices.formaters
 
 class FormatModems {
     fun formatSpeedModBas(speed: Int): Int {

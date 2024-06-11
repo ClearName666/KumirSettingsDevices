@@ -1,134 +1,616 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ACCB030"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".usbFragments.ACCB030Fragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lineSet"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ACCB030"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/fon2Element"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        tools:context=".usbFragments.ACCB030Fragment">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/serinerNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="3dp"
-        android:text="@string/serinerNumber"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lineSet" />
-
-    <TextView
-        android:id="@+id/textVersionFirmware"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:text="@string/versionProgram"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/serinerNumber"
-        app:layout_constraintTop_toBottomOf="@+id/lineSet" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/line2Set"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="3dp"
-        android:background="@color/fon2Element"
-        app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
-        tools:layout_editor_absoluteX="0dp">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/futerSettingsDevice"
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:background="@color/fonElement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/imagedischarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="107dp"
-            android:src="@drawable/discharge"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageDownLoad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="107dp"
-            android:src="@drawable/download"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lineSet"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/fon2Element"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textRead"
-            android:layout_width="0dp"
+            android:id="@+id/serinerNumber"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/read"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:text="@string/serinerNumber"
             android:textColor="@color/textColor"
-            android:textSize="8sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imagedischarge"
-            app:layout_constraintStart_toStartOf="@+id/imagedischarge"
-            app:layout_constraintTop_toBottomOf="@+id/imagedischarge" />
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 
         <TextView
-            android:id="@+id/textDownLoad"
-            android:layout_width="57dp"
-            android:layout_height="14dp"
-            android:gravity="center"
-            android:text="@string/write"
+            android:id="@+id/textVersionFirmware"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="@string/versionProgram"
             android:textColor="@color/textColor"
-            android:textSize="8sp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/serinerNumber"
+            app:layout_constraintTop_toBottomOf="@+id/lineSet" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/line2Set"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="3dp"
+            android:background="@color/fon2Element"
+            app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
+            tools:layout_editor_absoluteX="0dp">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/futerSettingsDevice"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:background="@color/fonElement"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageDownLoad"
-            app:layout_constraintStart_toStartOf="@+id/imageDownLoad"
-            app:layout_constraintTop_toBottomOf="@+id/imageDownLoad" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+
+            <ImageView
+                android:id="@+id/imageSelectPriset"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/done_music_collection_svgrepo_com"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imagedischarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="107dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/discharge"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageDownLoad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="107dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/download"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textRead"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_horizontal"
+                android:text="@string/read"
+                android:textColor="@color/textColor"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/imagedischarge"
+                app:layout_constraintStart_toStartOf="@+id/imagedischarge"
+                app:layout_constraintTop_toBottomOf="@+id/imagedischarge" />
+
+            <TextView
+                android:id="@+id/textDownLoad"
+                android:layout_width="57dp"
+                android:layout_height="14dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="@string/write"
+                android:textColor="@color/textColor"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/imageDownLoad"
+                app:layout_constraintStart_toStartOf="@+id/imageDownLoad"
+                app:layout_constraintTop_toBottomOf="@+id/imageDownLoad" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:id="@+id/ScrollSetting"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/futerSettingsDevice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line2Set">
+
+            <LinearLayout
+                android:id="@+id/LineLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerSettingsDevice"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:visibility="visible">
+
+                    <ProgressBar
+                        android:id="@+id/progressBarChackSignal"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@+id/textInputIPAdressLayout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textCommunicationOperator"
+                        app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
+
+                    <TextView
+                        android:id="@+id/textChackSignal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="60dp"
+                        android:text="@string/chackSignalTitle"
+                        android:textColor="@color/textColor"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort1" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/lineChaclkSignal"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/fon2Element"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textChackSignal">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/textCommunicationOperator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/communicationOperatorTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
+
+                    <TextView
+                        android:id="@+id/textLevelSignal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/LevelSignalTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textCommunicationOperator" />
+
+                    <TextView
+                        android:id="@+id/textErrorSignal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/errorsSignalTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textLevelSignal" />
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/InputIPAdress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/ipAdressTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textErrorSignal" />
+
+                    <Button
+                        android:id="@+id/buttonChackSignal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/textColor"
+                        android:text="@string/chackSignalTitle"
+                        android:textColor="@color/background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/InputIPAdress" />
+
+                    <Spinner
+                        android:id="@+id/spinnerSelectParityPort1"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:drawable/btn_dropdown"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textParity" />
+
+                    <Spinner
+                        android:id="@+id/spinnerSelectStopBitPort1"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:drawable/btn_dropdown"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textStopBit" />
+
+                    <TextView
+                        android:id="@+id/textParity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/parityTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
+                        app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
+                        app:layout_constraintTop_toBottomOf="@+id/spinnerBitDataPort1" />
+
+                    <TextView
+                        android:id="@+id/textStopBit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/stopDitTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintEnd_toEndOf="@+id/spinnerSpeed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/spinnerSpeed" />
+
+                    <Spinner
+                        android:id="@+id/spinnerBitDataPort1"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:drawable/btn_dropdown"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textBit" />
+
+                    <TextView
+                        android:id="@+id/textBit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bitDataTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintBottom_toBottomOf="@+id/textSpeedPort"
+                        app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataPort1"
+                        app:layout_constraintStart_toStartOf="@+id/spinnerBitDataPort1"
+                        app:layout_constraintTop_toTopOf="@+id/textSpeedPort" />
+
+                    <Spinner
+                        android:id="@+id/spinnerSpeed"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:drawable/btn_dropdown"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textSpeedPort" />
+
+                    <TextView
+                        android:id="@+id/textSpeedPort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/speedTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintEnd_toEndOf="@+id/spinnerSpeed"
+                        app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
+                        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectPort1MeteringDevice" />
+
+                    <Spinner
+                        android:id="@+id/spinnerSelectPort1MeteringDevice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:drawable/btn_dropdown"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice" />
+
+                    <TextView
+                        android:id="@+id/textSelectMeteringDevice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/selectMeteringDeviceTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textSettingPorts" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/lineSettingsPorts"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/fon2Element"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textSettingPorts">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/textSettingPorts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="70dp"
+                        android:text="@string/settingInterfTitle"
+                        android:textColor="@color/textColor"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textGSMOper" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputPinCodeSmsCardLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:layout_editor_absoluteY="636dp" />
+
+                    <TextView
+                        android:id="@+id/textGSMOper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/gsmOperatirTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/inputPasswordGPRSLayout" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputPasswordGPRSLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textPasswordGPRS">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputPasswordGPRS"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textColor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textPasswordGPRS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/gprsPasswordTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/inputTextLoginGPRSLayout" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputTextLoginGPRSLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textLoginGPRS">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputTextLoginGPRS"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textColor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textLoginGPRS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/gprsLoginTitle"
+                        android:textColor="@color/textColor"
+                        android:textColorHighlight="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/inputIPDNSLayout" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputIPDNSLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textDNS">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputIPDNS"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textColor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textDNS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/ip_dnsTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/inputAPNLayout" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputAPNLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textAPNName">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputAPN"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/textColor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textAPNName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/apnTitle"
+                        android:textColor="@color/textColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lineSettingsNet" />
+
+                    <TextView
+                        android:id="@+id/textNetSettings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="2dp"
+                        android:text="@string/NetworkSettings"
+                        android:textColor="@color/textColor"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toTopOf="@+id/lineSettingsNet"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/lineSettingsNet"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@color/fon2Element"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/DisActivPort2SetiingsPriset"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@color/fonDarkMenu"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/DisActivPort1SetiingsPriset"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@color/fonDarkMenu"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textSpeedPort">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/port2DisActivFon"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@color/fonDarkMenu"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/port1DisActivFon"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@color/fonDarkMenu"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/spinnerSelectPort1MeteringDevice">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/lineDataBase"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="70dp"
+                        android:background="@color/fon2Element"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/buttonChackSignal">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <Button
+                        android:id="@+id/buttonSavePreset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/textColor"
+                        android:text="@string/savePresetTitle"
+                        android:textColor="@color/background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutNameSavePreset" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayoutNameSavePreset"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="1dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lineDataBase">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputNameSavePreset"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/namePresetTitle"
+                            android:textColor="@color/textColor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textPresetTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/presetTitle"
+                        android:textColor="@color/textColor"
+                        android:textSize="18dp"
+                        app:layout_constraintBottom_toTopOf="@+id/lineDataBase"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Добавьте другие элементы здесь -->
+
+            </LinearLayout>
+        </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/textNoneDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/noneTypeDevice"
-        android:textColor="@color/textColor"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/futerSettingsDevice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
-
-    <TextView
-        android:id="@+id/textNameTypeDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/accb030Firmware"
-        android:textColor="@color/textColor"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
-</androidx.constraintlayout.widget.ConstraintLayout>

@@ -130,6 +130,7 @@
         app:layout_constraintTop_toBottomOf="@+id/scrollView3" />
 
     <ScrollView
+        android:id="@+id/scrollView4"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -158,5 +159,15 @@
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/imageAddFilePreset"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:src="@drawable/plus_large_svgrepo_com"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

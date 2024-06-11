@@ -327,6 +327,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         ActivationFonDarkMenu(true)
     }
 
+    fun onClickFonLockUses(view: View) {
+        showAlertDialog(getString(R.string.nonConnectAdapter))
+    }
+
 
 
 
@@ -733,6 +737,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     override fun showButtonConnection(con: Boolean) {
 
+        binding.fonLockUses.visibility = View.GONE
+
         // при подключении уберестся фрагмент и вывод успеха подкл
         if (con) {
             workFonDarkMenu()
@@ -768,6 +774,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun disconnected() {
+
+        binding.fonLockUses.visibility = View.VISIBLE
         /*
         val mainFragment = MainFragment()
 

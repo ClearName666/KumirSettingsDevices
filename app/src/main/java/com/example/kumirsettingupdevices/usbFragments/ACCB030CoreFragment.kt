@@ -14,6 +14,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentACCB030CoreBinding
+import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -102,7 +103,7 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                         0,
                         binding.inputAPN.text.toString(),
                         binding.inputIPDNS.text.toString(),
-                        " ",
+                        "1",
                         binding.inputTextLoginGPRS.text.toString(),
                         binding.inputPasswordGPRS.text.toString())
                 }
@@ -354,6 +355,38 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         val programVersion: String = getString(R.string.versionProgram) +
                 "\n" + settingMap[getString(R.string.commandGetVersionCore)]
         binding.textVersionFirmware.text = programVersion
+
+
+        val vzlRead: List<String>? = settingMap[getString(R.string.commandGetDataCore)]?.split(",")
+
+        binding.inputAPN.setText(vzlRead?.get(0)?.substringAfter("=") ?: "")
+        binding.inputTextLoginGPRS.setText(vzlRead?.get(1)?.substringAfter("=") ?: "")
+        binding.inputPasswordGPRS.setText(vzlRead?.get(2)?.substringAfter("=") ?: "")
+        binding.inputIPDNS.setText(vzlRead?.get(3)?.substringAfter("=") ?: "")
+
+        val formatDataProtocol = FormatDataProtocol()
+
+        // настроки порта
+        val indexSpeed: Int = formatDataProtocol.getSpeedIndax(vzlRead?.get(4)?.substringAfter("=") ?: "")
+        if (indexSpeed != -1) {
+            binding.spinnerSpeed.setSelection(indexSpeed)
+        }
+
+        val indexBitData: Int = formatDataProtocol.formatBitData(vzlRead?.get(5)?.substringAfter("=") ?: "")
+        if (indexBitData != -1) {
+            binding.spinnerBitDataPort1.setSelection(indexBitData)
+        }
+
+        val indexParity: Int = formatDataProtocol.formatPatity(vzlRead?.get(6)?.substringAfter("=") ?: "")
+        if (indexParity != -1) {
+            binding.spinnerSelectParityPort1.setSelection(indexParity)
+        }
+
+        val indexStopBit: Int = formatDataProtocol.formatStopBit(vzlRead?.get(7)?.substringAfter("=") ?: "")
+        if (indexStopBit != -1) {
+            binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
+        }
+
     }
 
     override fun readSettingStart() {

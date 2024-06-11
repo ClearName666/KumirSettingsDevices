@@ -69,6 +69,21 @@
         </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fonLockUses"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/fonDarkMenu"
+            android:clickable="true"
+            android:onClick="onClickFonLockUses"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/fragment_container_main_content">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/fonMenu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

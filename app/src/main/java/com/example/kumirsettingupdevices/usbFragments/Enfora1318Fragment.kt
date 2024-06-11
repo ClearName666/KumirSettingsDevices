@@ -14,10 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
-import com.example.kumirsettingupdevices.ValidDataSettingsDevice
+import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.dataBasePreset.Enfora
 import com.example.kumirsettingupdevices.databinding.FragmentEnforma1318Binding
-import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.modems.ModemDataW
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -417,21 +416,21 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         binding.textVersionFirmware.text = version
 
         // вывод настроек
-        binding.APN.text = settingMap[getString(R.string.commandGetApnEnforaM31)]
+        //binding.APN.text = settingMap[getString(R.string.commandGetApnEnforaM31)]
 
         val loginPassword: List<String>? = settingMap[getString(R.string.commandGetUsernamePassword)]?.
         substringAfter("\"")?.substringBefore("\"")?.split(",")
 
-        if (settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false) {
+        /*if (settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false) {
             binding.login.text = loginPassword?.get(0) ?: ""
             binding.password.text = loginPassword?.get(1) ?: ""
-        }
+        }*/
 
-        binding.server1.text = settingMap[getString(R.string.commandServer1EnforaOrM31)]
+        /*binding.server1.text = settingMap[getString(R.string.commandServer1EnforaOrM31)]
         binding.server2.text = settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
             substringAfter("02, 1,")?.substringBefore("\n")
         binding.timeout.text = settingMap[getString(R.string.commandGetPadTimeout)]
-        binding.buffer.text = settingMap[getString(R.string.commandGetPadBlockSize)]
+        binding.buffer.text = settingMap[getString(R.string.commandGetPadBlockSize)]*/
 
 
 
