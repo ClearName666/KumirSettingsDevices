@@ -463,33 +463,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textLevelSignal" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputIPAdressLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textErrorSignal">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/InputIPAdress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/ipAdressTitle"
-                        android:textColor="@color/textColor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <Button
                     android:id="@+id/buttonChackSignal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:backgroundTint="@color/textColor"
                     android:text="@string/chackSignalTitle"
                     android:textColor="@color/background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputIPAdressLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/textErrorSignal" />
 
                 <ProgressBar
                     android:id="@+id/progressBarChackSignal"
@@ -497,7 +480,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@+id/textInputIPAdressLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/textCommunicationOperator"
                     app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />

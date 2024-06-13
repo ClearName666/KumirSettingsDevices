@@ -170,4 +170,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView4" />
 
+    <ImageView
+        android:id="@+id/imageDischarge"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/document_medicine_svgrepo_com"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView4" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageAddFilePreset"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView4">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pachTitle"
+            android:textColor="@color/textColor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

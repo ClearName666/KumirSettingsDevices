@@ -157,12 +157,14 @@ class UsbCommandsProtocol {
                 }
 
                 // включение ат команд
-                context.usb.flagAtCommandYesNo = true
+                // context.usb.flagAtCommandYesNo = true
 
                 if (flagsSuccess) {
                     (context as Activity).runOnUiThread {
                         usbFragment.printSettingDevice(settingData)
                     }
+                    // включение ат команд
+                    context.usb.flagAtCommandYesNo = true
                 }
 
                 context.curentData = ""
@@ -284,12 +286,12 @@ class UsbCommandsProtocol {
                     context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
                     usbFragment.readSettingStart()
+
+                    // включение ат команд
+                    context.usb.flagAtCommandYesNo = true
                 }
 
                 context.curentData = ""
-
-                // включение ат команд
-                context.usb.flagAtCommandYesNo = true
 
                 context.flagThreadSerialCommands = false // говорим что не работает поток ввода
 

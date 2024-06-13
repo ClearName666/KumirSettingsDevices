@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.provider.OpenableColumns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,10 @@ import com.example.kumirsettingupdevices.dataBasePreset.Enfora
 import com.example.kumirsettingupdevices.dataBasePreset.Pm
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.databinding.FragmentSettingsBinding
+import com.example.kumirsettingupdevices.filesMenager.GenerationFiles
+import com.example.kumirsettingupdevices.filesMenager.IniFileModel
+import com.example.kumirsettingupdevices.filesMenager.SaveDataFile
+import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
@@ -26,6 +32,8 @@ import com.example.kumirsettingupdevices.settings.PrisetsValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.ini4j.Ini
+import org.ini4j.Profile
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.Properties
@@ -37,9 +45,12 @@ class SettingsFragment : Fragment() {
 
     lateinit var contextMain: MainActivity
 
+    var fileName: String = ""
+
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             if (it.toString().endsWith(".ini")) {
+                fileName = it.toString().substringAfter("/")
                 readIniFileContent(it)
             } else {
                 contextMain.showAlertDialog(getString(R.string.nonIniFile))
@@ -67,9 +78,79 @@ class SettingsFragment : Fragment() {
         binding.imageAddFilePreset.setOnClickListener {
             selectFile()
         }
+        binding.imageDischarge.setOnClickListener {
+            dischargeIniFiles()
+        }
+
+        binding.inputPath.setText("/storage/emulated/0/")
+
 
         return binding.root
     }
+
+    //--------------------------------Выгрузка--------------------------------
+    private fun dischargeIniFiles() {
+        val listIniDataPreset: MutableList<IniFileModel> = mutableListOf()
+
+        val generationFiles = GenerationFiles()
+        val saveDataFile = SaveDataFile()
+
+        // получение данных из базы данных m32
+        try {
+            lifecycleScope.launch {
+                // присеты m32
+                contextMain.presetDao.getAll().collect { presets ->
+                    for (p in presets) {
+                        listIniDataPreset.add(
+                            IniFileModel(
+                                p.name!!,
+                                "Network setting M32",
+                                p.apn!!,
+                                p.port!!,
+                                p.server!!,
+                                p.password!!,
+                                p.login!!,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                ""
+                            )
+                        )
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+
+        // генерация и сохранение по выбраному пути
+        if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
+            if (saveDataFile.saveToExternalStorage(
+                    generationFiles.generationIniFiles(listIniDataPreset),
+                    binding.inputPath.text.toString()
+                ))
+            {
+                contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
+            } else {
+                contextMain.showAlertDialog(getString(R.string.noSaveFiles))
+
+            }
+
+        } else {
+            contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
+        }
+
+
+    }
+    //------------------------------------------------------------------------
+
+
 
     //--------------------------------Выбрать файл----------------------------
     private fun selectFile() {
@@ -98,88 +179,114 @@ class SettingsFragment : Fragment() {
     }
 
     private fun parseIniContent(iniContent: String) {
-        val properties = Properties()
-        properties.load(iniContent.reader())
+        val ini = Ini()
+        ini.load(iniContent.reader())
 
-        // 1 тип
-        try {
-            if (properties.getProperty("TYPE") == "1") {
-                val title = properties.getProperty("TITLE")
-                val apn = properties.getProperty("APN")
-                val mode = properties.getProperty("MODE")
-                val tcpPort = properties.getProperty("TCP_PORT")
-                val server1 = properties.getProperty("SERVER1")
-                val login = properties.getProperty("LOGIN")
-                val password = properties.getProperty("PASSWORD")
+        // для проверки валидности и перевода в данные для приложения
+        val validDataIniFile = ValidDataIniFile()
 
-                // Используйте полученные значения
-                val preset = Preset(0,title, mode.toInt() - 1, apn, server1, tcpPort, login, password)
+        // Пример: доступ к параметрам секции [Network setting M32]
+        val networkM32Settings: Profile.Section? = ini["Network setting M32"]
+        val networkACCB030CoreSettings: Profile.Section? = ini["Network setting ASSV030"]
+        val networkRM81Settings: Profile.Section? = ini["Network setting RM81"]
 
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        contextMain.presetDao.insert(preset)
-                        contextMain.runOnUiThread {
-                            contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                            // добавление в оперативнку
-                            PrisetsValue.prisets[title] = Priset(title, mode.toInt() - 1, apn, tcpPort, server1, login, password)
-                            // обноление данныех
-                            updataDataPersetAdapter()
-                        }
-                    }
-                }
-            } else if (properties.getProperty("TYPE") == "2") {
-                val title = properties.getProperty("TITLE")
-                val apn = properties.getProperty("APN")
-                val server1 = properties.getProperty("SERVER1")
-                val server2 = properties.getProperty("SERVER2")
-                val login = properties.getProperty("LOGIN")
-                val password = properties.getProperty("PASSWORD")
-                val timeout = properties.getProperty("TIMEOUT")
-                val sizeBuffer = properties.getProperty("SIZEBUFFER")
+        networkM32Settings?.let {
+            val apn = it["Apn"]
+            val tcpPort = it["TCPPort"]
+            val eServer = it["eServer"]
+            val password = it["Password"]
+            val login = it["Login"]
+            val devMode = it["DevMode"]
 
-                // Используйте полученные значения
-                val preset = Enfora(0, title, apn, login, password, server1, server2, timeout, sizeBuffer)
+            // проверка на наличие иначе отваливаемся
+            val mode = validDataIniFile.getModeMain(devMode)
+            if (mode == -1 || apn == null || tcpPort == null || eServer == null ||
+                password == null || login == null || devMode == null) {
 
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        contextMain.presetEnforaDao.insert(preset)
-                        contextMain.runOnUiThread {
-                            contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                            // добавление в оперативнку
-                            PresetsEnforaValue.presets[title] = preset
-                            // обноление данныех
-                            updataDataPersetEnforaAdapter()
-                        }
-                    }
-                }
-            } else if (properties.getProperty("TYPE") == "3") {
-                val title = properties.getProperty("TITLE")
-                val mode = properties.getProperty("MODE")
-                val keyNet = properties.getProperty("KEYNET")
-                val power = properties.getProperty("POWER")
-                val diopozone = properties.getProperty("RANGE")
-
-                // Используйте полученные значения
-                val preset = Pm(0, title, mode.toInt() - 1, keyNet, power, diopozone.toInt() - 1)
-
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        contextMain.presetPmDao.insert(preset)
-                        contextMain.runOnUiThread {
-                            contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                            // добавление в оперативнку
-                            PrisetsPmValue.presets[title] = preset
-                            // обноление данныех
-                            updataDataPersetPmAdapter()
-                        }
-                    }
-                }
-            } else {
                 contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
+                return
             }
-        } catch (e: Exception) {
-            contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
+
+            // запись в базу данных
+            val preset = Preset(0, fileName, mode, apn, eServer, tcpPort, login, password)
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    contextMain.presetDao.insert(preset)
+                    contextMain.runOnUiThread {
+                        contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                        // добавление в оперативнку
+                        PrisetsValue.prisets[fileName] = Priset(fileName, mode, apn, tcpPort, eServer, login, password)
+                        // обноление данныех
+                        updataDataPersetAdapter()
+                    }
+                }
+            }
         }
+
+        networkACCB030CoreSettings?.let {
+            val apn = it["Apn"]
+            val tcpPort = " "
+            val eServer = it["Server"]
+            val password = it["Password"]
+            val login = it["Login"]
+
+            // проверка на наличие иначе отваливаемся
+            if (apn == null || eServer == null || password == null || login == null) {
+                contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
+                return
+            }
+
+            // запись в базу данных
+            val preset = Preset(0, fileName, 0, apn, eServer, tcpPort, login, password)
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    contextMain.presetDao.insert(preset)
+                    contextMain.runOnUiThread {
+                        contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                        // добавление в оперативнку
+                        PrisetsValue.prisets[fileName] = Priset(fileName, 0, apn, tcpPort, eServer, login, password)
+                        // обноление данныех
+                        updataDataPersetAdapter()
+                    }
+                }
+            }
+        }
+
+        networkRM81Settings?.let {
+            val power = it["Power"]
+            val band = it["Band"]
+            val accessKey = it["AccessKey"]
+            val devMode = it["Mode"]
+
+            // проверка на наличие иначе отваливаемся
+            val mode = validDataIniFile.getModePm(devMode)
+            val bandI = validDataIniFile.getBandPm(band)
+            if (mode == -1 || band == null || accessKey == null || power == null || devMode == null) {
+                contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
+                return
+            }
+
+            // запись в базу данных
+            val preset = Pm(0, fileName, mode, accessKey, power, bandI)
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    contextMain.presetPmDao.insert(preset)
+                    contextMain.runOnUiThread {
+                        contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                        // добавление в оперативнку
+                        PrisetsPmValue.presets[fileName] = preset
+                        // обноление данныех
+                        updataDataPersetPmAdapter()
+                    }
+                }
+            }
+        }
+
+        fileName = ""
+
+        // не одна секция не найдена
+        if (networkM32Settings == null && networkACCB030CoreSettings == null && networkRM81Settings == null)
+            contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
 
     }
     //------------------------------------------------------------------------

@@ -31,6 +31,9 @@
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
+    <string name="nonPathSaveFile">Путь не валиден!</string>
+    <string name="noSaveFiles">Файлы не удалось сохранить!</string>
+    <string name="yesSaveFiles">Файлы удалось сохранить!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
     <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>
     <string name="nonIniFile">Выберите ini файл!</string>
@@ -429,8 +432,8 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="settingsTitle">Настройки</string>
     <string name="presetsTitle">Шаблоны</string>
-    <string name="nonPresetData">Нету записей</string>
-    <string name="loadCastomSet">Загрузить кастомные настройки</string>
+    <string name="nonPresetData">Нет записей</string>
+    <string name="loadCastomSet">Пользовательские настройки</string>
     <string name="nonFindOperator">Операторы не найдены</string>
     <string name="dataLoading">Данные...</string>
     <string name="dataTitle">Данные</string>
@@ -441,6 +444,8 @@
     <string name="IPAdressDisTitle">IP адрес сервера диспетчера</string>
     <string name="MaxTimeCallTitle">Максимальное время входящего вызова (2-30)мин</string>
     <string name="gsmOperatirTitle">GSM оператор: </string>
+    <string name="pachTitle">Путь для выгрузки!</string>
+
 
     <!--............................................................................-->
 

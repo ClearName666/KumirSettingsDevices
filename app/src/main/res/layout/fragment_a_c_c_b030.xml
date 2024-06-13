@@ -212,16 +212,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textLevelSignal" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/InputIPAdress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/ipAdressTitle"
-                        android:textColor="@color/textColor"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textErrorSignal" />
-
                     <Button
                         android:id="@+id/buttonChackSignal"
                         android:layout_width="wrap_content"
@@ -231,7 +221,7 @@
                         android:textColor="@color/background"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/InputIPAdress" />
+                        app:layout_constraintTop_toBottomOf="@+id/textErrorSignal" />
 
                     <Spinner
                         android:id="@+id/spinnerSelectParityPort1"

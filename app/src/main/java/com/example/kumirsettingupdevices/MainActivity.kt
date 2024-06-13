@@ -641,7 +641,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             override fun run() {
 
                 val timerText: String = getString(R.string.restartDevicePlease).dropLast(2) +
-                        timeLeft.toString()
+                        if (timeLeft > 9) timeLeft.toString() else "0$timeLeft" // для того что бы если число
+                                                                                 // от 1 до 9 то добавлялся 0 типа 03 04 07 и тп
+
                 timerTextView.text = timerText
 
                 if (timeLeft > 0) {
@@ -775,7 +777,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     override fun disconnected() {
 
-        binding.fonLockUses.visibility = View.VISIBLE
+        //binding.fonLockUses.visibility = View.VISIBLE
         /*
         val mainFragment = MainFragment()
 

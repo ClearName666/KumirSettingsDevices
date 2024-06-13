@@ -117,8 +117,7 @@ class UsbModBasCommandProtocol {
                     context.curentDataByte = byteArrayOf()
                 }
 
-                // включение ат команд
-                context.usb.flagAtCommandYesNo = true
+
 
                 context.curentData = ""
                 context.curentDataByte = byteArrayOf()
@@ -129,6 +128,11 @@ class UsbModBasCommandProtocol {
                 (context as Activity).runOnUiThread {
                     context.printInfoTermAndLoaging("", 100)
                     usbFragment.printSettingDevice(settingData)
+
+                    /*if (settingData.isNotEmpty()) {
+                        // включение ат команд
+                        context.usb.flagAtCommandYesNo = true
+                    }*/
                 }
             }
         }.start()
@@ -212,8 +216,8 @@ class UsbModBasCommandProtocol {
                     context.curentDataByte = byteArrayOf()
                 }
 
-                // включение ат команд
-                context.usb.flagAtCommandYesNo = true
+                /*// включение ат команд
+                context.usb.flagAtCommandYesNo = true*/
 
                 context.curentData = ""
                 context.curentDataByte = byteArrayOf()
