@@ -34,6 +34,7 @@
     <string name="nonPathSaveFile">Путь не валиден!</string>
     <string name="noSaveFiles">Файлы не удалось сохранить!</string>
     <string name="yesSaveFiles">Файлы удалось сохранить!</string>
+    <string name="nonPermissionsSaveFile">Не получино разрешения для сохранения!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
     <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>
     <string name="nonIniFile">Выберите ini файл!</string>
@@ -445,6 +446,8 @@
     <string name="MaxTimeCallTitle">Максимальное время входящего вызова (2-30)мин</string>
     <string name="gsmOperatirTitle">GSM оператор: </string>
     <string name="pachTitle">Путь для выгрузки!</string>
+    <string name="settingTitle">Настройка</string>
+    <string name="diagTitle">Диагностика</string>
 
 
     <!--............................................................................-->

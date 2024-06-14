@@ -1,13 +1,15 @@
 package com.example.kumirsettingupdevices.filesMenager
 
 
+import android.content.ContentValues
+import android.content.Context
+import android.provider.MediaStore
+import android.util.Log
 import java.io.File
 
 class GenerationFiles() {
     // генерация ini файлов для экспорта
-    fun generationIniFiles(data: List<IniFileModel>): List<File> {
-        val listFile: MutableList<File> = mutableListOf()
-
+    fun generationIniFiles(data: List<IniFileModel>, dirMain: String, context: Context): Boolean {
         for (d in data) {
             val fileName = "${d.nameFile}.ini"
 
@@ -32,12 +34,32 @@ class GenerationFiles() {
                 appendLine("Monitor=${d.monitor}")
             }
 
-            val file = File(fileName)
-            file.writeText(content)
-            listFile.add(file)
+            try {
+                saveFileToDownloadFolderQ(fileName, content, context, dirMain)
+            } catch (e: Exception) {
+                Log.d("listIniDataPreset", e.message.toString())
+                return false
+            }
+
         }
 
-        return listFile
+        return true
+    }
+
+    private fun saveFileToDownloadFolderQ(fileName: String, fileContent: String, context: Context, dirMain: String) {
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "pplication/octet-strea")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, dirMain)
+        }
+
+        val uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
+        uri?.let {
+            resolver.openOutputStream(it).use { outputStream ->
+                outputStream?.write(fileContent.toByteArray())
+            }
+        }
     }
 }
 

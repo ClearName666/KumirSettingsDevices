@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     lateinit var presetPmDao: PmDao
 
 
+
     companion object {
         const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
         const val NORM_LENGHT_DATA_START = 5
@@ -336,12 +337,27 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // ----------------клики в раскрывающимся меню-------------------
 
+    // раскрывающаяся понель
     fun onClickEnforma1318(view: View) {
+        if (binding.Enforma1318Settings.visibility == View.GONE) {
+            binding.Enforma1318Settings.visibility = View.VISIBLE
+            binding.Enforma1318Diag.visibility = View.VISIBLE
+        } else {
+            binding.Enforma1318Settings.visibility = View.GONE
+            binding.Enforma1318Diag.visibility = View.GONE
+        }
+    }
+    fun onClickEnforma1318Settings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val enforma1318 = Enfora1318Fragment()
         createSettingFragment(enforma1318)
     }
+    fun onClickEnforma1318Diag(view: View) {
+        // не реализован
+    }
+
+
     fun onClickM31(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -354,12 +370,28 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val k21k23 = K21K23Fragment()
         createSettingFragment(k21k23)
     }
+
+    // раскрывающаяся понель
     fun onClickM32(view: View) {
+        if (binding.M32Settings.visibility == View.GONE) {
+            binding.M32Settings.visibility = View.VISIBLE
+            binding.M32Diag.visibility = View.VISIBLE
+        } else {
+            binding.M32Settings.visibility = View.GONE
+            binding.M32Diag.visibility = View.GONE
+        }
+    }
+    fun onClickM32Settings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val m32 = M32Fragment()
         createSettingFragment(m32)
     }
+    fun onClickM32Diag(view: View) {
+        // не реализовано
+    }
+
+
     fun onClickDiag(serialNumber: String, programVersion: String) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -390,13 +422,28 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val accbo30Core = ACCB030CoreFragment()
         createSettingFragment(accbo30Core)
     }
+
+    // раскрывающаяся понель
     fun onClickACCB030(view: View) {
+        if (binding.ACCB030FirmwareSettings.visibility == View.GONE) {
+            binding.ACCB030FirmwareSettings.visibility = View.VISIBLE
+            binding.ACCB030FirmwareDiag.visibility = View.VISIBLE
+        } else {
+            binding.ACCB030FirmwareSettings.visibility = View.GONE
+            binding.ACCB030FirmwareDiag.visibility = View.GONE
+        }
+    }
+    fun onClickACCB030Settings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val accbo30 = ACCB030Fragment()
         createSettingFragment(accbo30)
-
     }
+    fun onClickACCB030Diag(view: View) {
+        // не реализовано
+    }
+
+
     fun onClickP101(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 

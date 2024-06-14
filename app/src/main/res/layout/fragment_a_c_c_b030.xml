@@ -69,7 +69,7 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/done_music_collection_svgrepo_com"
+                android:src="@drawable/checklist_minimalistic_svgrepo_com"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

@@ -43,8 +43,8 @@ class ValidDataSettingsDevice {
     // проверка PADTO для enfora
     fun padtoValid(padto: String): Boolean {
         return try {
-            !(padto.toInt() >= PADTO_MAX ||
-                    padto.toInt() <= PADTO_MIN)
+            !(padto.toInt() > PADTO_MAX ||
+                    padto.toInt() < PADTO_MIN)
         } catch (e: Exception) {
             false
         }
@@ -53,8 +53,8 @@ class ValidDataSettingsDevice {
     // проверка PADBLK для enfora
     fun padblkValid(padblk: String): Boolean {
         return try {
-            !(padblk.toInt() >= PADBLK_MAX ||
-                    padblk.toInt() <= PADBLK_MIN)
+            !(padblk.toInt() > PADBLK_MAX ||
+                    padblk.toInt() < PADBLK_MIN)
         } catch (e: Exception) {
             false
         }
@@ -63,8 +63,8 @@ class ValidDataSettingsDevice {
     // проверка errorKEEPALIVE диопазона от 10 до 600
     fun keepaliveValid(keepalive: String): Boolean {
         return try {
-            !(keepalive.toInt() >= KEEPALIVE_MAX ||
-                    keepalive.toInt() <= KEEPALIVE_MIN)
+            !(keepalive.toInt() > KEEPALIVE_MAX ||
+                    keepalive.toInt() < KEEPALIVE_MIN)
         } catch (e: Exception) {
             false
         }
@@ -73,8 +73,8 @@ class ValidDataSettingsDevice {
 
     fun ctimeoutValid(ctimeout: String): Boolean {
         return try {
-            !(ctimeout.toInt() >= CTIMEOUT_MAX ||
-                    ctimeout.toInt() <= CTIMEOUT_MIN)
+            !(ctimeout.toInt() > CTIMEOUT_MAX ||
+                    ctimeout.toInt() < CTIMEOUT_MIN)
         } catch (e: Exception) {
             false
         }
@@ -83,8 +83,8 @@ class ValidDataSettingsDevice {
 
     fun tcpPortValid(tcpPort: String): Boolean {
         return try {
-            !(tcpPort.toInt() >= TCPPORT_MAX ||
-                    tcpPort.toInt() <= TCPPORT_MIN)
+            !(tcpPort.toInt() > TCPPORT_MAX ||
+                    tcpPort.toInt() < TCPPORT_MIN)
         } catch (e: Exception) {
             false
         }

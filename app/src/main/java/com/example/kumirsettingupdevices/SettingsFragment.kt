@@ -2,31 +2,31 @@ package com.example.kumirsettingupdevices
 
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.provider.OpenableColumns
+import android.os.Environment
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsEnforaDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsPmDataAdapter
-import com.example.kumirsettingupdevices.dataBasePreset.Enfora
 import com.example.kumirsettingupdevices.dataBasePreset.Pm
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.databinding.FragmentSettingsBinding
 import com.example.kumirsettingupdevices.filesMenager.GenerationFiles
 import com.example.kumirsettingupdevices.filesMenager.IniFileModel
-import com.example.kumirsettingupdevices.filesMenager.SaveDataFile
 import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
-import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
 import com.example.kumirsettingupdevices.settings.PrisetsPmValue
 import com.example.kumirsettingupdevices.settings.PrisetsValue
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +36,6 @@ import org.ini4j.Ini
 import org.ini4j.Profile
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.Properties
 
 // настройки
 class SettingsFragment : Fragment() {
@@ -47,10 +46,15 @@ class SettingsFragment : Fragment() {
 
     var fileName: String = ""
 
+    companion object {
+        private const val REQUEST_CODE = 100
+        private const val DIR_PRESETS_DEFAULTE: String = "/priesets"
+    }
+
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             if (it.toString().endsWith(".ini")) {
-                fileName = it.toString().substringAfter("/")
+                fileName = it.toString().reversed().substringBefore("%").reversed().substringBefore(".ini") // нужно для получения имени файла
                 readIniFileContent(it)
             } else {
                 contextMain.showAlertDialog(getString(R.string.nonIniFile))
@@ -79,21 +83,27 @@ class SettingsFragment : Fragment() {
             selectFile()
         }
         binding.imageDischarge.setOnClickListener {
-            dischargeIniFiles()
+            if (ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(), arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_CODE)
+            } else
+                dischargeIniFiles()
         }
 
-        binding.inputPath.setText("/storage/emulated/0/")
+        binding.inputPath.setText(Environment.DIRECTORY_DOWNLOADS + DIR_PRESETS_DEFAULTE)
 
 
         return binding.root
     }
 
     //--------------------------------Выгрузка--------------------------------
+
     private fun dischargeIniFiles() {
         val listIniDataPreset: MutableList<IniFileModel> = mutableListOf()
 
         val generationFiles = GenerationFiles()
-        val saveDataFile = SaveDataFile()
 
         // получение данных из базы данных m32
         try {
@@ -125,28 +135,27 @@ class SettingsFragment : Fragment() {
                             )
                         )
                     }
+                    contextMain.runOnUiThread {
+                        // генерация и сохранение по выбраному пути
+                        if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
+                            if (generationFiles.generationIniFiles(listIniDataPreset, binding.inputPath.text.toString(), requireContext()))
+                            {
+                                contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
+                            } else {
+                                contextMain.showAlertDialog(getString(R.string.noSaveFiles))
+
+                            }
+
+                        } else {
+                            contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
+                        }
+                    }
                 }
-            }
-        } catch (_: Exception) {}
-
-        // генерация и сохранение по выбраному пути
-        if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
-            if (saveDataFile.saveToExternalStorage(
-                    generationFiles.generationIniFiles(listIniDataPreset),
-                    binding.inputPath.text.toString()
-                ))
-            {
-                contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
-            } else {
-                contextMain.showAlertDialog(getString(R.string.noSaveFiles))
 
             }
-
-        } else {
-            contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
+        } catch (_: Exception) {
+            contextMain.showAlertDialog(getString(R.string.noSaveFiles))
         }
-
-
     }
     //------------------------------------------------------------------------
 
