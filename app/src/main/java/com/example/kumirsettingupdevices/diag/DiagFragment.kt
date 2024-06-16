@@ -1,6 +1,5 @@
-package com.example.kumirsettingupdevices
+package com.example.kumirsettingupdevices.diag
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kumirsettingupdevices.MainActivity
+import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentDiagBinding
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemOperator
@@ -18,7 +19,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DiagFragment(val serialNumber: String, private val programVersion: String) : Fragment(), UsbDiag {
+class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentInterface {
 
     private lateinit var binding: FragmentDiagBinding
 
@@ -49,19 +50,15 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
     ): View {
         binding = FragmentDiagBinding.inflate(inflater)
 
-        // верийный номер и версия прошибки
-        val serNum: String = serialNumber
-        binding.serinerNumber.text = serNum
-
-        val version: String = programVersion
-        binding.textVersionFirmware.text = version
+        // вывод названия типа устройства
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.printDeviceTypeName(getString(R.string.diagTitle))
+        }
 
         // назначение кликов
         binding.buttonDiagStart.setOnClickListener {
             onClickStartDiag()
-        }
-        binding.imageBack.setOnClickListener {
-            onClickBack()
         }
 
         binding.switchAdvancedOperators.setOnCheckedChangeListener { _, isChecked ->
@@ -124,22 +121,12 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
     // запсук диагностики
     private fun onClickStartDiag() {
         if (!flagStartDiag) {
-            usbCommandsProtocol.readDiag(getString(R.string.commandRunDiagnostics),
-                getString(R.string.endDiagBeginning),
-                requireContext(),
-                this)
-            flagStartDiag = true
+            val context: Context = requireContext()
 
-            binding.buttonDiagStart.visibility = View.GONE
-
-            // выводим прогресс бары
-            binding.progressBarData.visibility = View.VISIBLE
-            binding.progressBarOperators.visibility = View.VISIBLE
-
-            // Анимация загрузки операторов
-            startLoadingAnimation()
+            if (context is MainActivity) {
+                context.showTimerDialogDiag(this, nameDeviace)
+            }
         }
-
     }
 
     // Анимация загрузки операторов
@@ -154,20 +141,15 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
         }
     }
 
-    // возврат пока что к m32
-    private fun onClickBack() {
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.onClickM32(binding.imageBack)
-        }
-    }
 
     override fun printAllInfo(info: String) {
         binding.progressBarData.visibility = View.GONE
 
         // насло с ок и заканичается на CELLSCAN
         binding.textDiag.text = info.substringAfter(getString(R.string.okSand)).
-                substringBefore(getString(R.string.endDiagBeginning)).drop(DROP_START_FOR_DATA).dropLast(DROP_END_FOR_DATA)
+                substringBefore(getString(R.string.endDiagBeginning)).drop(DROP_START_FOR_DATA).dropLast(
+            DROP_END_FOR_DATA
+        )
     }
 
     override fun printAllOperator(allOperators: String) {
@@ -281,6 +263,32 @@ class DiagFragment(val serialNumber: String, private val programVersion: String)
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    override fun runDiag() {
+        usbCommandsProtocol.readDiag(getString(R.string.commandRunDiagnostics),
+            getString(R.string.endDiagBeginning),
+            requireContext(),
+            this, this)
+        flagStartDiag = true
+
+        binding.buttonDiagStart.visibility = View.GONE
+
+        // выводим прогресс бары
+        binding.progressBarData.visibility = View.VISIBLE
+        binding.progressBarOperators.visibility = View.VISIBLE
+
+        // Анимация загрузки операторов
+        startLoadingAnimation()
+    }
+
+    override fun printVerAndSernum(version: String, SerialNum: String) {
+        // верийный номер и версия прошибки
+        val serNum: String = SerialNum
+        binding.serinerNumber.text = serNum
+
+        val versionPr: String = version
+        binding.textVersionFirmware.text = versionPr
     }
 
 }

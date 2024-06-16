@@ -2,12 +2,14 @@ package com.example.kumirsettingupdevices.usb
 
 import android.app.Activity
 import android.content.Context
+import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.diag.DiagSiagnalIntarface
 import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
-import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
+import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
 
 class UsbCommandsProtocol {
 
@@ -52,7 +54,6 @@ class UsbCommandsProtocol {
 
         // максимальная задержка для диагностики
         private const val MAX_TIMEOUT_DIAG = 20 // 54 сек
-
 
     }
 
@@ -305,7 +306,7 @@ class UsbCommandsProtocol {
     }
 
     // метод для получения настроек устройства
-    fun readSignalEnfora(command: String, context: Context, usbFragment: UsbFragment) {
+    fun readSignalEnfora(command: String, context: Context, diagSiagnalIntarface: DiagSiagnalIntarface) {
         flagWorkChackSignal = true
 
         threadChackSignalEnfora = Thread {
@@ -330,17 +331,8 @@ class UsbCommandsProtocol {
                             context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
 
                             // меняем текст кнопки
-                            if (usbFragment is Enfora1318Fragment) {
-                                usbFragment.onErrorStopChackSignal()
-                            }
-
-                            if (usbFragment is ACCB030CoreFragment) {
-                                usbFragment.onErrorStopChackSignal()
-                            }
-
-                            if (usbFragment is ACCB030Fragment) {
-                                usbFragment.onErrorStopChackSignal()
-                            }
+                            if (flagWorkChackSignal)
+                                diagSiagnalIntarface.onErrorStopChackSignal()
                         }
                         break@out
                     }
@@ -350,43 +342,18 @@ class UsbCommandsProtocol {
 
                     // после получения данных отправляем их на отображение
                     if (flagWorkChackSignal) {
-                        if (usbFragment is Enfora1318Fragment) {
-                            try {
-                                (context as Activity).runOnUiThread {
-                                    usbFragment.onPrintSignal(data[0], data[1])
-                                }
-                            } catch (e: Exception) {
-                                (context as Activity).runOnUiThread {
-                                    context.showAlertDialog(context.getString(R.string.notValidData))
-                                }
-                                break@out
-                            }
-                        }
+                        try {
+                            val signal: String = data[0]
+                            val errors: String = data[1]
 
-                        if (usbFragment is ACCB030CoreFragment) {
-                            try {
-                                (context as Activity).runOnUiThread {
-                                    usbFragment.onPrintSignal(data[0], data[1])
-                                }
-                            } catch (e: Exception) {
-                                (context as Activity).runOnUiThread {
-                                    context.showAlertDialog(context.getString(R.string.notValidData))
-                                }
-                                break@out
+                            (context as Activity).runOnUiThread {
+                                diagSiagnalIntarface.onPrintSignal(signal, errors)
                             }
-                        }
-
-                        if (usbFragment is ACCB030Fragment) {
-                            try {
-                                (context as Activity).runOnUiThread {
-                                    usbFragment.onPrintSignal(data[0], data[1])
-                                }
-                            } catch (e: Exception) {
-                                (context as Activity).runOnUiThread {
-                                    context.showAlertDialog(context.getString(R.string.notValidData))
-                                }
-                                break@out
+                        } catch (e: Exception) {
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(context.getString(R.string.notValidData))
                             }
+                            break@out
                         }
                     }
                 }
@@ -406,10 +373,11 @@ class UsbCommandsProtocol {
     }
 
     // провидение дисгностики
-    fun readDiag(command: String, end: String, context: Context, usbDiag: UsbDiag) {
+    fun readDiag(command: String, end: String, context: Context, usbDiag: UsbDiag, diagFragmentInterface: DiagFragmentInterface) {
         flagWorkDiag = true
 
         threadDiag = Thread {
+            var flagSucGetSerAndVersion :Boolean = true
             if (context is MainActivity) {
                 context.curentData = ""
 
@@ -418,54 +386,153 @@ class UsbCommandsProtocol {
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
 
-                context.usb.writeDevice(command, false)
 
-                // ожидание полной отправки данных (end - конец данных)
-                var timeMaxIndex: Int = 50
-                while (!context.curentData.contains(end) && flagWorkDiag) {
-                    if (timeMaxIndex == 0) {
-                        break
-                    }
-                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                    timeMaxIndex++
-                }
+                var serialNumber = ""
+                var vesionProgram = ""
 
-                // проверка работает ли поток
-                if (flagWorkDiag) {
-                    // вывод данных и ожидание для отображения
-                    val dataInfo: String = context.curentData
-                    (context as Activity).runOnUiThread {
-                        usbDiag.printAllInfo(dataInfo)
-                    }
-                }
+                // чтение номера прошивки и серийного номера---------------
 
+                // серийный номер ...
+                for (i in 0..CNT_SAND_COMMAND_OK) {
+                    context.curentData = ""
+                    context.usb.writeDevice(context.getString(R.string.commandGetSerialNum))
 
-                Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*5)
+                    // система получения ответа и ожидание полной отправки данных
+                    if (!expectationSand(context)) {
 
-                // отчистка данных
-                context.curentData = ""
-
-                // ожидание данных и вывод до тех пор пока флаг отключения не сработает
-                while (flagWorkDiag) {
-
-                    if (expectationSand(context, MAX_TIMEOUT_DIAG, true)) {
-                        val dataOperators: String = context.curentData
+                        // достигнуто ваксимальное время и нет ответа ошибка
                         (context as Activity).runOnUiThread {
-                            usbDiag.printAllOperator(dataOperators)
+                            context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                        }
+
+                        // все попытки израсходываны
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            flagSucGetSerAndVersion = false
+                        }
+                    }
+                    // проверка на валидность принатых данных возможно нужно еще раз опрасить
+                    // проверка принялись ли данные
+                    if (!sandOkCommand(context, context.getString(R.string.commandGetSerialNum))) {
+
+                        // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(
+                                    command + context.getString(R.string.errorSendDataRead)
+                                )
+                            }
+                            flagSucGetSerAndVersion = false
                         }
                     } else {
-                        if (flagWorkDiag) {
-                            flagWorkDiag = false
-                            (context as Activity).runOnUiThread {
-                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
-                                usbDiag.printError()
-                            }
+                        serialNumber = formatDataCommandsNormolize(context.curentData)
+
+                        flagSucGetSerAndVersion = true
+                        break
+                    }
+                }
+
+                // верисия прошивки ...
+                for (i in 0..CNT_SAND_COMMAND_OK) {
+                    context.curentData = ""
+                    context.usb.writeDevice(context.getString(R.string.commandGetVersionFirmware))
+
+                    // система получения ответа и ожидание полной отправки данных
+                    if (!expectationSand(context)) {
+
+                        // достигнуто ваксимальное время и нет ответа ошибка
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                        }
+
+                        // все попытки израсходываны
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            flagSucGetSerAndVersion = false
                         }
                     }
+                    // проверка на валидность принатых данных возможно нужно еще раз опрасить
+                    // проверка принялись ли данные
+                    if (!sandOkCommand(context, context.getString(R.string.commandGetVersionFirmware))) {
+
+                        // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(
+                                    command + context.getString(R.string.errorSendDataRead)
+                                )
+                            }
+                            flagSucGetSerAndVersion = false
+                        }
+                    } else {
+                        vesionProgram = formatDataCommandsNormolize(context.curentData)
+
+                        flagSucGetSerAndVersion = true
+                        break
+                    }
+                }
+
+                // очищение данных
+                context.curentData = ""
+
+                // --------------------------------------------------------
+
+                if (flagSucGetSerAndVersion) {
+
+                    // вывод версии прошивки и сериного нмера
+                    (context as Activity).runOnUiThread {
+                        diagFragmentInterface.printVerAndSernum(vesionProgram, serialNumber)
+                    }
+
+
+                    context.usb.writeDevice(command, false)
+
+                    // ожидание полной отправки данных (end - конец данных)
+                    var timeMaxIndex: Int = 50
+                    while (!context.curentData.contains(end) && flagWorkDiag) {
+                        if (timeMaxIndex == 0) {
+                            break
+                        }
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        timeMaxIndex++
+                    }
+
+                    // проверка работает ли поток
+                    if (flagWorkDiag) {
+                        // вывод данных и ожидание для отображения
+                        val dataInfo: String = context.curentData
+                        (context as Activity).runOnUiThread {
+                            usbDiag.printAllInfo(dataInfo)
+                        }
+                    }
+
+
+                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*5)
 
                     // отчистка данных
                     context.curentData = ""
+
+                    // ожидание данных и вывод до тех пор пока флаг отключения не сработает
+                    while (flagWorkDiag) {
+
+                        if (expectationSand(context, MAX_TIMEOUT_DIAG, true)) {
+                            val dataOperators: String = context.curentData
+                            (context as Activity).runOnUiThread {
+                                usbDiag.printAllOperator(dataOperators)
+                            }
+                        } else {
+                            if (flagWorkDiag) {
+                                flagWorkDiag = false
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                                    usbDiag.printError()
+                                }
+                            }
+                        }
+
+                        // отчистка данных
+                        context.curentData = ""
+                    }
                 }
+
 
                 // отчистка данных
                 context.curentData = ""

@@ -5,7 +5,7 @@ xmlns:tools="http://schemas.android.com/tools"
 android:id="@+id/diag"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".DiagFragment">
+tools:context=".diag.DiagFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lineSettingsData"
@@ -78,43 +78,10 @@ tools:context=".DiagFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/retLayout"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/fonElement"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set">
-
-        <ImageView
-            android:id="@+id/imageBack"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="10dp"
-            android:clickable="true"
-            android:src="@drawable/back_svgrepo_com"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="@string/backTitle"
-            android:textColor="@color/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageBack"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <ScrollView
         android:id="@+id/scrollDiag"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="130dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
@@ -156,7 +123,7 @@ tools:context=".DiagFragment">
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -169,12 +136,11 @@ tools:context=".DiagFragment">
         android:id="@+id/buttonDiagStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/textColor"
         android:text="@string/startDiagTitle"
         android:textColor="@color/background"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerItemOperators"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -226,12 +192,11 @@ tools:context=".DiagFragment">
         android:id="@+id/textDataDiag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="@string/dataTitle"
         android:textColor="@color/textColor"
         android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/retLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

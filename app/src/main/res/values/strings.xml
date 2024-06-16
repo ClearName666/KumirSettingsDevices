@@ -64,7 +64,6 @@
     <string name="title_activity_loading">LoadingActivity</string>
     <string name="selectTypeDevice">Выберите устройство</string>
     <string name="devices">Устройства</string>
-
     <string name="enforma1318">Enfora1318</string>
     <string name="m31">КУМИР M31</string>
     <string name="k21_k23">КУМИР K21/K23</string>
@@ -350,7 +349,7 @@
 
     <string name="commandSetSpeed">AT+IPR=</string>
     <string name="commandSetFormatParity">AT+ICF=</string>
-    
+
     <!--Для ядра-->
     <string name="commandGetGSMOperator">AT+COPS?</string>
     <string name="commandGetVersionCore">AT$VZLVERSION</string>

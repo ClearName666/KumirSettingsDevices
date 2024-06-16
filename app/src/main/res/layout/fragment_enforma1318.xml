@@ -85,7 +85,7 @@
                     android:textSize="18dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/buttonChackSignal" />
+                    app:layout_constraintTop_toBottomOf="@+id/inputSizeBufferLayout" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputAPNLayout"
@@ -395,30 +395,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textChackSignal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:text="@string/chackSignalTitle"
-                    android:textColor="@color/textColor"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputSizeBufferLayout" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/lineChaclkSignal"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/fon2Element"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textChackSignal">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/DisActivPort1SetiingsPriset"
                     android:layout_width="0dp"
@@ -433,56 +409,13 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/textCommunicationOperator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="@string/communicationOperatorTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
-
-                <TextView
-                    android:id="@+id/textLevelSignal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/LevelSignalTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textCommunicationOperator" />
-
-                <TextView
-                    android:id="@+id/textErrorSignal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/errorsSignalTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textLevelSignal" />
-
-                <Button
-                    android:id="@+id/buttonChackSignal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/textColor"
-                    android:text="@string/chackSignalTitle"
-                    android:textColor="@color/background"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textErrorSignal" />
-
                 <ProgressBar
                     android:id="@+id/progressBarChackSignal"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textCommunicationOperator"
-                    app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <Switch
                     android:id="@+id/switchCastomSet"

@@ -34,13 +34,6 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
     private var curentDataModem: Map<String, String> = mapOf()
 
-    companion object {
-        const val TIMEOUT_THREAD: Long = 20
-    }
-
-    private var NAME_TYPE_DEVICE = "Enfora1318"
-
-
 
 
     override fun onCreateView(
@@ -95,10 +88,6 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
         }
 
-        binding.buttonChackSignal.setOnClickListener {
-            onClickChackSignal()
-
-        }
         binding.imageSelectPriset.setOnClickListener {
             if (context is MainActivity) {
                 context.onClickPrisetEnforaSettingFor(this)
@@ -332,54 +321,13 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
 
     private fun onClickReadSettingsDevice(view: View) {
-        val context: Context = requireContext()
-
-        if (context is MainActivity) {
-            context.curentData = NAME_TYPE_DEVICE // обход проверки индитификатора
-            context.showTimerDialog(this, NAME_TYPE_DEVICE, false,false)
-        }
+        readSettingStart()
     }
 
     private fun onClickWriteSettingsDevice(view: View) {
         writeSettingStart()
     }
 
-    private fun onClickChackSignal() {
-        if (readOk) {
-            if (!flagClickChackSignal) {
-                usbCommandsProtocol.readSignalEnfora(getString(R.string.commandGetLevelSignalAndErrors),
-                    requireContext(), this)
-                binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
-
-                flagClickChackSignal = true
-
-
-                // загруска тип работает проверка связи
-                binding.progressBarChackSignal.visibility = View.VISIBLE
-
-            } else {
-                usbCommandsProtocol.flagWorkChackSignal = false
-                binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-
-                flagClickChackSignal = false
-
-                // не работает проверка связи загрузка отключена
-                binding.progressBarChackSignal.visibility = View.GONE
-            }
-        } else {
-            showAlertDialog(getString(R.string.notReadDevice))
-        }
-    }
-    fun onErrorStopChackSignal() {
-        flagClickChackSignal = false
-        binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-    }
-
-    fun onPrintSignal(signal: String, errors: String) {
-        binding.textLevelSignal.text = getString(R.string.LevelSignalTitle) + signal
-        binding.textErrorSignal.text = getString(R.string.errorsSignalTitle) + errors
-
-    }
 
     override fun printSerifalNumber(serialNumber: String) {
         binding.serinerNumber.text = serialNumber
@@ -453,9 +401,9 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
 
         // оеператор связи
-        val operationGSM: String = getString(R.string.communicationOperatorTitle) +
+        /*val operationGSM: String = getString(R.string.communicationOperatorTitle) +
                 settingMap[getString(R.string.commandGetOperatirGSM)]
-        binding.textCommunicationOperator.text = operationGSM
+        binding.textCommunicationOperator.text = operationGSM*/
 
 
         // отоюражения настроек интерфейса----------------------------------------------------------

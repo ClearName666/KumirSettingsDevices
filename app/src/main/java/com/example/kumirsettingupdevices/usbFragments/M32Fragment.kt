@@ -169,7 +169,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                 context.onClickPrisetSettingFor(this)
             }
         }
-        binding.imageDiag.setOnClickListener {
+        /*binding.imageDiag.setOnClickListener {
             // запускаем окно с дигностикой
 
             if (context is MainActivity && programVersionGlobal != null) {
@@ -177,7 +177,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             } else {
                 showAlertDialog(getString(R.string.nonWriteSetting))
             }
-        }
+        }*/
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {

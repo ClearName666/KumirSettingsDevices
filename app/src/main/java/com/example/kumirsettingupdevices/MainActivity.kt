@@ -31,6 +31,8 @@ import com.example.kumirsettingupdevices.dataBasePreset.PmDao
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.dataBasePreset.PresetDao
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
+import com.example.kumirsettingupdevices.diag.DiagFragment
+import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.ports.PortDeviceSetting
 import com.example.kumirsettingupdevices.presetFragments.SelectMenuPrisetEnforaSettings
@@ -45,6 +47,7 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usbFragments.A61Fragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
+import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 import com.example.kumirsettingupdevices.usbFragments.K21K23Fragment
 import com.example.kumirsettingupdevices.usbFragments.M31Fragment
@@ -85,6 +88,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     companion object {
         const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
         const val NORM_LENGHT_DATA_START = 5
+
     }
 
     // устройства прибора учета
@@ -354,7 +358,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(enforma1318)
     }
     fun onClickEnforma1318Diag(view: View) {
-        // не реализован
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val enforma1318Diag = Enfora1318DiagFragment()
+        createSettingFragment(enforma1318Diag)
     }
 
 
@@ -388,16 +395,19 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(m32)
     }
     fun onClickM32Diag(view: View) {
-        // не реализовано
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val m32Diag = DiagFragment("KUMIR-M32 READY")
+        createSettingFragment(m32Diag)
     }
 
 
-    fun onClickDiag(serialNumber: String, programVersion: String) {
+    /*fun onClickDiag(serialNumber: String, programVersion: String) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val diag = DiagFragment(serialNumber, programVersion)
         createSettingFragment(diag)
-    }
+    }*/
     fun onClickM32Lite(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -700,6 +710,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                         // проверка на соответсвие девайса
                         if (curentData.contains(nameTypeDevice)) {
+
+                            // прверка диагностика это или драгое
                             if (flagWrite) {
                                 runOnUiThread {
                                     usbFragment.writeSettingStart()
@@ -708,6 +720,71 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                                 runOnUiThread {
                                     usbFragment.readSettingStart()
                                 }
+                            }
+                        } else {
+                            runOnUiThread {
+                                showAlertDialog(getString(R.string.notDeviceType) +
+                                        "<" + curentData + ">")
+                            }
+                        }
+
+
+                        timeLeft = 0
+                        alertDialog.dismiss()
+                    }
+                    handler.postDelayed(this, 1000)
+                } else {
+                    alertDialog.dismiss() // Закрыть диалог после завершения отсчета
+                }
+            }
+        }
+
+        alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .setNegativeButton("Отмена") { dialog, which ->
+                handler.removeCallbacks(updateRunnable) // Остановить Runnable при отмене
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+        handler.postDelayed(updateRunnable, 1000)  // Начать обратный отсчёт
+    }
+
+    // для диагностики
+    fun showTimerDialogDiag(diagFragmentInterface: DiagFragmentInterface, nameTypeDevice: String) {
+
+        // очищение данных
+        curentData = ""
+
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_timer, null)
+        val timerTextView = dialogView.findViewById<TextView>(R.id.timer_text)
+
+        val handler = Handler(Looper.getMainLooper())
+        lateinit var alertDialog: AlertDialog  // Используем lateinit для поздней инициализации
+
+        val startTime = TIMEOUT_TOWAIT_RESTART_DEVICE  // начальное время в секундах
+        var timeLeft = startTime
+
+        val updateRunnable = object : Runnable {
+            override fun run() {
+
+                val timerText: String = getString(R.string.restartDevicePlease).dropLast(2) +
+                        if (timeLeft > 9) timeLeft.toString() else "0$timeLeft" // для того что бы если число
+                // от 1 до 9 то добавлялся 0 типа 03 04 07 и тп
+
+                timerTextView.text = timerText
+
+                if (timeLeft > 0) {
+                    timeLeft--
+
+                    if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
+
+                        // проверка на соответсвие девайса
+                        if (curentData.contains(nameTypeDevice)) {
+                            runOnUiThread {
+                                 diagFragmentInterface.runDiag()
                             }
                         } else {
                             runOnUiThread {

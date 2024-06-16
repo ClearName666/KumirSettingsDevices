@@ -14,12 +14,13 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentACCB030CoreBinding
+import com.example.kumirsettingupdevices.diag.DiagSiagnalIntarface
 import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
+class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSiagnalIntarface {
 
     private lateinit var binding: FragmentACCB030CoreBinding
 
@@ -170,12 +171,13 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         super.onDestroyView()
     }
 
-    fun onErrorStopChackSignal() {
+    override fun onErrorStopChackSignal() {
         flagClickChackSignal = false
         binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
+        binding.progressBarChackSignal.visibility = View.GONE
     }
 
-    fun onPrintSignal(signal: String, errors: String) {
+    override fun onPrintSignal(signal: String, errors: String) {
         binding.textLevelSignal.text = getString(R.string.LevelSignalTitle) + signal
         binding.textErrorSignal.text = getString(R.string.errorsSignalTitle) + errors
 
