@@ -20,7 +20,7 @@ import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSiagnalIntarface {
+class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private lateinit var binding: FragmentACCB030Binding
 
@@ -95,10 +95,6 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSia
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
         }
 
-        binding.buttonChackSignal.setOnClickListener {
-            onClickChackSignal()
-
-        }
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
@@ -138,28 +134,13 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSia
 
             if (!flagClickChackSignal) {
                 onClickReadSettingsDevice(it)
-
-                // Обертываем наш Drawable для совместимости и изменяем цвет
-                drawable?.let {
-                    val wrappedDrawable = DrawableCompat.wrap(it)
-
-                    DrawableCompat.setTint(wrappedDrawable, Color.RED)
-
-                    binding.imageDownLoad.setImageDrawable(wrappedDrawable)
-                }
-
-                // только после чтения
-                binding.imageDownLoad.setOnClickListener {
-                    // если выключено прослушивание порта
-                    if (!flagClickChackSignal) {
-                        onClickWriteSettingsDevice(it)
-                    } else {
-                        showAlertDialog(getString(R.string.notUseSerialPort))
-                    }
-                }
             } else {
                 showAlertDialog(getString(R.string.notUseSerialPort))
             }
+        }
+
+        binding.imageDownLoad.setOnClickListener {
+            showAlertDialog(getString(R.string.notReadDevice))
         }
 
         return binding.root
@@ -176,54 +157,9 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSia
         super.onDestroyView()
     }
 
-    override fun onErrorStopChackSignal() {
-        flagClickChackSignal = false
-        binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-        binding.progressBarChackSignal.visibility = View.GONE
-    }
-
-    override fun onPrintSignal(signal: String, errors: String) {
-        binding.textLevelSignal.text = getString(R.string.LevelSignalTitle) + signal
-        binding.textErrorSignal.text = getString(R.string.errorsSignalTitle) + errors
-
-    }
-
-    private fun onClickChackSignal() {
-        if (readOk) {
-            if (!flagClickChackSignal) {
-                usbCommandsProtocol.readSignalEnfora(
-                    getString(R.string.commandGetLevelSignalAndErrors),
-                    requireContext(), this
-                )
-                binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
-
-                flagClickChackSignal = true
-
-
-                // загруска тип работает проверка связи
-                binding.progressBarChackSignal.visibility = View.VISIBLE
-
-            } else {
-                usbCommandsProtocol.flagWorkChackSignal = false
-                binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-
-                flagClickChackSignal = false
-
-                // не работает проверка связи загрузка отключена
-                binding.progressBarChackSignal.visibility = View.GONE
-            }
-        } else {
-            showAlertDialog(getString(R.string.notReadDevice))
-        }
-    }
 
     private fun onClickReadSettingsDevice(view: View) {
-        val context: Context = requireContext()
-
-        if (context is MainActivity) {
-            context.curentData = NAME_TYPE_DEVICE // обход проверки индитификатора
-            context.showTimerDialog(this, NAME_TYPE_DEVICE, false, false)
-        }
+        readSettingStart()
     }
 
     private fun onClickWriteSettingsDevice(view: View) {
@@ -368,6 +304,23 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSia
     }
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        // -------------активайия кнопки после прочтения-------------
+        // перекраска в красный цвет кнопки загрузки
+        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+        drawablImageDownLoad?.let {
+            val wrappedDrawable = DrawableCompat.wrap(it)
+            DrawableCompat.setTint(wrappedDrawable, Color.RED)
+            binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+        }
+
+        // только после чтения
+        binding.imageDownLoad.setOnClickListener {
+            onClickWriteSettingsDevice(it)
+        }
+        // ------------------------------------------------------------
+
+
         // прочтение прошло успешно
         readOk = true
 
@@ -447,6 +400,54 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSia
         )
 
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+    }
+
+    override fun lockFromDisconnected(connect: Boolean) {
+        // текстрки для кнопок
+        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+        val drawablImageDischarge = ContextCompat.getDrawable(requireContext(), R.drawable.discharge)
+
+        if (!connect) {
+            //------------------------------------------------------------------------------------------
+            // покраска кнопки записи в серый
+            // Обертываем наш Drawable для совместимости и изменяем цвет
+
+            drawablImageDownLoad?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+            }
+            drawablImageDischarge?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+                binding.imagedischarge.setImageDrawable(wrappedDrawable)
+            }
+
+            //--------------------------------------------------------------------------------------
+
+            // убераем возмоэность читать и записывать
+            binding.imagedischarge.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+        } else {
+            drawablImageDischarge?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GREEN)
+                binding.imagedischarge.setImageDrawable(wrappedDrawable)
+            }
+
+            // установка клика
+            binding.imagedischarge.setOnClickListener {
+                onClickReadSettingsDevice(it)
+            }
+
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.notReadDevice))
+            }
+        }
     }
 
     private fun showAlertDialog(text: String) {

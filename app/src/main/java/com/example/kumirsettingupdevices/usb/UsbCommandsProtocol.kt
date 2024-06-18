@@ -91,71 +91,75 @@ class UsbCommandsProtocol {
                     flagsSuccess = false
                 }
 
-                // перебор всех команд и получение ответов устройства
-                outer@ for (command in commands) {
+                if (flagsSuccess) {
+                    // перебор всех команд и получение ответов устройства
+                    outer@ for (command in commands) {
 
-                    // прогресс продливается
-                    prograss += progressUnit
+                        // прогресс продливается
+                        prograss += progressUnit
 
-                    // CNT_SAND_COMMAND_OK попытки на отправку
-                    for (i in 1..CNT_SAND_COMMAND_OK) {
-                        // очищение прошлых данных
-                        context.curentData = ""
+                        // CNT_SAND_COMMAND_OK попытки на отправку
+                        for (i in 1..CNT_SAND_COMMAND_OK) {
+                            // очищение прошлых данных
+                            context.curentData = ""
 
-                        context.usb.writeDevice(command, false)
+                            context.usb.writeDevice(command, false)
 
-                        // система получения ответа и ожидание полной отправки данных
-                        if (!expectationSand(context)) {
+                            // система получения ответа и ожидание полной отправки данных
+                            if (!expectationSand(context)) {
 
-                            // достигнуто ваксимальное время и нет ответа ошибка
-                            (context as Activity).runOnUiThread {
-                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
-                            }
-                            flagsSuccess = false
-                            break@outer
-                        }
-
-
-                        if (context.curentData.isNotEmpty()) {
-
-                            // нормализуем только если не входит в список команд которые не нужно нормализовать
-                            settingData[command] = if (command !in listCommandNotFormater)
-                                formatDataCommandsNormolize(context.curentData) else context.curentData
-
-                            val curentData: String = context.curentData
-                            // вывод в загрузочное диалог информации
-                            (context as Activity).runOnUiThread {
-                                context.printInfoTermAndLoaging(command, prograss)
-                                context.printInfoTermAndLoaging(curentData, prograss)
-                            }
-
-                        } else {
-                            (context as Activity).runOnUiThread {
-                                context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
-                            }
-                            flagsSuccess = false
-                            break
-                        }
-
-                        // проверка на валидность принатых данных возможно нужно еще раз опрасить
-                        // проверка принялись ли данные
-                        if (!sandOkCommand(context, command)) {
-
-                            // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
-                            if (i == CNT_SAND_COMMAND_OK) {
+                                // достигнуто ваксимальное время и нет ответа ошибка
                                 (context as Activity).runOnUiThread {
-                                    context.showAlertDialog(
-                                        command + context.getString(R.string.errorSendDataRead)
-                                    )
+                                    context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
                                 }
                                 flagsSuccess = false
                                 break@outer
                             }
-                        } else {
-                            break
+
+
+                            if (context.curentData.isNotEmpty()) {
+
+                                // нормализуем только если не входит в список команд которые не нужно нормализовать
+                                settingData[command] = if (command !in listCommandNotFormater)
+                                    formatDataCommandsNormolize(context.curentData) else context.curentData
+
+                                val curentData: String = context.curentData
+                                // вывод в загрузочное диалог информации
+                                (context as Activity).runOnUiThread {
+                                    context.printInfoTermAndLoaging(command, prograss)
+                                    context.printInfoTermAndLoaging(curentData, prograss)
+                                }
+
+                            } else {
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(context.getString(R.string.identifyDeviceFailed))
+                                }
+                                flagsSuccess = false
+                                break
+                            }
+
+                            // проверка на валидность принатых данных возможно нужно еще раз опрасить
+                            // проверка принялись ли данные
+                            if (!sandOkCommand(context, command)) {
+
+                                // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                                if (i == CNT_SAND_COMMAND_OK) {
+                                    (context as Activity).runOnUiThread {
+                                        context.showAlertDialog(
+                                            command + context.getString(R.string.errorSendDataRead)
+                                        )
+                                    }
+                                    flagsSuccess = false
+                                    break@outer
+                                }
+                            } else {
+                                break
+                            }
                         }
                     }
                 }
+
+
 
                 // включение ат команд
                 // context.usb.flagAtCommandYesNo = true
@@ -352,15 +356,18 @@ class UsbCommandsProtocol {
                         } catch (e: Exception) {
                             (context as Activity).runOnUiThread {
                                 context.showAlertDialog(context.getString(R.string.notValidData))
+
+                                // меняем текст кнопки
+                                if (flagWorkChackSignal)
+                                    diagSiagnalIntarface.onErrorStopChackSignal()
                             }
                             break@out
                         }
                     }
                 }
 
-
                 // подкл ат команд
-                context.usb.flagAtCommandYesNo = true
+                //context.usb.flagAtCommandYesNo = true
 
                 context.curentData = ""
 
@@ -606,28 +613,33 @@ class UsbCommandsProtocol {
             for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
                 for (parity in PARITY_INDEX_MIN..PARITY_INDEX_MAX) {
                     for (speed in SPEED_INDEX_MIN..SPEED_INDEX_MAX) {
-                        context.usb.onSelectUumBit(bitData == 0)
-                        context.usb.onSerialParity(parity)
-                        context.usb.onSerialStopBits(stopBit)
-                        context.usb.onSerialSpeed(speed)
+                        // прверка есть ли подлючение
+                        if (context.usb.checkConnectToDevice()) {
+                            context.usb.onSelectUumBit(bitData == 0)
+                            context.usb.onSerialParity(parity)
+                            context.usb.onSerialStopBits(stopBit)
+                            context.usb.onSerialSpeed(speed)
 
-                        // вывод в загрузочное диалог информации
-                        (context as Activity).runOnUiThread {
-                            context.printInfoTermAndLoaging(
-                                speed.toString() + parity.toString() +
-                                        stopBit.toString() + bitData.toString() + "\n", 0)
-                        }
+                            // вывод в загрузочное диалог информации
+                            (context as Activity).runOnUiThread {
+                                context.printInfoTermAndLoaging(
+                                    speed.toString() + parity.toString() +
+                                            stopBit.toString() + bitData.toString() + "\n", 0)
+                            }
 
-                        // отправка тестовой команды
-                        context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
+                            // отправка тестовой команды
+                            context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
 
-                        // дополнительная задержка в случае если скорость слишком мала
-                        val sleepForMinSpeed = if (speed < 5) (MAX_RATIO_EXPECTATION_NEW_SPEED - speed + 1) else 1
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED * sleepForMinSpeed)
+                            // дополнительная задержка в случае если скорость слишком мала
+                            val sleepForMinSpeed = if (speed < 5) (MAX_RATIO_EXPECTATION_NEW_SPEED - speed + 1) else 1
+                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED * sleepForMinSpeed)
 
-                        // если скорость найдена то выходим
-                        if (context.curentData.contains(context.getString(R.string.okSand))) {
-                            return true
+                            // если скорость найдена то выходим
+                            if (context.curentData.contains(context.getString(R.string.okSand))) {
+                                return true
+                            }
+                        } else {
+                            return false
                         }
                     }
                 }

@@ -117,20 +117,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
-
-            // Обертываем наш Drawable для совместимости и изменяем цвет
-            drawable?.let {
-                val wrappedDrawable = DrawableCompat.wrap(it)
-
-                DrawableCompat.setTint(wrappedDrawable, Color.RED)
-
-                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
-            }
-
-            // только после чтения
-            binding.imageDownLoad.setOnClickListener {
-                onClickWriteSettingsDevice(it)
-            }
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
@@ -308,6 +294,21 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
+        // -------------активайия кнопки после прочтения-------------
+        // перекраска в красный цвет кнопки загрузки
+        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+        drawablImageDownLoad?.let {
+            val wrappedDrawable = DrawableCompat.wrap(it)
+            DrawableCompat.setTint(wrappedDrawable, Color.RED)
+            binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+        }
+
+        // только после чтения
+        binding.imageDownLoad.setOnClickListener {
+            onClickWriteSettingsDevice(it)
+        }
+        // ------------------------------------------------------------
+
         // сброс присетов настроек
         binding.spinnerSelectPort1MeteringDevice.setSelection(0)
 
@@ -454,6 +455,54 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+    }
+
+    override fun lockFromDisconnected(connect: Boolean) {
+        // текстрки для кнопок
+        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+        val drawablImageDischarge = ContextCompat.getDrawable(requireContext(), R.drawable.discharge)
+
+        if (!connect) {
+            //------------------------------------------------------------------------------------------
+            // покраска кнопки записи в серый
+            // Обертываем наш Drawable для совместимости и изменяем цвет
+
+            drawablImageDownLoad?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+            }
+            drawablImageDischarge?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+                binding.imagedischarge.setImageDrawable(wrappedDrawable)
+            }
+
+            //--------------------------------------------------------------------------------------
+
+            // убераем возмоэность читать и записывать
+            binding.imagedischarge.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+        } else {
+            drawablImageDischarge?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GREEN)
+                binding.imagedischarge.setImageDrawable(wrappedDrawable)
+            }
+
+            // установка клика
+            binding.imagedischarge.setOnClickListener {
+                onClickReadSettingsDevice(it)
+            }
+
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.notReadDevice))
+            }
+        }
     }
 
     private fun showAlertDialog(text: String) {

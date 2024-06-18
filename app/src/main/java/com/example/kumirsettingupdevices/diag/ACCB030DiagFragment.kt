@@ -8,14 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.databinding.FragmentACCB030DiagBinding
 import com.example.kumirsettingupdevices.databinding.FragmentEnfora1318DiagBinding
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
-    private val usbCommandsProtocol = UsbCommandsProtocol()
 
-    private lateinit var binding: FragmentEnfora1318DiagBinding
+class ACCB030DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
+
+    private lateinit var binding: FragmentACCB030DiagBinding
+
+    private val usbCommandsProtocol = UsbCommandsProtocol()
 
     var flagPermissionChackSignal: Boolean = false
     private var flagClickChackSignal: Boolean = false
@@ -24,7 +27,7 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentEnfora1318DiagBinding.inflate(inflater)
+        binding = FragmentACCB030DiagBinding.inflate(inflater)
 
         // вывод названия типа устройства
         val context: Context = requireContext()
@@ -37,6 +40,7 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
             onClickChackSignal()
         }
 
+
         return binding.root
     }
 
@@ -46,16 +50,6 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         // выключение потока чтения
         if (flagClickChackSignal)
             onClickChackSignal()
-
-
-        // возврат к деффолтным настрокам
-        if (context is MainActivity) {
-            context.usb.onSelectUumBit(true)
-            context.usb.onSerialParity(0)
-            context.usb.onSerialStopBits(0)
-            context.usb.onSerialSpeed(9)
-            context.usb.flagAtCommandYesNo = false
-        }
 
         super.onDestroyView()
     }
@@ -87,40 +81,6 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         }
     }
 
-    override fun printSettingDevice(settingMap: Map<String, String>) {
-        // вывод сериного номера
-        val serialNumber: String = getString(R.string.serinerNumber) + "\n" +
-                settingMap[getString(R.string.commandGetSerialNum)]
-        binding.serinerNumber.text = serialNumber
-
-        // вывод версионного номера
-        val versionProgram: String = getString(R.string.versionProgram) +
-                "\n" + settingMap[getString(R.string.commandGetVersionProgramEnfora)]?.
-                    // peplace для того что бы убрать из ответа лишние и оставить только прошивку
-                    replace("\n", "")?.
-                    replace(getString(R.string.okSand), "")?.
-                    replace(getString(R.string.commandGetVersionProgramEnfora), "")
-        binding.textVersionFirmware.text = versionProgram
-
-        // оператор связи
-        val operationGSM: String = getString(R.string.communicationOperatorTitle) +
-                settingMap[getString(R.string.commandGetOperatirGSM)]?.substringAfter("\"")?.substringBefore("\"")
-        binding.textCommunicationOperator.text = operationGSM
-
-        flagPermissionChackSignal = true
-    }
-
-    override fun readSettingStart() {
-        // чтение тольуо тогда когда отключен проверка сигнала
-        val command: List<String> = arrayListOf(
-            getString(R.string.commandGetSerialNum),
-            getString(R.string.commandGetVersionProgramEnfora),
-            getString(R.string.commandGetOperatirGSM)
-        )
-
-        usbCommandsProtocol.readSettingDevice(command, requireContext(), this, true)
-    }
-
     override fun onErrorStopChackSignal() {
         flagClickChackSignal = false
         usbCommandsProtocol.flagWorkChackSignal = false
@@ -145,6 +105,42 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         binding.textErrorSignal.text = printErrprs
     }
 
+
+
+    override fun printSettingDevice(settingMap: Map<String, String>) {
+        // вывод сериного номера
+        val serialNumber: String = getString(R.string.serinerNumber) + "\n" +
+                settingMap[getString(R.string.commandGetSerialNum)]
+        binding.serinerNumber.text = serialNumber
+
+        // вывод версионного номера
+        val versionProgram: String = getString(R.string.versionProgram) +
+                "\n" + settingMap[getString(R.string.commandGetVersionCore)]?.
+            // peplace для того что бы убрать из ответа лишние и оставить только прошивку
+        replace("\n", "")?.
+        replace(getString(R.string.okSand), "")?.
+        replace(getString(R.string.commandGetVersionProgramEnfora), "")
+        binding.textVersionFirmware.text = versionProgram
+
+        // оператор связи
+        val operationGSM: String = getString(R.string.communicationOperatorTitle) +
+                settingMap[getString(R.string.commandGetOperatirGSM)]?.substringAfter("\"")?.substringBefore("\"")
+        binding.textCommunicationOperator.text = operationGSM
+
+        flagPermissionChackSignal = true
+    }
+
+    override fun readSettingStart() {
+        // чтение тольуо тогда когда отключен проверка сигнала
+        val command: List<String> = arrayListOf(
+            getString(R.string.commandGetSerialNum),
+            getString(R.string.commandGetVersionCore),
+            getString(R.string.commandGetOperatirGSM)
+        )
+
+        usbCommandsProtocol.readSettingDevice(command, requireContext(), this, false)
+    }
+
     override fun writeSettingStart() {}
     override fun lockFromDisconnected(connect: Boolean) {
 
@@ -152,5 +148,4 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
 
     override fun printSerifalNumber(serialNumber: String) {}
     override fun printVersionProgram(versionProgram: String) {}
-
 }

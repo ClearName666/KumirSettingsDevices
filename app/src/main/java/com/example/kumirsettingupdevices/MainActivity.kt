@@ -31,6 +31,7 @@ import com.example.kumirsettingupdevices.dataBasePreset.PmDao
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.dataBasePreset.PresetDao
 import com.example.kumirsettingupdevices.databinding.MainActivityBinding
+import com.example.kumirsettingupdevices.diag.ACCB030DiagFragment
 import com.example.kumirsettingupdevices.diag.DiagFragment
 import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
@@ -450,7 +451,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(accbo30)
     }
     fun onClickACCB030Diag(view: View) {
-        // не реализовано
+
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val accbo30Diag = ACCB030DiagFragment()
+        createSettingFragment(accbo30Diag)
     }
 
 
@@ -868,6 +873,20 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // при подключении уберестся фрагмент и вывод успеха подкл
         if (con) {
             workFonDarkMenu()
+
+
+            // разблокируем кнопки-------------------------------------------------
+
+            // получаем последний фрагмент который был сгенерирован
+            val methodFragments = MethodFragments()
+            val curentFragment = methodFragments.getLastFragmentUsb(supportFragmentManager)
+
+            // если фрагмент является фрагментом usbFragment то
+            curentFragment.let { fragment ->
+                if (fragment is UsbFragment) {
+                    fragment.lockFromDisconnected(true)
+                }
+            }
             //showAlertDialog(getString(R.string.ConnectSuccess))
         }
     }
@@ -900,6 +919,17 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun disconnected() {
+        // получаем последний фрагмент который был сгенерирован
+        val methodFragments = MethodFragments()
+        val curentFragment = methodFragments.getLastFragmentUsb(supportFragmentManager)
+
+        // если фрагмент является фрагментом usbFragment то
+        curentFragment.let { fragment ->
+            if (fragment is UsbFragment) {
+                fragment.lockFromDisconnected(false)
+            }
+        }
+
 
         //binding.fonLockUses.visibility = View.VISIBLE
         /*

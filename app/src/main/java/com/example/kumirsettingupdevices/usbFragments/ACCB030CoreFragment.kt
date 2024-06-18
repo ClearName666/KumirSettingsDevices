@@ -406,6 +406,10 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
 
     }
 
+    override fun lockFromDisconnected(connect: Boolean) {
+
+    }
+
     private fun showAlertDialog(text: String) {
         val context: Context = requireContext()
         if (context is MainActivity) {

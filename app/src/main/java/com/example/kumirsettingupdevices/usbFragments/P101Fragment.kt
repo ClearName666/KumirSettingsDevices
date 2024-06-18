@@ -41,4 +41,8 @@ class P101Fragment : Fragment(), UsbFragment {
     override fun writeSettingStart() {
         TODO("Not yet implemented")
     }
+
+    override fun lockFromDisconnected(connect: Boolean) {
+
+    }
 }

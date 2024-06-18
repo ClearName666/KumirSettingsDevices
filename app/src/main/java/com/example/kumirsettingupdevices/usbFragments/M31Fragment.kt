@@ -43,4 +43,8 @@ class M31Fragment : Fragment(), UsbFragment {
         TODO("Not yet implemented")
     }
 
+    override fun lockFromDisconnected(connect: Boolean) {
+
+    }
+
 }
