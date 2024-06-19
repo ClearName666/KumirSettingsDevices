@@ -49,6 +49,7 @@ import com.example.kumirsettingupdevices.usbFragments.A61Fragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
 import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
+import com.example.kumirsettingupdevices.usb.UsbDeviceDescriptor
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 import com.example.kumirsettingupdevices.usbFragments.K21K23Fragment
 import com.example.kumirsettingupdevices.usbFragments.M31Fragment
@@ -91,6 +92,36 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         const val NORM_LENGHT_DATA_START = 5
 
     }
+
+    // фильтер для устройств
+    private val usbDevices = setOf(
+        UsbDeviceDescriptor(1027, 24577), // 0x0403 / 0x6001: FT232R
+        UsbDeviceDescriptor(1027, 24592), // 0x0403 / 0x6010: FT2232H
+        UsbDeviceDescriptor(1027, 24593), // 0x0403 / 0x6011: FT4232H
+        UsbDeviceDescriptor(1027, 24596), // 0x0403 / 0x6014: FT232H
+        UsbDeviceDescriptor(1027, 24597), // 0x0403 / 0x6015: FT230X, FT231X, FT234XD
+        UsbDeviceDescriptor(4292, 60000), // 0x10C4 / 0xEA60: CP2102 and other CP210x single port devices
+        UsbDeviceDescriptor(4292, 60016), // 0x10C4 / 0xEA70: CP2105
+        UsbDeviceDescriptor(4292, 60017), // 0x10C4 / 0xEA71: CP2108
+        UsbDeviceDescriptor(1659, 8963),  // 0x067B / 0x2303: PL2303HX, HXD, TA, ...
+        UsbDeviceDescriptor(1659, 9123),  // 0x067B / 0x23A3: PL2303GC
+        UsbDeviceDescriptor(1659, 9139),  // 0x067B / 0x23B3: PL2303GB
+        UsbDeviceDescriptor(1659, 9155),  // 0x067B / 0x23C3: PL2303GT
+        UsbDeviceDescriptor(1659, 9171),  // 0x067B / 0x23D3: PL2303GL
+        UsbDeviceDescriptor(1659, 9187),  // 0x067B / 0x23E3: PL2303GE
+        UsbDeviceDescriptor(1659, 9203),  // 0x067B / 0x23F3: PL2303GS
+        UsbDeviceDescriptor(6790, 21795), // 0x1A86 / 0x5523: CH341A
+        UsbDeviceDescriptor(6790, 29987), // 0x1A86 / 0x7523: CH340
+        UsbDeviceDescriptor(9025, null),  // 0x2341 / ......: Arduino
+        UsbDeviceDescriptor(5824, 1155),  // 0x16C0 / 0x0483: Teensyduino
+        UsbDeviceDescriptor(1003, 8260),  // 0x03EB / 0x2044: Atmel Lufa
+        UsbDeviceDescriptor(7855, 4),     // 0x1EAF / 0x0004: Leaflabs Maple
+        UsbDeviceDescriptor(3368, 516),   // 0x0D28 / 0x0204: ARM mbed
+        UsbDeviceDescriptor(1155, 22336), // 0x0483 / 0x5740: ST CDC
+        UsbDeviceDescriptor(11914, 5),    // 0x2E8A / 0x0005: Raspberry Pi Pico Micropython
+        UsbDeviceDescriptor(11914, 10),   // 0x2E8A / 0x000A: Raspberry Pi Pico SDK
+        UsbDeviceDescriptor(6790, 21972)  // 0x1A86 / 0x55D4: Qinheng CH9102F
+    )
 
     // устройства прибора учета
     val portsDeviceSetting: List<PortDeviceSetting> = listOf(
@@ -149,79 +180,86 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            super.onCreate(savedInstanceState)
 
-        binding = MainActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+            binding = MainActivityBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-        val mainFragment = MainFragment()
+            val mainFragment = MainFragment()
 
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
+            val fragmentManager = supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
 
-        // Новый фрагент
-        transaction.replace(binding.fragmentContainerMainContent.id, mainFragment)
-        //transaction.addToBackStack("MainFragment")
-        transaction.commit()
+            // Новый фрагент
+            transaction.replace(binding.fragmentContainerMainContent.id, mainFragment)
+            //transaction.addToBackStack("MainFragment")
+            transaction.commit()
 
-        // загрузка базы данных
-        val database = AppDatabase.getDatabase(this)
-        presetDao = database.presetDao()
-        presetEnforaDao = database.enforaDao()
-        presetPmDao = database.pmDao()
+            // загрузка базы данных
+            val database = AppDatabase.getDatabase(this)
+            presetDao = database.presetDao()
+            presetEnforaDao = database.enforaDao()
+            presetPmDao = database.pmDao()
 
-        // загрузка всех присетов из базы данных
-        try {
-            lifecycleScope.launch {
-                // присеты m32
-                presetDao.getAll().collect { presets ->
-                    for (preset in presets) {
-                        PrisetsValue.prisets[preset.name!!] = Priset(preset.name, preset.mode!!, preset.apn!!,
-                            preset.port!!, preset.server!!, preset.login!!, preset.password!!)
+            // загрузка всех присетов из базы данных
+            try {
+                lifecycleScope.launch {
+                    // присеты m32
+                    presetDao.getAll().collect { presets ->
+                        for (preset in presets) {
+                            PrisetsValue.prisets[preset.name!!] = Priset(
+                                preset.name, preset.mode!!, preset.apn!!,
+                                preset.port!!, preset.server!!, preset.login!!, preset.password!!
+                            )
+                        }
                     }
                 }
+            } catch (_: Exception) {
             }
-        } catch (_: Exception) {}
 
-        // загрузка всех присетов enfora
-        try {
-            lifecycleScope.launch {
-                // присеты enfora
-                presetEnforaDao.getAll().collect { presets ->
-                    for (enforaPreseet in presets) {
-                        PresetsEnforaValue.presets[enforaPreseet.name!!] =
-                            Enfora(0, enforaPreseet.name, enforaPreseet.apn!!,
-                                enforaPreseet.login!!, enforaPreseet.password!!,
-                                enforaPreseet.server1!!, enforaPreseet.server2!!,
-                                enforaPreseet.timeout!!, enforaPreseet.sizeBuffer!!)
+            // загрузка всех присетов enfora
+            try {
+                lifecycleScope.launch {
+                    // присеты enfora
+                    presetEnforaDao.getAll().collect { presets ->
+                        for (enforaPreseet in presets) {
+                            PresetsEnforaValue.presets[enforaPreseet.name!!] =
+                                Enfora(
+                                    0, enforaPreseet.name, enforaPreseet.apn!!,
+                                    enforaPreseet.login!!, enforaPreseet.password!!,
+                                    enforaPreseet.server1!!, enforaPreseet.server2!!,
+                                    enforaPreseet.timeout!!, enforaPreseet.sizeBuffer!!
+                                )
+                        }
                     }
                 }
+            } catch (_: Exception) {
             }
-        } catch (_: Exception) {}
 
-        // загрузка всех присетов Pm
-        try {
-            lifecycleScope.launch {
-                // присеты enfora
-                presetPmDao.getAll().collect { presets ->
-                    for (PmPreset in presets) {
-                        PrisetsPmValue.presets[PmPreset.name!!] =
-                            Pm(0, PmPreset.name, PmPreset.mode, PmPreset.keyNet!!,
-                                PmPreset.power!!, PmPreset.diopozone)
+            // загрузка всех присетов Pm
+            try {
+                lifecycleScope.launch {
+                    // присеты enfora
+                    presetPmDao.getAll().collect { presets ->
+                        for (PmPreset in presets) {
+                            PrisetsPmValue.presets[PmPreset.name!!] =
+                                Pm(
+                                    0, PmPreset.name, PmPreset.mode, PmPreset.keyNet!!,
+                                    PmPreset.power!!, PmPreset.diopozone
+                                )
+                        }
                     }
                 }
+            } catch (_: Exception) {
             }
-        } catch (_: Exception) {}
 
 
+            // смена настроек usb ---------------------------------------------------
+            ConstUsbSettings.speedIndex = 9 // скорость 115200
 
-
-
-        // смена настроек usb ---------------------------------------------------
-        ConstUsbSettings.speedIndex = 9 // скорость 115200
-
-        // usb.flagAtCommandYesNo = true
-
+            // usb.flagAtCommandYesNo = true
+        }
 
     }
 
@@ -953,34 +991,32 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         printDeviceTypeName("")*/
     }
 
-    // подключения и регистрация широковещятельного приемника
-    override fun connectToUsbDevice(device: UsbDevice) {
-        val usbManager: UsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-
-        try {
-            val permissionIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // Для Android 12 (API уровень 31)
-                PendingIntent.getBroadcast(
-                    this,
-                    0,
-                    Intent(usb.ACTION_USB_PERMISSION),
-                    PendingIntent.FLAG_MUTABLE)
-            } else {
-                // Для Android ниже 12
-                PendingIntent.getBroadcast(
-                    this,
-                    0,
-                    Intent(usb.ACTION_USB_PERMISSION),
-                    0)
-            }
-
-            registerReceiver(usb.usbReceiver, IntentFilter(usb.ACTION_USB_PERMISSION))
-            usbManager.requestPermission(device, permissionIntent)
-
-        } catch (e: Exception) {
-            showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
-        }
+    // Метод для проверки, является ли подключенное устройство целевым устройством
+    private fun isTargetDevice(device: UsbDevice): Boolean {
+        return usbDevices.any { it.vendorId == device.vendorId && (it.productId == null || it.productId == device.productId) }
     }
 
+    // подключения и регистрация широковещятельного приемника
+    override fun connectToUsbDevice(device: UsbDevice) {
+        // проверка и подключение
+        if (isTargetDevice(device)) {
+            val usbManager: UsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
 
+            try {
+                // Здесь мы просто проверяем, есть ли у нас устройство и подключаем его
+                val connection = usbManager.openDevice(device)
+                if (connection != null) {
+                    // Успешно подключено
+                    // Здесь можно выполнить дальнейшую работу с устройством
+                    usb.connect(connection, device)
+                } else {
+                    // Обработка ошибки подключения
+                    showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
+                }
+            } catch (e: Exception) {
+                // Обработка исключений
+                showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
+            }
+        }
+    }
 }

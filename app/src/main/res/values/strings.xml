@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KumirSettingUpDevices</string>
+    <string name="app_name">Настройка устройств КУМИР</string>
 
     <string name="Usb_NoneConnect">Отсутствует подключение, воспользуйтесь кнопкой "ПОДКЛЮЧИТЬСЯ"</string>
     <string name="Disconnected">Подключение разорвано!</string>
@@ -55,7 +55,7 @@
     <string name="TextTitleMain">Настройка устройств</string>
     <string name="versionApp">Версия: 0.0.1</string>
     <string name="todo">TODO</string>
-    <string name="TextHiMain">Для начала работы выберите COM-порт, а затем устройство</string>
+    <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
     <string name="ok">Ок</string>
     <string name="Yes">Да</string>
@@ -447,6 +447,9 @@
     <string name="pachTitle">Путь для выгрузки!</string>
     <string name="settingTitle">Настройка</string>
     <string name="diagTitle">Диагностика</string>
+    <string name="step1MainTitle">1) Подключите устройство к USB-порту с помощью адаптера КУМИР</string>
+    <string name="step2MainTitle">2) Выберите свое устройство в боковом меню</string>
+    <string name="step3MainTitle">3) Настройте ваше устройство</string>
 
 
     <!--............................................................................-->
