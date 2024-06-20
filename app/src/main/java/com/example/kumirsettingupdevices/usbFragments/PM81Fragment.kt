@@ -419,6 +419,12 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
     override fun writeSettingStart() {
         val validDataSettingsDevice = ValidDataSettingsDevice()
 
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputNetKey.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return
+        }
+
         // проверки на валидность POWER
         if (!validDataSettingsDevice.powerValid(binding.inputPowerCures.text.toString()
             .replace("\\s+".toRegex(), ""))) {

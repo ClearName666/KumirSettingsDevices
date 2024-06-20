@@ -53,9 +53,10 @@ class ItemPresetSettingsPmDataAdapter(
 
             // изменение записи в базу данных
             holder.buttonEdit.setOnClickListener {
-                if (context is MainActivity) {
+                settingsFragment.viewEditMenu(null, null, null)
+                /*if (context is MainActivity) {
                     context.showAlertDialog(context.getString(R.string.noneTypeDevice))
-                }
+                }*/
             }
 
             // удаление записи из базы данных

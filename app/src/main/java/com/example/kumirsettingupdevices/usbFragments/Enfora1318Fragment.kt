@@ -386,8 +386,17 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             binding.inputLogin.setText(loginPassword?.get(0) ?: "")
             binding.inputPassword.setText(loginPassword?.get(1) ?: "")
         }
-        binding.inputServer1.setText(settingMap[getString(R.string.commandServer1EnforaOrM31)]?.replace(" ", "")?.
-        substringAfter("\"")?.substringBefore("\""))
+
+
+        // замена сервера с PADDST на FRIEND
+       /* binding.inputServer1.setText(settingMap[getString(R.string.commandServer1EnforaOrM31)]?.replace(" ", "")?.
+        substringAfter("\"")?.substringBefore("\""))*/
+
+        binding.inputServer1.setText(settingMap[getString(R.string.commandServer2EnforaOrM31)]?.substringAfter("\"")
+            ?.substringBefore("\"")
+            )
+
+
         binding.inputServer2.setText(settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
             substringAfter("02, 1,")?.substringBefore("\n")?.replace(" ", "")?.
         substringAfter("\"")?.substringBefore("\""))
@@ -418,8 +427,9 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             * tcpport - 6502
         */
 
-        if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.contains(getString(R.string.defaultAPN)) == false ||
-            settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER1)) == false ||
+
+        if (settingMap[getString(R.string.commandGetApnEnforaM31)]?.lowerCase()?.contains(getString(R.string.defaultAPN)) == false ||
+            /*settingMap[getString(R.string.commandServer1EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER1)) == false ||*/
             settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER2copySERVER1)) == false ||
             settingMap[getString(R.string.commandServer2EnforaOrM31)]?.contains(getString(R.string.defaultHelpCheckSERVER2)) == false ||
             settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false ||
@@ -444,6 +454,11 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             return
         }
     }
+
+    // функция для понижения регистра
+    private fun String.lowerCase(): String = map {
+        it.lowercaseChar()
+    }.joinToString("")
 
     override fun readSettingStart() {
         // чтение тольуо тогда когда отключен проверка сигнала
@@ -528,6 +543,15 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                 showAlertDialog(getString(R.string.errorTimeOutEnfora))
                 return
             }
+
+            // проверка на русские символы в серверах и apn
+            if (!validDataSettingsDevice.serverValid(binding.inputServer1.text.toString()) ||
+                !validDataSettingsDevice.serverValid(binding.inputServer2.text.toString()) ||
+                !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+                showAlertDialog(getString(R.string.errorRussionChar))
+                return
+            }
+
 
             // проверка логина и пароля
             val loginPassword: String = binding.inputLogin.text.toString().replace(" ", "")  +

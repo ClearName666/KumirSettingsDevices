@@ -385,9 +385,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         if (binding.Enforma1318Settings.visibility == View.GONE) {
             binding.Enforma1318Settings.visibility = View.VISIBLE
             binding.Enforma1318Diag.visibility = View.VISIBLE
+            binding.imageEnfora1318MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
         } else {
             binding.Enforma1318Settings.visibility = View.GONE
             binding.Enforma1318Diag.visibility = View.GONE
+            binding.imageEnfora1318MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
         }
     }
     fun onClickEnforma1318Settings(view: View) {
@@ -422,9 +428,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         if (binding.M32Settings.visibility == View.GONE) {
             binding.M32Settings.visibility = View.VISIBLE
             binding.M32Diag.visibility = View.VISIBLE
+            binding.imageM32MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
         } else {
             binding.M32Settings.visibility = View.GONE
             binding.M32Diag.visibility = View.GONE
+            binding.imageM32MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
         }
     }
     fun onClickM32Settings(view: View) {
@@ -477,9 +489,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         if (binding.ACCB030FirmwareSettings.visibility == View.GONE) {
             binding.ACCB030FirmwareSettings.visibility = View.VISIBLE
             binding.ACCB030FirmwareDiag.visibility = View.VISIBLE
+            binding.imageACCB00MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
         } else {
             binding.ACCB030FirmwareSettings.visibility = View.GONE
             binding.ACCB030FirmwareDiag.visibility = View.GONE
+            binding.imageACCB00MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
         }
     }
     fun onClickACCB030Settings(view: View) {

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -19,12 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsEnforaDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsPmDataAdapter
+import com.example.kumirsettingupdevices.dataBasePreset.Enfora
 import com.example.kumirsettingupdevices.dataBasePreset.Pm
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.databinding.FragmentSettingsBinding
 import com.example.kumirsettingupdevices.filesMenager.GenerationFiles
 import com.example.kumirsettingupdevices.filesMenager.IniFileModel
 import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
+import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.PrisetsPmValue
@@ -91,12 +94,108 @@ class SettingsFragment : Fragment() {
             } else
                 dischargeIniFiles()
         }
+        // закрытие меню
+        binding.darckFon.setOnClickListener {
+            binding.editPresetSave.visibility = View.GONE
+            binding.darckFon.visibility = View.GONE
+        }
 
         binding.inputPath.setText(Environment.DIRECTORY_DOWNLOADS + DIR_PRESETS_DEFAULTE)
 
 
         return binding.root
     }
+
+    // функция для активации окна изменения настроек
+    fun viewEditMenu(priset: Preset?, pm: Pm?, enfora: Enfora?) {
+        // активация окна изменения
+        binding.editPresetSave.visibility = View.VISIBLE
+
+        // убераем все остальное активируем далее
+        binding.layoutInputSaveName.visibility = View.GONE
+        binding.layoutInputSaveAPN.visibility = View.GONE
+        binding.layoutInputSavePort.visibility = View.GONE
+        binding.layoutInputSaveLogin.visibility = View.GONE
+        binding.layoutInputSavePassword.visibility = View.GONE
+        binding.layoutInputSaveServer1.visibility = View.GONE
+        binding.layoutInputSaveServer2.visibility = View.GONE
+        binding.layoutInputSaveTimeout.visibility = View.GONE
+        binding.layoutInputSaveSizeBuffer.visibility = View.GONE
+        binding.layoutinputSaveKeyNet.visibility = View.GONE
+        binding.spinnerSaveMode.visibility = View.GONE
+        binding.spinnerSavePower.visibility = View.GONE
+        binding.spinnerSaveRenge.visibility = View.GONE
+
+        // m32 m32Lite
+        priset.let { preset ->
+            // списк режимов работы
+            val itemsSpinnerDevMode = listOf(
+                getString(R.string.devmodeKumirNet),
+                getString(R.string.devmodeClient),
+                getString(R.string.devmodeTCPServer),
+                getString(R.string.devmodeGSMmodem),
+                getString(R.string.devmodePipeClient),
+                getString(R.string.devdodePipeServer)
+            )
+            val adapter = ArrayAdapter(requireContext(),
+                R.layout.item_spinner, itemsSpinnerDevMode)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerSaveMode.adapter = adapter
+
+            // подставляем данные для редоктирования
+            binding.inputSaveName.setText(preset?.name)
+            binding.spinnerSaveMode.setSelection(preset?.mode!!)
+            binding.inputSaveAPN.setText(preset.apn)
+            binding.inputSaveServer1.setText(preset.server)
+            binding.inputSavePort.setText(preset.port)
+            binding.inputSaveLogin.setText(preset.login)
+            binding.inputSavePassword.setText(preset.password)
+
+            // активируем нужные поля
+            binding.layoutInputSaveName.visibility = View.VISIBLE
+            binding.spinnerSaveMode.visibility = View.VISIBLE
+            binding.layoutInputSaveAPN.visibility = View.VISIBLE
+            binding.layoutInputSaveServer1.visibility = View.VISIBLE
+            binding.layoutInputSavePort.visibility = View.VISIBLE
+            binding.layoutInputSaveLogin.visibility = View.VISIBLE
+            binding.layoutInputSavePassword.visibility = View.VISIBLE
+
+            // на кнопку сохранить вешаем событие сохренения
+            binding.buttonSavePresetEdit.setOnClickListener {
+                // проверка валидности данных
+                val validDataSettingsDevice = ValidDataSettingsDevice()
+                if (validDataSettingsDevice.tcpPortValid(binding.inputSavePort.text.toString())) {
+                    lifecycleScope.launch {
+                        try {
+                            // присеты m32
+                            contextMain.presetDao.updateByName(
+                                binding.inputSaveName.text.toString(),
+                                binding.spinnerSaveMode.selectedItemPosition,
+                                binding.inputSaveAPN.text.toString(),
+                                binding.inputSaveServer1.text.toString(),
+                                binding.inputSavePort.text.toString(),
+                                binding.inputSaveLogin.text.toString(),
+                                binding.inputSavePassword.text.toString()
+                            )
+                            // успешно и закрываем
+                            (contextMain as Activity).runOnUiThread {
+                                binding.editPresetSave.visibility = View.GONE
+                                binding.darckFon.visibility = View.GONE
+                            }
+                        } catch (_: Exception) {
+                            (contextMain as Activity).runOnUiThread {
+                                contextMain.showAlertDialog(getString(R.string.errorCodeNone))
+                            }
+                        }
+                    }
+                } else {
+                    contextMain.showAlertDialog(getString(R.string.errorTCPPORT))
+                }
+            }
+        }
+
+    }
+
 
     //--------------------------------Выгрузка--------------------------------
 

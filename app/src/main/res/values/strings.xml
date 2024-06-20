@@ -2,6 +2,7 @@
     <string name="app_name">Настройка устройств КУМИР</string>
 
     <string name="Usb_NoneConnect">Отсутствует подключение, воспользуйтесь кнопкой "ПОДКЛЮЧИТЬСЯ"</string>
+    <string name="errorCodeNone">Что то пошло не так!</string>
     <string name="Disconnected">Подключение разорвано!</string>
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
     <string name="Usb_ErrorConnect">Произошла ошибка при попытке подключения</string>
@@ -30,6 +31,7 @@
     <string name="exitDiagRestart">Выход из режима диагностики возможен только путем перезагрузки модема.</string>
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
+    <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
     <string name="nonPathSaveFile">Путь не валиден!</string>
     <string name="noSaveFiles">Файлы не удалось сохранить!</string>
@@ -46,6 +48,7 @@
     <string name="errorPOWER">Значение POWER должно быть в диапазоне от -16 до 14</string>
     <string name="errorNETKEY">Значение NETKEY не должно привышать 60 символов</string>
     <string name="errorSizeBuffer">Размер буфера должын быть в диапазоне от 0 до 65535</string>
+    <string name="errorRussionChar">Нельзя использовать русские символы!</string>
     <string name="errorTimeOutEnfora">Таймаут должын быть в диапазоне от 3 до 1472</string>
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
 
@@ -450,6 +453,8 @@
     <string name="step1MainTitle">1) Подключите устройство к USB-порту с помощью адаптера КУМИР</string>
     <string name="step2MainTitle">2) Выберите свое устройство в боковом меню</string>
     <string name="step3MainTitle">3) Настройте ваше устройство</string>
+    <string name="saveTitle">Сохранить</string>
+    <string name="namerPresetTitle">Наименование шаблона</string>
 
 
     <!--............................................................................-->

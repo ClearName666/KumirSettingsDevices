@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.SettingsFragment
+import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.dataBasePreset.PresetDao
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
+import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.PrisetsValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,9 +51,16 @@ class ItemPresetSettingsDataAdapter(
 
             // изменение записи в базу данных
             holder.buttonEdit.setOnClickListener {
-                if (context is MainActivity) {
-                    context.showAlertDialog(context.getString(R.string.noneTypeDevice))
+                // получение записи по имени
+                CoroutineScope(Dispatchers.IO).launch {
+                    val preset = presetDao.getFirstByName(name)
+                    (context as Activity).runOnUiThread {
+                        settingsFragment.viewEditMenu(preset, null, null)
+                    }
                 }
+                /*if (context is MainActivity) {
+                    context.showAlertDialog(context.getString(R.string.noneTypeDevice))
+                }*/
             }
 
             // удаление записи из базы данных

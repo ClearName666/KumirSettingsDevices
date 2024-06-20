@@ -16,6 +16,7 @@ import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentACCB030Binding
 import com.example.kumirsettingupdevices.diag.DiagSiagnalIntarface
 import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
+import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -163,6 +164,14 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     }
 
     private fun onClickWriteSettingsDevice(view: View) {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return
+        }
+
         writeSettingStart()
     }
 

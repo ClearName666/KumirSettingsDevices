@@ -248,7 +248,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/fonElement">
+        android:background="@color/fonElement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -360,6 +364,16 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo"
                                 app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo"
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo" />
+
+                            <ImageView
+                                android:id="@+id/imageEnfora1318MenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/textEnforma1318"
+                                app:layout_constraintStart_toEndOf="@+id/textEnforma1318"
+                                app:layout_constraintTop_toTopOf="@+id/textEnforma1318"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -518,6 +532,16 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo3"
                                 app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo3"
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo3" />
+
+                            <ImageView
+                                android:id="@+id/imageM32MenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/textM32"
+                                app:layout_constraintStart_toEndOf="@+id/textM32"
+                                app:layout_constraintTop_toTopOf="@+id/textM32"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -526,6 +550,7 @@
                             android:layout_width="0dp"
                             android:layout_height="30dp"
                             android:layout_marginStart="40dp"
+                            android:clickable="true"
                             android:onClick="onClickM32Settings"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -548,6 +573,7 @@
                             android:id="@+id/M32Diag"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:clickable="true"
                             android:onClick="onClickM32Diag"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -749,6 +775,16 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo8"
                                 app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo8"
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo8" />
+
+                            <ImageView
+                                android:id="@+id/imageACCB00MenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/textACCB030Firmware"
+                                app:layout_constraintStart_toEndOf="@+id/textACCB030Firmware"
+                                app:layout_constraintTop_toTopOf="@+id/textACCB030Firmware"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -779,6 +815,7 @@
                             android:id="@+id/ACCB030FirmwareDiag"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:clickable="true"
                             android:onClick="onClickACCB030Diag"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -890,4 +927,5 @@
 
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
+
 </androidx.drawerlayout.widget.DrawerLayout>

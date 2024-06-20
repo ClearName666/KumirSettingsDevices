@@ -458,6 +458,13 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     override fun writeSettingStart() {
         val validDataSettingsDevice = ValidDataSettingsDevice()
 
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return
+        }
+
         // проверки на валидность keepalive ctimeout tcpPort
         if (!validDataSettingsDevice.keepaliveValid(
                 binding.inputTimeOutKeeplive.text.toString().replace("\\s+".toRegex(), ""))) {

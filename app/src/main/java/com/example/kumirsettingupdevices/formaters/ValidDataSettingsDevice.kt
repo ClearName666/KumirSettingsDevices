@@ -100,4 +100,14 @@ class ValidDataSettingsDevice {
         return false
     }
 
+    // прерка на русские символы
+    fun serverValid(server: String): Boolean {
+        for (c in server) {
+            if (c !in 'A'..'Z' && c !in 'a'..'z' && c !in '0'..'9')
+                if (c !='.' && c != '-')
+                    return false
+        }
+        return true
+    }
+
 }
