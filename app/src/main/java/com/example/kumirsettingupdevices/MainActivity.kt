@@ -1009,13 +1009,21 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         printDeviceTypeName("")*/
     }
 
+
     // Метод для проверки, является ли подключенное устройство целевым устройством
     private fun isTargetDevice(device: UsbDevice): Boolean {
         return usbDevices.any { it.vendorId == device.vendorId && (it.productId == null || it.productId == device.productId) }
     }
 
+    private fun requestPermission(device: UsbDevice) {
+        val usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
+        val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), 0)
+        usbManager.requestPermission(device, permissionIntent)
+    }
+
     // подключения и регистрация широковещятельного приемника
     override fun connectToUsbDevice(device: UsbDevice) {
+
         // проверка и подключение
         if (isTargetDevice(device)) {
             val usbManager: UsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
@@ -1030,10 +1038,20 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 } else {
                     // Обработка ошибки подключения
                     showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
+
+                    // проверка вдруг нету разрешения
+                    /*if (!usbManager.hasPermission(device)) {
+                        requestPermission(device)
+                    }*/
                 }
             } catch (e: Exception) {
                 // Обработка исключений
                 showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
+
+                // проверка вдруг нету разрешения
+                /*if (!usbManager.hasPermission(device)) {
+                    requestPermission(device)
+                }*/
             }
         }
     }
