@@ -42,6 +42,7 @@
     <string name="nonIniFile">Выберите ini файл!</string>
     <string name="nonValidIniFile">Ваш файл ini не валиден!</string>
 
+    <string name="errorValidPole">Не все поля введены валидно!</string>
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
     <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
     <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
@@ -51,7 +52,8 @@
     <string name="errorRussionChar">Нельзя использовать русские символы!</string>
     <string name="errorTimeOutEnfora">Таймаут должын быть в диапазоне от 3 до 1472</string>
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
-
+    <string name="noneValidRecordMONITOR">Настроки не валидны, т.к в режиме MONITOR нужно изменять настройки интернет ключа и диопазона частоты!</string>
+    
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
@@ -455,6 +457,7 @@
     <string name="step3MainTitle">3) Настройте ваше устройство</string>
     <string name="saveTitle">Сохранить</string>
     <string name="namerPresetTitle">Наименование шаблона</string>
+    <string name="oldSetPlaceTitleButton">Восстановить старые настройки</string>
 
 
     <!--............................................................................-->

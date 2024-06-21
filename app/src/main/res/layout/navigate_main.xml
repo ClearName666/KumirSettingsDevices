@@ -431,6 +431,16 @@
                             app:layout_constraintTop_toBottomOf="@+id/A61">
 
                             <ImageView
+                                android:id="@+id/imagePM81MenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/textPM81"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
+
+                            <ImageView
                                 android:id="@+id/imageDevoceLogo6"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -456,6 +466,49 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/PM81Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="40dp"
+                            android:visibility="visible"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/PM81">
+
+                            <TextView
+                                android:id="@+id/textPM81Settings"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/settingTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/PM81Diag"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:visibility="visible"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/PM81Settings"
+                            app:layout_constraintTop_toBottomOf="@+id/PM81Settings">
+
+                            <TextView
+                                android:id="@+id/textPM81Diag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/diagTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/ACCB030Core"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -465,7 +518,7 @@
                             android:onClick="onClickACCB030Core"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/PM81">
+                            app:layout_constraintTop_toBottomOf="@+id/PM81Diag">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo7"

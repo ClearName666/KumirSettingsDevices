@@ -345,6 +345,19 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <Button
+                    android:id="@+id/buttonOldSet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="100dp"
+                    android:backgroundTint="@color/dangerous"
+                    android:text="@string/oldSetPlaceTitleButton"
+                    android:textColor="@color/background"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/buttonSavePreset" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Добавьте другие элементы здесь -->

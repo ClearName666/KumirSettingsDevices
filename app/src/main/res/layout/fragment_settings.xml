@@ -397,11 +397,19 @@
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Spinner
-                    android:id="@+id/spinnerSavePower"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutInputSavePower"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:drawable/btn_dropdown" />
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inputSavePower"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/powerCures"
+                        android:textColor="@color/textColor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Spinner
                     android:id="@+id/spinnerSaveRenge"

@@ -110,6 +110,7 @@ class SettingsFragment : Fragment() {
     fun viewEditMenu(priset: Preset?, pm: Pm?, enfora: Enfora?) {
         // активация окна изменения
         binding.editPresetSave.visibility = View.VISIBLE
+        binding.darckFon.visibility = View.VISIBLE
 
         // убераем все остальное активируем далее
         binding.layoutInputSaveName.visibility = View.GONE
@@ -122,78 +123,215 @@ class SettingsFragment : Fragment() {
         binding.layoutInputSaveTimeout.visibility = View.GONE
         binding.layoutInputSaveSizeBuffer.visibility = View.GONE
         binding.layoutinputSaveKeyNet.visibility = View.GONE
+        binding.layoutInputSavePower.visibility = View.GONE
         binding.spinnerSaveMode.visibility = View.GONE
-        binding.spinnerSavePower.visibility = View.GONE
         binding.spinnerSaveRenge.visibility = View.GONE
 
-        // m32 m32Lite
-        priset.let { preset ->
-            // списк режимов работы
-            val itemsSpinnerDevMode = listOf(
-                getString(R.string.devmodeKumirNet),
-                getString(R.string.devmodeClient),
-                getString(R.string.devmodeTCPServer),
-                getString(R.string.devmodeGSMmodem),
-                getString(R.string.devmodePipeClient),
-                getString(R.string.devdodePipeServer)
-            )
-            val adapter = ArrayAdapter(requireContext(),
-                R.layout.item_spinner, itemsSpinnerDevMode)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spinnerSaveMode.adapter = adapter
 
-            // подставляем данные для редоктирования
-            binding.inputSaveName.setText(preset?.name)
-            binding.spinnerSaveMode.setSelection(preset?.mode!!)
-            binding.inputSaveAPN.setText(preset.apn)
-            binding.inputSaveServer1.setText(preset.server)
-            binding.inputSavePort.setText(preset.port)
-            binding.inputSaveLogin.setText(preset.login)
-            binding.inputSavePassword.setText(preset.password)
+        if (priset != null) {
+            // m32 m32Lite
+            priset.let { preset ->
+                // списк режимов работы
+                val itemsSpinnerDevMode = listOf(
+                    getString(R.string.devmodeKumirNet),
+                    getString(R.string.devmodeClient),
+                    getString(R.string.devmodeTCPServer),
+                    getString(R.string.devmodeGSMmodem),
+                    getString(R.string.devmodePipeClient),
+                    getString(R.string.devdodePipeServer)
+                )
+                val adapter = ArrayAdapter(requireContext(),
+                    R.layout.item_spinner, itemsSpinnerDevMode)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.spinnerSaveMode.adapter = adapter
 
-            // активируем нужные поля
-            binding.layoutInputSaveName.visibility = View.VISIBLE
-            binding.spinnerSaveMode.visibility = View.VISIBLE
-            binding.layoutInputSaveAPN.visibility = View.VISIBLE
-            binding.layoutInputSaveServer1.visibility = View.VISIBLE
-            binding.layoutInputSavePort.visibility = View.VISIBLE
-            binding.layoutInputSaveLogin.visibility = View.VISIBLE
-            binding.layoutInputSavePassword.visibility = View.VISIBLE
+                // подставляем данные для редоктирования
+                binding.inputSaveName.setText(preset.name)
+                binding.spinnerSaveMode.setSelection(preset.mode!!)
+                binding.inputSaveAPN.setText(preset.apn)
+                binding.inputSaveServer1.setText(preset.server)
+                binding.inputSavePort.setText(preset.port)
+                binding.inputSaveLogin.setText(preset.login)
+                binding.inputSavePassword.setText(preset.password)
 
-            // на кнопку сохранить вешаем событие сохренения
-            binding.buttonSavePresetEdit.setOnClickListener {
-                // проверка валидности данных
-                val validDataSettingsDevice = ValidDataSettingsDevice()
-                if (validDataSettingsDevice.tcpPortValid(binding.inputSavePort.text.toString())) {
-                    lifecycleScope.launch {
-                        try {
-                            // присеты m32
-                            contextMain.presetDao.updateByName(
-                                binding.inputSaveName.text.toString(),
-                                binding.spinnerSaveMode.selectedItemPosition,
-                                binding.inputSaveAPN.text.toString(),
-                                binding.inputSaveServer1.text.toString(),
-                                binding.inputSavePort.text.toString(),
-                                binding.inputSaveLogin.text.toString(),
-                                binding.inputSavePassword.text.toString()
-                            )
-                            // успешно и закрываем
-                            (contextMain as Activity).runOnUiThread {
-                                binding.editPresetSave.visibility = View.GONE
-                                binding.darckFon.visibility = View.GONE
-                            }
-                        } catch (_: Exception) {
-                            (contextMain as Activity).runOnUiThread {
-                                contextMain.showAlertDialog(getString(R.string.errorCodeNone))
+                // активируем нужные поля
+                binding.layoutInputSaveName.visibility = View.VISIBLE
+                binding.spinnerSaveMode.visibility = View.VISIBLE
+                binding.layoutInputSaveAPN.visibility = View.VISIBLE
+                binding.layoutInputSaveServer1.visibility = View.VISIBLE
+                binding.layoutInputSavePort.visibility = View.VISIBLE
+                binding.layoutInputSaveLogin.visibility = View.VISIBLE
+                binding.layoutInputSavePassword.visibility = View.VISIBLE
+
+                // на кнопку сохранить вешаем событие сохренения
+                binding.buttonSavePresetEdit.setOnClickListener {
+                    // проверка валидности данных
+                    val validDataSettingsDevice = ValidDataSettingsDevice()
+                    if (validDataSettingsDevice.tcpPortValid(binding.inputSavePort.text.toString())) {
+                        lifecycleScope.launch {
+                            try {
+                                // присеты m32
+                                contextMain.presetDao.updateByName(
+                                    binding.inputSaveName.text.toString(),
+                                    binding.spinnerSaveMode.selectedItemPosition,
+                                    binding.inputSaveAPN.text.toString(),
+                                    binding.inputSaveServer1.text.toString(),
+                                    binding.inputSavePort.text.toString(),
+                                    binding.inputSaveLogin.text.toString(),
+                                    binding.inputSavePassword.text.toString()
+                                )
+                                // успешно и закрываем
+                                (contextMain as Activity).runOnUiThread {
+                                    binding.editPresetSave.visibility = View.GONE
+                                    binding.darckFon.visibility = View.GONE
+                                }
+                            } catch (_: Exception) {
+                                (contextMain as Activity).runOnUiThread {
+                                    contextMain.showAlertDialog(getString(R.string.errorCodeNone))
+                                }
                             }
                         }
+                    } else {
+                        contextMain.showAlertDialog(getString(R.string.errorTCPPORT))
                     }
-                } else {
-                    contextMain.showAlertDialog(getString(R.string.errorTCPPORT))
+                }
+            }
+        } else if (enfora != null) {
+            // enfora
+            enfora.let { curentEnfora ->
+
+                // подставляем нужные поля информауию
+                binding.inputSaveName.setText(curentEnfora.name)
+                binding.inputSaveAPN.setText(curentEnfora.apn)
+                binding.inputSaveLogin.setText(curentEnfora.login)
+                binding.inputSavePassword.setText(curentEnfora.password)
+                binding.inputSaveServer1.setText(curentEnfora.server1)
+                binding.inputSaveServer2.setText(curentEnfora.server2)
+                binding.inputSaveTimeout.setText(curentEnfora.timeout)
+                binding.inputSaveSizeBuffer.setText(curentEnfora.sizeBuffer)
+
+                // активируем нужные поля
+                binding.layoutInputSaveName.visibility = View.VISIBLE
+                binding.layoutInputSaveAPN.visibility = View.VISIBLE
+                binding.layoutInputSaveLogin.visibility = View.VISIBLE
+                binding.layoutInputSavePassword.visibility = View.VISIBLE
+                binding.layoutInputSaveServer1.visibility = View.VISIBLE
+                binding.layoutInputSaveServer2.visibility = View.VISIBLE
+                binding.layoutInputSaveTimeout.visibility = View.VISIBLE
+                binding.layoutInputSaveSizeBuffer.visibility = View.VISIBLE
+
+                // на кнопку сохранить вешаем событие сохренения
+                binding.buttonSavePresetEdit.setOnClickListener {
+                    // проверка валидности данных
+                    val validDataSettingsDevice = ValidDataSettingsDevice()
+                    if (validDataSettingsDevice.padtoValid(binding.inputSaveTimeout.text.toString()) &&
+                        validDataSettingsDevice.padblkValid(binding.inputSaveSizeBuffer.text.toString())) {
+                        lifecycleScope.launch {
+                            try {
+                                // присеты m32
+                                contextMain.presetEnforaDao.updateByName(
+                                    binding.inputSaveName.text.toString(),
+                                    binding.inputSaveAPN.text.toString(),
+                                    binding.inputSaveLogin.text.toString(),
+                                    binding.inputSavePassword.text.toString(),
+                                    binding.inputSaveServer1.text.toString(),
+                                    binding.inputSaveServer2.text.toString(),
+                                    binding.inputSaveTimeout.text.toString(),
+                                    binding.inputSaveSizeBuffer.text.toString()
+                                )
+                                // успешно и закрываем
+                                (contextMain as Activity).runOnUiThread {
+                                    binding.editPresetSave.visibility = View.GONE
+                                    binding.darckFon.visibility = View.GONE
+                                }
+                            } catch (_: Exception) {
+                                (contextMain as Activity).runOnUiThread {
+                                    contextMain.showAlertDialog(getString(R.string.errorCodeNone))
+                                }
+                            }
+                        }
+                    } else {
+                        contextMain.showAlertDialog(getString(R.string.errorValidPole))
+                    }
+                }
+            }
+        } else if (pm != null) {
+            pm.let { curentPm ->
+                // выборки
+
+                // адаптер для выбора режима работы модема
+                val itemsSpinnerDevMode = listOf(
+                    getString(R.string.devmodeROUTER),
+                    getString(R.string.devmodeCANPROXY),
+                    getString(R.string.devmodeRS485),
+                    getString(R.string.devmodeMONITOR)
+                )
+                val adapter = ArrayAdapter(requireContext(),
+                    R.layout.item_spinner, itemsSpinnerDevMode)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.spinnerSaveMode.adapter = adapter
+
+                // адаптер для выбора диопазона
+                val itemSelectRange = listOf(
+                    getString(R.string.rangeMod1),
+                    getString(R.string.rangeMod2),
+                    getString(R.string.rangeMod3)
+                )
+                val adapterSelectRange = ArrayAdapter(requireContext(),
+                    R.layout.item_spinner, itemSelectRange)
+                adapterSelectRange.setDropDownViewResource(
+                    android.R.layout.simple_spinner_dropdown_item)
+                binding.spinnerSaveRenge.adapter = adapterSelectRange
+
+
+
+                // заполнение полей
+                binding.inputSaveName.setText(curentPm.name)
+                binding.inputSaveKeyNet.setText(curentPm.keyNet)
+                binding.inputSavePower.setText(curentPm.power)
+                binding.spinnerSaveMode.setSelection(curentPm.mode)
+                binding.spinnerSaveRenge.setSelection(curentPm.diopozone)
+
+                // активация нужных полей
+                binding.layoutInputSaveName.visibility = View.VISIBLE
+                binding.layoutinputSaveKeyNet.visibility = View.VISIBLE
+                binding.layoutInputSavePower.visibility = View.VISIBLE
+                binding.spinnerSaveMode.visibility = View.VISIBLE
+                binding.spinnerSaveRenge.visibility = View.VISIBLE
+
+                // на кнопку сохранить вешаем событие сохренения
+                binding.buttonSavePresetEdit.setOnClickListener {
+                    // проверка валидности данных
+                    val validDataSettingsDevice = ValidDataSettingsDevice()
+                    if (binding.inputSaveKeyNet.text.toString().length < 61 &&
+                        validDataSettingsDevice.powerValid(binding.inputSavePower.text.toString())) {
+                        lifecycleScope.launch {
+                            try {
+                                // присеты m32
+                                contextMain.presetPmDao.updateByName(
+                                    binding.inputSaveName.text.toString(),
+                                    binding.spinnerSaveMode.selectedItemPosition,
+                                    binding.inputSaveKeyNet.text.toString(),
+                                    binding.inputSavePower.text.toString(),
+                                    binding.spinnerSaveRenge.selectedItemPosition
+                                )
+                                // успешно и закрываем
+                                (contextMain as Activity).runOnUiThread {
+                                    binding.editPresetSave.visibility = View.GONE
+                                    binding.darckFon.visibility = View.GONE
+                                }
+                            } catch (_: Exception) {
+                                (contextMain as Activity).runOnUiThread {
+                                    contextMain.showAlertDialog(getString(R.string.errorCodeNone))
+                                }
+                            }
+                        }
+                    } else {
+                        contextMain.showAlertDialog(getString(R.string.errorValidPole))
+                    }
                 }
             }
         }
-
     }
 
 

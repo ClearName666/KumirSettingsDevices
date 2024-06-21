@@ -34,6 +34,7 @@ import com.example.kumirsettingupdevices.databinding.MainActivityBinding
 import com.example.kumirsettingupdevices.diag.ACCB030DiagFragment
 import com.example.kumirsettingupdevices.diag.DiagFragment
 import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
+import com.example.kumirsettingupdevices.diag.DiagPM81Fragment
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.ports.PortDeviceSetting
 import com.example.kumirsettingupdevices.presetFragments.SelectMenuPrisetEnforaSettings
@@ -471,12 +472,36 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val a61 = A61Fragment()
         createSettingFragment(a61)
     }
+
     fun onClickPM81(view: View) {
+        if (binding.PM81Settings.visibility == View.GONE) {
+            binding.PM81Settings.visibility = View.VISIBLE
+            binding.PM81Diag.visibility = View.VISIBLE
+            binding.imagePM81MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
+        } else {
+            binding.PM81Settings.visibility = View.GONE
+            binding.PM81Diag.visibility = View.GONE
+            binding.imagePM81MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
+        }
+    }
+    fun onClickPM81Settings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val pm81 = PM81Fragment()
         createSettingFragment(pm81)
     }
+    fun onClickPM81Diag(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val pm81Diag = DiagPM81Fragment()
+        createSettingFragment(pm81Diag)
+    }
+
+
     fun onClickACCB030Core(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -1015,11 +1040,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         return usbDevices.any { it.vendorId == device.vendorId && (it.productId == null || it.productId == device.productId) }
     }
 
-    private fun requestPermission(device: UsbDevice) {
-        val usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-        val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), 0)
-        usbManager.requestPermission(device, permissionIntent)
-    }
 
     // подключения и регистрация широковещятельного приемника
     override fun connectToUsbDevice(device: UsbDevice) {

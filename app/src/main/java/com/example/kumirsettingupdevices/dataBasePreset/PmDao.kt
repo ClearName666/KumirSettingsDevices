@@ -19,4 +19,11 @@ interface PmDao {
 
     @Query("DELETE FROM Pm WHERE name = :name")
     suspend fun deleteByName(name: String)
+
+
+    @Query("UPDATE Pm SET mode = :mode, keyNet = :keyNet, power = :power, diopozone = :diopozone WHERE name = :name")
+    suspend fun updateByName(name: String, mode: Int, keyNet: String?, power: String?, diopozone: Int)
+
+    @Query("SELECT * FROM Pm WHERE name = :name LIMIT 1")
+    suspend fun getFirstByName(name: String): Pm?
 }

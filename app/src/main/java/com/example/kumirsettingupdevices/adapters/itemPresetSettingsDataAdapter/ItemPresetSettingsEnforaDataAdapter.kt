@@ -52,10 +52,13 @@ class ItemPresetSettingsEnforaDataAdapter(
 
             // изменение записи в базу данных
             holder.buttonEdit.setOnClickListener {
-                settingsFragment.viewEditMenu(null, null, null)
-                /*if (context is MainActivity) {
-                    context.showAlertDialog(context.getString(R.string.noneTypeDevice))
-                }*/
+                // получение записи по имени
+                CoroutineScope(Dispatchers.IO).launch {
+                    val enfora = presetEnforaDao.getFirstByName(name)
+                    (context as Activity).runOnUiThread {
+                        settingsFragment.viewEditMenu(null, null, enfora)
+                    }
+                }
             }
 
             // удаление записи из базы данных

@@ -16,6 +16,7 @@ import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.dataBasePreset.Pm
 import com.example.kumirsettingupdevices.databinding.FragmentPM81Binding
+import com.example.kumirsettingupdevices.modems.SettingsPm
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
@@ -25,6 +26,16 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     private var NAME_TYPE_DEVICE = "KUMIR-RM81A READY"
 
+    // сохраняем настроки для устройств  ТЕКУЩИЕ НАСТРОЙКИ
+    var band: String = ""
+    var netKey: String = ""
+    var mode: String = ""
+
+    // сохраненные предыжущие настройки
+    val listOldPmSet: MutableList<SettingsPm> = mutableListOf(
+        SettingsPm("", "", 0, "", 0),
+        SettingsPm("", "", 0, "", 0)
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,6 +94,7 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
                 context.onClickPrisetPmSettingFor(this)
             }
         }
+
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
@@ -294,6 +306,15 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
+
+
+
+        // сохраняем поля диопазона частот и интеренет ключа
+        band = settingMap[getString(R.string.commandGetRange)]!!
+        netKey = settingMap[getString(R.string.commandGetNetKey)]!!
+
+
+
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки
         val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
@@ -340,14 +361,18 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         */
 
         settingMap[getString(R.string.commandGetMode)]?.let {
-            if (it.contains(getString(R.string.devmodeROUTER))) {
+            mode = if (it.contains(getString(R.string.devmodeROUTER))) {
                 binding.spinnerServer.setSelection(0)
+                getString(R.string.devmodeROUTER)
             } else if (it.contains(getString(R.string.devmodeCANPROXY))) {
                 binding.spinnerServer.setSelection(1)
+                getString(R.string.devmodeCANPROXY)
             }  else if (it.contains(getString(R.string.devmodeRS485))) {
                 binding.spinnerServer.setSelection(2)
+                getString(R.string.devmodeRS485)
             } else {
                 binding.spinnerServer.setSelection(3)
+                getString(R.string.devmodeMONITOR)
             }
         }
 
@@ -396,6 +421,17 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
                 binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
             }
 
+
+            // для сохранения старых настроек и возможности из востановить
+            listOldPmSet[0] = listOldPmSet[1]
+            listOldPmSet[1] = SettingsPm(
+                settingMap[getString(R.string.commandGetRange)]!!,
+                settingMap[getString(R.string.commandGetNetKey)]!!,
+                binding.spinnerServer.selectedItemPosition,
+                settingMap[getString(R.string.commandGetPort1Config)]!!,
+                binding.spinnerRange.selectedItemPosition
+                )
+
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadActPortDevice))
         }
@@ -437,6 +473,21 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
             return
         }
 
+        // проверка на
+        /*
+           3) at$mode=MONITOR
+            - если поля AT$BAND, AT$NETKEY не изменялись (по умолчанию), то тогда не записывать новые значения в РМ81
+            - если поля AT$BAND, AT$NETKEY изменялись, то AT$BAND=значение, AT$NETKEY=значение.
+        */
+        if (binding.spinnerServer.selectedItem.toString() == getString(R.string.devmodeMONITOR) &&
+            binding.inputNetKey.text.toString() == netKey &&
+            (binding.spinnerRange.selectedItemPosition + 1).toString() == band &&
+            mode == getString(R.string.devmodeMONITOR)) {
+
+            showAlertDialog(getString(R.string.noneValidRecordMONITOR))
+            return
+        }
+
         var parityPort1 = "N"
         when(binding.spinnerSelectParityPort1.selectedItemPosition) {
             0 -> parityPort1  = "N"
@@ -461,6 +512,21 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+
+        // кнопка для востановления старых настроек
+        if (binding.buttonOldSet.visibility == View.GONE) {
+            binding.buttonOldSet.visibility = View.VISIBLE
+            binding.buttonOldSet.setOnClickListener {
+                // подставление данных в поля
+                binding.spinnerServer.setSelection(listOldPmSet[0].modeOld)
+                binding.inputNetKey.setText(listOldPmSet[0].netKeyOld)
+                binding.inputPowerCures.setText(listOldPmSet[0].powerOld)
+                binding.spinnerRange.setSelection(listOldPmSet[0].powerOld)
+
+                // дописать
+                // вылет из за 2 раза
+            }
+        }
     }
 
     override fun lockFromDisconnected(connect: Boolean) {

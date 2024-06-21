@@ -53,7 +53,13 @@ class ItemPresetSettingsPmDataAdapter(
 
             // изменение записи в базу данных
             holder.buttonEdit.setOnClickListener {
-                settingsFragment.viewEditMenu(null, null, null)
+                // получение записи по имени
+                CoroutineScope(Dispatchers.IO).launch {
+                    val pm = presetPmDao.getFirstByName(name)
+                    (context as Activity).runOnUiThread {
+                        settingsFragment.viewEditMenu(null, pm, null)
+                    }
+                }
                 /*if (context is MainActivity) {
                     context.showAlertDialog(context.getString(R.string.noneTypeDevice))
                 }*/
