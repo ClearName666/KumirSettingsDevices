@@ -33,9 +33,12 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     // сохраненные предыжущие настройки
     val listOldPmSet: MutableList<SettingsPm> = mutableListOf(
-        SettingsPm("", "", 0, "", 0),
-        SettingsPm("", "", 0, "", 0)
+        SettingsPm(0, "", 0, "", ""),
+        SettingsPm(0, "", 0, "", "")
     )
+
+    var cntWrite: Int = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -425,12 +428,12 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
             // для сохранения старых настроек и возможности из востановить
             listOldPmSet[0] = listOldPmSet[1]
             listOldPmSet[1] = SettingsPm(
-                settingMap[getString(R.string.commandGetRange)]!!,
+                binding.spinnerRange.selectedItemPosition,
                 settingMap[getString(R.string.commandGetNetKey)]!!,
                 binding.spinnerServer.selectedItemPosition,
                 settingMap[getString(R.string.commandGetPort1Config)]!!,
-                binding.spinnerRange.selectedItemPosition
-                )
+                settingMap[getString(R.string.commandGetPower)]!!
+            )
 
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadActPortDevice))
@@ -453,6 +456,7 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
     }
 
     override fun writeSettingStart() {
+
         val validDataSettingsDevice = ValidDataSettingsDevice()
 
         // проверка на русские символы в серверах и apn
@@ -517,14 +521,48 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         if (binding.buttonOldSet.visibility == View.GONE) {
             binding.buttonOldSet.visibility = View.VISIBLE
             binding.buttonOldSet.setOnClickListener {
-                // подставление данных в поля
                 binding.spinnerServer.setSelection(listOldPmSet[0].modeOld)
                 binding.inputNetKey.setText(listOldPmSet[0].netKeyOld)
                 binding.inputPowerCures.setText(listOldPmSet[0].powerOld)
-                binding.spinnerRange.setSelection(listOldPmSet[0].powerOld)
+                binding.spinnerRange.setSelection(listOldPmSet[0].bandOld)
 
-                // дописать
-                // вылет из за 2 раза
+                // отображение страрых настроек порта
+                try {
+                    // отоюражения настроек порта 1-------------------------------------------------------------
+                    val port1Config = listOldPmSet[0].port1Old.split(",")
+
+                    // скорость -----------------------------------------
+                    val adapterSpeed = binding.spinnerSpeed.adapter as ArrayAdapter<String>
+                    val indexSpeed = adapterSpeed.getPosition(port1Config.get(0))
+                    if (indexSpeed != -1) {
+                        binding.spinnerSpeed.setSelection(indexSpeed)
+                    }
+
+                    // количество бит -----------------------------------------
+                    val adapterBitData = binding.spinnerBitDataPort1.adapter as ArrayAdapter<String>
+                    val indexBitData = adapterBitData.getPosition(port1Config.get(1))
+                    if (indexBitData != -1) {
+                        binding.spinnerSelectStopBitPort1.setSelection(indexBitData)
+                    }
+
+                    // четность -----------------------------------------
+                    if (port1Config.get(2) == "N") {
+                        binding.spinnerSelectParityPort1.setSelection(0)
+                    } else if (port1Config.get(2) == "O") {
+                        binding.spinnerSelectParityPort1.setSelection(1)
+                    } else {
+                        binding.spinnerSelectParityPort1.setSelection(2)
+                    }
+
+                    // стоп биты---------------------------------------------------
+                    val adapterStopBit = binding.spinnerSelectStopBitPort1.adapter as ArrayAdapter<String>
+                    val indexStopBit = adapterStopBit.getPosition(port1Config.get(3))
+                    if (indexBitData != -1) {
+                        binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
+                    }
+                } catch (e: NumberFormatException) {
+                    showAlertDialog(getString(R.string.notReadActPortDevice))
+                }
             }
         }
     }

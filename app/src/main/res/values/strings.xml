@@ -36,6 +36,7 @@
     <string name="nonPathSaveFile">Путь не валиден!</string>
     <string name="noSaveFiles">Файлы не удалось сохранить!</string>
     <string name="yesSaveFiles">Файлы удалось сохранить!</string>
+    <string name="noFileSave">Нет данных для сохранения!</string>
     <string name="nonPermissionsSaveFile">Не получино разрешения для сохранения!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
     <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>

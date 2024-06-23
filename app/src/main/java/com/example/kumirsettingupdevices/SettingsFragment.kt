@@ -30,6 +30,7 @@ import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
 import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
+import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
 import com.example.kumirsettingupdevices.settings.PrisetsPmValue
 import com.example.kumirsettingupdevices.settings.PrisetsValue
 import kotlinx.coroutines.Dispatchers
@@ -171,7 +172,8 @@ class SettingsFragment : Fragment() {
                         lifecycleScope.launch {
                             try {
                                 // присеты m32
-                                contextMain.presetDao.updateByName(
+                                contextMain.presetDao.updateById(
+                                    preset.id,
                                     binding.inputSaveName.text.toString(),
                                     binding.spinnerSaveMode.selectedItemPosition,
                                     binding.inputSaveAPN.text.toString(),
@@ -190,6 +192,9 @@ class SettingsFragment : Fragment() {
                                     contextMain.showAlertDialog(getString(R.string.errorCodeNone))
                                 }
                             }
+
+                            //  обновляем данные в памяти
+                            updateCurrentMemoryDataBase(preset.name)
                         }
                     } else {
                         contextMain.showAlertDialog(getString(R.string.errorTCPPORT))
@@ -229,7 +234,8 @@ class SettingsFragment : Fragment() {
                         lifecycleScope.launch {
                             try {
                                 // присеты m32
-                                contextMain.presetEnforaDao.updateByName(
+                                contextMain.presetEnforaDao.updateById(
+                                    enfora.id,
                                     binding.inputSaveName.text.toString(),
                                     binding.inputSaveAPN.text.toString(),
                                     binding.inputSaveLogin.text.toString(),
@@ -249,6 +255,8 @@ class SettingsFragment : Fragment() {
                                     contextMain.showAlertDialog(getString(R.string.errorCodeNone))
                                 }
                             }
+                            //  обновляем данные в памяти
+                            updateCurrentMemoryDataBase(enfora.name)
                         }
                     } else {
                         contextMain.showAlertDialog(getString(R.string.errorValidPole))
@@ -308,7 +316,8 @@ class SettingsFragment : Fragment() {
                         lifecycleScope.launch {
                             try {
                                 // присеты m32
-                                contextMain.presetPmDao.updateByName(
+                                contextMain.presetPmDao.updateById(
+                                    pm.id,
                                     binding.inputSaveName.text.toString(),
                                     binding.spinnerSaveMode.selectedItemPosition,
                                     binding.inputSaveKeyNet.text.toString(),
@@ -325,6 +334,8 @@ class SettingsFragment : Fragment() {
                                     contextMain.showAlertDialog(getString(R.string.errorCodeNone))
                                 }
                             }
+                            //  обновляем данные в памяти
+                            updateCurrentMemoryDataBase(pm.name)
                         }
                     } else {
                         contextMain.showAlertDialog(getString(R.string.errorValidPole))
@@ -347,6 +358,7 @@ class SettingsFragment : Fragment() {
             lifecycleScope.launch {
                 // присеты m32
                 contextMain.presetDao.getAll().collect { presets ->
+                    val validDataIniFile = ValidDataIniFile()
                     for (p in presets) {
                         listIniDataPreset.add(
                             IniFileModel(
@@ -362,7 +374,7 @@ class SettingsFragment : Fragment() {
                                 "",
                                 "",
                                 "",
-                                "",
+                                validDataIniFile.getModeMainReverse(p.mode),
                                 "",
                                 "",
                                 "",
@@ -372,23 +384,62 @@ class SettingsFragment : Fragment() {
                             )
                         )
                     }
-                    contextMain.runOnUiThread {
-                        // генерация и сохранение по выбраному пути
-                        if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
-                            if (generationFiles.generationIniFiles(listIniDataPreset, binding.inputPath.text.toString(), requireContext()))
-                            {
-                                contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
-                            } else {
-                                contextMain.showAlertDialog(getString(R.string.noSaveFiles))
+                    // присеты enfora
+                    contextMain.presetEnforaDao.getAll().collect { enforaPresets ->
 
+                        for (p in enforaPresets) {
+                            listIniDataPreset.add(
+                                IniFileModel(
+                                    p.name!!,
+                                    "Network setting Enfora1318",
+                                    p.apn!!,
+                                    "",
+                                    p.server1!!,
+                                    p.password!!,
+                                    p.login!!,
+                                    "",
+                                    p.timeout!!,
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            )
+                        }
+
+                        // присеты pm
+                        /*НУЖНО ДОПИСАТЬ ПРИСЕТЫ PM!!!!!!!!!!!!!!!*/
+
+                        // генерация файлов и сохранение
+                        if (listIniDataPreset.isNotEmpty()) {
+                            contextMain.runOnUiThread {
+                                // генерация и сохранение по выбраному пути
+                                if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
+                                    if (generationFiles.generationIniFiles(listIniDataPreset, binding.inputPath.text.toString(), requireContext()))
+                                    {
+                                        contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
+                                    } else {
+                                        contextMain.showAlertDialog(getString(R.string.noSaveFiles))
+
+                                    }
+
+                                } else {
+                                    contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
+                                }
                             }
-
-                        } else {
-                            contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
+                        } else { // нету данных
+                            contextMain.runOnUiThread {
+                                contextMain.showAlertDialog(getString(R.string.noFileSave))
+                            }
                         }
                     }
                 }
-
             }
         } catch (_: Exception) {
             contextMain.showAlertDialog(getString(R.string.noSaveFiles))
@@ -585,6 +636,7 @@ class SettingsFragment : Fragment() {
                 }
             }
         } catch (_: Exception) {}
+
     }
 
     // вывод данных для enfora
@@ -684,5 +736,72 @@ class SettingsFragment : Fragment() {
                 }
             }
         } catch (_: Exception) {}
+
+
+    }
+
+
+    // обновления данных в оперативной памяти для корректной работы с редоктированием и удалением данных
+    fun updateCurrentMemoryDataBase(nameDel: String?) {
+        // загрузка всех присетов из базы данных
+        try {
+            lifecycleScope.launch {
+                // присеты m32
+                (context as MainActivity).presetDao.getAll().collect { presets ->
+                    for (preset in presets) {
+                        // уудаляем ненужный
+                        PrisetsValue.prisets.remove(nameDel)
+
+                        PrisetsValue.prisets[preset.name!!] = Priset(
+                            preset.name, preset.mode!!, preset.apn!!,
+                            preset.port!!, preset.server!!, preset.login!!, preset.password!!
+                        )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+
+        // загрузка всех присетов enfora
+        try {
+            lifecycleScope.launch {
+                // присеты enfora
+                (context as MainActivity).presetEnforaDao.getAll().collect { presets ->
+                    for (enforaPreseet in presets) {
+                        // уудаляем ненужный
+                        PresetsEnforaValue.presets.remove(nameDel)
+
+                        PresetsEnforaValue.presets[enforaPreseet.name!!] =
+                            Enfora(
+                                0, enforaPreseet.name, enforaPreseet.apn!!,
+                                enforaPreseet.login!!, enforaPreseet.password!!,
+                                enforaPreseet.server1!!, enforaPreseet.server2!!,
+                                enforaPreseet.timeout!!, enforaPreseet.sizeBuffer!!
+                            )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+
+        // загрузка всех присетов Pm
+        try {
+            lifecycleScope.launch {
+                // присеты enfora
+                (context as MainActivity).presetPmDao.getAll().collect { presets ->
+                    for (PmPreset in presets) {
+                        // уудаляем ненужный
+                        PrisetsPmValue.presets.remove(nameDel)
+
+                        PrisetsPmValue.presets[PmPreset.name!!] =
+                            Pm(
+                                0, PmPreset.name, PmPreset.mode, PmPreset.keyNet!!,
+                                PmPreset.power!!, PmPreset.diopozone
+                            )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
     }
 }

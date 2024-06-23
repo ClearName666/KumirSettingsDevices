@@ -107,13 +107,22 @@ class UsbCommandsProtocol {
 
                             // система получения ответа и ожидание полной отправки данных
                             if (!expectationSand(context)) {
-
-                                // достигнуто ваксимальное время и нет ответа ошибка
+                                val curentData: String = context.curentData
+                                // вывод в загрузочное диалог информации
                                 (context as Activity).runOnUiThread {
-                                    context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                                    context.printInfoTermAndLoaging(command + "\n", prograss)
+                                    context.printInfoTermAndLoaging(curentData + "\n", prograss)
                                 }
-                                flagsSuccess = false
-                                break@outer
+                                if (i == CNT_SAND_COMMAND_OK) {
+                                    // достигнуто ваксимальное время и нет ответа ошибка
+                                    (context as Activity).runOnUiThread {
+                                        context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                                    }
+                                    flagsSuccess = false
+                                    break@outer
+                                } else { // пропуск для того что бы запустить заного
+                                    continue
+                                }
                             }
 
 
@@ -224,14 +233,17 @@ class UsbCommandsProtocol {
 
                         // система получения ответа и ожидание полной отправки данных
                         if (!expectationSand(context)) {
-
-                            // достигнуто ваксимальное время и нет ответа ошибка
-                            (context as Activity).runOnUiThread {
-                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                            if (i == CNT_SAND_COMMAND_OK) {
+                                // достигнуто ваксимальное время и нет ответа ошибка
+                                (context as Activity).runOnUiThread {
+                                    context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                                }
+                                flagError = true
+                                flagWorkWrite = false
+                                break@out
+                            } else { // пропуск для того что бы хапустить заного
+                                continue
                             }
-                            flagError = true
-                            flagWorkWrite = false
-                            break@out
                         }
 
                         // дополнительное услоие если не пришло не ERROR не OK

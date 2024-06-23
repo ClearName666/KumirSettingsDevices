@@ -24,6 +24,10 @@ interface PresetDao {
     @Query("UPDATE Preset SET mode = :mode, apn = :apn, server = :server, port = :port, login = :login, password = :password WHERE name = :name")
         suspend fun updateByName(name: String, mode: Int?, apn: String?, server: String?, port: String?, login: String?, password: String?)
 
+    @Query("UPDATE Preset SET name = :name, mode = :mode, apn = :apn, server = :server, port = :port, login = :login, password = :password WHERE id = :id")
+    suspend fun updateById(id: Int, name: String, mode: Int?, apn: String?, server: String?, port: String?, login: String?, password: String?)
+
+
     @Query("SELECT * FROM Preset WHERE name = :presetName LIMIT 1")
     suspend fun getFirstByName(presetName: String): Preset?
 }

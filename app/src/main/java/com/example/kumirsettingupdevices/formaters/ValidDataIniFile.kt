@@ -29,4 +29,34 @@ class ValidDataIniFile {
             else -> -1
         }
     }
+
+    fun getModeMainReverse(code: Int?): String {
+        return when (code) {
+            0 -> "kumirNet"
+            1 -> "клиент"
+            2 -> "сервер"
+            3 -> "модем"
+            else -> ""
+        }
+    }
+
+    fun getModePmReverse(code: Int?): String {
+        return when (code) {
+            0 -> "ROUTER"
+            1 -> "CANPROXY"
+            2 -> "RS485"
+            3 -> "MONITOR"
+            else -> ""
+        }
+    }
+
+    fun getBandPmReverse(code: Int?): String {
+        return when (code) {
+            0 -> "1) 864-865МГц»"
+            1 -> "2) 866-868МГц"
+            2 -> "3) 868.7-869.2МГц"
+            else -> ""
+        }
+    }
+
 }

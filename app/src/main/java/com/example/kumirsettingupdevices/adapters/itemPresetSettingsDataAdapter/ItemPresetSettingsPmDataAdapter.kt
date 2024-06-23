@@ -17,6 +17,7 @@ import com.example.kumirsettingupdevices.dataBasePreset.PmDao
 import com.example.kumirsettingupdevices.dataBasePreset.PresetDao
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
 import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
+import com.example.kumirsettingupdevices.settings.PrisetsPmValue
 import com.example.kumirsettingupdevices.settings.PrisetsValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -71,7 +72,7 @@ class ItemPresetSettingsPmDataAdapter(
                     presetPmDao.deleteByName(name)
 
                     // удаляем их опертки
-                    PresetsEnforaValue.presets.remove(name)
+                    PrisetsPmValue.presets.remove(name)
 
                     // обновлем адаптер что бы убрать пресет из доступных
                     (context as Activity).runOnUiThread {

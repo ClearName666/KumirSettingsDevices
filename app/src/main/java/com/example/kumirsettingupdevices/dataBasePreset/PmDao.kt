@@ -24,6 +24,9 @@ interface PmDao {
     @Query("UPDATE Pm SET mode = :mode, keyNet = :keyNet, power = :power, diopozone = :diopozone WHERE name = :name")
     suspend fun updateByName(name: String, mode: Int, keyNet: String?, power: String?, diopozone: Int)
 
+    @Query("UPDATE Pm SET name = :name, mode = :mode, keyNet = :keyNet, power = :power, diopozone = :diopozone WHERE id = :id")
+    suspend fun updateById(id: Int, name: String, mode: Int, keyNet: String?, power: String?, diopozone: Int)
+
     @Query("SELECT * FROM Pm WHERE name = :name LIMIT 1")
     suspend fun getFirstByName(name: String): Pm?
 }

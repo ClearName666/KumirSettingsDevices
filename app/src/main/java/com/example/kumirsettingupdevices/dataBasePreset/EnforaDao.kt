@@ -23,6 +23,9 @@ interface EnforaDao {
     @Query("UPDATE Enfora SET apn = :apn, login = :login, password = :password, server1 = :server1, server2 = :server2, timeout = :timeout, sizeBuffer = :sizeBuffer WHERE name = :name")
     suspend fun updateByName(name: String, apn: String?, login: String?, password: String?, server1: String?, server2: String?, timeout: String?, sizeBuffer: String?)
 
+    @Query("UPDATE Enfora SET name = :name, apn = :apn, login = :login, password = :password, server1 = :server1, server2 = :server2, timeout = :timeout, sizeBuffer = :sizeBuffer WHERE id = :id")
+    suspend fun updateById(id: Int, name: String, apn: String?, login: String?, password: String?, server1: String?, server2: String?, timeout: String?, sizeBuffer: String?)
+
     @Query("SELECT * FROM Enfora WHERE name = :name LIMIT 1")
     suspend fun getFirstByName(name: String): Enfora?
 }
