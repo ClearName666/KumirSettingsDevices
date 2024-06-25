@@ -184,7 +184,7 @@ tools:context=".diag.DiagFragment">
         android:id="@+id/switchAdvancedOperators"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
+        style="@style/BlueSwitch"
         app:layout_constraintBottom_toBottomOf="@+id/textTitleOperators"
         app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators" />
 

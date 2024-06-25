@@ -105,4 +105,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
     implementation ("org.ini4j:ini4j:0.5.4")
+
+
+
+    implementation("com.google.android.material:material:1.5.0")
 }

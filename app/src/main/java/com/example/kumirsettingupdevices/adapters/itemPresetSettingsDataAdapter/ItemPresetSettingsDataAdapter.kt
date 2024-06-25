@@ -65,17 +65,11 @@ class ItemPresetSettingsDataAdapter(
 
             // удаление записи из базы данных
             holder.buttonClear.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                    presetDao.deleteByName(name)
-
-                    // удаляем их опертки
-                    PrisetsValue.prisets.remove(name)
-
-                    // обновлем адаптер что бы убрать пресет из доступных
-                    (context as Activity).runOnUiThread {
-                        settingsFragment.updataDataPersetAdapter()
-                    }
-                }
+                settingsFragment.showConfirmationDialog(
+                    context,
+                    name,
+                    { del(name) }
+                )
             }
 
         }
@@ -85,5 +79,20 @@ class ItemPresetSettingsDataAdapter(
         val textName: TextView = itemView.findViewById(R.id.textNamePreset)
         val buttonClear: ImageView = itemView.findViewById(R.id.imageClear)
         val buttonEdit: ImageView = itemView.findViewById(R.id.imageEdit)
+    }
+
+    // удаление данных
+    private fun del(name: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            presetDao.deleteByName(name)
+
+            // удаляем их опертки
+            PrisetsValue.prisets.remove(name)
+
+            // обновлем адаптер что бы убрать пресет из доступных
+            (context as Activity).runOnUiThread {
+                settingsFragment.updataDataPersetAdapter()
+            }
+        }
     }
 }

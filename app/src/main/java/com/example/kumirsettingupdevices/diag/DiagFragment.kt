@@ -26,6 +26,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     private val usbCommandsProtocol = UsbCommandsProtocol()
 
     private var flagStartDiag: Boolean = false
+    private var flagViewDiag: Boolean = true
 
     // данные операторов
     private var listOperators: MutableList<ItemOperator> = mutableListOf()
@@ -34,6 +35,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     private var flagWorkAnimLoadingOperators: Boolean = true
     // поток для работы анимации
     private var animJob: Job? = null
+
 
     companion object {
         const val DROP_START_FOR_DATA: Int = 2
@@ -62,25 +64,27 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         }
 
         binding.switchAdvancedOperators.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) { // рсширеный ражим включен
-                val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOperators)
-                binding.recyclerItemOperators.adapter = itemOperatorAdapter
-                binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
-            } else { // краткий режим
-                val itemBriefly: List<ItemOperator> = listOperators.map { ItemOperator(
-                    it.operator,
-                    "",
-                    "",
-                    it.rxlev,
-                    "",
-                    it.arfnc,
-                    "",
-                    ""
-                ) }
+            if (flagViewDiag) {
+                if (isChecked) { // рсширеный ражим включен
+                    val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOperators)
+                    binding.recyclerItemOperators.adapter = itemOperatorAdapter
+                    binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+                } else { // краткий режим
+                    val itemBriefly: List<ItemOperator> = listOperators.map { ItemOperator(
+                        it.operator,
+                        "",
+                        "",
+                        it.rxlev,
+                        "",
+                        it.arfnc,
+                        "",
+                        ""
+                    ) }
 
-                val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), itemBriefly)
-                binding.recyclerItemOperators.adapter = itemOperatorAdapter
-                binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+                    val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), itemBriefly)
+                    binding.recyclerItemOperators.adapter = itemOperatorAdapter
+                    binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+                }
             }
         }
 
@@ -154,6 +158,9 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
 
     override fun printAllOperator(allOperators: String) {
 
+        //  разрешение показа операторов
+        flagViewDiag = true
+
         binding.progressBarOperators.visibility = View.GONE
 
         val operatorsString: List<String> = allOperators.split("\n")
@@ -174,26 +181,26 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
 
                     // Для краткого по умолчанию
                     var itemOperator: ItemOperator = ItemOperator(
-                        datas[0].substringAfter("\"").substringBefore("\""),
+                        "  " + datas[0].substringAfter("\"").substringBefore("\""),
                         "",
                         "",
-                        datas[3].substringAfter(":"),
+                        "  " + datas[3].substringAfter(":"),
                         "",
-                        "${frequency?.first}-${frequency?.second}",
+                        "  " + "${frequency?.first}-${frequency?.second}",
                         "",
                         ""
                     )
 
                     // добавляем все данные опараторов в глобальный лист
                     val itemOperatorGlobal = ItemOperator(
-                        datas[0].substringAfter("\"").substringBefore("\""),
-                        datas[1].substringAfter(":"),
-                        datas[2].substringAfter(":"),
-                        datas[3].substringAfter(":"),
-                        datas[4].substringAfter(":"),
-                        "${frequency?.first}-${frequency?.second}",
-                        datas[6].substringAfter(":"),
-                        datas[7].substringAfter(":")
+                        "  " + datas[0].substringAfter("\"").substringBefore("\""),
+                        "  " + datas[1].substringAfter(":"),
+                        "  " + datas[2].substringAfter(":"),
+                        "  " + datas[3].substringAfter(":"),
+                        "  " + datas[4].substringAfter(":"),
+                        "  ${frequency?.first}-${frequency?.second}",
+                        "  " + datas[6].substringAfter(":"),
+                        "  " + datas[7].substringAfter(":")
                     )
                     listOperators.add(itemOperatorGlobal)
 
@@ -228,6 +235,9 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOf())
         binding.recyclerItemOperators.adapter = itemOperatorAdapter
         binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+
+        //  запрет показа операторов
+        flagViewDiag = false
     }
 
     // перевод кaнала в частоту

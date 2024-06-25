@@ -63,17 +63,11 @@ class ItemPresetSettingsEnforaDataAdapter(
 
             // удаление записи из базы данных
             holder.buttonClear.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                    presetEnforaDao.deleteByName(name)
-
-                    // удаляем их опертки
-                    PresetsEnforaValue.presets.remove(name)
-
-                    // обновлем адаптер что бы убрать пресет из доступных
-                    (context as Activity).runOnUiThread {
-                        settingsFragment.updataDataPersetEnforaAdapter()
-                    }
-                }
+                settingsFragment.showConfirmationDialog(
+                    context,
+                    name,
+                    { del(name) }
+                )
             }
 
         }
@@ -83,5 +77,19 @@ class ItemPresetSettingsEnforaDataAdapter(
         val textName: TextView = itemView.findViewById(R.id.textNamePreset)
         val buttonClear: ImageView = itemView.findViewById(R.id.imageClear)
         val buttonEdit: ImageView = itemView.findViewById(R.id.imageEdit)
+    }
+
+    private fun del(name: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            presetEnforaDao.deleteByName(name)
+
+            // удаляем их опертки
+            PresetsEnforaValue.presets.remove(name)
+
+            // обновлем адаптер что бы убрать пресет из доступных
+            (context as Activity).runOnUiThread {
+                settingsFragment.updataDataPersetEnforaAdapter()
+            }
+        }
     }
 }

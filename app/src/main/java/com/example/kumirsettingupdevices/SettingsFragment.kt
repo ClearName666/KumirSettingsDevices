@@ -1,6 +1,7 @@
 package com.example.kumirsettingupdevices
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -26,6 +27,7 @@ import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.databinding.FragmentSettingsBinding
 import com.example.kumirsettingupdevices.filesMenager.GenerationFiles
 import com.example.kumirsettingupdevices.filesMenager.IniFileModel
+import com.example.kumirsettingupdevices.filesMenager.IniFilePmModel
 import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
 import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
@@ -50,9 +52,19 @@ class SettingsFragment : Fragment() {
 
     var fileName: String = ""
 
+    // текущие данные для выгрузки
+    val listIniDataPreset: MutableList<IniFileModel> = mutableListOf()
+    val listIninDataPm: MutableList<IniFilePmModel> = mutableListOf()
+
+
     companion object {
         private const val REQUEST_CODE = 100
         private const val DIR_PRESETS_DEFAULTE: String = "/priesets"
+
+        // для выгрузки ini файлов
+        private const val CNT_TYPE_INI_FILES: Int = 3
+        private const val MAX_CNT_TIMEOUT: Int = 20
+        private const val TIMEOUT_SAVE_INIFILE: Long = 200
     }
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -349,16 +361,52 @@ class SettingsFragment : Fragment() {
     //--------------------------------Выгрузка--------------------------------
 
     private fun dischargeIniFiles() {
-        val listIniDataPreset: MutableList<IniFileModel> = mutableListOf()
 
+        val validDataIniFile = ValidDataIniFile()
         val generationFiles = GenerationFiles()
 
+        var dataCntTypeSuc: Int = 0
         // получение данных из базы данных m32
         try {
+            // присеты enfora
+            lifecycleScope.launch {
+
+                // присеты enfora
+                contextMain.presetEnforaDao.getAll().collect { enforaPresets ->
+
+                    for (p in enforaPresets) {
+                        listIniDataPreset.add(
+                            IniFileModel(
+                                p.name!!,
+                                "Network setting Enfora1318",
+                                p.apn!!,
+                                "",
+                                p.server1!!,
+                                p.password!!,
+                                p.login!!,
+                                "",
+                                p.timeout!!,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                ""
+                            )
+                        )
+                    }
+                    dataCntTypeSuc++
+                }
+            }
+
+            // присеты m32
             lifecycleScope.launch {
                 // присеты m32
                 contextMain.presetDao.getAll().collect { presets ->
-                    val validDataIniFile = ValidDataIniFile()
                     for (p in presets) {
                         listIniDataPreset.add(
                             IniFileModel(
@@ -384,63 +432,74 @@ class SettingsFragment : Fragment() {
                             )
                         )
                     }
-                    // присеты enfora
-                    contextMain.presetEnforaDao.getAll().collect { enforaPresets ->
-
-                        for (p in enforaPresets) {
-                            listIniDataPreset.add(
-                                IniFileModel(
-                                    p.name!!,
-                                    "Network setting Enfora1318",
-                                    p.apn!!,
-                                    "",
-                                    p.server1!!,
-                                    p.password!!,
-                                    p.login!!,
-                                    "",
-                                    p.timeout!!,
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    ""
-                                )
-                            )
-                        }
-
-                        // присеты pm
-                        /*НУЖНО ДОПИСАТЬ ПРИСЕТЫ PM!!!!!!!!!!!!!!!*/
-
-                        // генерация файлов и сохранение
-                        if (listIniDataPreset.isNotEmpty()) {
-                            contextMain.runOnUiThread {
-                                // генерация и сохранение по выбраному пути
-                                if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
-                                    if (generationFiles.generationIniFiles(listIniDataPreset, binding.inputPath.text.toString(), requireContext()))
-                                    {
-                                        contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
-                                    } else {
-                                        contextMain.showAlertDialog(getString(R.string.noSaveFiles))
-
-                                    }
-
-                                } else {
-                                    contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
-                                }
-                            }
-                        } else { // нету данных
-                            contextMain.runOnUiThread {
-                                contextMain.showAlertDialog(getString(R.string.noFileSave))
-                            }
-                        }
-                    }
+                    dataCntTypeSuc++
                 }
             }
+
+            // присеты pm
+            lifecycleScope.launch {
+                // присеты m32
+                contextMain.presetPmDao.getAll().collect { pms ->
+                    for (p in pms) {
+                        listIninDataPm.add(
+                            IniFilePmModel(
+                                p.name!!,
+                                validDataIniFile.getModePmReverse(p.mode),
+                                validDataIniFile.getBandPmReverse(p.diopozone),
+                                p.power!!,
+                                p.keyNet!!
+                            )
+                        )
+                    }
+                    dataCntTypeSuc++
+                }
+            }
+
+            // поток ждет пока данные поступят в listIniDataPreset
+            Thread {
+
+                // ожидание получения всех данных
+                var cntTime: Int = 0
+                while (CNT_TYPE_INI_FILES > dataCntTypeSuc) {
+                    cntTime++
+                    if (cntTime > MAX_CNT_TIMEOUT) {
+                        contextMain.runOnUiThread {
+                            contextMain.showAlertDialog(getString(R.string.noSaveFilesTime))
+                        }
+                        break
+                    }
+                    Thread.sleep(TIMEOUT_SAVE_INIFILE)
+                }
+
+                // генерация файлов и сохранение
+
+                if (listIniDataPreset.isNotEmpty() || listIninDataPm.isNotEmpty()) {
+                    contextMain.runOnUiThread {
+                        // генерация и сохранение по выбраному пути
+                        if (binding.inputPath.text.toString().replace(" ", "").isNotEmpty()) {
+                            if (generationFiles.generationIniFiles(listIniDataPreset, binding.inputPath.text.toString(), requireContext()) &&
+                                generationFiles.generationIniFilesPm(listIninDataPm, binding.inputPath.text.toString(), requireContext()))
+                            {
+                                contextMain.showAlertDialog(getString(R.string.yesSaveFiles))
+
+                                // ояищение данных
+                                listIniDataPreset.clear()
+                            } else {
+                                contextMain.showAlertDialog(getString(R.string.noSaveFiles))
+
+                            }
+
+                        } else {
+                            contextMain.showAlertDialog(getString(R.string.nonPathSaveFile))
+                        }
+                    }
+                } else { // нету данных
+                    contextMain.runOnUiThread {
+                        contextMain.showAlertDialog(getString(R.string.noFileSave))
+                    }
+                }
+
+            }.start()
         } catch (_: Exception) {
             contextMain.showAlertDialog(getString(R.string.noSaveFiles))
         }
@@ -803,5 +862,21 @@ class SettingsFragment : Fragment() {
             }
         } catch (_: Exception) {
         }
+    }
+
+    // дислоговое окно для подтвержадения удаления
+    fun showConfirmationDialog(context: Context, name: String, onConfirm: () -> Unit) {
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(getString(R.string.delFileYesNo) + " - $name")
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.ok)) { dialog, id ->
+                onConfirm()
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.cancellation)) { dialog, id ->
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 }

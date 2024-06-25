@@ -21,7 +21,7 @@
         <View
             android:id="@+id/divider"
             android:layout_width="45dp"
-            android:layout_height="25dp"
+            android:layout_height="45dp"
             android:layout_marginStart="10dp"
             android:background="@drawable/mts__network_provider__logo_wine"
             app:layout_constraintStart_toStartOf="parent"

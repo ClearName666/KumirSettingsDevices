@@ -46,6 +46,31 @@ class GenerationFiles() {
         return true
     }
 
+    // генерация ini файлов для экспорта
+    fun generationIniFilesPm(data: List<IniFilePmModel>, dirMain: String, context: Context): Boolean {
+        for (d in data) {
+            val fileName = "${d.name}.ini"
+
+            val content = buildString {
+                appendLine("[Network setting RM81}]")
+                appendLine("Mode=${d.mode}")
+                appendLine("Band=${d.band}")
+                appendLine("Power=${d.power}")
+                appendLine("AccessKe=${d.accessKe}")
+            }
+
+            try {
+                saveFileToDownloadFolderQ(fileName, content, context, dirMain)
+            } catch (e: Exception) {
+                Log.d("IniFilePmModel", e.message.toString())
+                return false
+            }
+
+        }
+
+        return true
+    }
+
     private fun saveFileToDownloadFolderQ(fileName: String, fileContent: String, context: Context, dirMain: String) {
         val resolver = context.contentResolver
         val contentValues = ContentValues().apply {

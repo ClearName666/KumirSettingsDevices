@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BlueSwitch">
+        <item name="android:thumbTint">@color/blue_switch_thumb_color</item> <!-- Цвет переключателя -->
+        <item name="android:trackTint">@color/blue_switch_track_color</item> <!-- Цвет фона переключателя -->
+    </style>
+</resources>

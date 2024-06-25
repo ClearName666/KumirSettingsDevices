@@ -8,15 +8,15 @@
 
     <TextView
         android:id="@+id/nameUsb"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:layout_weight="1"
         android:clickable="true"
         android:gravity="center_horizontal"
         android:text="Com 1"
         android:textColor="@color/textColor"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

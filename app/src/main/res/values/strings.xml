@@ -35,6 +35,7 @@
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
     <string name="nonPathSaveFile">Путь не валиден!</string>
     <string name="noSaveFiles">Файлы не удалось сохранить!</string>
+    <string name="noSaveFilesTime">Файлы не удалось сохранить! Похоже что телефон заглючил и долго получал данные с БД!</string>
     <string name="yesSaveFiles">Файлы удалось сохранить!</string>
     <string name="noFileSave">Нет данных для сохранения!</string>
     <string name="nonPermissionsSaveFile">Не получино разрешения для сохранения!</string>
@@ -42,6 +43,7 @@
     <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>
     <string name="nonIniFile">Выберите ini файл!</string>
     <string name="nonValidIniFile">Ваш файл ini не валиден!</string>
+    <string name="delFileYesNo">Вы уверены что хотите удалить шаблон </string>
 
     <string name="errorValidPole">Не все поля введены валидно!</string>
     <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
@@ -64,6 +66,7 @@
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
     <string name="ok">Ок</string>
+    <string name="cancellation">Отмена</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
     <string name="at">at</string>
