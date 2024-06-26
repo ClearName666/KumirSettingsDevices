@@ -426,7 +426,11 @@
     <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
     <string name="startDiagTitle">Начать диагностику</string>
     <string name="operatorTitle">Оператор связи:</string>
+    <string name="BSS">BSS:</string>
+    <string name="SNR">SNR:</string>
     <string name="operatorsTitle">Операторы связи</string>
+    <string name="BaseStationsTitle">Базовые станции</string>
+    <string name="packgTitle">Пакеты</string>
     <string name="mccTitle">Kод страны(mcc):</string>
     <string name="mncTitle">Код мобильной сети(mnc):</string>
     <string name="rxlevTitle">Уровень приема(rxlev):</string>
@@ -444,6 +448,7 @@
     <string name="nonPresetData">Нет записей</string>
     <string name="loadCastomSet">Пользовательские настройки</string>
     <string name="nonFindOperator">Операторы не найдены</string>
+    <string name="nonFindBaseStations">Станции не найдены</string>
     <string name="dataLoading">Данные...</string>
     <string name="dataTitle">Данные</string>
     <string name="m32_m32litePresetTitle">Шаблоны M32, M32Lite</string>

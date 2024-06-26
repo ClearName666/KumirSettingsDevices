@@ -497,7 +497,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     fun onClickPM81Diag(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val pm81Diag = DiagPM81Fragment()
+        val pm81Diag = DiagPM81Fragment("KUMIR-RM81A READY")
         createSettingFragment(pm81Diag)
     }
 

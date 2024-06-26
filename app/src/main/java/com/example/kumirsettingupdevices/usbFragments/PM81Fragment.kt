@@ -560,6 +560,8 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
                     if (indexBitData != -1) {
                         binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
                     }
+
+
                 } catch (e: NumberFormatException) {
                     showAlertDialog(getString(R.string.notReadActPortDevice))
                 }

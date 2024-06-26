@@ -1,173 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/PM81Diag"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".diag.DiagPM81Fragment">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/PM81Diag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".diag.DiagPM81Fragment">
 
-    <ScrollView
-        android:id="@+id/ScrollSetting"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lineSettingsPort1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/fon2Element"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/textTitlenonFindBaseStations"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
+            app:layout_constraintTop_toBottomOf="@+id/textTitlenonFindBaseStations">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linePackg"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/fon2Element"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPackg">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lineSet"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/fon2Element"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/serinerNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:text="@string/serinerNumber"
+            android:textColor="@color/textColor"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lineSet" />
+
+        <TextView
+            android:id="@+id/textVersionFirmware"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="@string/versionProgram"
+            android:textColor="@color/textColor"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/serinerNumber"
+            app:layout_constraintTop_toBottomOf="@+id/lineSet" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/line2Set"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="3dp"
+            android:background="@color/fon2Element"
+            app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
+            tools:layout_editor_absoluteX="0dp">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerItemnonFindBaseStations"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="300dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set">
+        app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1">
 
-        <LinearLayout
-            android:id="@+id/LineLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/containerSettingsDevice"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:visibility="visible">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerItemnonPackg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linePackg"
+        app:layout_constraintVertical_bias="0.0" />
 
-                <TextView
-                    android:id="@+id/textName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/keyNetTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerServer" />
+    <Button
+        android:id="@+id/buttonDiagStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/textColor"
+        android:text="@string/startDiagTitle"
+        android:textColor="@color/background"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-                <TextView
-                    android:id="@+id/textNetSettings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="2dp"
-                    android:text="@string/NetworkSettings"
-                    android:textColor="@color/textColor"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toTopOf="@+id/lineSettingsNet"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/textTitlenonFindBaseStations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/BaseStationsTitle"
+        android:textColor="@color/textColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/lineSettingsNet"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="30dp"
-                    android:background="@color/fon2Element"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+    <ProgressBar
+        android:id="@+id/progressBarBaseStations"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintTop_toTopOf="@+id/recyclerItemnonFindBaseStations" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        android:id="@+id/progressBarPackg"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintTop_toBottomOf="@+id/linePackg" />
 
-                <TextView
-                    android:id="@+id/textServer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/modeWork"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lineSettingsNet" />
+    <TextView
+            android:id="@+id/textNonFindBaseStations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nonFindBaseStations"
+            android:textColor="@color/dangerous"
+            android:textSize="24sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/recyclerItemnonFindBaseStations"
+            app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
+            app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
 
-                <TextView
-                    android:id="@+id/textCures"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/powerCures"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textName" />
-
-                <TextView
-                    android:id="@+id/textRange"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="400dp"
-                    android:text="@string/rangeTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textCures" />
-
-                <Spinner
-                    android:id="@+id/spinnerServer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:background="@android:drawable/btn_dropdown"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textServer" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/DisActivPort1SetiingsPriset"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@color/fonDarkMenu"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Добавьте другие элементы здесь -->
-
-        </LinearLayout>
-    </ScrollView>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/lineSet"
-    android:layout_width="match_parent"
-    android:layout_height="2dp"
-    android:background="@color/fon2Element"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<TextView
-    android:id="@+id/serinerNumber"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="3dp"
-    android:text="@string/serinerNumber"
-    android:textColor="@color/textColor"
-    android:textSize="12sp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/lineSet" />
-
-<TextView
-    android:id="@+id/textVersionFirmware"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
-    android:text="@string/versionProgram"
-    android:textColor="@color/textColor"
-    android:textSize="12sp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/serinerNumber"
-    app:layout_constraintTop_toBottomOf="@+id/lineSet" />
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/line2Set"
-    android:layout_width="match_parent"
-    android:layout_height="2dp"
-    android:layout_marginTop="3dp"
-    android:background="@color/fon2Element"
-    app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
-    tools:layout_editor_absoluteX="0dp">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textPackg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/packgTitle"
+        android:textColor="@color/textColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerItemnonFindBaseStations" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
