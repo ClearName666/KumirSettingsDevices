@@ -1,8 +1,9 @@
 package com.example.kumirsettingupdevices.diag
 
 interface UsbDiagPm {
+    var keyNet: String
+    var mode: String
     fun printError()
-    fun printAllBaseStations(allBaseStations: String)
-    fun printAllBasePingsend(pingsend: String)
+    fun printAll(allBaseStations: String)
     fun stopDiag()
 }

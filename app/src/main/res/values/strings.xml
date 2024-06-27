@@ -52,7 +52,7 @@
     <string name="errorPOWER">Значение POWER должно быть в диапазоне от -16 до 14</string>
     <string name="errorNETKEY">Значение NETKEY не должно привышать 60 символов</string>
     <string name="errorSizeBuffer">Размер буфера должын быть в диапазоне от 0 до 65535</string>
-    <string name="errorRussionChar">Нельзя использовать русские символы!</string>
+    <string name="errorRussionChar">Нельзя использовать символы отличеные от (0..9, abcd..z, -, .)!</string>
     <string name="errorTimeOutEnfora">Таймаут должын быть в диапазоне от 3 до 1472</string>
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
     <string name="noneValidRecordMONITOR">Настроки не валидны, т.к в режиме MONITOR нужно изменять настройки интернет ключа и диопазона частоты!</string>
@@ -428,6 +428,9 @@
     <string name="operatorTitle">Оператор связи:</string>
     <string name="BSS">BSS:</string>
     <string name="SNR">SNR:</string>
+    <string name="numPackg">Номер пакета:</string>
+    <string name="signelPackg">Сигнал:</string>
+    <string name="timeOutPackg">Задержка: </string>
     <string name="operatorsTitle">Операторы связи</string>
     <string name="BaseStationsTitle">Базовые станции</string>
     <string name="packgTitle">Пакеты</string>
@@ -461,6 +464,7 @@
     <string name="pachTitle">Путь для выгрузки!</string>
     <string name="settingTitle">Настройка</string>
     <string name="diagTitle">Диагностика</string>
+    <string name="diagStopButton">Завершить диагностику</string>
     <string name="step1MainTitle">1) Подключите устройство к USB-порту с помощью адаптера КУМИР</string>
     <string name="step2MainTitle">2) Выберите свое устройство в боковом меню</string>
     <string name="step3MainTitle">3) Настройте ваше устройство</string>

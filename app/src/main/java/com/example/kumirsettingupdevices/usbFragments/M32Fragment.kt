@@ -571,10 +571,6 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
 
 
-
-
-
-
             // отоюражения настроек порта 2-------------------------------------------------------------
             val port2Config = settingMap[getString(R.string.commandGetPort2Config)]?.split(",")
 
