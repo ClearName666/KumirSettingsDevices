@@ -96,17 +96,19 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
-            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+            if (binding.inputNameSavePreset.text.toString().isNotEmpty() ) {
                 if (context is MainActivity) {
-                    context.onClickSavePreset(
-                        binding.inputNameSavePreset.text.toString(),
-                        binding.inputAPN.text.toString(),
-                        binding.inputServer1.text.toString(),
-                        binding.inputServer2.text.toString(),
-                        binding.inputLogin.text.toString(),
-                        binding.inputPassword.text.toString(),
-                        binding.inputTimeOut.text.toString(),
-                        binding.inputSizeBuffer.text.toString())
+                    if (validAll()) {
+                        context.onClickSavePreset(
+                            binding.inputNameSavePreset.text.toString(),
+                            binding.inputAPN.text.toString(),
+                            binding.inputServer1.text.toString(),
+                            binding.inputServer2.text.toString(),
+                            binding.inputLogin.text.toString(),
+                            binding.inputPassword.text.toString(),
+                            binding.inputTimeOut.text.toString(),
+                            binding.inputSizeBuffer.text.toString())
+                    }
                 }
                 binding.inputNameSavePreset.setText("")
             } else {
@@ -436,21 +438,13 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             settingMap[getString(R.string.commandGetTcpPortEnforaM31)]?.contains(getString(R.string.defaultTCPPORT)) == false) {
 
             showAlertDialog(getString(R.string.nonSettingDeviceNeedsFlashed) +
-                    getString(R.string.commandGetApnEnforaM31) + "-" +
-                    settingMap[getString(R.string.commandGetApnEnforaM31)] + "\n" +
-
-                    getString(R.string.commandServer1EnforaOrM31) + "-" +
-                    settingMap[getString(R.string.commandServer1EnforaOrM31)] + "\n" +
-
-                    getString(R.string.commandServer2EnforaOrM31) + "-" +
-                    settingMap[getString(R.string.commandServer2EnforaOrM31)] + "\n" +
-
-                    getString(R.string.commandGetLoginPasswordEnforaM31) + "-" +
-                    settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)] + "\n" +
-
-                    getString(R.string.commandGetTcpPortEnforaM31) + "-" +
-                    settingMap[getString(R.string.commandGetTcpPortEnforaM31)]
+                "\n\napn: ${binding.inputAPN.text.toString()}" +
+                "\nserver 1: ${binding.inputServer1.text.toString()}" +
+                "\nserver 2: ${binding.inputServer2.text.toString()}" +
+                "\ntcp port: ${settingMap[getString(R.string.commandGetTcpPortEnforaM31)]}" +
+                "\nтак же пароль и логен возможно не пусты "
             )
+
             return
         }
     }
@@ -533,34 +527,11 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
         dataWrite = if (binding.switchCastomSet.isChecked) {
 
-            // проверка валидности введенных данных
-            val validDataSettingsDevice = ValidDataSettingsDevice()
-            if (!validDataSettingsDevice.padtoValid(binding.inputSizeBuffer.text.toString())) {
-                showAlertDialog(getString(R.string.errorSizeBuffer))
-                return
-            }
-            if (!validDataSettingsDevice.padblkValid(binding.inputTimeOut.text.toString())) {
-                showAlertDialog(getString(R.string.errorTimeOutEnfora))
-                return
-            }
+            // проверка на валидность
+            if(!validAll()) return
 
-            // проверка на русские символы в серверах и apn
-            if (!validDataSettingsDevice.serverValid(binding.inputServer1.text.toString()) ||
-                !validDataSettingsDevice.serverValid(binding.inputServer2.text.toString()) ||
-                !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
-                showAlertDialog(getString(R.string.errorRussionChar))
-                return
-            }
-
-
-            // проверка логина и пароля
             val loginPassword: String = binding.inputLogin.text.toString().replace(" ", "")  +
                     "," + binding.inputPassword.text.toString().replace(" ", "")
-            if (!validDataSettingsDevice.loginPasswordValid(loginPassword)) {
-                showAlertDialog(getString(R.string.errorLoginPassworsd))
-                return
-            }
-
 
             modemDataW.getEnfora1318DataWrite(curentDataModem, mapOf(
                 getString(R.string.commandServer1EnforaOrM31) to binding.inputServer1.text.toString(),
@@ -637,6 +608,50 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    private fun validAll(): Boolean {
+        // проверка валидности введенных данных
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        if (!validDataSettingsDevice.padtoValid(binding.inputSizeBuffer.text.toString())) {
+            showAlertDialog(getString(R.string.errorSizeBuffer))
+            return false
+        }
+        if (!validDataSettingsDevice.padblkValid(binding.inputTimeOut.text.toString())) {
+            showAlertDialog(getString(R.string.errorTimeOutEnfora))
+            return false
+        }
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputServer1.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputServer2.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+
+        // проверка логина и пароля
+        val loginPassword: String = binding.inputLogin.text.toString().replace(" ", "")  +
+                "," + binding.inputPassword.text.toString().replace(" ", "")
+        if (!validDataSettingsDevice.loginPasswordValid(loginPassword)) {
+            showAlertDialog(getString(R.string.errorLoginPassworsd))
+            return false
+        }
+
+        // проверкка на валидность сервера 1 и сервера 2
+        if (!validDataSettingsDevice.validServer(binding.inputServer1.text.toString()) ||
+            !validDataSettingsDevice.validServer(binding.inputServer2.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidServer))
+            return false
+        }
+
+        if (!validDataSettingsDevice.validAPNEnfora(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidAPNEnfora))
+            return false
+        }
+
+        return true
     }
 
     override fun printPriset(priset: Enfora) {

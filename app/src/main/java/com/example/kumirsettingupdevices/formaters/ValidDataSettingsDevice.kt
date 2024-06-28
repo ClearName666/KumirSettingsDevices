@@ -18,6 +18,8 @@ class ValidDataSettingsDevice {
         const val POWER_MAX: Int = 14
         const val POWER_MIN: Int = -16
 
+        const val KEYNET_CHAR_MAX: Int = 60
+
 
         // enfora
         const val PADBLK_MAX: Int = 1472
@@ -25,7 +27,48 @@ class ValidDataSettingsDevice {
 
         const val PADTO_MAX: Int = 65535
         const val PADTO_MIN: Int = 0
+
+        const val APN_CHAR_MAX: Int = 128
+
+
+        // m32
+        const val PROV_CHAR_MAX = 63
+        const val PROV_CHAR_MIN = 0
+
+        // пин код для sim
+        const val PIN_SIM_CHAR = 4
     }
+
+    fun validPM81KeyNet(keyNet: String): Boolean {
+        return keyNet.length <= KEYNET_CHAR_MAX
+    }
+
+    fun validAPNEnfora(apn: String): Boolean {
+        return apn.length <= APN_CHAR_MAX
+    }
+
+    fun validServer(server: String): Boolean {
+        val ipPattern = "^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$".toRegex()
+
+        // Проверяем, соответствует ли строка регулярному выражению
+        val matchResult = ipPattern.matchEntire(server) ?: return false
+        // Получаем группы чисел из совпадения
+        val (part1, part2, part3, part4) = matchResult.destructured
+        // Проверяем, что каждое число находится в диапазоне от 0 до 255
+        return listOf(part1, part2, part3, part4).all { it.toInt() in 0..255 }
+    }
+
+
+    fun charPROV_CHAR_MAXValid(str: String): Boolean {
+        return str.length <= PROV_CHAR_MAX
+    }
+
+    // проверка паролей на смс и сим
+    fun simPasswordValid(simPin: String): Boolean {
+        return simPin.length == PIN_SIM_CHAR
+    }
+
+
     // проверка логина и пароля
     fun loginPasswordValid(loginPassword: String): Boolean {
         if (loginPassword.split(",").size != 2) {

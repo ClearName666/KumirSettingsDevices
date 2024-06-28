@@ -123,7 +123,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
                 //usbCommandsProtocol.threadDiag.interrupt()
                 usbCommandsProtocol.flagWorkDiagPm = false
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
 
         // очещение буфера данных

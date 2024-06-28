@@ -103,12 +103,15 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         binding.buttonSavePreset.setOnClickListener {
             if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
                 if (context is MainActivity) {
-                    context.onClickSavePreset(
-                        binding.inputNameSavePreset.text.toString(),
-                        binding.spinnerServer.selectedItemPosition,
-                        binding.inputNetKey.text.toString(),
-                        binding.inputPowerCures.text.toString(),
-                        binding.spinnerRange.selectedItemPosition)
+                    if (validAll()) {
+                        context.onClickSavePreset(
+                            binding.inputNameSavePreset.text.toString(),
+                            binding.spinnerServer.selectedItemPosition,
+                            binding.inputNetKey.text.toString(),
+                            binding.inputPowerCures.text.toString(),
+                            binding.spinnerRange.selectedItemPosition
+                        )
+                    }
                 }
                 binding.inputNameSavePreset.setText("")
             } else {
@@ -457,40 +460,7 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     override fun writeSettingStart() {
 
-        val validDataSettingsDevice = ValidDataSettingsDevice()
-
-        // проверка на русские символы в серверах и apn
-        if (!validDataSettingsDevice.serverValid(binding.inputNetKey.text.toString())) {
-            showAlertDialog(getString(R.string.errorRussionChar))
-            return
-        }
-
-        // проверки на валидность POWER
-        if (!validDataSettingsDevice.powerValid(binding.inputPowerCures.text.toString()
-            .replace("\\s+".toRegex(), ""))) {
-
-            showAlertDialog(getString(R.string.errorPOWER))
-            return
-
-        } else if (binding.inputNetKey.text?.length!! > 60) {
-            showAlertDialog(getString(R.string.errorPOWER))
-            return
-        }
-
-        // проверка на
-        /*
-           3) at$mode=MONITOR
-            - если поля AT$BAND, AT$NETKEY не изменялись (по умолчанию), то тогда не записывать новые значения в РМ81
-            - если поля AT$BAND, AT$NETKEY изменялись, то AT$BAND=значение, AT$NETKEY=значение.
-        */
-        if (binding.spinnerServer.selectedItem.toString() == getString(R.string.devmodeMONITOR) &&
-            binding.inputNetKey.text.toString() == netKey &&
-            (binding.spinnerRange.selectedItemPosition + 1).toString() == band &&
-            mode == getString(R.string.devmodeMONITOR)) {
-
-            showAlertDialog(getString(R.string.noneValidRecordMONITOR))
-            return
-        }
+        if (!validAll()) return
 
         var parityPort1 = "N"
         when(binding.spinnerSelectParityPort1.selectedItemPosition) {
@@ -622,6 +592,45 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    private fun validAll(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputNetKey.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+        // проверки на валидность POWER
+        if (!validDataSettingsDevice.powerValid(binding.inputPowerCures.text.toString()
+                .replace("\\s+".toRegex(), ""))) {
+
+            showAlertDialog(getString(R.string.errorPOWER))
+            return false
+
+        } else if (!validDataSettingsDevice.validPM81KeyNet(binding.inputNetKey.text.toString())) {
+            showAlertDialog(getString(R.string.errorNETKEY))
+            return false
+        }
+
+        // проверка на
+        /*
+           3) at$mode=MONITOR
+            - если поля AT$BAND, AT$NETKEY не изменялись (по умолчанию), то тогда не записывать новые значения в РМ81
+            - если поля AT$BAND, AT$NETKEY изменялись, то AT$BAND=значение, AT$NETKEY=значение.
+        */
+        if (binding.spinnerServer.selectedItem.toString() == getString(R.string.devmodeMONITOR) &&
+            binding.inputNetKey.text.toString() == netKey &&
+            (binding.spinnerRange.selectedItemPosition + 1).toString() == band &&
+            mode == getString(R.string.devmodeMONITOR)) {
+
+            showAlertDialog(getString(R.string.noneValidRecordMONITOR))
+            return false
+        }
+
+        return true
     }
 
     override fun printPriset(priset: Pm) {

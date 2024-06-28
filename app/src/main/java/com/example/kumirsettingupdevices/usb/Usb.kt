@@ -374,11 +374,9 @@ class Usb(private val context: Context) {
         try {
             if (connection != null) {
                 try {
-                    Log.d("errorConnect", "1")
                     usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(
                         curentDevice, connection)
                     usbSerialDevice?.open()
-                    Log.d("errorConnect", "2")
                     (context as Activity).runOnUiThread {
                         if (context is UsbActivityInterface) {
                             context.showDeviceName(curentDevice.productName.toString())
@@ -386,17 +384,14 @@ class Usb(private val context: Context) {
                     }
 
 
-                    Log.d("errorConnect", "3")
                     usbSerialDevice?.let {
                         if (it.open()) {
-                            Log.d("errorConnect", "4")
                             val readCallback = UsbReadCallback { bytes ->
                                 if (!flagIgnorRead) {
                                     printUIThread(String(bytes, Charsets.UTF_8), bytes)
                                 }
                             }
 
-                            Log.d("errorConnect", "5")
                             // чтение cts
                             val ctsCallback =
                                 UsbCTSCallback { state ->
@@ -413,7 +408,6 @@ class Usb(private val context: Context) {
                                     }
                                 }
 
-                            Log.d("errorConnect", "6")
                             // чтение dsr
                             val dsrCallback =
                                 UsbDSRCallback { state ->
@@ -430,27 +424,21 @@ class Usb(private val context: Context) {
                                     }
                                 }
 
-                            Log.d("errorConnect", "7")
                             it.read(readCallback)
                             it.getCTS(ctsCallback)
                             it.getDSR(dsrCallback)
                         }
                     }
-                    Log.d("errorConnect", "8")
                     if (context is UsbActivityInterface) {
-                        Log.d("errorConnect", "9")
                         context.showButtonConnection(true)
                     }
 
-                    Log.d("errorConnect", "10")
                     onStartSerialSetting()
                     deviceUsb = curentDevice
                     curentDeviceName = curentDevice.deviceId.toString()
 
-                    Log.d("errorConnect", "11")
                     // поток для отправки в фоновом режиме at команды
                     Thread {
-                        Log.d("errorConnect", "12")
                         flagAtCommand = true
                         while (flagAtCommand) {
                             while (flagAtCommandYesNo) {
@@ -467,7 +455,6 @@ class Usb(private val context: Context) {
 
                     }.start()
 
-                    Log.d("errorConnect", "13")
                     // постоянная проверка подключения к устройству
                     Thread {
                         if (context is UsbActivityInterface) {
@@ -478,18 +465,15 @@ class Usb(private val context: Context) {
                     }.start()
 
                 } catch (e: IOException) {
-                    Log.d("errorConnect", "14")
                     printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))
 
                     onClear()
                 }
             } else {
-                Log.d("errorConnect", "15")
                 // Обработка ошибки подключения
                 printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))
             }
         } catch (e: Exception) {
-            Log.d("errorConnect", "16")
             // Обработка исключений
             printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))
 

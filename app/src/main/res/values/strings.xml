@@ -17,9 +17,10 @@
     <string name="notReadDevice">Вы еще не прочитали устройство!</string>
     <string name="notUseSerialPort">Нельзя читать или записывать во время проверки сигнала!</string>
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
-    <string name="notReadRange">Не удалось получить диапазон устройства устройства!</string>
+    <string name="notReadRange">Не удалось получить диапазон устройства!</string>
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
     <string name="notDeviceType">Вы перепутали устройство у вас - </string>
+    <string name="notDeviceTypeApp">Поступил неизвестный индитификатор! Выключите ваш модем и попробуйте еще раз! Убедитесь что он поддерживаемый!</string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
     <string name="errorSpeed">Неполадка перключения скоростей!</string>
     <string name="errorSendDataRead"> - не прочелся по какой то причине!</string>
@@ -46,17 +47,24 @@
     <string name="delFileYesNo">Вы уверены что хотите удалить шаблон </string>
 
     <string name="errorValidPole">Не все поля введены валидно!</string>
-    <string name="errorKEEPALIVE">Значение KEEPALIVE должно быть в диапазоне от 10 до 600</string>
-    <string name="errorCTIMEOUT">Значение CTIMEOUT должно быть в диапазоне от 1 до 4320</string>
-    <string name="errorTCPPORT">Значение TCPPORT должно быть в диапазоне от 1024 до 65535</string>
-    <string name="errorPOWER">Значение POWER должно быть в диапазоне от -16 до 14</string>
-    <string name="errorNETKEY">Значение NETKEY не должно привышать 60 символов</string>
+    <string name="errorValidAPN">Длина APN не должена привышать 63 символа</string>
+    <string name="errorValidIPDNS">Длина Адреса сервера не должена привышать 63 символа</string>
+    <string name="errorValidLogin">Длина логина не должна привышать 63 символа</string>
+    <string name="errorValidPassword">Длина пароля не должна привышать 63 символа</string>
+    <string name="errorValidSim">Пин код для sim должен состоять из 4 цыфр</string>
+    <string name="errorKEEPALIVE">Время отправки сигнала должно быть в диапазоне от 10 до 600</string>
+    <string name="errorCTIMEOUT">Время ожидания подключения должно быть в диапазоне от 1 до 4320</string>
+    <string name="errorTCPPORT">TCP порт должно быть в диапазоне от 1024 до 65535</string>
+    <string name="errorPOWER">Мощность излучения должно быть в диапазоне от -16 до 14</string>
+    <string name="errorNETKEY">Ключ доступа к сети не должно привышать 60 символов</string>
     <string name="errorSizeBuffer">Размер буфера должын быть в диапазоне от 0 до 65535</string>
     <string name="errorRussionChar">Нельзя использовать символы отличеные от (0..9, abcd..z, -, .)!</string>
-    <string name="errorTimeOutEnfora">Таймаут должын быть в диапазоне от 3 до 1472</string>
+    <string name="errorTimeOutEnfora">Таймаут должен быть в диапазоне от 3 до 1472</string>
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
-    <string name="noneValidRecordMONITOR">Настроки не валидны, т.к в режиме MONITOR нужно изменять настройки интернет ключа и диопазона частоты!</string>
-    
+    <string name="noneValidRecordMONITOR">Настройки не были изменены. Запись не требуется</string>
+    <string name="errorValidServer">1-ый или 2-ый сервер выгладят не валидно! Правильный формат записи (0-255).(0-255).(0-255).(0-255)</string>
+    <string name="errorValidAPNEnfora">Длина APN не должена привышать 128 символов</string>
+
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>

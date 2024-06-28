@@ -107,7 +107,11 @@ class UsbCommandsProtocol {
                             // очищение прошлых данных
                             context.curentData = ""
 
-                            context.usb.writeDevice(command, false)
+                            // если неудачно отправили то выход
+                            if (!context.usb.writeDevice(command, false)) {
+                                flagsSuccess = false
+                                break@outer
+                            }
 
                             // система получения ответа и ожидание полной отправки данных
                             if (!expectationSand(context)) {
@@ -232,7 +236,12 @@ class UsbCommandsProtocol {
                         context.curentData = ""
 
                         val dataSend: String = key + value
-                        context.usb.writeDevice(dataSend, false)
+
+                        // если неудачно отправили то выход
+                        if (!context.usb.writeDevice(dataSend, false)) {
+                            flagError = true
+                            break@out
+                        }
 
 
                         // система получения ответа и ожидание полной отправки данных
@@ -276,7 +285,7 @@ class UsbCommandsProtocol {
                                 }
                                 flagWorkWrite = false
                                 flagError = true
-                                break
+                                break@out
                             } else {
                                 continue
                             }
@@ -345,7 +354,16 @@ class UsbCommandsProtocol {
                     // очищение прошлых данных
                     context.curentData = ""
 
-                    context.usb.writeDevice(command, false)
+
+                    // если неудачно отправили то выход
+                    if (!context.usb.writeDevice(command, false)) {
+                        (context as Activity).runOnUiThread {
+                            // меняем текст кнопки
+                            if (flagWorkChackSignal)
+                                diagSiagnalIntarface.onErrorStopChackSignal()
+                        }
+                        break@out
+                    }
 
                     // система получения ответа и ожидание полной отправки данных
                     if (!expectationSand(context)) {
@@ -422,7 +440,11 @@ class UsbCommandsProtocol {
                 // серийный номер ...
                 for (i in 0..CNT_SAND_COMMAND_OK) {
                     context.curentData = ""
-                    context.usb.writeDevice(context.getString(R.string.commandGetSerialNum))
+
+                    if(!context.usb.writeDevice(context.getString(R.string.commandGetSerialNum))) {
+                        flagSucGetSerAndVersion = false
+                        break
+                    }
 
                     // система получения ответа и ожидание полной отправки данных
                     if (!expectationSand(context)) {
@@ -461,7 +483,12 @@ class UsbCommandsProtocol {
                 // верисия прошивки ...
                 for (i in 0..CNT_SAND_COMMAND_OK) {
                     context.curentData = ""
-                    context.usb.writeDevice(context.getString(R.string.commandGetVersionFirmware))
+
+
+                    if(!context.usb.writeDevice(context.getString(R.string.commandGetVersionFirmware))) {
+                        flagSucGetSerAndVersion = false
+                        break
+                    }
 
                     // система получения ответа и ожидание полной отправки данных
                     if (!expectationSand(context)) {
@@ -510,7 +537,10 @@ class UsbCommandsProtocol {
                     }
 
 
-                    context.usb.writeDevice(command, false)
+
+                    if(!context.usb.writeDevice(command, false)) {
+                        flagWorkDiag = false
+                    }
 
                     // ожидание полной отправки данных (end - конец данных)
                     var timeMaxIndex: Int = 50
@@ -598,6 +628,7 @@ class UsbCommandsProtocol {
                 // серийный номер ...
                 for (i in 0..CNT_SAND_COMMAND_OK) {
                     context.curentData = ""
+
                     context.usb.writeDevice(context.getString(R.string.commandGetSerialNum))
 
                     // система получения ответа и ожидание полной отправки данных

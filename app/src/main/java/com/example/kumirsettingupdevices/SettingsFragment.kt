@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -158,6 +157,9 @@ class SettingsFragment : Fragment() {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.spinnerSaveMode.adapter = adapter
 
+                // сохраняем имя для того что бы в случае если оно будет пустым заменить его на старое
+                val name: String? = preset.name
+
                 // подставляем данные для редоктирования
                 binding.inputSaveName.setText(preset.name)
                 binding.spinnerSaveMode.setSelection(preset.mode!!)
@@ -179,14 +181,14 @@ class SettingsFragment : Fragment() {
                 // на кнопку сохранить вешаем событие сохренения
                 binding.buttonSavePresetEdit.setOnClickListener {
                     // проверка валидности данных
-                    val validDataSettingsDevice = ValidDataSettingsDevice()
-                    if (validDataSettingsDevice.tcpPortValid(binding.inputSavePort.text.toString())) {
+                    if (validPreset()) {
                         lifecycleScope.launch {
                             try {
                                 // присеты m32
                                 contextMain.presetDao.updateById(
                                     preset.id,
-                                    binding.inputSaveName.text.toString(),
+                                    if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
+                                        name!! else binding.inputSaveName.text.toString(),
                                     binding.spinnerSaveMode.selectedItemPosition,
                                     binding.inputSaveAPN.text.toString(),
                                     binding.inputSaveServer1.text.toString(),
@@ -208,8 +210,6 @@ class SettingsFragment : Fragment() {
                             //  обновляем данные в памяти
                             updateCurrentMemoryDataBase(preset.name)
                         }
-                    } else {
-                        contextMain.showAlertDialog(getString(R.string.errorTCPPORT))
                     }
                 }
             }
@@ -227,6 +227,9 @@ class SettingsFragment : Fragment() {
                 binding.inputSaveTimeout.setText(curentEnfora.timeout)
                 binding.inputSaveSizeBuffer.setText(curentEnfora.sizeBuffer)
 
+                // сохраняем имя для того что бы в случае если оно будет пустым заменить его на старое
+                val name: String? = curentEnfora.name
+
                 // активируем нужные поля
                 binding.layoutInputSaveName.visibility = View.VISIBLE
                 binding.layoutInputSaveAPN.visibility = View.VISIBLE
@@ -240,15 +243,14 @@ class SettingsFragment : Fragment() {
                 // на кнопку сохранить вешаем событие сохренения
                 binding.buttonSavePresetEdit.setOnClickListener {
                     // проверка валидности данных
-                    val validDataSettingsDevice = ValidDataSettingsDevice()
-                    if (validDataSettingsDevice.padtoValid(binding.inputSaveTimeout.text.toString()) &&
-                        validDataSettingsDevice.padblkValid(binding.inputSaveSizeBuffer.text.toString())) {
+                    if (validEnfora()) {
                         lifecycleScope.launch {
                             try {
                                 // присеты m32
                                 contextMain.presetEnforaDao.updateById(
                                     enfora.id,
-                                    binding.inputSaveName.text.toString(),
+                                    if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
+                                        name!! else binding.inputSaveName.text.toString(),
                                     binding.inputSaveAPN.text.toString(),
                                     binding.inputSaveLogin.text.toString(),
                                     binding.inputSavePassword.text.toString(),
@@ -270,8 +272,6 @@ class SettingsFragment : Fragment() {
                             //  обновляем данные в памяти
                             updateCurrentMemoryDataBase(enfora.name)
                         }
-                    } else {
-                        contextMain.showAlertDialog(getString(R.string.errorValidPole))
                     }
                 }
             }
@@ -312,6 +312,8 @@ class SettingsFragment : Fragment() {
                 binding.spinnerSaveMode.setSelection(curentPm.mode)
                 binding.spinnerSaveRenge.setSelection(curentPm.diopozone)
 
+                val name: String? = curentPm.name
+
                 // активация нужных полей
                 binding.layoutInputSaveName.visibility = View.VISIBLE
                 binding.layoutinputSaveKeyNet.visibility = View.VISIBLE
@@ -322,15 +324,14 @@ class SettingsFragment : Fragment() {
                 // на кнопку сохранить вешаем событие сохренения
                 binding.buttonSavePresetEdit.setOnClickListener {
                     // проверка валидности данных
-                    val validDataSettingsDevice = ValidDataSettingsDevice()
-                    if (binding.inputSaveKeyNet.text.toString().length < 61 &&
-                        validDataSettingsDevice.powerValid(binding.inputSavePower.text.toString())) {
+                    if (validPm()) {
                         lifecycleScope.launch {
                             try {
                                 // присеты m32
                                 contextMain.presetPmDao.updateById(
                                     pm.id,
-                                    binding.inputSaveName.text.toString(),
+                                    if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
+                                        name!! else binding.inputSaveName.text.toString(),
                                     binding.spinnerSaveMode.selectedItemPosition,
                                     binding.inputSaveKeyNet.text.toString(),
                                     binding.inputSavePower.text.toString(),
@@ -349,8 +350,6 @@ class SettingsFragment : Fragment() {
                             //  обновляем данные в памяти
                             updateCurrentMemoryDataBase(pm.name)
                         }
-                    } else {
-                        contextMain.showAlertDialog(getString(R.string.errorValidPole))
                     }
                 }
             }
@@ -878,5 +877,107 @@ class SettingsFragment : Fragment() {
             }
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun validPreset(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputSaveServer1.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputSaveAPN.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        } else if (!validDataSettingsDevice.tcpPortValid(binding.inputSavePort.text.toString().replace("\\s+".toRegex(), ""))) {
+            contextMain.showAlertDialog(getString(R.string.errorTCPPORT))
+            return false
+        }
+
+        // проверки на вaлидность 63 символа
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputSaveAPN.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorValidAPN))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputSaveServer1.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorValidIPDNS))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputSaveLogin.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorValidLogin))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputSavePassword.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+
+        return true
+    }
+
+    private fun validEnfora(): Boolean {
+        // проверка валидности введенных данных
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        if (!validDataSettingsDevice.padtoValid(binding.inputSaveSizeBuffer.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorSizeBuffer))
+            return false
+        }
+        if (!validDataSettingsDevice.padblkValid(binding.inputSaveTimeout.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorTimeOutEnfora))
+            return false
+        }
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputSaveServer1.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputSaveServer2.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputSaveAPN.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+
+        // проверка логина и пароля
+        val loginPassword: String = binding.inputSaveLogin.text.toString().replace(" ", "")  +
+                "," + binding.inputSavePassword.text.toString().replace(" ", "")
+        if (!validDataSettingsDevice.loginPasswordValid(loginPassword)) {
+            contextMain.showAlertDialog(getString(R.string.errorLoginPassworsd))
+            return false
+        }
+
+        // проверкка на валидность сервера 1 и сервера 2
+        if (!validDataSettingsDevice.validServer(binding.inputSaveServer1.text.toString()) ||
+            !validDataSettingsDevice.validServer(binding.inputSaveServer2.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorValidServer))
+            return false
+        }
+
+        if (!validDataSettingsDevice.validAPNEnfora(binding.inputSaveAPN.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorValidAPNEnfora))
+            return false
+        }
+
+        return true
+    }
+
+    private fun validPm(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputSaveKeyNet.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+        // проверки на валидность POWER
+        if (!validDataSettingsDevice.powerValid(binding.inputSavePower.text.toString()
+                .replace("\\s+".toRegex(), ""))) {
+
+            contextMain.showAlertDialog(getString(R.string.errorPOWER))
+            return false
+
+        } else if (!validDataSettingsDevice.validPM81KeyNet(binding.inputSaveKeyNet.text.toString())) {
+            contextMain.showAlertDialog(getString(R.string.errorNETKEY))
+            return false
+        }
+
+        return true
     }
 }

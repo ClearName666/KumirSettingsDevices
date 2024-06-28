@@ -56,7 +56,9 @@ class UsbModBasCommandProtocol {
                         // очищение прошлых данных
                         context.curentDataByte = byteArrayOf()
 
-                        context.usb.writeDevice("", false, command)
+                        if(!context.usb.writeDevice("", false, command)) {
+                            break@end
+                        }
 
 
 
@@ -166,7 +168,10 @@ class UsbModBasCommandProtocol {
                         // очищение прошлых данных
                         context.curentDataByte = byteArrayOf()
 
-                        context.usb.writeDevice("", false, command)
+
+                        if(!context.usb.writeDevice("", false, command)) {
+                            break@end
+                        }
 
 
 

@@ -101,15 +101,17 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.buttonSavePreset.setOnClickListener {
             if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
                 if (context is MainActivity) {
-                    context.onClickSavePreset(
-                        binding.inputNameSavePreset.text.toString(),
-                        0,
-                        binding.inputAPN.text.toString(),
-                        binding.inputIPDNS.text.toString(),
-                        "1",
-                        binding.inputTextLoginGPRS.text.toString(),
-                        binding.inputPasswordGPRS.text.toString()
-                    )
+                    if (validAll()) {
+                        context.onClickSavePreset(
+                            binding.inputNameSavePreset.text.toString(),
+                            0,
+                            binding.inputAPN.text.toString(),
+                            binding.inputIPDNS.text.toString(),
+                            "1",
+                            binding.inputTextLoginGPRS.text.toString(),
+                            binding.inputPasswordGPRS.text.toString()
+                        )
+                    }
                 }
                 binding.inputNameSavePreset.setText("")
             } else {
@@ -397,6 +399,8 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     override fun writeSettingStart() {
 
+        if (!validAll()) return
+
         val formatDataProtocol = FormatDataProtocol()
         val dataMap: MutableMap<String, String> = mutableMapOf(
             getString(R.string.commandSetDataCore) to "apn=${binding.inputAPN.text}," +
@@ -464,6 +468,44 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+
+    // проверка валидности
+    private fun validAll(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+
+        // проверки на вaлидность 63 символа
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidAPN))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputIPDNS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidIPDNS))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputTextLoginGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidLogin))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+
+        return true
     }
 
     override fun printPriset(priset: Priset) {

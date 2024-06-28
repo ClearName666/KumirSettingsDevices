@@ -86,6 +86,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     lateinit var presetEnforaDao: EnforaDao
     lateinit var presetPmDao: PmDao
 
+    // список с устройств с котрыми можно работать
+    private val devicesTypsAll: String =
+        "KUMIR-К21К23 READY" +
+        "KUMIR-M32 READY" +
+        "KUMIR-M32LITE READY" +
+        "KUMIR-RM81A READY"
 
 
     companion object {
@@ -809,8 +815,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                             }
                         } else {
                             runOnUiThread {
-                                showAlertDialog(getString(R.string.notDeviceType) +
-                                        "<" + curentData + ">")
+                                // если устройство известное то
+                                if (devicesTypsAll.contains(curentData.drop(2).dropLast(2))) {
+                                    showAlertDialog(getString(R.string.notDeviceType) +
+                                            "<" + curentData + ">")
+                                } else {
+                                    showAlertDialog(getString(R.string.notDeviceTypeApp))
+                                }
                             }
                         }
 
@@ -874,8 +885,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                             }
                         } else {
                             runOnUiThread {
-                                showAlertDialog(getString(R.string.notDeviceType) +
-                                        "<" + curentData + ">")
+                                // если устройство известное то
+                                if (devicesTypsAll.contains(curentData.drop(2).dropLast(2))) {
+                                    showAlertDialog(getString(R.string.notDeviceType) +
+                                            "<" + curentData + ">")
+                                } else {
+                                    showAlertDialog(getString(R.string.notDeviceTypeApp))
+                                }
                             }
                         }
 

@@ -86,14 +86,17 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.buttonSavePreset.setOnClickListener {
             if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
                 if (context is MainActivity) {
-                    context.onClickSavePreset(
-                        binding.inputNameSavePreset.text.toString(),
-                        binding.spinnerServer.selectedItemPosition,
-                        binding.inputAPN.text.toString(),
-                        binding.inputIPDNS.text.toString(),
-                        binding.inputTCP.text.toString(),
-                        binding.inputTextLoginGPRS.text.toString(),
-                        binding.inputPasswordGPRS.text.toString())
+                    if (validAll()) {
+                        context.onClickSavePreset(
+                            binding.inputNameSavePreset.text.toString(),
+                            binding.spinnerServer.selectedItemPosition,
+                            binding.inputAPN.text.toString(),
+                            binding.inputIPDNS.text.toString(),
+                            binding.inputTCP.text.toString(),
+                            binding.inputTextLoginGPRS.text.toString(),
+                            binding.inputPasswordGPRS.text.toString()
+                        )
+                    }
                 }
                 binding.inputNameSavePreset.setText("")
             } else {
@@ -456,32 +459,8 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     }
 
     override fun writeSettingStart() {
-        val validDataSettingsDevice = ValidDataSettingsDevice()
-
-        // проверка на русские символы в серверах и apn
-        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
-            showAlertDialog(getString(R.string.errorRussionChar))
-            return
-        }
-
-        // проверки на валидность keepalive ctimeout tcpPort
-        if (!validDataSettingsDevice.keepaliveValid(
-                binding.inputTimeOutKeeplive.text.toString().replace("\\s+".toRegex(), ""))) {
-
-            showAlertDialog(getString(R.string.errorKEEPALIVE))
-            return
-
-        } else if (!validDataSettingsDevice.ctimeoutValid(
-                binding.inputTimeoutConnection.text.toString().replace("\\s+".toRegex(), ""))) {
-            showAlertDialog(getString(R.string.errorCTIMEOUT))
-            return
-
-        } else if (!validDataSettingsDevice.tcpPortValid(
-                binding.inputTCP.text.toString().replace("\\s+".toRegex(), ""))) {
-            showAlertDialog(getString(R.string.errorTCPPORT))
-            return
-        }
+        // проверка на валидность
+        if (!validAll()) return
 
         var parityPort1 = "N"
         when(binding.spinnerSelectParityPort1.selectedItemPosition) {
@@ -598,6 +577,77 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    private fun validAll(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+        // проверки на валидность keepalive ctimeout tcpPort
+        if (!validDataSettingsDevice.keepaliveValid(
+                binding.inputTimeOutKeeplive.text.toString().replace("\\s+".toRegex(), ""))) {
+
+            showAlertDialog(getString(R.string.errorKEEPALIVE))
+            return false
+
+        } else if (!validDataSettingsDevice.ctimeoutValid(
+                binding.inputTimeoutConnection.text.toString().replace("\\s+".toRegex(), ""))) {
+            showAlertDialog(getString(R.string.errorCTIMEOUT))
+            return false
+
+        } else if (!validDataSettingsDevice.tcpPortValid(
+                binding.inputTCP.text.toString().replace("\\s+".toRegex(), ""))) {
+            showAlertDialog(getString(R.string.errorTCPPORT))
+            return false
+        }
+
+        // проверки на вaлидность 63 символа
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidAPN))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputIPDNS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidIPDNS))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputTextLoginGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidLogin))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+
+
+        // проверка на 4 символа пароля сим и смс кода
+        if (binding.switchPinCodeSmsCommand.isChecked) {
+            if (binding.inputPinCodeCommand.text?.isNotEmpty() != false &&
+                !validDataSettingsDevice.simPasswordValid(binding.inputPinCodeCommand.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidSim))
+                return false
+            }
+        }
+
+        if (binding.switchPinCodeSmsCard.isChecked) {
+            if (binding.inputPinCodeSmsCard.text?.isNotEmpty() != false &&
+                !validDataSettingsDevice.simPasswordValid(binding.inputPinCodeSmsCard.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidSim))
+                return false
+            }
+        }
+
+        return true
     }
 
     override fun printPriset(priset: Priset) {

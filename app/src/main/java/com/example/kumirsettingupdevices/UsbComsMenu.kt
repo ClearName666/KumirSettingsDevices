@@ -15,11 +15,15 @@ import com.example.kumirsettingupdevices.model.recyclerModel.ItemUsbComsView
 
 class UsbComsMenu : Fragment() {
     companion object {
-        const val TIMEOUT_VIEW_COM: Long = 100
+        const val TIMEOUT_VIEW_COM: Long = 10
     }
     private var flagActivThreadComsView: Boolean = true
 
     private lateinit var showElements: FragmentUsbComsMenuBinding
+
+
+    // количество доступных com
+    var cnt_coms: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -43,16 +47,21 @@ class UsbComsMenu : Fragment() {
                     ItemUsbComsView(nameUsb = name)
                 }
 
-                val itemUsbComsAdapter = ItemUsbComsAdapter(requireContext(), usbDeviceItems)
+                // провеерка были ли новые подключения
+                if (cnt_coms != usbDeviceItems.size) {
+                    cnt_coms = usbDeviceItems.size
+                    // если да то обновлем адаптер
+                    val itemUsbComsAdapter = ItemUsbComsAdapter(requireContext(), usbDeviceItems)
 
-                // вывод в главном потоке
-                val context: Context = requireContext()
-                (context as Activity).runOnUiThread {
-                    if (flagActivThreadComsView) { // дополнительная проверка вдруг поток уже закрыт
-                        showElements.comsUsbItem.adapter = itemUsbComsAdapter
-                        showElements.comsUsbItem.layoutManager = LinearLayoutManager(requireContext())
+                    // вывод в главном потоке
+                    val context: Context = requireContext()
+                    (context as Activity).runOnUiThread {
+                        if (flagActivThreadComsView) { // дополнительная проверка вдруг поток уже закрыт
+                            showElements.comsUsbItem.adapter = itemUsbComsAdapter
+                            showElements.comsUsbItem.layoutManager = LinearLayoutManager(requireContext())
+                        }
+
                     }
-
                 }
 
                 // задаержка для более низкой нагрузки

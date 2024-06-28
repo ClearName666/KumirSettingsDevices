@@ -130,16 +130,27 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
 
     override fun onPrintSignal(signal: String, errors: String) {
         // переводим сигнал в проценты по формуле
-        var signalLevel: Int = 0
+        var signalLevel: Double = 0.0
         try {
-            signalLevel = signal.toInt()
-            if (signalLevel != 99) {
+            signalLevel = signal.replace(" ", "").toDouble()
+            if (signalLevel != 99.0) {
                 signalLevel = signalLevel / 32 * 100
             }
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+            return
+        }
+
+        // ули ошибка равна 99 то 0
+        var errorInt: Double = 0.0
+        try {
+            errorInt = errors.replace(" ", "").toDouble()
+            if (errorInt == 99.0) errorInt = 0.0
+        } catch (_: Exception) {
+            return
+        }
 
         val printSignal = "${getString(R.string.LevelSignalTitle)}  $signalLevel%"
-        val printErrprs = "${getString(R.string.errorsSignalTitle)}  $errors%"
+        val printErrprs = "${getString(R.string.errorsSignalTitle)}  $errorInt%"
 
         binding.textLevelSignal.text = printSignal
         binding.textErrorSignal.text = printErrprs
