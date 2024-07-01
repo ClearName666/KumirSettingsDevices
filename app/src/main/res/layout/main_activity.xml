@@ -432,8 +432,19 @@
                             android:focusable="true"
                             android:onClick="onClickM31"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/Enforma1318Diag">
+
+                            <ImageView
+                                android:id="@+id/imageM31MenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/textM31"
+                                app:layout_constraintStart_toEndOf="@+id/textM31"
+                                app:layout_constraintTop_toTopOf="@+id/textM31"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo1"
@@ -458,6 +469,54 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo1"
                                 app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo1"
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo1" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/M31Settings"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="40dp"
+                            android:clickable="true"
+                            android:onClick="onClickM31Settings"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/M31">
+
+                            <TextView
+                                android:id="@+id/textM31Settings"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/settingTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/M31Diag"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:clickable="true"
+                            android:onClick="onClickM31Diag"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/M31Settings"
+                            app:layout_constraintTop_toBottomOf="@+id/M31Settings">
+
+                            <TextView
+                                android:id="@+id/textM31Diag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/diagTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -470,7 +529,7 @@
                             android:onClick="onClickK21K23"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/M31">
+                            app:layout_constraintTop_toBottomOf="@+id/M31Diag">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo2"
@@ -630,43 +689,6 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/A61"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:onClick="onClickA61"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/M32Lite">
-
-                            <ImageView
-                                android:id="@+id/imageDevoceLogo5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:contentDescription="@string/todo"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/devidelogo" />
-
-                            <TextView
-                                android:id="@+id/textA61"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="17dp"
-                                android:text="@string/a61"
-                                android:textColor="@color/textColor"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo5"
-                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo5"
-                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo5" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/PM81"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -676,7 +698,7 @@
                             android:onClick="onClickPM81"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/A61">
+                            app:layout_constraintTop_toBottomOf="@+id/M32Lite">
 
                             <ImageView
                                 android:id="@+id/imagePM81MenuButton"

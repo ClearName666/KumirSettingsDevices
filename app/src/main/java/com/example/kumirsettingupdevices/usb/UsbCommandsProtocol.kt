@@ -351,6 +351,10 @@ class UsbCommandsProtocol {
                 context.usb.flagAtCommandYesNo = false
 
                 out@while (flagWorkChackSignal) {
+
+                    // задержка для предотвращения вылета
+                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE*10)
+
                     // очищение прошлых данных
                     context.curentData = ""
 

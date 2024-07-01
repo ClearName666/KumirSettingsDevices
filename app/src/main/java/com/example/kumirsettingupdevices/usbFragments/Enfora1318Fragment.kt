@@ -174,7 +174,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                 usbCommandsProtocol.flagWorkChackSignal = false
                 usbCommandsProtocol.threadChackSignalEnfora.interrupt()
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
 
 

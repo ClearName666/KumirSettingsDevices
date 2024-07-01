@@ -479,6 +479,19 @@
     <string name="saveTitle">Сохранить</string>
     <string name="namerPresetTitle">Наименование шаблона</string>
     <string name="oldSetPlaceTitleButton">Восстановить старые настройки</string>
+    <string name="forExportIniTitle">Для экспорта ini файлов нажмите</string>
+    <string name="forimportIniTitle">Для загрузки ini файла нажмите</string>
+    <string name="driverTitle">Драйвер:</string>
+    <string name="sizeMemberTitle">Обьем памяти:</string>
+    <string name="addAbanentTitle">Добавить абанента</string>
+    <string name="numberAbanentTitle">Абанент номер:</string>
+    <string name="keyTitlee">Ключ</string>
+    <string name="nameTitle">Имя</string>
+    <string name="numDevTitle">Номер прибора</string>
+    <string name="range1Title">Интервал</string>
+    <string name="adminPasswordTitle">Пароль администратора</string>
+    <string name="netAdressTitle">Сетевой адресс</string>
+    <string name="viewValues">Отображение значений</string>
 
 
     <!--............................................................................-->

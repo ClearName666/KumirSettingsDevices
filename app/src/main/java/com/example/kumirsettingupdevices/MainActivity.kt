@@ -1,14 +1,10 @@
 package com.example.kumirsettingupdevices
 
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -46,7 +42,6 @@ import com.example.kumirsettingupdevices.settings.PrisetsValue
 import com.example.kumirsettingupdevices.usb.Usb
 import com.example.kumirsettingupdevices.usb.UsbActivityInterface
 import com.example.kumirsettingupdevices.usb.UsbFragment
-import com.example.kumirsettingupdevices.usbFragments.A61Fragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
 import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
@@ -266,6 +261,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             ConstUsbSettings.speedIndex = 9 // скорость 115200
 
             // usb.flagAtCommandYesNo = true
+
+
+            // в случчае если девай подключен к usb то сразц подключиться к нему
+            val intent = intent
+            val usbDevice: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+            usbDevice?.let {
+                connectToUsbDevice(usbDevice)
+            }
         }
 
     }
@@ -418,11 +421,34 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
 
     fun onClickM31(view: View) {
+        if (binding.M31Settings.visibility == View.GONE) {
+            binding.M31Settings.visibility = View.VISIBLE
+            binding.M31Diag.visibility = View.VISIBLE
+            binding.imageM31MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
+        } else {
+            binding.M31Settings.visibility = View.GONE
+            binding.M31Diag.visibility = View.GONE
+            binding.imageM31MenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
+        }
+    }
+    fun onClickM31Settings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val m31 = M31Fragment()
         createSettingFragment(m31)
     }
+    fun onClickM31Diag(view: View) {
+        // диагностика такая же как в enfora
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val enforma1318Diag = Enfora1318DiagFragment()
+        createSettingFragment(enforma1318Diag)
+    }
+
     fun onClickK21K23(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -471,12 +497,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         val m32Lite = M32LiteFragment()
         createSettingFragment(m32Lite)
-    }
-    fun onClickA61(view: View) {
-        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
-
-        val a61 = A61Fragment()
-        createSettingFragment(a61)
     }
 
     fun onClickPM81(view: View) {

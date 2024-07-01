@@ -7,16 +7,19 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import androidx.fragment.app.Fragment
+import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsEnforaDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsPmDataAdapter
@@ -34,6 +37,7 @@ import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.settings.PresetsEnforaValue
 import com.example.kumirsettingupdevices.settings.PrisetsPmValue
 import com.example.kumirsettingupdevices.settings.PrisetsValue
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,6 +45,7 @@ import org.ini4j.Ini
 import org.ini4j.Profile
 import java.io.BufferedReader
 import java.io.InputStreamReader
+
 
 // настройки
 class SettingsFragment : Fragment() {
@@ -56,6 +61,9 @@ class SettingsFragment : Fragment() {
     val listIninDataPm: MutableList<IniFilePmModel> = mutableListOf()
 
 
+
+
+
     companion object {
         private const val REQUEST_CODE = 100
         private const val DIR_PRESETS_DEFAULTE: String = "/priesets"
@@ -69,12 +77,29 @@ class SettingsFragment : Fragment() {
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             if (it.toString().endsWith(".ini")) {
-                fileName = it.toString().reversed().substringBefore("%").reversed().substringBefore(".ini") // нужно для получения имени файла
+                fileName = getFileNameFromUri(it)
                 readIniFileContent(it)
             } else {
                 contextMain.showAlertDialog(getString(R.string.nonIniFile))
             }
         }
+    }
+
+    // полуение имени файла по пути
+    private fun getFileNameFromUri(uri: Uri): String {
+        var fileName = ""
+        uri.let {
+            val cursor = requireContext().contentResolver.query(it, null, null, null, null)
+            cursor?.use {
+                if (cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        fileName = cursor.getString(nameIndex)
+                    }
+                }
+            }
+        }
+        return fileName.dropLast(".ini".length) // что бы убрать ini в конце названия
     }
 
     override fun onCreateView(
@@ -92,6 +117,38 @@ class SettingsFragment : Fragment() {
         updataDataPersetAdapter()
         updataDataPersetEnforaAdapter() // enfora
         updataDataPersetPmAdapter() // Pm
+
+
+        // установка даных в tab layout
+        binding.tabPresets.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                when (tab.position) {
+                    0 -> {
+                        binding.scrollViewM32m32Lite.visibility = View.VISIBLE
+                        binding.scrollViewEnfora.visibility = View.GONE
+                        binding.scrollViewPm.visibility = View.GONE
+                    }
+                    1 -> {
+                        binding.scrollViewM32m32Lite.visibility = View.GONE
+                        binding.scrollViewEnfora.visibility = View.VISIBLE
+                        binding.scrollViewPm.visibility = View.GONE
+                    }
+                    2 -> {
+                        binding.scrollViewM32m32Lite.visibility = View.GONE
+                        binding.scrollViewEnfora.visibility = View.GONE
+                        binding.scrollViewPm.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // No-op
+            }
+        })
 
         // клики
         binding.imageAddFilePreset.setOnClickListener {

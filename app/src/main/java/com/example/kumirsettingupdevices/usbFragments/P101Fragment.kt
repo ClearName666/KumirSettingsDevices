@@ -19,8 +19,22 @@ class P101Fragment : Fragment(), UsbFragment {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentP101Binding.inflate(inflater)
+
+        // назначение клика на меню что бы добавлять и удалять данные
+        binding.fonWindowDarck.setOnClickListener {
+            binding.editMenuAbanent.visibility = View.GONE
+            binding.fonWindowDarck.visibility = View.GONE
+        }
+        // клик добавления абанента
+        binding.buttonAddAbanent.setOnClickListener {
+            binding.fonWindowDarck.visibility = View.VISIBLE
+            binding.editMenuAbanent.visibility = View.VISIBLE
+        }
+
         return binding.root
     }
+
+
 
     override fun printSerifalNumber(serialNumber: String) {
         binding.serinerNumber.text = serialNumber
