@@ -45,6 +45,7 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
 import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
+import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbDeviceDescriptor
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 import com.example.kumirsettingupdevices.usbFragments.K21K23Fragment
@@ -87,6 +88,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         "KUMIR-M32 READY" +
         "KUMIR-M32LITE READY" +
         "KUMIR-RM81A READY"
+
+    // текущий фрагмент
+    var curentFragmentComProtocol: UsbCommandsProtocol? = null
 
 
     companion object {
@@ -571,6 +575,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         val p101 = P101Fragment()
         createSettingFragment(p101)
+
     }
 
     fun onSettings(view: View) {
@@ -580,6 +585,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         val settings = SettingsFragment()
         createSettingFragment(settings, true)
+
     }
 
     // сохрание настроек присета в базу данных
@@ -702,17 +708,40 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     private fun createSettingFragment(fragment: Fragment, flagChack: Boolean = false) {
         if (usb.checkConnectToDevice() || flagChack) {
 
-            /*if (supportFragmentManager.fragments.size > 1) {
-                supportFragmentManager.popBackStack()
-            }*/
+            if (curentFragmentComProtocol != null) {
+                if (curentFragmentComProtocol?.flagWorkDiag!! ||
+                    curentFragmentComProtocol?.flagWorkChackSignal!! ||
+                    curentFragmentComProtocol?.flagWorkDiagPm!! ||
+                    curentFragmentComProtocol?.flagWorkWrite!! ||
+                    curentFragmentComProtocol?.flagWorkRead!!) {
+                    showAlertDialog(getString(R.string.readActivThread))
+                } else {
+                    val fragmentManager = supportFragmentManager
+                    val transaction = fragmentManager.beginTransaction()
 
-            val fragmentManager = supportFragmentManager
-            val transaction = fragmentManager.beginTransaction()
+                    // Новый фрагент
+                    transaction.replace(binding.fragmentContainerMainContent.id, fragment)
+                    //transaction.addToBackStack("SettingDeviceFragment")
+                    transaction.commit()
 
-            // Новый фрагент
-            transaction.replace(binding.fragmentContainerMainContent.id, fragment)
-            //transaction.addToBackStack("SettingDeviceFragment")
-            transaction.commit()
+                    if (fragment is UsbFragment) {
+                        curentFragmentComProtocol = fragment.usbCommandsProtocol
+                    }
+                }
+            } else {
+                val fragmentManager = supportFragmentManager
+                val transaction = fragmentManager.beginTransaction()
+
+                // Новый фрагент
+                transaction.replace(binding.fragmentContainerMainContent.id, fragment)
+                //transaction.addToBackStack("SettingDeviceFragment")
+                transaction.commit()
+
+                if (fragment is UsbFragment) {
+                    curentFragmentComProtocol = fragment.usbCommandsProtocol
+                }
+            }
+
         } else {
             showAlertDialog(getString(R.string.UsbNoneConnectDevice))
         }

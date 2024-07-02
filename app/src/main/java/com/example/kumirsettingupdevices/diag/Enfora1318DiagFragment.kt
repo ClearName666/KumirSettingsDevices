@@ -13,7 +13,7 @@ import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
 class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
-    private val usbCommandsProtocol = UsbCommandsProtocol()
+    override val usbCommandsProtocol = UsbCommandsProtocol()
 
     private lateinit var binding: FragmentEnfora1318DiagBinding
 

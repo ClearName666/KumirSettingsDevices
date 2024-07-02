@@ -12,9 +12,8 @@ import com.example.kumirsettingupdevices.adapters.ItemBaseStationAdapter.ItemBas
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemAbanent
 
 
-class ItemAbanentAdapter (val context: Context,
-                                   private val list: List<ItemAbanent>
-) : RecyclerView.Adapter<ItemAbanentAdapter.ItemAbanentViewHolder>() {
+class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbanent>
+    ) : RecyclerView.Adapter<ItemAbanentAdapter.ItemAbanentViewHolder>() {
 
 
 
@@ -29,16 +28,17 @@ class ItemAbanentAdapter (val context: Context,
 
     override fun onBindViewHolder(holder: ItemAbanentViewHolder, position: Int) {
         val item = list[position]
-        holder.txtNumAbanent.text = item.num
-        holder.textName.text = item.name
-        holder.textNumDevice.text = item.numDevice
-        holder.textDriver.text = item.driver
-        holder.textSettingsRS485.text = "${item.speed}, ${item.parity}, ${item.stopBit}, ${item.bitData}, ${item.timeout}"
-        holder.textParams.text = "${item.password}, ${item.adress}, ${item.values}"
+        holder.txtNumAbanent.text = context.getString(R.string.numberAbanentTitle) + " " + item.num
+        holder.textNumAbanent.text = context.getString(R.string.numberAbanentTitle) + " " + item.num
+        holder.textName.text = context.getString(R.string.nameTitle) + " " + item.name
+        holder.textNumDevice.text = context.getString(R.string.numDevTitle) + " " + item.numDevice
+        holder.textDriver.text = context.getString(R.string.driverTitle) + " " + item.driver
+        holder.textSettingsRS485.text = context.getString(R.string.setPorsTitle) + " " + item.port
+        holder.textParams.text = context.getString(R.string.paramsTitle) + " " + item.values
     }
 
     class ItemAbanentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textumAbanent: TextView = itemView.findViewById(R.id.textNumAbanent)
+        val textNumAbanent: TextView = itemView.findViewById(R.id.textNumAbanent)
         val txtNumAbanent: TextView = itemView.findViewById(R.id.txtNumAbanent)
         val textName: TextView = itemView.findViewById(R.id.textName)
         val textNumDevice: TextView = itemView.findViewById(R.id.textNumDevice)

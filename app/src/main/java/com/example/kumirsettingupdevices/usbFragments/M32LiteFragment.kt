@@ -26,6 +26,8 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private var NAME_TYPE_DEVICE = "KUMIR-M32LITE READY"
 
+    override val usbCommandsProtocol = UsbCommandsProtocol()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -454,7 +456,6 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             getString(R.string.commandGetProfile1)
         )
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
     }
 
@@ -519,7 +520,6 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             dataMap[getString(R.string.commandSetSimPin)] = "0000"
         }
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
     }
 

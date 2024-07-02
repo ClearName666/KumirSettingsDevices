@@ -181,7 +181,7 @@ class Usb(private val context: Context) {
         }
     }
 
-    // настрока сериал порта <DTR>
+   /* // настрока сериал порта <DTR>
     fun onSerialDTR(indexDTR: Int) {
         ConstUsbSettings.dtr = indexDTR
 
@@ -205,7 +205,7 @@ class Usb(private val context: Context) {
                 else -> {}
             }
         }
-    }
+    }*/
 
     // настройка серийного порта при подключении
     fun onStartSerialSetting(flagOnSelectDsrCts: Boolean = true) {
@@ -213,8 +213,8 @@ class Usb(private val context: Context) {
         onSerialSpeed(ConstUsbSettings.speedIndex)
         onSerialParity(ConstUsbSettings.parityIndex)
         onSerialStopBits(ConstUsbSettings.stopBit)
-        onSerialRTS(ConstUsbSettings.rts)
-        onSerialDTR(ConstUsbSettings.dtr)
+        //onSerialRTS(ConstUsbSettings.rts)
+        //onSerialDTR(ConstUsbSettings.dtr)
 
         if (flagOnSelectDsrCts) {
             onSelectDsrCts(ConstUsbSettings.numDsrCts)

@@ -35,7 +35,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
     private lateinit var binding: FragmentDiagPM81Binding
 
-    private val usbCommandsProtocol = UsbCommandsProtocol()
+    override val usbCommandsProtocol = UsbCommandsProtocol()
 
     private var flagStartDiag: Boolean = false
 
@@ -92,7 +92,6 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         animJob?.cancel()
 
         clearDiag()
-
         super.onDestroyView()
     }
 
@@ -116,9 +115,9 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
     }
 
     private fun clearDiag() {
-        // отключение систем проверки сигнала и выход из потока
+        // отключение систем проверки и выход из потока
         try {
-            // отключения потока прочитки сигнала если он включен
+            // отключения потока  если он включен
             if (usbCommandsProtocol.flagWorkDiagPm) {
                 //usbCommandsProtocol.threadDiag.interrupt()
                 usbCommandsProtocol.flagWorkDiagPm = false

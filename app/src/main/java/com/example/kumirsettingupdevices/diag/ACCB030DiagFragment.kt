@@ -18,7 +18,7 @@ class ACCB030DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
 
     private lateinit var binding: FragmentACCB030DiagBinding
 
-    private val usbCommandsProtocol = UsbCommandsProtocol()
+    override val usbCommandsProtocol = UsbCommandsProtocol()
 
     var flagPermissionChackSignal: Boolean = false
     private var flagClickChackSignal: Boolean = false

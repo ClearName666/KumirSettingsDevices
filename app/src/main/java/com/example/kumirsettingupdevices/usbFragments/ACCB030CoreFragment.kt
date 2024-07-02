@@ -24,7 +24,7 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
 
     private lateinit var binding: FragmentACCB030CoreBinding
 
-    private val usbCommandsProtocol = UsbCommandsProtocol()
+    override val usbCommandsProtocol = UsbCommandsProtocol()
     private var flagClickChackSignal: Boolean = false
 
     private var readOk: Boolean = false

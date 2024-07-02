@@ -24,6 +24,8 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     private lateinit var binding: FragmentPM81Binding
 
+    override val usbCommandsProtocol = UsbCommandsProtocol()
+
     private var NAME_TYPE_DEVICE = "KUMIR-RM81A READY"
 
     // сохраняем настроки для устройств  ТЕКУЩИЕ НАСТРОЙКИ
@@ -454,7 +456,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
             getString(R.string.commandGetRange)
         )
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
     }
 
@@ -484,7 +485,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
                     binding.spinnerSelectStopBitPort1.selectedItem.toString() +
                     ",200,2000"
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
 
         // кнопка для востановления старых настроек

@@ -14,6 +14,7 @@ import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentK21k23Binding
 import com.example.kumirsettingupdevices.formaters.FormatModems
+import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usb.UsbModBasCommandProtocol
 
@@ -24,6 +25,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
 
     private var NAME_TYPE_DEVICE = "KUMIR-К21К23 READY"
 
+    override val usbCommandsProtocol = UsbCommandsProtocol()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

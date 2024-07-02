@@ -28,7 +28,7 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
 
     private lateinit var binding: FragmentM31Binding
 
-    private val usbCommandsProtocol = UsbCommandsProtocol()
+    override val usbCommandsProtocol = UsbCommandsProtocol()
     private var flagClickChackSignal: Boolean = false
 
     private var readOk: Boolean = false

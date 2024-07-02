@@ -7,10 +7,12 @@
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
     <string name="Usb_ErrorConnect">Произошла ошибка при попытке подключения</string>
     <string name="UsbNoneConnectDevice">Нет подключения, пожалуйста, выберите COM-порт и подключитесь!</string>
+    <string name="readActivThread">На данный момент у вас активное общение с устройством. Мы не можем перенаправить вас на другое окно!</string>
     <string name="ConnectSuccess">Подключение успешно установлено</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="errorTimeOutSand">Время ожидание ответа слишком большое, наверное вы отсоединили модем!</string>
+    <string name="errorVersionModem">Похоже что ваша версия модема не поддерживает диагностику (</string>
     <string name="notValidData">Похоже что пришедщие данные не валидны!</string>
     <string name="errorSettingPort">Для данного модема такие настройки порта не валидны!</string>
     <string name="errorFindSpeedSerial">Поиск скорости не дал результата! Убедитесь что кабель подключен надежно и имеет контакты для связи с serial port!</string>
@@ -45,6 +47,7 @@
     <string name="nonIniFile">Выберите ini файл!</string>
     <string name="nonValidIniFile">Ваш файл ini не валиден!</string>
     <string name="delFileYesNo">Вы уверены что хотите удалить шаблон </string>
+    <string name="readAlready">Вы уже прочли устройство</string>
 
     <string name="errorValidPole">Не все поля введены валидно!</string>
     <string name="errorValidAPN">Длина APN не должена привышать 63 символа</string>
@@ -62,7 +65,7 @@
     <string name="errorTimeOutEnfora">Таймаут должен быть в диапазоне от 3 до 1472</string>
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
     <string name="noneValidRecordMONITOR">Настройки не были изменены. Запись не требуется</string>
-    <string name="errorValidServer">1-ый или 2-ый сервер выгладят не валидно! Правильный формат записи (0-255).(0-255).(0-255).(0-255)</string>
+    <string name="errorValidServer">Некорректный формат 1-го или 2-го сервера. Правильный формат записи (0-255).(0-255).(0-255).(0-255)</string>
     <string name="errorValidAPNEnfora">Длина APN не должена привышать 128 символов</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
@@ -245,6 +248,22 @@
     <string name="error">ERROR</string>
     <string name="okSand">OK</string>
 
+    <!--П101-->
+    <string name="commandGetFspace">AT$FSPACE?</string>
+    <string name="commandGetDriver">AT$DRVLIST</string>
+    <string name="commandGetAbanents">AT$ABLIST</string>
+    <string name="commandGetAbView">AT$ABVIEW</string>
+    <string name="commandGetAdLoad">AT$ABLOAD</string>
+    <string name="commandGetSysLog">AT$SYSLOG</string>
+    <string name="commandGetDevList">AT$DRVLIST</string>
+
+    <string name="commandSetAbonent">AT$ABONENT=</string>
+    <string name="commandSetAbonentName">AT$ABNAME=</string>
+    <string name="commandSetDriver">AT$ABDRIVER=</string>
+    <string name="commandSetDevId">AT$ABDEVID=</string>
+    <string name="commandSetPortSet">AT$ABPORT=</string>
+    <string name="commandSetParams">AT$ABPARAMS=</string>
+    
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
 
@@ -484,8 +503,11 @@
     <string name="driverTitle">Драйвер:</string>
     <string name="sizeMemberTitle">Обьем памяти:</string>
     <string name="addAbanentTitle">Добавить абанента</string>
+    <string name="readAbanents">Получить абанентов</string>
     <string name="numberAbanentTitle">Абанент номер:</string>
     <string name="keyTitlee">Ключ</string>
+    <string name="paramsTitle">Параметры:</string>
+    <string name="setPorsTitle">Настроки порта</string>
     <string name="nameTitle">Имя</string>
     <string name="numDevTitle">Номер прибора</string>
     <string name="range1Title">Интервал</string>

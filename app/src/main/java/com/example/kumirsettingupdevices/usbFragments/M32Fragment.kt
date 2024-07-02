@@ -22,6 +22,8 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 
 class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
+    override val usbCommandsProtocol = UsbCommandsProtocol()
+
     private lateinit var binding: FragmentM32Binding
 
     private var serialNumberGlobal: String? = null
@@ -637,7 +639,6 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             getString(R.string.commandGetProfile2)
         )
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
     }
 
@@ -732,7 +733,6 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             dataMap[getString(R.string.commandSetSimPin)] = "0000"
         }
 
-        val usbCommandsProtocol = UsbCommandsProtocol()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
 
     }

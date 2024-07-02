@@ -19,6 +19,7 @@ class UsbCommandsProtocol {
     var flagWorkDiag: Boolean = false
     var flagWorkDiagPm: Boolean = false
     var flagWorkWrite: Boolean = false
+    var flagWorkRead: Boolean = false
 
     // потоки
     lateinit var threadChackSignalEnfora: Thread
@@ -29,7 +30,11 @@ class UsbCommandsProtocol {
     private val listCommandNotFormater: List<String> = listOf(
         "AT\$FRIEND?",
         "AT\$PKG?",
-        "AT\$EVENT?"
+        "AT\$EVENT?",
+        "AT\$DRVLIST",
+        "AT\$ABLIST",
+        "AT\$ABVIEW",
+
     )
 
     companion object {
@@ -71,6 +76,7 @@ class UsbCommandsProtocol {
 
 
         Thread {
+            flagWorkRead = true
             if (context is MainActivity) {
 
                 // открываем диалог с загрузочным меню
@@ -193,11 +199,13 @@ class UsbCommandsProtocol {
 
                 context.flagThreadSerialCommands = false // говорим что не работает поток чтения
 
+
                 // окончание прогресса
                 (context as Activity).runOnUiThread {
                     context.printInfoTermAndLoaging("", 100)
                 }
             }
+            flagWorkRead = false
         }.start()
     }
 
@@ -540,10 +548,23 @@ class UsbCommandsProtocol {
                         diagFragmentInterface.printVerAndSernum(vesionProgram, serialNumber)
                     }
 
-
-
                     if(!context.usb.writeDevice(command, false)) {
                         flagWorkDiag = false
+                    }
+                    // система получения ответа и ожидание полной отправки данных
+                    if (!expectationSand(context)) {
+
+                        // достигнуто ваксимальное время и нет ответа ошибка
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                        }
+                        flagWorkDiag = false
+                    }
+                    // проверка принялись ли данные
+                    if (!sandOkCommand(context, command)) {
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(context.getString(R.string.errorVersionModem))
+                        }
                     }
 
                     // ожидание полной отправки данных (end - конец данных)
