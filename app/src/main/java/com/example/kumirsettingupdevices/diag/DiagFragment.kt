@@ -28,11 +28,13 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     private var flagStartDiag: Boolean = false
     private var flagViewDiag: Boolean = true
 
+
     // данные операторов
     private var listOperators: MutableList<ItemOperator> = mutableListOf()
 
     // флаг для работы анимации
     private var flagWorkAnimLoadingOperators: Boolean = true
+    private var flagTimer: Boolean = false
     // поток для работы анимации
     private var animJob: Job? = null
 
@@ -42,7 +44,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         const val DROP_END_FOR_DATA: Int = 2
 
         // задержка для анимации загрузки операторов
-        const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 700
+        const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 1000
     }
 
 
@@ -139,10 +141,40 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
             while (true) {
                 for (i in 0..3) {
                     binding.textTitleOperators.text = getString(R.string.operatorsTitle) + ".".repeat(i)
+                    timerAnim()
                     delay(TIMEOUT_ANIM_LOADING_OPERATORS)
                 }
             }
         }
+    }
+
+    fun timerAnim() {
+        // таймер
+        if (!flagTimer) {
+            val curentTimeSec: Int = try {
+                binding.textTimer.text.toString().substringAfter(":").toInt()
+            } catch (e: Exception) { -1 }
+            val curentTimeMin = try {
+                binding.textTimer.text.toString().substringBefore(":").toInt()
+            } catch (e: Exception) { -1 }
+
+            if (curentTimeMin != -1 && curentTimeSec != -1) {
+                if (curentTimeSec != 59)
+                    binding.textTimer.text = String.format("%02d:%02d", curentTimeMin, curentTimeSec+1)
+                else
+                    binding.textTimer.text = String.format("%02d:%02d", curentTimeMin+1, 0)
+
+                if (curentTimeMin == 60) {
+                    binding.textTimer.text = getString(R.string.timeZero)
+                }
+            }
+        } else {
+            binding.textTimer.text = getString(R.string.timeZero)
+            flagTimer = false
+        }
+    }
+    fun timerZero() {
+        binding.textTimer.text = getString(R.string.timeZero)
     }
 
 
@@ -157,6 +189,8 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     }
 
     override fun printAllOperator(allOperators: String) {
+
+        flagTimer = true
 
         //  разрешение показа операторов
         flagViewDiag = true
@@ -238,6 +272,9 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
 
         //  запрет показа операторов
         flagViewDiag = false
+        timerZero()
+        flagTimer = false
+
     }
 
     // перевод кaнала в частоту

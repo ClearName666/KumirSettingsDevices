@@ -1,4 +1,4 @@
-package com.example.kumirsettingupdevices.filesMenager
+package com.example.kumirsettingupdevices.filesManager
 
 /*
     [Network setting RM81]

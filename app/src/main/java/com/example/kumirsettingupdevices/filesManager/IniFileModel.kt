@@ -1,4 +1,4 @@
-package com.example.kumirsettingupdevices.filesMenager
+package com.example.kumirsettingupdevices.filesManager
 
 data class IniFileModel(
     val nameFile: String,

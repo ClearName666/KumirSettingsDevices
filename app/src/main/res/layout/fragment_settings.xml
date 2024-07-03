@@ -194,43 +194,6 @@
             android:text="@string/pmPresetTitle" />
     </com.google.android.material.tabs.TabLayout>
 
-    <TextView
-        android:id="@+id/textInfoPresetIE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/forExportIniTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
-
-    <ImageView
-        android:id="@+id/imageIniExportInfo"
-        android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:src="@drawable/save_svgrepo_com"
-        app:layout_constraintBottom_toBottomOf="@+id/textInfoPresetIE"
-        app:layout_constraintStart_toEndOf="@+id/textInfoPresetIE"
-        app:layout_constraintTop_toTopOf="@+id/textInfoPresetIE" />
-
-    <TextView
-        android:id="@+id/textIniImportInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/forimportIniTitle"
-        app:layout_constraintStart_toStartOf="@+id/textInfoPresetIE"
-        app:layout_constraintTop_toBottomOf="@+id/textInfoPresetIE" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:src="@drawable/download_minimalistic_svgrepo_com__1_"
-        app:layout_constraintBottom_toBottomOf="@+id/textIniImportInfo"
-        app:layout_constraintStart_toEndOf="@+id/textIniImportInfo"
-        app:layout_constraintTop_toTopOf="@+id/textIniImportInfo" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/darckFon"
         android:layout_width="0dp"

@@ -16,6 +16,7 @@ import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.ItemAbanentAdapter.ItemAbanentAdapter
 import com.example.kumirsettingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentP101Binding
+import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemAbanent
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -69,27 +70,11 @@ class P101Fragment : Fragment(), UsbFragment {
         binding.buttonAddAbanent.visibility = View.GONE
 
 
-        //------------------------------------------------------------------------------------------
-        // покраска кнопки записи в серый
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.download)
-
-        // Обертываем наш Drawable для совместимости и изменяем цвет
-        drawable?.let {
-            val wrappedDrawable = DrawableCompat.wrap(it)
-
-            DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
-
-            binding.imageDownLoad.setImageDrawable(wrappedDrawable)
-        }
-        //------------------------------------------------------------------------------------------
 
 
         // клики для чтения и записи
         binding.imagedischarge.setOnClickListener {
             onClickReadSettingsDevice(it)
-        }
-        binding.imageDownLoad.setOnClickListener {
-            showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
         createAdapters()
@@ -101,8 +86,6 @@ class P101Fragment : Fragment(), UsbFragment {
 
         // адаптер для выбора скорости
         val itemSelectSpeed = listOf(
-            getString(R.string.speed_300),
-            getString(R.string.speed_600),
             getString(R.string.speed_1200),
             getString(R.string.speed_2400),
             getString(R.string.speed_4800),
@@ -171,20 +154,6 @@ class P101Fragment : Fragment(), UsbFragment {
         if (!flagRead) {
             binding.buttonAddAbanent.visibility = View.VISIBLE
 
-            // -------------активайия кнопки после прочтения-------------
-            // перекраска в красный цвет кнопки загрузки
-            val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
-            drawablImageDownLoad?.let {
-                val wrappedDrawable = DrawableCompat.wrap(it)
-                DrawableCompat.setTint(wrappedDrawable, Color.RED)
-                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
-            }
-
-            // только после чтения
-            binding.imageDownLoad.setOnClickListener {
-                writeSettingStart()
-            }
-
             // делаем так что бы больше незя было прочитать устройство и нарушить алгаритм исполнения
             binding.imagedischarge.setOnClickListener {
                 showAlertDialog(getString(R.string.readAlready))
@@ -216,7 +185,7 @@ class P101Fragment : Fragment(), UsbFragment {
                 replace("OK", "")?.split("\n")!!
                 .filter { it.trim().isNotEmpty() }
 
-            val itemDrivers = listDriverStr.map { it.substringAfter("DRIVER: ") }
+            val itemDrivers = listDriverStr.map { it.substringAfter("DRIVER: ").substringBefore(".") }
 
             val adapterDrivers = ArrayAdapter(requireContext(),
                 R.layout.item_spinner, itemDrivers)
@@ -273,16 +242,32 @@ class P101Fragment : Fragment(), UsbFragment {
     }
 
     override fun writeSettingStart() {
-        /*val dataMap: Map = mapOf(
 
+        // закрфваем окно с редактированием абанента
+        binding.fonWindowDarck.visibility = View.GONE
+        binding.editMenuAbanent.visibility = View.GONE
+
+        val formatDataProtocol = FormatDataProtocol()
+        val dataMap: Map<String, String> = mapOf(
+            getString(R.string.commandSetAbonent) to binding.inputKey.text.toString(),
+            getString(R.string.commandGetAdLoad) to "",
+            getString(R.string.commandSetAbonentName) to binding.inputName.text.toString(),
+            getString(R.string.commandSetDriver) to binding.spinnerDriver.selectedItem.toString(),
+            getString(R.string.commandSetDevId) to binding.inputNumDevice.text.toString(),
+            getString(R.string.commandSetPortSet) to "${binding.spinnerSpeed.selectedItem}," +
+                    "${binding.spinnerBitData.selectedItem}," +
+                    "${formatDataProtocol.formatParityFromIndex(binding.spinnerParity.selectedItemPosition)}," +
+                    "${binding.spinnerStopBit.selectedItem}," +
+                    "${binding.inputRange.text}," +
+                    "${binding.inputTimeOut.text}",
+            getString(R.string.commandSetParams) to "p=${binding.inputPassword.text}a;n=${binding.inputAdress.text};a=t"
         )
 
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)*/
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
     }
 
     override fun lockFromDisconnected(connect: Boolean) {
         // текстрки для кнопок
-        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
         val drawablImageDischarge = ContextCompat.getDrawable(requireContext(), R.drawable.discharge)
 
         if (!connect) {
@@ -290,11 +275,6 @@ class P101Fragment : Fragment(), UsbFragment {
             // покраска кнопки записи в серый
             // Обертываем наш Drawable для совместимости и изменяем цвет
 
-            drawablImageDownLoad?.let {
-                val wrappedDrawable = DrawableCompat.wrap(it)
-                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
-                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
-            }
             drawablImageDischarge?.let {
                 val wrappedDrawable = DrawableCompat.wrap(it)
                 DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
@@ -307,9 +287,6 @@ class P101Fragment : Fragment(), UsbFragment {
             binding.imagedischarge.setOnClickListener {
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
-            binding.imageDownLoad.setOnClickListener {
-                showAlertDialog(getString(R.string.Usb_NoneConnect))
-            }
         } else {
             drawablImageDischarge?.let {
                 val wrappedDrawable = DrawableCompat.wrap(it)
@@ -320,10 +297,6 @@ class P101Fragment : Fragment(), UsbFragment {
             // установка клика
             binding.imagedischarge.setOnClickListener {
                 onClickReadSettingsDevice(it)
-            }
-
-            binding.imageDownLoad.setOnClickListener {
-                showAlertDialog(getString(R.string.notReadDevice))
             }
         }
     }

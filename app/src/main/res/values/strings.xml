@@ -29,7 +29,7 @@
     <string name="nonValidData">Пришедшие данные не валидны!</string>
     <string name="nonPortEdit">Нельзя менять настройки этого порта потому что он не активный</string>
     <string name="nonPortEditSorPrisetSet">Что бы изменять настройки порта нужно выбрать расширенные настройки</string>
-    <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку загрузить у вас: </string>
+    <string name="nonSettingDeviceNeedsFlashed">Настройки данного устройства не верны для перепрошивки нажмите кнопку записать у вас: </string>
     <string name="nonWriteSetting">Воспользуйтесь кнопкой \"Чтение\"!</string>
     <string name="exitDiagRestart">Выход из режима диагностики возможен только путем перезагрузки модема.</string>
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
@@ -453,8 +453,8 @@
     <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
     <string name="startDiagTitle">Начать диагностику</string>
     <string name="operatorTitle">Оператор связи:</string>
-    <string name="BSS">BSS:</string>
-    <string name="SNR">SNR:</string>
+    <string name="BSS">Базовая станция:</string>
+    <string name="SNR">Уровень сигнала:</string>
     <string name="numPackg">Номер пакета:</string>
     <string name="signelPackg">Сигнал:</string>
     <string name="timeOutPackg">Задержка: </string>
@@ -488,7 +488,7 @@
     <string name="IPAdressDisTitle">IP адрес сервера диспетчера</string>
     <string name="MaxTimeCallTitle">Максимальное время входящего вызова (2-30)мин</string>
     <string name="gsmOperatirTitle">GSM оператор: </string>
-    <string name="pachTitle">Путь для выгрузки!</string>
+    <string name="pachTitle">Путь для сохранения!</string>
     <string name="settingTitle">Настройка</string>
     <string name="diagTitle">Диагностика</string>
     <string name="diagStopButton">Завершить диагностику</string>
@@ -514,6 +514,7 @@
     <string name="adminPasswordTitle">Пароль администратора</string>
     <string name="netAdressTitle">Сетевой адресс</string>
     <string name="viewValues">Отображение значений</string>
+    <string name="timeZero">00:00</string>
 
 
     <!--............................................................................-->

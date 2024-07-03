@@ -2,6 +2,8 @@ package com.example.kumirsettingupdevices.usb
 
 import android.app.Activity
 import android.content.Context
+import android.view.View
+import androidx.fragment.app.Fragment
 import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
@@ -78,6 +80,7 @@ class UsbCommandsProtocol {
         Thread {
             flagWorkRead = true
             if (context is MainActivity) {
+
 
                 // открываем диалог с загрузочным меню
                 (context as Activity).runOnUiThread {
@@ -210,7 +213,7 @@ class UsbCommandsProtocol {
     }
 
     fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment,
-                            saveFlag: Boolean = true, longSleepX: Int = 1) {
+                            saveFlag: Boolean = true, longSleepX: Int = 1, flagExit: Boolean = false) {
 
         Thread {
 
@@ -327,6 +330,12 @@ class UsbCommandsProtocol {
                     // сохранение данных AT$SAVE
                     context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+
+                    if (flagExit) {
+                        context.usb.writeDevice(context.getString(R.string.commandExitSettingsMode), false)
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                    }
+
                     usbFragment.readSettingStart()
 
                     // включение ат команд
@@ -1165,7 +1174,8 @@ class UsbCommandsProtocol {
 
             // если команда не входит в список команд которые не должны давать ответа то ерорим все
             if (command != context.getString(R.string.commandSetResetModem) &&
-                command != context.getString(R.string.commandSetFormatParity)) {
+                command != context.getString(R.string.commandSetFormatParity) &&
+                command != context.getString(R.string.commandGetAdLoad)) {
                 return false
             }
 

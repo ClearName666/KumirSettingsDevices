@@ -1,11 +1,10 @@
-package com.example.kumirsettingupdevices.filesMenager
+package com.example.kumirsettingupdevices.filesManager
 
 
 import android.content.ContentValues
 import android.content.Context
 import android.provider.MediaStore
 import android.util.Log
-import java.io.File
 
 class GenerationFiles() {
     // генерация ini файлов для экспорта

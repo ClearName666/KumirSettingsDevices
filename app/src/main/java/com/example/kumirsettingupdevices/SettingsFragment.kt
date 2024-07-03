@@ -12,14 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsEnforaDataAdapter
 import com.example.kumirsettingupdevices.adapters.itemPresetSettingsDataAdapter.ItemPresetSettingsPmDataAdapter
@@ -27,9 +25,9 @@ import com.example.kumirsettingupdevices.dataBasePreset.Enfora
 import com.example.kumirsettingupdevices.dataBasePreset.Pm
 import com.example.kumirsettingupdevices.dataBasePreset.Preset
 import com.example.kumirsettingupdevices.databinding.FragmentSettingsBinding
-import com.example.kumirsettingupdevices.filesMenager.GenerationFiles
-import com.example.kumirsettingupdevices.filesMenager.IniFileModel
-import com.example.kumirsettingupdevices.filesMenager.IniFilePmModel
+import com.example.kumirsettingupdevices.filesManager.GenerationFiles
+import com.example.kumirsettingupdevices.filesManager.IniFileModel
+import com.example.kumirsettingupdevices.filesManager.IniFilePmModel
 import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
 import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSettingPreset
@@ -66,22 +64,25 @@ class SettingsFragment : Fragment() {
 
     companion object {
         private const val REQUEST_CODE = 100
-        private const val DIR_PRESETS_DEFAULTE: String = "/priesets"
+        private const val DIR_PRESETS_DEFAULTE: String = "/presets"
 
         // для выгрузки ini файлов
         private const val CNT_TYPE_INI_FILES: Int = 3
         private const val MAX_CNT_TIMEOUT: Int = 20
         private const val TIMEOUT_SAVE_INIFILE: Long = 200
+
+
+        private const val REQUEST_CODE_PERMISSIONS: Int = 200
     }
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            if (it.toString().endsWith(".ini")) {
+            /*if (it.toString().endsWith(".ini")) {*/
                 fileName = getFileNameFromUri(it)
                 readIniFileContent(it)
-            } else {
-                contextMain.showAlertDialog(getString(R.string.nonIniFile))
-            }
+            /*} else {
+                contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
+            }*/
         }
     }
 
@@ -418,6 +419,9 @@ class SettingsFragment : Fragment() {
 
     private fun dischargeIniFiles() {
 
+        // если нету разрешения то выходим
+        if (!chackPermissionMember()) return
+
         val validDataIniFile = ValidDataIniFile()
         val generationFiles = GenerationFiles()
 
@@ -560,6 +564,22 @@ class SettingsFragment : Fragment() {
             contextMain.showAlertDialog(getString(R.string.noSaveFiles))
         }
     }
+
+    private fun chackPermissionMember(): Boolean {
+        return if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permissions are not granted, request them
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_CODE_PERMISSIONS
+            )
+            false
+        } else {
+            true
+        }
+    }
     //------------------------------------------------------------------------
 
 
@@ -601,6 +621,7 @@ class SettingsFragment : Fragment() {
         val networkM32Settings: Profile.Section? = ini["Network setting M32"]
         val networkACCB030CoreSettings: Profile.Section? = ini["Network setting ASSV030"]
         val networkRM81Settings: Profile.Section? = ini["Network setting RM81"]
+        val networkEnforaSettings: Profile.Section? = ini["Network setting Enfora1318"]
 
         networkM32Settings?.let {
             val apn = it["Apn"]
@@ -694,10 +715,43 @@ class SettingsFragment : Fragment() {
             }
         }
 
+        networkEnforaSettings.let {
+            if (it != null) {
+                val apn = it["Apn"]
+                val eServer = it["eServer"]
+                val password = it["Password"]
+                val login = it["Login"]
+                val timeOut = it["Timeout"]
+
+
+                // проверка на наличие иначе отваливаемся
+                if (apn == null || eServer == null || password == null || login == null || timeOut == null) {
+                    contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
+                    return
+                }
+
+                // запись в базу данных
+                val preset = Enfora(0, fileName, apn, login, password, eServer, "", timeOut, "512")
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        contextMain.presetEnforaDao.insert(preset)
+                        contextMain.runOnUiThread {
+                            contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                            // добавление в оперативнку
+                            PresetsEnforaValue.presets[fileName] = preset
+                            // обноление данныех
+                            updataDataPersetEnforaAdapter()
+                        }
+                    }
+                }
+            }
+
+        }
+
         fileName = ""
 
         // не одна секция не найдена
-        if (networkM32Settings == null && networkACCB030CoreSettings == null && networkRM81Settings == null)
+        if (networkM32Settings == null && networkACCB030CoreSettings == null && networkRM81Settings == null && networkEnforaSettings == null)
             contextMain.showAlertDialog(getString(R.string.nonValidIniFile))
 
     }
@@ -731,6 +785,10 @@ class SettingsFragment : Fragment() {
                                         LinearLayoutManager(requireContext())
                             }
                         } else {
+
+                            // убераем надпись что данных нет
+                            binding.textNonDataPreset.visibility = View.GONE
+
                             // получаем все шаблоны
                             val itemSettingPreset: List<ItemSettingPreset> = presets.map {
                                 ItemSettingPreset(it.name!!, it.id)
@@ -782,6 +840,10 @@ class SettingsFragment : Fragment() {
                                     LinearLayoutManager(requireContext())
                             }
                         } else {
+
+                            // убераем надпись что данных нет
+                            binding.textNonDataPresetEnfora.visibility = View.GONE
+
                             // получаем все шаблоны
                             val itemSettingPreset: List<ItemSettingPreset> = presets.map {
                                 ItemSettingPreset(it.name!!, it.id)
@@ -831,6 +893,10 @@ class SettingsFragment : Fragment() {
                                     LinearLayoutManager(requireContext())
                             }
                         } else {
+
+                            // убераем надпись что данных нет
+                            binding.textNonDataPresetPm.visibility = View.GONE
+
                             // получаем все шаблоны
                             val itemSettingPreset: List<ItemSettingPreset> = presets.map {
                                 ItemSettingPreset(it.name!!, it.id)

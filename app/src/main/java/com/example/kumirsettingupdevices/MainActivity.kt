@@ -10,6 +10,8 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -993,7 +995,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 }
         }
     }
-
 
 
     override fun showDeviceName(deviceName: String) {

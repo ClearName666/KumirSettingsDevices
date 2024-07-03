@@ -78,18 +78,9 @@
             android:id="@+id/imagedischarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="107dp"
             android:src="@drawable/discharge"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageDownLoad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="107dp"
-            android:src="@drawable/download"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -105,20 +96,6 @@
             app:layout_constraintEnd_toEndOf="@+id/imagedischarge"
             app:layout_constraintStart_toStartOf="@+id/imagedischarge"
             app:layout_constraintTop_toBottomOf="@+id/imagedischarge" />
-
-        <TextView
-            android:id="@+id/textDownLoad"
-            android:layout_width="57dp"
-            android:layout_height="14dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="@string/write"
-            android:textColor="@color/textColor"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageDownLoad"
-            app:layout_constraintStart_toStartOf="@+id/imageDownLoad"
-            app:layout_constraintTop_toBottomOf="@+id/imageDownLoad" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -380,6 +357,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/netAdressTitle"
+                        android:inputType="number"
                         android:textColor="@color/background"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>

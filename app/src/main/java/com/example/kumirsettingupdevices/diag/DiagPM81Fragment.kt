@@ -234,7 +234,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         if (listBasePingrecv.isNotEmpty())
             binding.progressBarPackg.visibility = View.GONE
 
-        val itemBasePingrecvAdapter = ItemPingrecvAdapter(requireContext(), listBasePingrecv)
+        val itemBasePingrecvAdapter = ItemPingrecvAdapter(requireContext(), listBasePingrecv.reversed())
         binding.recyclerItemnonPackg.adapter = itemBasePingrecvAdapter
         binding.recyclerItemnonPackg.layoutManager = LinearLayoutManager(requireContext())
     }

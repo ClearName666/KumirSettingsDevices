@@ -442,7 +442,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                 "\nserver 1: ${binding.inputServer1.text.toString()}" +
                 "\nserver 2: ${binding.inputServer2.text.toString()}" +
                 "\ntcp port: ${settingMap[getString(R.string.commandGetTcpPortEnforaM31)]}" +
-                "\nтак же пароль и логен возможно не пусты "
+                "\nтак же пароль и логин возможно не пусты "
             )
 
             return
@@ -625,7 +625,9 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         // проверка на русские символы в серверах и apn
         if (!validDataSettingsDevice.serverValid(binding.inputServer1.text.toString()) ||
             !validDataSettingsDevice.serverValid(binding.inputServer2.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputLogin.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputPassword.text.toString())) {
             showAlertDialog(getString(R.string.errorRussionChar))
             return false
         }

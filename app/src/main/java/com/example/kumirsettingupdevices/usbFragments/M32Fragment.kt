@@ -797,7 +797,9 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         // проверка на русские символы в серверах и apn
         if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputTextLoginGPRS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputPasswordGPRS.text.toString())) {
             showAlertDialog(getString(R.string.errorRussionChar))
             return false
         }

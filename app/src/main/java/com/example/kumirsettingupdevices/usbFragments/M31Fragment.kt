@@ -621,7 +621,9 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         // проверка на русские символы в серверах и apn
         if (!validDataSettingsDevice.serverValid(binding.inputServer1.text.toString()) ||
             !validDataSettingsDevice.serverValid(binding.inputServer2.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputLogin.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputPassword.text.toString())) {
             showAlertDialog(getString(R.string.errorRussionChar))
             return false
         }
