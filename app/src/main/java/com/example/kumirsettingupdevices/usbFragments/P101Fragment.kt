@@ -11,17 +11,18 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kumirsettingupdevices.EditDelIntrface
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.ItemAbanentAdapter.ItemAbanentAdapter
-import com.example.kumirsettingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentP101Binding
 import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
+import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemAbanent
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class P101Fragment : Fragment(), UsbFragment {
+class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
 
     private lateinit var binding: FragmentP101Binding
 
@@ -29,6 +30,22 @@ class P101Fragment : Fragment(), UsbFragment {
 
     private var listKeyAbanents: MutableList<String> = mutableListOf()
     private var flagRead: Boolean = false
+
+    private var flagReAbanents: Boolean = false
+
+
+    // хранит всех абанентов
+    val itemsAbonents: MutableList<ItemAbanent> = mutableListOf()
+
+    // хранит текущего изменемого абанента
+    var curentAbanent: ItemAbanent? = null
+
+    companion object {
+        private const val DEFFAULT_NUM_DEVICE: String = "234"
+        private const val DEFFAULT_PASSWORD: String = ""
+        private const val DEFFAULT_ADRES: String = "0"
+        private const val DEFFAULT_TIMEOUT: String = "10"
+    }
 
 
     override fun onCreateView(
@@ -41,31 +58,16 @@ class P101Fragment : Fragment(), UsbFragment {
         binding.fonWindowDarck.setOnClickListener {
             binding.editMenuAbanent.visibility = View.GONE
             binding.fonWindowDarck.visibility = View.GONE
+            curentAbanent = null // для того что бы не удалять прсото так
         }
         // назначение кликак что бы добавлять абанента
         binding.buttonSave.setOnClickListener {
             writeSettingStart()
         }
 
-
-        // поддержка пока что только 1 абанентаа((((------------------------------------------------
+        // нажатие на кнопку получить абанентов
         binding.buttonAddAbanent.setOnClickListener {
-            val command: MutableList<String> = mutableListOf()
-
-            for (itemAb in listKeyAbanents) {
-                val key = itemAb.replace(" ", "").replace("\n", "").
-                    replace("\r", "")
-
-                if (key.isNotEmpty()) {
-                    command.add(getString(R.string.commandSetAbonent) + key)
-                    command.add(getString(R.string.commandGetAdLoad))
-                    command.add(getString(R.string.commandGetAbView))
-                }
-
-            }
-
-            val usbCommandsProtocol = UsbCommandsProtocol()
-            usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
+            getAbonents()
         }
         binding.buttonAddAbanent.visibility = View.GONE
 
@@ -80,6 +82,34 @@ class P101Fragment : Fragment(), UsbFragment {
         createAdapters()
 
         return binding.root
+    }
+
+    private fun getAbonents() {
+        val command: MutableList<String> = mutableListOf()
+
+        for (itemAb in listKeyAbanents) {
+            val key = itemAb.replace(" ", "").replace("\n", "").
+            replace("\r", "")
+
+            if (key.isNotEmpty()) {
+                command.add(getString(R.string.commandSetAbonent) + key)
+                command.add(getString(R.string.commandGetAdLoad))
+                command.add(getString(R.string.commandGetAbView))
+            }
+        }
+
+        if (command.isNotEmpty()) {
+            usbCommandsProtocol.readSettingDevice(command, requireContext(), this, flagReadAbonentsP101 = true)
+        } else {
+            showAlertDialog(getString(R.string.notAnonents))
+            // клик добавления абанента
+            binding.buttonAddAbanent.text = getString(R.string.addAbanentTitle)
+            binding.buttonAddAbanent.setOnClickListener {
+                binding.inputKey.visibility = View.VISIBLE
+                binding.fonWindowDarck.visibility = View.VISIBLE
+                binding.editMenuAbanent.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun createAdapters() {
@@ -180,6 +210,7 @@ class P101Fragment : Fragment(), UsbFragment {
             listKeyAbanents = listAbanent.map { it.substringAfter("ABONENT: ") }.toMutableList()
 
 
+
             // добавления адептера в выборку драйвера
             val listDriverStr: List<String> = settingMap[getString(R.string.commandGetDriver)]?.
                 replace("OK", "")?.split("\n")!!
@@ -199,53 +230,131 @@ class P101Fragment : Fragment(), UsbFragment {
             // клик добавления абанента
             binding.buttonAddAbanent.text = getString(R.string.addAbanentTitle)
             binding.buttonAddAbanent.setOnClickListener {
+                binding.inputKey.visibility = View.VISIBLE
                 binding.fonWindowDarck.visibility = View.VISIBLE
                 binding.editMenuAbanent.visibility = View.VISIBLE
             }
 
 
-            // вывод абанентов в список // только 1 абанент
-            val ab: String = settingMap[getString(R.string.commandGetAbView)]!!
-            val itemsAbonents: List<ItemAbanent> = listOf(
-                ItemAbanent(ab.substringAfter("ABONENT: ").substringBefore("\n"),
-                    ab.substringAfter("ABNAME: ").substringBefore("\n"),
-                    "",
-                    ab.substringAfter("ABDRIVER: ").substringBefore("\n"),
-                    ab.substringAfter("ABDEVID: ").substringBefore("\n"),
-                    ab.substringAfter("ABPORT: ").substringBefore("\n"),
-                    "",
-                    "",
-                    ab.substringAfter("ABPARAMS: ").substringBefore("\n"),
-                    false
-                )
-            )
+            // цикл перебирает количество абанентов что бы их потом прочесть и вывести
+            for (i in 1..listKeyAbanents.size+1) {
+                // вывод абанентов в список // только 1 абанент
+                val ab: String? = settingMap[getString(R.string.commandGetAbView) + i.toString()]
 
+                if (ab != null) {
+                    itemsAbonents.add(
+                        ItemAbanent(ab.substringAfter("ABONENT: ").substringBefore("\n"),
+                            ab.substringAfter("ABNAME: ").substringBefore("\n"),
+                            "",
+                            ab.substringAfter("ABDRIVER: ").substringBefore("\n"),
+                            ab.substringAfter("ABDEVID: ").substringBefore("\n"),
+                            ab.substringAfter("ABPORT: ").substringBefore("\n"),
+                            "",
+                            "",
+                            ab.substringAfter("ABPARAMS: ").substringBefore("\n"),
+                            false
+                        )
+                    )
+                }
+            }
 
-
-            val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents)
+            val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
             binding.recyclerView.adapter = itemAbonentAdapter
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
-    override fun readSettingStart() {
-        val command: List<String> = arrayListOf(
-            getString(R.string.commandGetSerialNum),
-            getString(R.string.commandGetVersionFirmware),
-            getString(R.string.commandGetFspace),
-            getString(R.string.commandGetAbanents),
-            getString(R.string.commandGetAbView),
-            getString(R.string.commandGetDevList)
-        )
 
-        usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
+    override fun readSettingStart() {
+        // если не читали до этого то читаем если нет то скорее всего жто добавление абанента и его нужно добавить
+        if (!flagRead) {
+            val command: List<String> = arrayListOf(
+                getString(R.string.commandGetSerialNum),
+                getString(R.string.commandGetVersionFirmware),
+                getString(R.string.commandGetFspace),
+                getString(R.string.commandGetAbanents),
+                getString(R.string.commandGetAbView),
+                getString(R.string.commandGetDevList)
+            )
+
+            usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
+        } else {
+
+            /*if (flagReAbanents) {
+                getAbonents()
+                flagReAbanents = false
+            }*/
+
+            val formatDataProtocol = FormatDataProtocol()
+
+            var values: String = "a=t;"
+            if (binding.inputPassword.text.toString().isNotEmpty()) {
+                values += "p=${binding.inputPassword.text}a;"
+            }
+            if (binding.inputAdress.text.toString().isNotEmpty()) {
+                values += "n=${binding.inputAdress.text};"
+            }
+            if (binding.inputValues.text.toString().isNotEmpty()) {
+                values += "t=${binding.inputValues.text};"
+            }
+            values.dropLast(1) // убераем последний ";"
+
+            itemsAbonents.add(
+                ItemAbanent(
+                    binding.inputKey.text.toString(),
+                    binding.inputName.text.toString(),
+                    "",
+                    binding.spinnerDriver.selectedItem.toString(),
+                    binding.inputNumDevice.text.toString(),
+                    "${binding.spinnerSpeed.selectedItem}," +
+                            "${binding.spinnerBitData.selectedItem}," +
+                            "${formatDataProtocol.formatParityFromIndex(binding.spinnerParity.selectedItemPosition)}," +
+                            "${binding.spinnerStopBit.selectedItem}," +
+                            "${binding.inputRange.text}," +
+                            "${binding.inputTimeOut.text}",
+                    binding.inputPassword.text.toString(),
+                    binding.inputAdress.text.toString(),
+                    values,
+                    false
+                )
+            )
+
+            val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
+            binding.recyclerView.adapter = itemAbonentAdapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        }
+
     }
 
     override fun writeSettingStart() {
 
+        // если не валидно то
+        if (!validAll()) return
+
+        // если идет изменение то нужно удалит старую
+        if (curentAbanent != null) {
+            itemsAbonents.remove(curentAbanent)
+            curentAbanent = null
+        }
+
+        // добавляем нового абанента в лист
+        listKeyAbanents.add(binding.inputKey.text.toString())
+
         // закрфваем окно с редактированием абанента
         binding.fonWindowDarck.visibility = View.GONE
         binding.editMenuAbanent.visibility = View.GONE
+
+        var values: String = "a=t;"
+        if (binding.inputPassword.text.toString().isNotEmpty()) {
+            values += "p=${binding.inputPassword.text}a;"
+        }
+        if (binding.inputAdress.text.toString().isNotEmpty()) {
+            values += "n=${binding.inputAdress.text};"
+        }
+        if (binding.inputValues.text.toString().isNotEmpty()) {
+            values += "t=${binding.inputValues.text};"
+        }
+        values.dropLast(1) // убераем последний ";"
 
         val formatDataProtocol = FormatDataProtocol()
         val dataMap: Map<String, String> = mapOf(
@@ -260,10 +369,13 @@ class P101Fragment : Fragment(), UsbFragment {
                     "${binding.spinnerStopBit.selectedItem}," +
                     "${binding.inputRange.text}," +
                     "${binding.inputTimeOut.text}",
-            getString(R.string.commandSetParams) to "p=${binding.inputPassword.text}a;n=${binding.inputAdress.text};a=t"
+            getString(R.string.commandSetParams) to values,
+            getString(R.string.commandAbSaveSettings) to ""
         )
 
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false,
+            flagRead=true)
+
     }
 
     override fun lockFromDisconnected(connect: Boolean) {
@@ -301,10 +413,143 @@ class P101Fragment : Fragment(), UsbFragment {
         }
     }
 
+    private fun validAll(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        if (!validDataSettingsDevice.validPasswordP101(binding.inputPassword.text.toString()) &&
+            binding.inputPassword.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.notValidPasswordP101))
+            return false
+        }
+        if (!validDataSettingsDevice.validRangeP101(binding.inputRange.text.toString()) ||
+            binding.inputRange.text.toString().isEmpty()) {
+            showAlertDialog(getString(R.string.notValidRangeP101))
+            return false
+        }
+        if (!validDataSettingsDevice.validIdDeviceP101(binding.inputNumDevice.text.toString())) {
+            showAlertDialog(getString(R.string.notIdDeviceP101))
+            return false
+        }
+        if (!validDataSettingsDevice.validNameP101(binding.inputName.text.toString())) {
+            showAlertDialog(getString(R.string.notValidNameP101))
+            return false
+        }
+        if (binding.inputKey.text.toString().isEmpty()) {
+            showAlertDialog(getString(R.string.notKeyValidP101))
+            return false
+        }
+        if (binding.inputAdress.text.toString().isEmpty()) {
+            showAlertDialog(getString(R.string.notAdresValidP101))
+            return false
+        }
+        if (!validDataSettingsDevice.validTimeOutP101(binding.inputValues.text.toString()) &&
+            binding.inputValues.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.notValidTimeOutP101))
+            return false
+        }
+        if (!validDataSettingsDevice.validTimeP101(binding.inputTimeOut.text.toString())) {
+            showAlertDialog(getString(R.string.notValidTimeP101))
+            return false
+        }
+
+
+        return true
+    }
+
     private fun showAlertDialog(text: String) {
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+    override fun del(data: ItemAbanent) {
+        val dataMap: Map<String, String> = mapOf(
+            getString(R.string.commandSetDelAbonent) to data.num
+        )
+
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
+
+        // удаление в отобрадении
+        itemsAbonents.remove(data)
+
+        val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
+        binding.recyclerView.adapter = itemAbonentAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        flagReAbanents = true
+    }
+
+    override fun edit(data: ItemAbanent) {
+        binding.fonWindowDarck.visibility = View.VISIBLE
+        binding.editMenuAbanent.visibility = View.VISIBLE
+
+        binding.inputKey.setText(data.num.trim())
+        binding.inputName.setText(data.name.trim())
+        binding.inputNumDevice.setText(data.numDevice.trim())
+
+        // уубераем воможность редактировать ключ
+        binding.inputKey.visibility = View.GONE
+
+        // выводим информацию об порте
+        val ports: List<String> = data.port.split(",")
+        try {
+            val formatDataProtocol = FormatDataProtocol()
+            binding.inputRange.setText(ports[4])
+            binding.inputTimeOut.setText(ports[5])
+
+            binding.spinnerSpeed.setSelection(formatDataProtocol.getSpeedIndax(ports[0]+2))
+            binding.spinnerBitData.setSelection(formatDataProtocol.formatBitData(ports[1]))
+            binding.spinnerParity.setSelection(formatDataProtocol.formatPatity(ports[2]))
+            binding.spinnerStopBit.setSelection(formatDataProtocol.formatStopBit(ports[3]))
+
+            // установка драйвера
+            // пока нету
+        } catch (_: Exception) {
+            showAlertDialog(getString(R.string.errorUnknown))
+        }
+
+        /*
+            Параметры:
+                d=234 (234,236,204) - тип прибора, по умолчанию: 234
+                p=222222h (в конце: h - hex, a - ascii) - пароль администратора,
+                          по умолчанию: 222222h
+                n=0 - сетевой адрес прибора, по умолчанию: 0
+                a=t (t, f) - отображать дополнительные параметры или нет, по умолчанию: f
+                t=10 - задержка (в секундах) для отображения значений,
+                       по умолчанию: 10 секунд.
+        */
+
+        // выводим информацииюю об пареметрах
+
+        if (data.values.contains("d=")) {
+            binding.inputNumDevice.setText(data.values.substringAfter("d=").substringBefore(";").trim())
+        } else {
+            binding.inputNumDevice.setText(DEFFAULT_NUM_DEVICE)
+        }
+
+        if (data.values.contains("p=")) {
+            if (!data.values.contains("p=a")) {
+                binding.inputPassword.setText(data.values.substringAfter("p=").substringBefore(";").trim().dropLast(1))
+            } else {
+                binding.inputPassword.setText(DEFFAULT_PASSWORD)
+            }
+        } else {
+            binding.inputPassword.setText(DEFFAULT_PASSWORD)
+        }
+
+        if (data.values.contains("n=")) {
+            binding.inputAdress.setText(data.values.substringAfter("n=").substringBefore(";").trim())
+        } else {
+            binding.inputAdress.setText(DEFFAULT_ADRES)
+        }
+
+        if (data.values.contains("t=")) {
+            binding.inputValues.setText(data.values.substringAfter("t=").substringBefore(";").trim())
+        } else {
+            binding.inputValues.setText(DEFFAULT_TIMEOUT)
+        }
+
+        // загружаем абанента в текущие
+        curentAbanent = data
     }
 }

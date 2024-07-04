@@ -9,11 +9,21 @@
     <string name="UsbNoneConnectDevice">Нет подключения, пожалуйста, выберите COM-порт и подключитесь!</string>
     <string name="readActivThread">На данный момент у вас активное общение с устройством. Мы не можем перенаправить вас на другое окно!</string>
     <string name="ConnectSuccess">Подключение успешно установлено</string>
+    <string name="errorUnknown">Неизвестная ошибка! Попробуйте перезайти в приложение!</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
     <string name="errorTimeOutSand">Время ожидание ответа слишком большое, наверное вы отсоединили модем!</string>
     <string name="errorVersionModem">Похоже что ваша версия модема не поддерживает диагностику (</string>
     <string name="notValidData">Похоже что пришедщие данные не валидны!</string>
+    <string name="notAnonents">К сожалению нету абонентов которые вы можете прочесть с этого устройства! Вы можете добавить их нажав кнопку еще раз!</string>
+    <string name="notValidPasswordP101">Пароль не должен содержать символы отличеные от ASCII, должен состоять из 6 символов!</string>
+    <string name="notValidRangeP101">Интервал должн быть в диапазоне от 10 до 200</string>
+    <string name="notIdDeviceP101">Номер прибора может быть только: 234, 236, 204, 230</string>
+    <string name="notValidNameP101">Имя не может быть пустым и не должно соержать символов отличеных от CP1251</string>
+    <string name="notKeyValidP101">Ключ не может быть пустым!</string>
+    <string name="notAdresValidP101">Сетевой адресс не может быть пустым!</string>
+    <string name="notValidTimeOutP101">Отображение значений должно быть в диапазоне от 1 до 600</string>
+    <string name="notValidTimeP101">Время ожидания должна быть в диапазоне от 200 до 5000</string>
     <string name="errorSettingPort">Для данного модема такие настройки порта не валидны!</string>
     <string name="errorFindSpeedSerial">Поиск скорости не дал результата! Убедитесь что кабель подключен надежно и имеет контакты для связи с serial port!</string>
     <string name="notReadDevice">Вы еще не прочитали устройство!</string>
@@ -102,6 +112,7 @@
     <string name="write">Запись</string>
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
     <string name="restartDevicePlease">Перезагрузите устройство!!! Ожидание перезагрузки! 00.00.30</string>
+    
 
 
     <string name="disabled">DISABLED</string>
@@ -263,6 +274,7 @@
     <string name="commandSetDevId">AT$ABDEVID=</string>
     <string name="commandSetPortSet">AT$ABPORT=</string>
     <string name="commandSetParams">AT$ABPARAMS=</string>
+    <string name="commandSetDelAbonent">AT$ABDEL=</string>
     
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
@@ -307,6 +319,7 @@
     <string name="commandFactoryReset">AT$DEFAULT</string>
     <string name="commandLoadSettings">AT$LOAD</string>
     <string name="commandSaveSettings">AT$SAVE</string>
+    <string name="commandAbSaveSettings">AT$ABSAVE</string>
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
     <string name="endDiagBeginning">CELLSCAN</string>

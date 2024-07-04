@@ -2,16 +2,11 @@ package com.example.kumirsettingupdevices.usb
 
 import android.app.Activity
 import android.content.Context
-import android.view.View
-import androidx.fragment.app.Fragment
 import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.diag.DiagSiagnalIntarface
 import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
-import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
-import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
-import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
 import com.example.kumirsettingupdevices.diag.UsbDiagPm
 import com.example.kumirsettingupdevices.formaters.ValidDataIniFile
 
@@ -72,7 +67,8 @@ class UsbCommandsProtocol {
 
     // метод для получения настроек устройства
     fun readSettingDevice(commands: List<String>, context: Context,
-                          usbFragment: UsbFragment, speedFind: Boolean = false) {
+                          usbFragment: UsbFragment, speedFind: Boolean = false, flagReadAbonentsP101: Boolean = false) {
+
         val settingData: MutableMap<String, String> = mutableMapOf()
         var flagsSuccess: Boolean = true
 
@@ -105,6 +101,10 @@ class UsbCommandsProtocol {
                 }
 
                 if (flagsSuccess) {
+
+                    // итератор для п101
+                    var cntCommandItemViewP101: Int = 0
+
                     // перебор всех команд и получение ответов устройства
                     outer@ for (command in commands) {
 
@@ -144,10 +144,17 @@ class UsbCommandsProtocol {
 
 
                             if (context.curentData.isNotEmpty()) {
-
                                 // нормализуем только если не входит в список команд которые не нужно нормализовать
-                                settingData[command] = if (command !in listCommandNotFormater)
-                                    formatDataCommandsNormolize(context.curentData) else context.curentData
+                                if (!flagReadAbonentsP101 && command != context.getString(R.string.commandGetAbView)) {
+                                    settingData[command] = if (command !in listCommandNotFormater)
+                                        formatDataCommandsNormolize(context.curentData) else context.curentData
+                                } else {
+                                    if (command == context.getString(R.string.commandGetAbView)) {
+                                        cntCommandItemViewP101++
+                                        settingData[command + cntCommandItemViewP101.toString()] = if (command !in listCommandNotFormater)
+                                            formatDataCommandsNormolize(context.curentData) else context.curentData
+                                    }
+                                }
 
                                 val curentData: String = context.curentData
                                 // вывод в загрузочное диалог информации
@@ -213,7 +220,8 @@ class UsbCommandsProtocol {
     }
 
     fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment,
-                            saveFlag: Boolean = true, longSleepX: Int = 1, flagExit: Boolean = false) {
+                            saveFlag: Boolean = true, longSleepX: Int = 1, flagExit: Boolean = false,
+                           flagRead: Boolean = false) {
 
         Thread {
 
@@ -340,6 +348,12 @@ class UsbCommandsProtocol {
 
                     // включение ат команд
                     context.usb.flagAtCommandYesNo = true
+                }
+
+                if (flagRead) {
+                    (context as Activity).runOnUiThread {
+                        usbFragment.readSettingStart()
+                    }
                 }
 
                 context.curentData = ""
@@ -1162,9 +1176,14 @@ class UsbCommandsProtocol {
     }
 
     private fun sandOkCommand(context: MainActivity, command: String = ""): Boolean {
+
         // проверка на пустоту в данных     ИСПРАВЛЕНИЕ БАГА С НЕ ПРОЧИТАНЫМ СЕРИНЫМ НОМЕРОМ
         if (command == context.getString(R.string.commandGetSerialNum) && formatDataCommandsNormolize(context.curentData).isEmpty()) {
             return false
+        }
+
+        if (context.curentData.contains(context.getString(R.string.okSand))) {
+            return true
         }
 
         // проверка принялись ли данные

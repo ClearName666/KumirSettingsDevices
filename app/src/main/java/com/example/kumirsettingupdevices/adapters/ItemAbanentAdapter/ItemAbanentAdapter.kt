@@ -4,15 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kumirsettingupdevices.EditDelIntrface
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.ItemBaseStationAdapter.ItemBaseStationAdapter
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemAbanent
+import com.example.kumirsettingupdevices.usbFragments.P101Fragment
 
 
-class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbanent>
+class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbanent>,val editDel: EditDelIntrface<ItemAbanent>
     ) : RecyclerView.Adapter<ItemAbanentAdapter.ItemAbanentViewHolder>() {
 
 
@@ -35,6 +38,15 @@ class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbane
         holder.textDriver.text = context.getString(R.string.driverTitle) + " " + item.driver
         holder.textSettingsRS485.text = context.getString(R.string.setPorsTitle) + " " + item.port
         holder.textParams.text = context.getString(R.string.paramsTitle) + " " + item.values
+
+        // кнопка изменения
+        holder.butEdit.setOnClickListener {
+            editDel.edit(item)
+        }
+        // кнопка удаления
+        holder.butDel.setOnClickListener {
+            editDel.del(item)
+        }
     }
 
     class ItemAbanentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -45,5 +57,7 @@ class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbane
         val textDriver: TextView = itemView.findViewById(R.id.textDriver)
         val textSettingsRS485: TextView = itemView.findViewById(R.id.textSettingsRS485)
         val textParams: TextView = itemView.findViewById(R.id.textParams)
+        val butEdit: ImageView = itemView.findViewById(R.id.imageEdit)
+        val butDel: ImageView = itemView.findViewById(R.id.imageDel)
     }
 }

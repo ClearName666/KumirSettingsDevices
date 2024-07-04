@@ -162,6 +162,25 @@
             app:layout_constraintEnd_toEndOf="@+id/layoutNumAbanent"
             app:layout_constraintStart_toStartOf="@+id/layoutNumAbanent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageEdit"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            app:layout_constraintStart_toStartOf="@+id/lalyoutParams"
+            app:layout_constraintTop_toBottomOf="@+id/lalyoutParams"
+            app:srcCompat="@drawable/edit_svgrepo_com" />
+
+        <ImageView
+            android:id="@+id/imageDel"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="@+id/lalyoutParams"
+            app:layout_constraintTop_toBottomOf="@+id/lalyoutParams"
+            app:srcCompat="@drawable/trashcan_svgrepo_com" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

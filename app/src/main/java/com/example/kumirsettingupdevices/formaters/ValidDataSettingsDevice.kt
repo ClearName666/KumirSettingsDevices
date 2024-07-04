@@ -1,5 +1,6 @@
 package com.example.kumirsettingupdevices.formaters
 
+import java.nio.charset.Charset
 
 
 // проверки на валидность данных
@@ -37,6 +38,73 @@ class ValidDataSettingsDevice {
 
         // пин код для sim
         const val PIN_SIM_CHAR = 4
+
+        // пароль п101
+        const val PASSWORD_SIZE: Int = 6
+
+        // интервал п101
+        const val RENGE_P101_MAX: Int = 200
+        const val RENGE_P101_MIN: Int = 10
+
+        // задержка п101
+        const val TIMEOUT_P101_MAX: Int = 600
+        const val TIMEOUT_P101_MIN: Int = 1
+
+        // ожидение п101
+        const val TIME_P101_MAX: Int = 5000
+        const val TIME_P101_MIN: Int = 200
+    }
+
+    private fun isCp1251String(str: String): Boolean {
+        val charsetCp1251 = Charset.forName("windows-1251")
+        val bytes = str.toByteArray(charsetCp1251)
+        val decodedString = String(bytes, charsetCp1251)
+        return str == decodedString
+    }
+
+    // проверка праоля на 6 символов а так же на ASCII символы
+    fun validPasswordP101(password: String): Boolean {
+        return password.length == PASSWORD_SIZE && password.matches(Regex("^[\\x00-\\x7F]*$"))
+    }
+
+    // проверка имени  на 1251 символы
+    fun validNameP101(name: String): Boolean {
+        return isCp1251String(name) && name.trim().isNotEmpty()
+    }
+
+    // проверка интервала п101
+    fun validRangeP101(timeout: String): Boolean {
+        return try {
+            !(timeout.toInt() > RENGE_P101_MAX ||
+                    timeout.toInt() < RENGE_P101_MIN)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // проверка задержки п101
+    fun validTimeOutP101(timeout: String): Boolean {
+        return try {
+            !(timeout.toInt() > TIMEOUT_P101_MAX ||
+                    timeout.toInt() < TIMEOUT_P101_MIN)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // проверка ожидания п101
+    fun validTimeP101(timeout: String): Boolean {
+        return try {
+            !(timeout.toInt() > TIME_P101_MAX ||
+                    timeout.toInt() < TIME_P101_MIN)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // проверка п101 индитификатора девайса
+    fun validIdDeviceP101(devId: String): Boolean {
+        return devId == "234" || devId == "236" || devId == "204" || devId == "230"
     }
 
     fun validPM81KeyNet(keyNet: String): Boolean {
