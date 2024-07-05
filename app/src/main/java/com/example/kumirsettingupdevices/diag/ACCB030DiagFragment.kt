@@ -41,6 +41,7 @@ class ACCB030DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         }
 
 
+
         return binding.root
     }
 
@@ -116,6 +117,9 @@ class ACCB030DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         binding.textErrorSignal.text = printErrprs
     }
 
+    override fun onPrintIP(ip: String) {
+        binding.textIp.text = getString(R.string.ip) + " " + ip
+    }
 
 
     override fun printSettingDevice(settingMap: Map<String, String>) {

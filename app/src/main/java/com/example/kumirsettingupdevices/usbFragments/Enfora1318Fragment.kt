@@ -160,6 +160,8 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             binding.switchCastomSet.setBackgroundResource(R.color.dangerous)
         }
 
+
+
         return binding.root
     }
 
@@ -652,6 +654,8 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             showAlertDialog(getString(R.string.errorValidAPNEnfora))
             return false
         }
+
+
 
         return true
     }

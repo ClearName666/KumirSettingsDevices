@@ -29,4 +29,19 @@ interface PmDao {
 
     @Query("SELECT * FROM Pm WHERE name = :name LIMIT 1")
     suspend fun getFirstByName(name: String): Pm?
+
+    suspend fun upsert(pm: Pm) {
+        val existingPm = getFirstByName(pm.name ?: "")
+        if (existingPm != null) {
+            updateByName(
+                name = pm.name!!,
+                mode = pm.mode,
+                keyNet = pm.keyNet,
+                power = pm.power,
+                diopozone = pm.diopozone
+            )
+        } else {
+            insert(pm)
+        }
+    }
 }

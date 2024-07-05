@@ -7,7 +7,17 @@
         android:layout_height="match_parent"
         tools:context=".diag.DiagPM81Fragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <Spinner
+        android:id="@+id/spinnerRange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@android:drawable/btn_dropdown"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayoutKeyNet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lineSettingsPort1"
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -100,7 +110,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayoutKeyNet"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerRange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,14 +130,14 @@
 
     <TextView
         android:id="@+id/textTitlenonFindBaseStations"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/BaseStationsTitle"
         android:textColor="@color/textColor"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line2Set" />
 
     <ProgressBar

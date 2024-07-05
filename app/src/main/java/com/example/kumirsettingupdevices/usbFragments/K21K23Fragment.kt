@@ -64,6 +64,8 @@ class K21K23Fragment : Fragment(), UsbFragment {
 
         createAdapters()
 
+
+
         return binding.root
     }
     private fun createAdapters() {

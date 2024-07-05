@@ -30,4 +30,22 @@ interface PresetDao {
 
     @Query("SELECT * FROM Preset WHERE name = :presetName LIMIT 1")
     suspend fun getFirstByName(presetName: String): Preset?
+
+
+    suspend fun upsert(preset: Preset) {
+        val existingPreset = getFirstByName(preset.name ?: "")
+        if (existingPreset != null) {
+            updateByName(
+                name = preset.name!!,
+                mode = preset.mode,
+                apn = preset.apn,
+                server = preset.server,
+                port = preset.port,
+                login = preset.login,
+                password = preset.password
+            )
+        } else {
+            insert(preset)
+        }
+    }
 }

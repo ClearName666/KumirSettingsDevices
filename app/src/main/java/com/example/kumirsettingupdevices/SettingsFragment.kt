@@ -644,7 +644,7 @@ class SettingsFragment : Fragment() {
             val preset = Preset(0, fileName, mode, apn, eServer, tcpPort, login, password)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    contextMain.presetDao.insert(preset)
+                    contextMain.presetDao.upsert(preset)
                     contextMain.runOnUiThread {
                         contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                         // добавление в оперативнку
@@ -673,7 +673,7 @@ class SettingsFragment : Fragment() {
             val preset = Preset(0, fileName, 0, apn, eServer, tcpPort, login, password)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    contextMain.presetDao.insert(preset)
+                    contextMain.presetDao.upsert(preset)
                     contextMain.runOnUiThread {
                         contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                         // добавление в оперативнку
@@ -703,7 +703,7 @@ class SettingsFragment : Fragment() {
             val preset = Pm(0, fileName, mode, accessKey, power, bandI)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    contextMain.presetPmDao.insert(preset)
+                    contextMain.presetPmDao.upsert(preset)
                     contextMain.runOnUiThread {
                         contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                         // добавление в оперативнку
@@ -734,7 +734,7 @@ class SettingsFragment : Fragment() {
                 val preset = Enfora(0, fileName, apn, login, password, eServer, "", timeOut, "512")
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
-                        contextMain.presetEnforaDao.insert(preset)
+                        contextMain.presetEnforaDao.upsert(preset)
                         contextMain.runOnUiThread {
                             contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                             // добавление в оперативнку

@@ -66,6 +66,7 @@
     <string name="errorValidPassword">Длина пароля не должна привышать 63 символа</string>
     <string name="errorValidSim">Пин код для sim должен состоять из 4 цыфр</string>
     <string name="errorKEEPALIVE">Время отправки сигнала должно быть в диапазоне от 10 до 600</string>
+    <string name="errorTimeCall">Время вызова должно быть в диапазоне от 2 до 30</string>
     <string name="errorCTIMEOUT">Время ожидания подключения должно быть в диапазоне от 1 до 4320</string>
     <string name="errorTCPPORT">TCP порт должно быть в диапазоне от 1024 до 65535</string>
     <string name="errorPOWER">Мощность излучения должно быть в диапазоне от -16 до 14</string>
@@ -76,7 +77,9 @@
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
     <string name="noneValidRecordMONITOR">Настройки не были изменены. Запись не требуется</string>
     <string name="errorValidServer">Некорректный формат 1-го или 2-го сервера. Правильный формат записи (0-255).(0-255).(0-255).(0-255)</string>
+    <string name="errorValidServerCore">Некорректный формат IP адрес сервера диспетчера Правильный формат записи (0-255).(0-255).(0-255).(0-255)</string>
     <string name="errorValidAPNEnfora">Длина APN не должена привышать 128 символов</string>
+    <string name="errorValidNumberPhone">Не коррекктный номер телефона! Введите в формате +70000000000</string>
 
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
@@ -297,6 +300,13 @@
     <string name="commandGetProfile2">AT$PROFILE2?</string>
     <string name="commandGetTimezoneData">AT$TZDATA?</string>
     <string name="commandGetSettings">AT$VIEW</string>
+    <string name="commandGetAbonent">AT$ABONENT?</string>
+    <string name="commandGetAbonServer">AT$ABONSERVER?</string>
+    <string name="commandGetTimeAbonent">AT$ABONTIME?</string>
+
+    <string name="commandSetAbonentCore">AT$ABONENT=</string>
+    <string name="commandSetAbonServer">AT$ABONSERVER=</string>
+    <string name="commandSetTimeAbonent">AT$ABONTIME=</string>
 
     <string name="commandSetApn">AT$APN=</string>
     <string name="commandSetServer1">AT$SERVER1=</string>
@@ -340,6 +350,7 @@
     <string name="commandGetVersionProgramEnfora">AT$PKG?</string>
     <string name="commandGetUsernamePassword">AT%CGPCO?</string>
     <string name="commandGetSerialNumberEnforaM31">AT+CGSN?</string>
+    <string name="commandGetIP">AT$NETIP?</string>
     <string name="commandGetApnEnforaM31">AT+CGDCONT?</string>
     <string name="commandGetTcpPortEnforaM31">AT$PADSRC?</string>
     <string name="commandGetLoginPasswordEnforaM31">AT%CGPPP?</string>
@@ -528,6 +539,7 @@
     <string name="netAdressTitle">Сетевой адресс</string>
     <string name="viewValues">Отображение значений</string>
     <string name="timeZero">00:00</string>
+    <string name="ip">IP:</string>
 
 
     <!--............................................................................-->

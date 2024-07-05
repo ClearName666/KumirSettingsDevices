@@ -791,8 +791,19 @@
                             android:focusable="true"
                             android:onClick="onClickACCB030Core"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/PM81Diag">
+
+                            <ImageView
+                                android:id="@+id/imageACCB030CoreMenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/textACCB030Core"
+                                app:layout_constraintStart_toEndOf="@+id/textACCB030Core"
+                                app:layout_constraintTop_toTopOf="@+id/textACCB030Core"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo7"
@@ -817,6 +828,54 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo7"
                                 app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo7"
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo7" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ACCB030CoreSettings"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="40dp"
+                            android:clickable="true"
+                            android:onClick="onClickACCB030CoreSettings"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/ACCB030Core">
+
+                            <TextView
+                                android:id="@+id/textACCB030CoreSettings"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/settingTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ACCB030CoreDiag"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:clickable="true"
+                            android:onClick="onClickACCB030CoreDiag"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/ACCB030CoreSettings"
+                            app:layout_constraintTop_toBottomOf="@+id/ACCB030CoreSettings">
+
+                            <TextView
+                                android:id="@+id/textACCB030CoreDiag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/diagTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -829,7 +888,7 @@
                             android:onClick="onClickACCB030"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/ACCB030Core">
+                            app:layout_constraintTop_toBottomOf="@+id/ACCB030CoreDiag">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo8"

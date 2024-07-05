@@ -156,6 +156,10 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         binding.textErrorSignal.text = printErrprs
     }
 
+    override fun onPrintIP(ip: String) {
+        binding.textIp.text = getString(R.string.ip) + " " + ip
+    }
+
     override fun writeSettingStart() {}
     override fun lockFromDisconnected(connect: Boolean) {
 

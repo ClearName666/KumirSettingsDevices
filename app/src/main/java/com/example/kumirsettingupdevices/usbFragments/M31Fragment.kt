@@ -161,6 +161,8 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             binding.switchCastomSet.setBackgroundResource(R.color.dangerous)
         }
 
+
+
         return binding.root
     }
 

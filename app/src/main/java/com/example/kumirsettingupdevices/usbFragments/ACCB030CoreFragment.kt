@@ -14,13 +14,12 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentACCB030CoreBinding
-import com.example.kumirsettingupdevices.diag.DiagSiagnalIntarface
-import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
+import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, DiagSiagnalIntarface {
+class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private lateinit var binding: FragmentACCB030CoreBinding
 
@@ -29,7 +28,7 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
 
     private var readOk: Boolean = false
 
-    private var NAME_TYPE_DEVICE = "KUMIR-ACCB030 ЯДРО"
+    private var NAME_TYPE_DEVICE = "KUMIR-VZLET_ASSV030 READY"
 
 
     override fun onCreateView(
@@ -37,34 +36,39 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentACCB030CoreBinding.inflate(inflater)
-
         createAdapters()
 
         // выбор присетов устройства учета порт 1
-        binding.spinnerSelectPort1MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+        binding.spinnerSelectPort1MeteringDevice.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
 
-                val context: Context = requireContext()
+                    val context: Context = requireContext()
 
-                if (position == 0) {
-                    // в случае если расширенныйе настроки то можно менять их
-                    binding.DisActivPort1SetiingsPriset.visibility = View.GONE
-                } else {
-                    if (context is MainActivity) {
-                        binding.spinnerSpeed.setSelection(context.portsDeviceSetting[position-1].speed)
-                        binding.spinnerSelectParityPort1.setSelection(context.portsDeviceSetting[position-1].parity)
-                        binding.spinnerSelectStopBitPort1.setSelection(context.portsDeviceSetting[position-1].stopBit)
-                        binding.spinnerBitDataPort1.setSelection(context.portsDeviceSetting[position-1].bitData)
+                    if (position == 0) {
+                        // в случае если расширенныйе настроки то можно менять их
+                        binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+                    } else {
+                        if (context is MainActivity) {
+                            binding.spinnerSpeed.setSelection(context.portsDeviceSetting[position - 1].speed)
+                            binding.spinnerSelectParityPort1.setSelection(context.portsDeviceSetting[position - 1].parity)
+                            binding.spinnerSelectStopBitPort1.setSelection(context.portsDeviceSetting[position - 1].stopBit)
+                            binding.spinnerBitDataPort1.setSelection(context.portsDeviceSetting[position - 1].bitData)
 
-                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
+                            binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
+                        }
+
                     }
+                }
 
+                override fun onNothingSelected(parent: AdapterView<*>) {
                 }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
-        }
 
         // вывод названия типа устройства
         val context: Context = requireContext()
@@ -90,23 +94,22 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
             showAlertDialog(getString(R.string.nonPortEditSorPrisetSet))
         }
 
-        binding.buttonChackSignal.setOnClickListener {
-            onClickChackSignal()
-
-        }
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
             if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
                 if (context is MainActivity) {
-                    context.onClickSavePreset(
-                        binding.inputNameSavePreset.text.toString(),
-                        0,
-                        binding.inputAPN.text.toString(),
-                        binding.inputIPDNS.text.toString(),
-                        "1",
-                        binding.inputTextLoginGPRS.text.toString(),
-                        binding.inputPasswordGPRS.text.toString())
+                    if (validAll()) {
+                        context.onClickSavePreset(
+                            binding.inputNameSavePreset.text.toString(),
+                            0,
+                            binding.inputAPN.text.toString(),
+                            binding.inputIPDNS.text.toString(),
+                            "1",
+                            binding.inputTextLoginGPRS.text.toString(),
+                            binding.inputPasswordGPRS.text.toString()
+                        )
+                    }
                 }
                 binding.inputNameSavePreset.setText("")
             } else {
@@ -132,33 +135,22 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
 
             if (!flagClickChackSignal) {
                 onClickReadSettingsDevice(it)
-
-                // Обертываем наш Drawable для совместимости и изменяем цвет
-                drawable?.let {
-                    val wrappedDrawable = DrawableCompat.wrap(it)
-
-                    DrawableCompat.setTint(wrappedDrawable, Color.RED)
-
-                    binding.imageDownLoad.setImageDrawable(wrappedDrawable)
-                }
-
-                // только после чтения
-                binding.imageDownLoad.setOnClickListener {
-                    // если выключено прослушивание порта
-                    if (!flagClickChackSignal) {
-                        onClickWriteSettingsDevice(it)
-                    } else {
-                        showAlertDialog(getString(R.string.notUseSerialPort))
-                    }
-                }
             } else {
                 showAlertDialog(getString(R.string.notUseSerialPort))
             }
         }
 
+        binding.imageDownLoad.setOnClickListener {
+            showAlertDialog(getString(R.string.notReadDevice))
+        }
+
+
+        if (context is MainActivity && !context.usb.checkConnectToDevice()) {
+            lockFromDisconnected(false)
+        }
+
         return binding.root
     }
-
 
 
     override fun onDestroyView() {
@@ -171,55 +163,24 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
         super.onDestroyView()
     }
 
-    override fun onErrorStopChackSignal() {
-        flagClickChackSignal = false
-        binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-        binding.progressBarChackSignal.visibility = View.GONE
-    }
-
-    override fun onPrintSignal(signal: String, errors: String) {
-        binding.textLevelSignal.text = getString(R.string.LevelSignalTitle) + signal
-        binding.textErrorSignal.text = getString(R.string.errorsSignalTitle) + errors
-
-    }
-
-    private fun onClickChackSignal() {
-        if (readOk) {
-            if (!flagClickChackSignal) {
-                usbCommandsProtocol.readSignalEnfora(getString(R.string.commandGetLevelSignalAndErrors),
-                    requireContext(), this)
-                binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
-
-                flagClickChackSignal = true
-
-
-                // загруска тип работает проверка связи
-                binding.progressBarChackSignal.visibility = View.VISIBLE
-
-            } else {
-                usbCommandsProtocol.flagWorkChackSignal = false
-                binding.buttonChackSignal.text = getString(R.string.chackSignalTitle)
-
-                flagClickChackSignal = false
-
-                // не работает проверка связи загрузка отключена
-                binding.progressBarChackSignal.visibility = View.GONE
-            }
-        } else {
-            showAlertDialog(getString(R.string.notReadDevice))
-        }
-    }
 
     private fun onClickReadSettingsDevice(view: View) {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
-            context.curentData = NAME_TYPE_DEVICE // обход проверки индитификатора
-            context.showTimerDialog(this, NAME_TYPE_DEVICE, false,false)
+            context.showTimerDialog(this, NAME_TYPE_DEVICE)
         }
     }
 
     private fun onClickWriteSettingsDevice(view: View) {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return
+        }
+
         writeSettingStart()
     }
 
@@ -308,27 +269,42 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
         )
 
 
-        val adapterPortDeviceAccounting = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemPortDeviceAccounting)
-        val adapterSelectSpeed = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemSelectSpeed)
-        val adapterSelectParity = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemSelectParity)
-        val adapterSelectStopBit = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemSelectStopBit)
-        val adapterSelectBitData = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemSelectBitData)
+        val adapterPortDeviceAccounting = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner, itemPortDeviceAccounting
+        )
+        val adapterSelectSpeed = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner, itemSelectSpeed
+        )
+        val adapterSelectParity = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner, itemSelectParity
+        )
+        val adapterSelectStopBit = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner, itemSelectStopBit
+        )
+        val adapterSelectBitData = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner, itemSelectBitData
+        )
 
         adapterPortDeviceAccounting.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
         adapterSelectSpeed.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
         adapterSelectParity.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
         adapterSelectStopBit.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
         adapterSelectBitData.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
 
         binding.spinnerSelectPort1MeteringDevice.adapter = adapterPortDeviceAccounting
         binding.spinnerSpeed.adapter = adapterSelectSpeed
@@ -346,6 +322,23 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
     }
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        // -------------активайия кнопки после прочтения-------------
+        // перекраска в красный цвет кнопки загрузки
+        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+        drawablImageDownLoad?.let {
+            val wrappedDrawable = DrawableCompat.wrap(it)
+            DrawableCompat.setTint(wrappedDrawable, Color.RED)
+            binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+        }
+
+        // только после чтения
+        binding.imageDownLoad.setOnClickListener {
+            onClickWriteSettingsDevice(it)
+        }
+        // ------------------------------------------------------------
+
+
         // прочтение прошло успешно
         readOk = true
 
@@ -355,48 +348,123 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
         binding.serinerNumber.text = serialNumber
 
         val programVersion: String = getString(R.string.versionProgram) +
-                "\n" + settingMap[getString(R.string.commandGetVersionCore)]
+                "\n" + settingMap[getString(R.string.commandGetVersionFirmware)]
         binding.textVersionFirmware.text = programVersion
 
+        binding.inputAPN.setText(settingMap[getString(R.string.commandGetApn)])
+        binding.inputIPDNS.setText(settingMap[getString(R.string.commandGetServer1)])
+        binding.inputTextLoginGPRS.setText(settingMap[getString(R.string.commandGetLogin)])
+        binding.inputPasswordGPRS.setText(settingMap[getString(R.string.commandGetPassword)])
+        binding.inputTimeOutKeeplive.setText(settingMap[getString(R.string.commandGetKeepAlive)])
+        binding.inputTimeoutConnection.setText(settingMap[getString(R.string.commandGetConnectionTimeout)])
 
-        val vzlRead: List<String>? = settingMap[getString(R.string.commandGetDataCore)]?.split(",")
+        // вывод присетов настроек
+        var preset1: Int = 0
+        try {
+            // переводим данные пресетов настроек в инт
+            val profile1: Int = settingMap[getString(R.string.commandGetProfile1)]?.
+            replace("\n", "")?.
+            replace(" ", "")?.toInt()!!
 
-        binding.inputAPN.setText(vzlRead?.get(0)?.substringAfter("=") ?: "")
-        binding.inputTextLoginGPRS.setText(vzlRead?.get(1)?.substringAfter("=") ?: "")
-        binding.inputPasswordGPRS.setText(vzlRead?.get(2)?.substringAfter("=") ?: "")
-        binding.inputIPDNS.setText(vzlRead?.get(3)?.substringAfter("=") ?: "")
-
-        val formatDataProtocol = FormatDataProtocol()
-
-        // настроки порта
-        val indexSpeed: Int = formatDataProtocol.getSpeedIndax(vzlRead?.get(4)?.substringAfter("=") ?: "")
-        if (indexSpeed != -1) {
-            binding.spinnerSpeed.setSelection(indexSpeed)
+            // находим среди всех присетов индекс номера присета с настройками
+            val context: Context = requireContext()
+            if (context is MainActivity) {
+                for (itemPreset in 0..<context.portsDeviceSetting.size) {
+                    if (profile1 == context.portsDeviceSetting[itemPreset].priset) {
+                        preset1 = itemPreset
+                        break
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // не валидные данные
+            showAlertDialog(getString(R.string.nonValidData) +
+                    "\n${getString(R.string.commandGetProfile1)} = " +
+                    "${settingMap[getString(R.string.commandGetProfile1)]}")
         }
 
-        val indexBitData: Int = formatDataProtocol.formatBitData(vzlRead?.get(5)?.substringAfter("=") ?: "")
-        if (indexBitData != -1) {
-            binding.spinnerBitDataPort1.setSelection(indexBitData)
+        binding.spinnerSelectPort1MeteringDevice.setSelection(preset1)
+
+        // если профайл не 0 то
+        if (preset1 != 0) {
+            binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
         }
 
-        val indexParity: Int = formatDataProtocol.formatPatity(vzlRead?.get(6)?.substringAfter("=") ?: "")
-        if (indexParity != -1) {
-            binding.spinnerSelectParityPort1.setSelection(indexParity)
+        // установка переключетелей
+        if (settingMap[getString(R.string.commandGetSimPin)]?.
+            contains(getString(R.string.disabled)) == true){
+            binding.switchPinCodeSmsCard.isChecked = false
+
+            binding.inputPinCodeSmsCard.setText("")
+        } else {
+            binding.switchPinCodeSmsCard.isChecked = true
+
         }
 
-        val indexStopBit: Int = formatDataProtocol.formatStopBit(vzlRead?.get(7)?.substringAfter("=") ?: "")
-        if (indexStopBit != -1) {
-            binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
+        try {
+            // отоюражения настроек порта 1-------------------------------------------------------------
+            val port1Config = settingMap[getString(R.string.commandGetPort1Config)]?.split(",")
+
+            // скорость -----------------------------------------
+            val adapterSpeed = binding.spinnerSpeed.adapter as ArrayAdapter<String>
+            val indexSpeed = adapterSpeed.getPosition(port1Config?.get(0))
+            if (indexSpeed != -1) {
+                binding.spinnerSpeed.setSelection(indexSpeed)
+            }
+
+            // количество бит -----------------------------------------
+            val adapterBitData = binding.spinnerBitDataPort1.adapter as ArrayAdapter<String>
+            val indexBitData = adapterBitData.getPosition(port1Config?.get(1))
+            if (indexBitData != -1) {
+                binding.spinnerSelectStopBitPort1.setSelection(indexBitData)
+            }
+
+            // четность -----------------------------------------
+            if (port1Config?.get(2) == "N") {
+                binding.spinnerSelectParityPort1.setSelection(0)
+            } else if (port1Config?.get(2) == "O") {
+                binding.spinnerSelectParityPort1.setSelection(1)
+            } else {
+                binding.spinnerSelectParityPort1.setSelection(2)
+            }
+
+            // стоп биты---------------------------------------------------
+            val adapterStopBit = binding.spinnerSelectStopBitPort1.adapter as ArrayAdapter<String>
+            val indexStopBit = adapterStopBit.getPosition(port1Config?.get(3))
+            if (indexBitData != -1) {
+                binding.spinnerSelectStopBitPort1.setSelection(indexStopBit)
+            }
+
+        } catch (e: NumberFormatException) {
+            showAlertDialog(getString(R.string.notReadActPortDevice))
         }
 
+        // выввод номера телефона диспетчиера
+        binding.inputNumberPhoneDis.setText(settingMap[getString(R.string.commandGetAbonent)])
+
+        // вывод ip адреса сервера
+        binding.inputGSMOper.setText(settingMap[getString(R.string.commandGetAbonServer)])
+
+        // вывод времени входящего звонка
+        binding.inputMaxTimeCall.setText(settingMap[getString(R.string.commandGetTimeAbonent)])
     }
 
     override fun readSettingStart() {
         val command: List<String> = arrayListOf(
             getString(R.string.commandGetSerialNum),
-            getString(R.string.commandGetVersionCore),
-            getString(R.string.commandGetGSMOperator),
-            getString(R.string.commandGetDataCore)
+            getString(R.string.commandGetVersionFirmware),
+            getString(R.string.commandGetProfile1),
+            getString(R.string.commandGetPort1Config),
+            getString(R.string.commandGetApn),
+            getString(R.string.commandGetKeepAlive),
+            getString(R.string.commandGetServer1),
+            getString(R.string.commandGetConnectionTimeout),
+            getString(R.string.commandGetSimPin),
+            getString(R.string.commandGetLogin),
+            getString(R.string.commandGetPassword),
+            getString(R.string.commandGetAbonent),
+            getString(R.string.commandGetAbonServer),
+            getString(R.string.commandGetTimeAbonent)
         )
 
         usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
@@ -404,10 +472,107 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
 
     override fun writeSettingStart() {
 
+        // проверка на валидность
+        if (!validAll()) return
+
+        var parityPort1 = "N"
+        when(binding.spinnerSelectParityPort1.selectedItemPosition) {
+            0 -> parityPort1  = "N"
+            1 -> parityPort1  = "E"
+            2 -> parityPort1  = "O"
+        }
+
+        val dataMap: MutableMap<String, String> = mutableMapOf(
+            getString(R.string.commandSetApn) to binding.inputAPN.text.toString(),
+            getString(R.string.commandSetServer1) to binding.inputIPDNS.text.toString(),
+            getString(R.string.commandSetLogin) to binding.inputTextLoginGPRS.text.toString(),
+            getString(R.string.commandSetPassword) to binding.inputPasswordGPRS.text.toString(),
+            getString(R.string.commandSetKeepAlive) to binding.inputTimeOutKeeplive.text.toString(),
+            getString(R.string.commandSetConnectionTimeout) to binding.inputTimeoutConnection.text.toString()
+        )
+
+        // загрузкак профайл
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            try {
+                dataMap[getString(R.string.commandSetProfile1)] =
+                    context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].
+                    priset.toString()
+            } catch (e: Exception) {
+                showAlertDialog(getString(R.string.nonValidData))
+                return
+            }
+        }
+
+        dataMap[getString(R.string.commandSetPort1Config)] =
+            binding.spinnerSpeed.selectedItem.toString() + "," +
+                    binding.spinnerBitDataPort1.selectedItem.toString() + "," +
+                    parityPort1  + "," +
+                    binding.spinnerSelectStopBitPort1.selectedItem.toString() +
+                    ",200,2000"
+
+        if (binding.switchPinCodeSmsCard.isChecked) {
+            if (binding.inputPinCodeSmsCard.text?.isNotEmpty() != false) {
+                dataMap[getString(R.string.commandSetSimPin)] =
+                    binding.inputPinCodeSmsCard.text.toString()
+            }
+        } else {
+            dataMap[getString(R.string.commandSetSimPin)] = "0000"
+        }
+
+        dataMap[getString(R.string.commandSetAbonentCore)] = binding.inputNumberPhoneDis.text.toString()
+        dataMap[getString(R.string.commandSetAbonServer)] = binding.inputGSMOper.text.toString()
+        dataMap[getString(R.string.commandSetTimeAbonent)] = binding.inputMaxTimeCall.text.toString()
+
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
     }
 
     override fun lockFromDisconnected(connect: Boolean) {
+        // текстрки для кнопок
+        val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
+        val drawablImageDischarge = ContextCompat.getDrawable(requireContext(), R.drawable.discharge)
 
+        if (!connect) {
+            //------------------------------------------------------------------------------------------
+            // покраска кнопки записи в серый
+            // Обертываем наш Drawable для совместимости и изменяем цвет
+
+            drawablImageDownLoad?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+            }
+            drawablImageDischarge?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GRAY)
+                binding.imagedischarge.setImageDrawable(wrappedDrawable)
+            }
+
+            //--------------------------------------------------------------------------------------
+
+            // убераем возмоэность читать и записывать
+            binding.imagedischarge.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+        } else {
+            drawablImageDischarge?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.GREEN)
+                binding.imagedischarge.setImageDrawable(wrappedDrawable)
+            }
+
+            // установка клика
+            binding.imagedischarge.setOnClickListener {
+                onClickReadSettingsDevice(it)
+            }
+
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.notReadDevice))
+            }
+        }
     }
 
     private fun showAlertDialog(text: String) {
@@ -415,6 +580,83 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset>, Dia
         if (context is MainActivity) {
             context.showAlertDialog(text)
         }
+    }
+
+
+    // проверка валидности
+    private fun validAll(): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        if (!validDataSettingsDevice.validTimeAbonent(binding.inputMaxTimeCall.text.toString())) {
+            showAlertDialog(getString(R.string.errorTimeCall))
+            return false
+        }
+
+        if (!validDataSettingsDevice.validServer(binding.inputGSMOper.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidServerCore))
+            return false
+        }
+
+        if (!validDataSettingsDevice.isValidPhoneNumber(binding.inputNumberPhoneDis.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidNumberPhone))
+            return false
+        }
+
+        // проверка на русские символы в серверах и apn
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputTextLoginGPRS.text.toString()) ||
+            !validDataSettingsDevice.serverValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar))
+            return false
+        }
+
+        // проверки на валидность keepalive ctimeout tcpPort
+        if (!validDataSettingsDevice.keepaliveValid(
+                binding.inputTimeOutKeeplive.text.toString().replace("\\s+".toRegex(), ""))) {
+
+            showAlertDialog(getString(R.string.errorKEEPALIVE))
+            return false
+
+        } else if (!validDataSettingsDevice.ctimeoutValid(
+                binding.inputTimeoutConnection.text.toString().replace("\\s+".toRegex(), ""))) {
+            showAlertDialog(getString(R.string.errorCTIMEOUT))
+            return false
+
+        }
+
+        // проверки на вaлидность 63 символа
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidAPN))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputIPDNS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidIPDNS))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputTextLoginGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidLogin))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidPassword))
+            return false
+        }
+
+
+        if (binding.switchPinCodeSmsCard.isChecked) {
+            if (binding.inputPinCodeSmsCard.text?.isNotEmpty() != false &&
+                !validDataSettingsDevice.simPasswordValid(binding.inputPinCodeSmsCard.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidSim))
+                return false
+            }
+        }
+
+        return true
     }
 
     override fun printPriset(priset: Priset) {

@@ -14,7 +14,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentACCB030Binding
-import com.example.kumirsettingupdevices.diag.DiagSiagnalIntarface
 import com.example.kumirsettingupdevices.formaters.FormatDataProtocol
 import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
@@ -145,6 +144,8 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.notReadDevice))
         }
+
+
 
         return binding.root
     }

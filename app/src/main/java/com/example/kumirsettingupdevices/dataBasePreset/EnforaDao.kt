@@ -28,4 +28,23 @@ interface EnforaDao {
 
     @Query("SELECT * FROM Enfora WHERE name = :name LIMIT 1")
     suspend fun getFirstByName(name: String): Enfora?
+
+    // Новый метод upsert
+    suspend fun upsert(enfora: Enfora) {
+        val existingEnfora = getFirstByName(enfora.name ?: "")
+        if (existingEnfora != null) {
+            updateByName(
+                name = enfora.name!!,
+                apn = enfora.apn,
+                login = enfora.login,
+                password = enfora.password,
+                server1 = enfora.server1,
+                server2 = enfora.server2,
+                timeout = enfora.timeout,
+                sizeBuffer = enfora.sizeBuffer
+            )
+        } else {
+            insert(enfora)
+        }
+    }
 }

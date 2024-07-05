@@ -1,7 +1,9 @@
 package com.example.kumirsettingupdevices
 
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
@@ -89,7 +91,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         "KUMIR-К21К23 READY" +
         "KUMIR-M32 READY" +
         "KUMIR-M32LITE READY" +
-        "KUMIR-RM81A READY"
+        "KUMIR-RM81A READY" +
+        "KUMIR-VZLET_ASSV030 READY"
 
     // текущий фрагмент
     var curentFragmentComProtocol: UsbCommandsProtocol? = null
@@ -535,10 +538,28 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
 
     fun onClickACCB030Core(view: View) {
+        if (binding.ACCB030CoreSettings.visibility == View.GONE) {
+            binding.ACCB030CoreSettings.visibility = View.VISIBLE
+            //binding.ACCB030CoreDiag.visibility = View.VISIBLE
+            binding.imageACCB030CoreMenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
+        } else {
+            binding.ACCB030CoreSettings.visibility = View.GONE
+            //binding.ACCB030CoreDiag.visibility = View.GONE
+            binding.imageACCB030CoreMenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
+        }
+    }
+    fun onClickACCB030CoreSettings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val accbo30Core = ACCB030CoreFragment()
         createSettingFragment(accbo30Core)
+    }
+    fun onClickACCB030CoreDiag(view: View) {
+        showAlertDialog(getString(R.string.errorCodeNone))
     }
 
     // раскрывающаяся понель
@@ -609,7 +630,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 withContext(Dispatchers.IO) {
 
                     try {
-                        presetDao.insert(preset)
+                        presetDao.upsert(preset)
 
                         // сразу добовлеям что бы он стал активным и с ним можно было работать
                         PrisetsValue.prisets[name] = Priset(name, mode, apn, port, server, login, password)
@@ -650,7 +671,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 withContext(Dispatchers.IO) {
 
                     try {
-                        presetEnforaDao.insert(preset)
+                        presetEnforaDao.upsert(preset)
 
                         // сразу добовлеям что бы он стал активным и с ним можно было работать
                         PresetsEnforaValue.presets[name] = Enfora(0, name, apn, login, password,
@@ -687,7 +708,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 withContext(Dispatchers.IO) {
 
                     try {
-                        presetPmDao.insert(preset)
+                        presetPmDao.upsert(preset)
 
                         // сразу добовлеям что бы он стал активным и с ним можно было работать
                         PrisetsPmValue.presets[name] = Pm(0, name, mode, keyNet, power, range)
@@ -1109,6 +1130,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // подключения и регистрация широковещятельного приемника
     override fun connectToUsbDevice(device: UsbDevice) {
+        val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE)
 
         // проверка и подключение
         if (isTargetDevice(device)) {
@@ -1120,24 +1142,25 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 if (connection != null) {
                     // Успешно подключено
                     // Здесь можно выполнить дальнейшую работу с устройством
-                    usb.connect(connection, device)
+                    if (usbManager.hasPermission(device))
+                        usb.connect(connection, device)
+                } else {
+                    if (!usbManager.hasPermission(device)) {
+                        // Запрос разрешения, если его нет
+                        usbManager.requestPermission(device, permissionIntent)
+                    } else {
+                        // Обработка ошибки подключения
+                        showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
+                    }
+                }
+            } catch (e: Exception) {
+                if (!usbManager.hasPermission(device)) {
+                    // Запрос разрешения, если его нет
+                    usbManager.requestPermission(device, permissionIntent)
                 } else {
                     // Обработка ошибки подключения
                     showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
-
-                    // проверка вдруг нету разрешения
-                    /*if (!usbManager.hasPermission(device)) {
-                        requestPermission(device)
-                    }*/
                 }
-            } catch (e: Exception) {
-                // Обработка исключений
-                showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
-
-                // проверка вдруг нету разрешения
-                /*if (!usbManager.hasPermission(device)) {
-                    requestPermission(device)
-                }*/
             }
         }
     }

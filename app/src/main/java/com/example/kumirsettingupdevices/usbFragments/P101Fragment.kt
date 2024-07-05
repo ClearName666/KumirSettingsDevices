@@ -81,6 +81,8 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
 
         createAdapters()
 
+
+
         return binding.root
     }
 

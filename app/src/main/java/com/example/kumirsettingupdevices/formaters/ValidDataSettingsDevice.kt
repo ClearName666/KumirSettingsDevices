@@ -53,13 +53,32 @@ class ValidDataSettingsDevice {
         // ожидение п101
         const val TIME_P101_MAX: Int = 5000
         const val TIME_P101_MIN: Int = 200
+
+        // время ожидания вывзова
+        const val TIME_AB_MAX: Int = 30
+        const val TIME_AB_MIN: Int = 2
     }
+
 
     private fun isCp1251String(str: String): Boolean {
         val charsetCp1251 = Charset.forName("windows-1251")
         val bytes = str.toByteArray(charsetCp1251)
         val decodedString = String(bytes, charsetCp1251)
         return str == decodedString
+    }
+
+    fun isValidPhoneNumber(phoneNumber: String): Boolean {
+        val regex = Regex("^\\+7\\d{10}\$")
+        return regex.matches(phoneNumber)
+    }
+
+    fun validTimeAbonent(abTime: String): Boolean {
+        return try {
+            !(abTime.toInt() >= TIME_AB_MAX ||
+                    abTime.toInt() <= TIME_AB_MIN)
+        } catch (e: Exception) {
+            false
+        }
     }
 
     // проверка праоля на 6 символов а так же на ASCII символы
@@ -75,8 +94,8 @@ class ValidDataSettingsDevice {
     // проверка интервала п101
     fun validRangeP101(timeout: String): Boolean {
         return try {
-            !(timeout.toInt() > RENGE_P101_MAX ||
-                    timeout.toInt() < RENGE_P101_MIN)
+            !(timeout.toInt() >= RENGE_P101_MAX ||
+                    timeout.toInt() <= RENGE_P101_MIN)
         } catch (e: Exception) {
             false
         }
@@ -85,8 +104,8 @@ class ValidDataSettingsDevice {
     // проверка задержки п101
     fun validTimeOutP101(timeout: String): Boolean {
         return try {
-            !(timeout.toInt() > TIMEOUT_P101_MAX ||
-                    timeout.toInt() < TIMEOUT_P101_MIN)
+            !(timeout.toInt() >= TIMEOUT_P101_MAX ||
+                    timeout.toInt() <= TIMEOUT_P101_MIN)
         } catch (e: Exception) {
             false
         }
@@ -95,8 +114,8 @@ class ValidDataSettingsDevice {
     // проверка ожидания п101
     fun validTimeP101(timeout: String): Boolean {
         return try {
-            !(timeout.toInt() > TIME_P101_MAX ||
-                    timeout.toInt() < TIME_P101_MIN)
+            !(timeout.toInt() >= TIME_P101_MAX ||
+                    timeout.toInt() <= TIME_P101_MIN)
         } catch (e: Exception) {
             false
         }
@@ -154,8 +173,8 @@ class ValidDataSettingsDevice {
     // проверка PADTO для enfora
     fun padtoValid(padto: String): Boolean {
         return try {
-            !(padto.toInt() > PADTO_MAX ||
-                    padto.toInt() < PADTO_MIN)
+            !(padto.toInt() >= PADTO_MAX ||
+                    padto.toInt() <= PADTO_MIN)
         } catch (e: Exception) {
             false
         }
@@ -164,8 +183,8 @@ class ValidDataSettingsDevice {
     // проверка PADBLK для enfora
     fun padblkValid(padblk: String): Boolean {
         return try {
-            !(padblk.toInt() > PADBLK_MAX ||
-                    padblk.toInt() < PADBLK_MIN)
+            !(padblk.toInt() >= PADBLK_MAX ||
+                    padblk.toInt() <= PADBLK_MIN)
         } catch (e: Exception) {
             false
         }
@@ -174,8 +193,8 @@ class ValidDataSettingsDevice {
     // проверка errorKEEPALIVE диопазона от 10 до 600
     fun keepaliveValid(keepalive: String): Boolean {
         return try {
-            !(keepalive.toInt() > KEEPALIVE_MAX ||
-                    keepalive.toInt() < KEEPALIVE_MIN)
+            !(keepalive.toInt() >= KEEPALIVE_MAX ||
+                    keepalive.toInt() <= KEEPALIVE_MIN)
         } catch (e: Exception) {
             false
         }
@@ -184,8 +203,8 @@ class ValidDataSettingsDevice {
 
     fun ctimeoutValid(ctimeout: String): Boolean {
         return try {
-            !(ctimeout.toInt() > CTIMEOUT_MAX ||
-                    ctimeout.toInt() < CTIMEOUT_MIN)
+            !(ctimeout.toInt() >= CTIMEOUT_MAX ||
+                    ctimeout.toInt() <= CTIMEOUT_MIN)
         } catch (e: Exception) {
             false
         }
@@ -194,8 +213,8 @@ class ValidDataSettingsDevice {
 
     fun tcpPortValid(tcpPort: String): Boolean {
         return try {
-            !(tcpPort.toInt() > TCPPORT_MAX ||
-                    tcpPort.toInt() < TCPPORT_MIN)
+            !(tcpPort.toInt() >= TCPPORT_MAX ||
+                    tcpPort.toInt() <= TCPPORT_MIN)
         } catch (e: Exception) {
             false
         }

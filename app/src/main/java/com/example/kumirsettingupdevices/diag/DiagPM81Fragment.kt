@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
     override var keyNet: String = ""
     override var mode: String = ""
+    override var range: Int = 0
 
     private lateinit var binding: FragmentDiagPM81Binding
 
@@ -53,6 +55,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
         // задержка для анимации загрузки операторов
         const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 700
+
+        const val DEFFAULT_KEY_NET: String = "7586-100000-000003"
     }
 
 
@@ -77,13 +81,31 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         }
 
         // стандартный ключ доступа в сеть
-        binding.inputKeyNet.setText("7586-100000-000003")
+        binding.inputKeyNet.setText(DEFFAULT_KEY_NET)
 
         // проверяем валиность введенных данных
         surveillanceInputText()
 
+        createAdapters()
 
         return binding.root
+    }
+    private fun createAdapters() {
+
+        // адаптер для выбора диопазона
+        val itemSelectRange = listOf(
+            getString(R.string.rangeMod1),
+            getString(R.string.rangeMod2),
+            getString(R.string.rangeMod3)
+        )
+
+        val adapterSelectRange = ArrayAdapter(requireContext(),
+            R.layout.item_spinner, itemSelectRange)
+
+        adapterSelectRange.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
+
+        binding.spinnerRange.adapter = adapterSelectRange
     }
 
     override fun onDestroyView() {
@@ -287,8 +309,12 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
 
     override fun runDiag() {
+        // выброный диапозон
+        val selectRange: String = (binding.spinnerRange.selectedItemPosition+1).toString()
+
         usbCommandsProtocol.readDiagPm(requireContext(),
-            this, this, binding.inputKeyNet.text.toString())
+            this, this, binding.inputKeyNet.text.toString(),
+            selectRange)
         flagStartDiag = true
 
         // у кнопки назначаем текст для завершения диагностки
@@ -324,7 +350,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
         val dataMap: MutableMap<String, String> = mutableMapOf(
             getString(R.string.commandSetMode) to mode,
-            getString(R.string.commandSetNetKey) to keyNet
+            getString(R.string.commandSetNetKey) to keyNet,
+            getString(R.string.commandSetRange) to range.toString()
         )
 
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)

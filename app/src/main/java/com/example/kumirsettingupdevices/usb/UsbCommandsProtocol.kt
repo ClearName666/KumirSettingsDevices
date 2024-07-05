@@ -373,6 +373,7 @@ class UsbCommandsProtocol {
     fun readSignalEnfora(command: String, context: Context, diagSiagnalIntarface: DiagSiagnalIntarface) {
         flagWorkChackSignal = true
 
+
         threadChackSignalEnfora = Thread {
             if (context is MainActivity) {
 
@@ -380,6 +381,9 @@ class UsbCommandsProtocol {
 
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
+
+                // флаг для получения ip
+                var flagIP = false
 
                 out@while (flagWorkChackSignal) {
 
@@ -390,8 +394,12 @@ class UsbCommandsProtocol {
                     context.curentData = ""
 
 
+                    val commandSand: String =
+                        if (!flagIP) context.getString(R.string.commandGetIP)
+                        else command
+
                     // если неудачно отправили то выход
-                    if (!context.usb.writeDevice(command, false)) {
+                    if (!context.usb.writeDevice(commandSand, false)) {
                         (context as Activity).runOnUiThread {
                             // меняем текст кнопки
                             if (flagWorkChackSignal)
@@ -420,12 +428,20 @@ class UsbCommandsProtocol {
                     // после получения данных отправляем их на отображение
                     if (flagWorkChackSignal) {
                         try {
-                            val signal: String = data[0]
-                            val errors: String = data[1]
+                            if (flagIP) { // ip уже отобразился
+                                val signal: String = data[0]
+                                val errors: String = data[1]
 
-                            (context as Activity).runOnUiThread {
-                                diagSiagnalIntarface.onPrintSignal(signal, errors)
+                                (context as Activity).runOnUiThread {
+                                    diagSiagnalIntarface.onPrintSignal(signal, errors)
+                                }
+                            } else { // отображение ip
+                                (context as Activity).runOnUiThread {
+                                    diagSiagnalIntarface.onPrintIP(formatDataCommandsNormolize(context.curentData))
+                                }
+                                flagIP = true
                             }
+
                         } catch (e: Exception) {
                             (context as Activity).runOnUiThread {
                                 context.showAlertDialog(context.getString(R.string.notValidData))
@@ -654,7 +670,8 @@ class UsbCommandsProtocol {
 
 
     // проведение диагностики pm81
-    fun readDiagPm(context: Context, usbDiagPm: UsbDiagPm, diagFragmentInterface: DiagFragmentInterface, netKey: String) {
+    fun readDiagPm(context: Context, usbDiagPm: UsbDiagPm, diagFragmentInterface: DiagFragmentInterface, netKey: String,
+                    range: String) {
         flagWorkDiagPm = true
 
         threadDiagPm = Thread {
@@ -791,6 +808,55 @@ class UsbCommandsProtocol {
                     }
                 }
 
+                // чтение диапозона
+                for (i in 0..CNT_SAND_COMMAND_OK) {
+                    context.curentData = ""
+                    context.usb.writeDevice(context.getString(R.string.commandGetRange))
+
+                    // система получения ответа и ожидание полной отправки данных
+                    if (!expectationSand(context)) {
+
+                        // достигнуто ваксимальное время и нет ответа ошибка
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                        }
+
+                        // все попытки израсходываны
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            flagSucGetSerAndVersion = false
+                        }
+                    }
+                    // проверка на валидность принатых данных возможно нужно еще раз опрасить
+                    // проверка принялись ли данные
+                    if (!sandOkCommand(context, context.getString(R.string.commandGetRange))) {
+
+                        // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(
+                                    context.getString(R.string.commandGetRange) + context.getString(R.string.errorSendDataRead)
+                                )
+                            }
+                            flagSucGetSerAndVersion = false
+                        }
+                    } else {
+                        // попытка преобразовать в алидные данные
+                        try {
+                            usbDiagPm.range = formatDataCommandsNormolize(context.curentData).trim().toInt()
+                            flagSucGetSerAndVersion = true
+                            break
+                        } catch (e: Exception) {
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(
+                                    context.getString(R.string.commandGetRange) + context.getString(R.string.nonValidData)
+                                )
+                            }
+                            flagSucGetSerAndVersion = false
+                            break
+                        }
+                    }
+                }
+
                 // чтение режима работы
                 for (i in 0..CNT_SAND_COMMAND_OK) {
                     context.curentData = ""
@@ -858,6 +924,44 @@ class UsbCommandsProtocol {
                             (context as Activity).runOnUiThread {
                                 context.showAlertDialog(
                                     context.getString(R.string.commandSetNetKey) + context.getString(R.string.errorSendDataRead)
+                                )
+                            }
+                            flagSucGetSerAndVersion = false
+                        }
+                    } else {
+
+                        flagSucGetSerAndVersion = true
+                        break
+                    }
+                }
+
+                //  назначения диапозона
+                for (i in 0..CNT_SAND_COMMAND_OK) {
+                    context.curentData = ""
+                    context.usb.writeDevice(context.getString(R.string.commandSetRange) + range)
+
+                    // система получения ответа и ожидание полной отправки данных
+                    if (!expectationSand(context)) {
+
+                        // достигнуто ваксимальное время и нет ответа ошибка
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                        }
+
+                        // все попытки израсходываны
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            flagSucGetSerAndVersion = false
+                        }
+                    }
+                    // проверка на валидность принатых данных возможно нужно еще раз опрасить
+                    // проверка принялись ли данные
+                    if (!sandOkCommand(context, context.getString(R.string.commandSetRange))) {
+
+                        // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
+                        if (i == CNT_SAND_COMMAND_OK) {
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(
+                                    context.getString(R.string.commandSetRange) + context.getString(R.string.errorSendDataRead)
                                 )
                             }
                             flagSucGetSerAndVersion = false

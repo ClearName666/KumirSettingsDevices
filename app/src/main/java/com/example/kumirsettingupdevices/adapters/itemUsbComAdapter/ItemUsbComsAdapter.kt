@@ -40,7 +40,7 @@ class ItemUsbComsAdapter(
                 try {
                     device.let {
                         if (context is UsbActivityInterface) {
-                            context.showDeviceName(nameUsb)
+                            //context.showDeviceName(nameUsb)
                             context.connectToUsbDevice(device!!)
                         }
                     }

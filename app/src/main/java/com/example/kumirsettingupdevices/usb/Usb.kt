@@ -377,11 +377,6 @@ class Usb(private val context: Context) {
                     usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(
                         curentDevice, connection)
                     usbSerialDevice?.open()
-                    (context as Activity).runOnUiThread {
-                        if (context is UsbActivityInterface) {
-                            context.showDeviceName(curentDevice.productName.toString())
-                        }
-                    }
 
 
                     usbSerialDevice?.let {
@@ -463,6 +458,12 @@ class Usb(private val context: Context) {
                             }
                         }
                     }.start()
+
+                    (context as Activity).runOnUiThread {
+                        if (context is UsbActivityInterface) {
+                            context.showDeviceName(curentDevice.productName.toString())
+                        }
+                    }
 
                 } catch (e: IOException) {
                     printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))

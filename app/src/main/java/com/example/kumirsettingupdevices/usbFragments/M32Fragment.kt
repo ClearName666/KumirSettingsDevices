@@ -210,6 +210,9 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
+
+
+
         return binding.root
     }
 

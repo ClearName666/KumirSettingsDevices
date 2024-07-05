@@ -154,84 +154,7 @@ tools:context=".usbFragments.ACCB030CoreFragment">
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/textInputIPAdressLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textCommunicationOperator"
-                app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
-
-            <TextView
-                android:id="@+id/textChackSignal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
-                android:text="@string/chackSignalTitle"
-                android:textColor="@color/textColor"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort1" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lineChaclkSignal"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/fon2Element"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textChackSignal">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/textCommunicationOperator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:text="@string/communicationOperatorTitle"
-                android:textColor="@color/textColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lineChaclkSignal" />
-
-            <TextView
-                android:id="@+id/textLevelSignal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/LevelSignalTitle"
-                android:textColor="@color/textColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textCommunicationOperator" />
-
-            <TextView
-                android:id="@+id/textErrorSignal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/errorsSignalTitle"
-                android:textColor="@color/textColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textLevelSignal" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/InputIPAdress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ipAdressTitle"
-                android:textColor="@color/textColor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textErrorSignal" />
-
-            <Button
-                android:id="@+id/buttonChackSignal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/textColor"
-                android:text="@string/chackSignalTitle"
-                android:textColor="@color/background"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/InputIPAdress" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lineSettingsPort1"
@@ -455,7 +378,7 @@ tools:context=".usbFragments.ACCB030CoreFragment">
                     android:id="@+id/inputNumberPhoneDis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="phone"
                     android:textColor="@color/textColor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -481,7 +404,6 @@ tools:context=".usbFragments.ACCB030CoreFragment">
                     android:id="@+id/inputGSMOper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
                     android:textColor="@color/textColor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -738,7 +660,7 @@ tools:context=".usbFragments.ACCB030CoreFragment">
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/buttonChackSignal">
+                app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitPort1">
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
