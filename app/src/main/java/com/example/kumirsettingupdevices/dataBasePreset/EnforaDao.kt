@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.kumirsettingupdevices.MainActivity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,19 +31,12 @@ interface EnforaDao {
     suspend fun getFirstByName(name: String): Enfora?
 
     // Новый метод upsert
-    suspend fun upsert(enfora: Enfora) {
+    suspend fun upsert(enfora: Enfora, context: MainActivity) {
         val existingEnfora = getFirstByName(enfora.name ?: "")
         if (existingEnfora != null) {
-            updateByName(
-                name = enfora.name!!,
-                apn = enfora.apn,
-                login = enfora.login,
-                password = enfora.password,
-                server1 = enfora.server1,
-                server2 = enfora.server2,
-                timeout = enfora.timeout,
-                sizeBuffer = enfora.sizeBuffer
-            )
+            context.runOnUiThread {
+                context.menuUpdateName(null, null, enfora)
+            }
         } else {
             insert(enfora)
         }

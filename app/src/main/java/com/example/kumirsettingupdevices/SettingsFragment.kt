@@ -644,9 +644,8 @@ class SettingsFragment : Fragment() {
             val preset = Preset(0, fileName, mode, apn, eServer, tcpPort, login, password)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    contextMain.presetDao.upsert(preset)
+                    contextMain.presetDao.upsert(preset, requireContext() as MainActivity)
                     contextMain.runOnUiThread {
-                        contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                         // добавление в оперативнку
                         PrisetsValue.prisets[fileName] = Priset(fileName, mode, apn, tcpPort, eServer, login, password)
                         // обноление данныех
@@ -673,9 +672,8 @@ class SettingsFragment : Fragment() {
             val preset = Preset(0, fileName, 0, apn, eServer, tcpPort, login, password)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    contextMain.presetDao.upsert(preset)
+                    contextMain.presetDao.upsert(preset, requireContext() as MainActivity)
                     contextMain.runOnUiThread {
-                        contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                         // добавление в оперативнку
                         PrisetsValue.prisets[fileName] = Priset(fileName, 0, apn, tcpPort, eServer, login, password)
                         // обноление данныех
@@ -703,9 +701,8 @@ class SettingsFragment : Fragment() {
             val preset = Pm(0, fileName, mode, accessKey, power, bandI)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    contextMain.presetPmDao.upsert(preset)
+                    contextMain.presetPmDao.upsert(preset, requireContext() as MainActivity)
                     contextMain.runOnUiThread {
-                        contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                         // добавление в оперативнку
                         PrisetsPmValue.presets[fileName] = preset
                         // обноление данныех
@@ -734,9 +731,8 @@ class SettingsFragment : Fragment() {
                 val preset = Enfora(0, fileName, apn, login, password, eServer, "", timeOut, "512")
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
-                        contextMain.presetEnforaDao.upsert(preset)
+                        contextMain.presetEnforaDao.upsert(preset, requireContext() as MainActivity)
                         contextMain.runOnUiThread {
-                            contextMain.showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                             // добавление в оперативнку
                             PresetsEnforaValue.presets[fileName] = preset
                             // обноление данныех

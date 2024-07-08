@@ -31,8 +31,9 @@ class ItemBaseStationAdapter (val context: Context,
         val currentItem = list[position]
 
         currentItem.let {
-            if (currentItem.snr.isEmpty()) { // если главная базовая станция то перекрашиваем в зеленый
+            if (currentItem.main) { // если главная базовая станция то перекрашиваем в зеленый
                 holder.textBSS.text = context.getString(R.string.BSS) + " " + currentItem.bss
+                holder.textSNR.text = context.getString(R.string.SNR) + " " + currentItem.snr
                 holder.main.background.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
             } else {
                 holder.textBSS.text = context.getString(R.string.BSS) + " " + currentItem.bss

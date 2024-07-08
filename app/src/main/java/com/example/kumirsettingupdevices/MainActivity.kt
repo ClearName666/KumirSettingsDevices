@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
@@ -278,8 +280,40 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             usbDevice?.let {
                 connectToUsbDevice(usbDevice)
             }
-        }
 
+
+
+            // Проверяем, есть ли разрешения на доступ к местоположению
+            if (!checkLocationPermissions()) {
+                requestLocationPermissions()
+            }
+        }
+    }
+
+    fun checkLocationPermissions(): Boolean {
+        val permissionState = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        return permissionState == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+            0
+        )
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 0) {
+            if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                requestLocationPermissions()
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -530,10 +564,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(pm81)
     }
     fun onClickPM81Diag(view: View) {
-        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+        if (checkLocationPermissions()) {
+            binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val pm81Diag = DiagPM81Fragment("KUMIR-RM81A READY")
-        createSettingFragment(pm81Diag)
+            val pm81Diag = DiagPM81Fragment("KUMIR-RM81A READY")
+            createSettingFragment(pm81Diag)
+        } else {
+            showAlertDialog(getString(R.string.nonPermissionsPos))
+        }
     }
 
 
@@ -630,14 +668,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 withContext(Dispatchers.IO) {
 
                     try {
-                        presetDao.upsert(preset)
+                        presetDao.upsert(preset, this@MainActivity)
 
                         // сразу добовлеям что бы он стал активным и с ним можно было работать
                         PrisetsValue.prisets[name] = Priset(name, mode, apn, port, server, login, password)
 
-                        runOnUiThread {
-                            showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                        }
                     } catch (e: Exception) {
                         runOnUiThread {
                             showAlertDialog(getString(R.string.errorDataBase))
@@ -671,15 +706,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 withContext(Dispatchers.IO) {
 
                     try {
-                        presetEnforaDao.upsert(preset)
+                        presetEnforaDao.upsert(preset, this@MainActivity)
 
                         // сразу добовлеям что бы он стал активным и с ним можно было работать
                         PresetsEnforaValue.presets[name] = Enfora(0, name, apn, login, password,
                             server1, server2, timeout, sizeBuffer)
 
-                        runOnUiThread {
-                            showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                        }
                     } catch (e: Exception) {
                         runOnUiThread {
                             showAlertDialog(getString(R.string.errorDataBase))
@@ -708,14 +740,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 withContext(Dispatchers.IO) {
 
                     try {
-                        presetPmDao.upsert(preset)
+                        presetPmDao.upsert(preset, this@MainActivity)
 
                         // сразу добовлеям что бы он стал активным и с ним можно было работать
                         PrisetsPmValue.presets[name] = Pm(0, name, mode, keyNet, power, range)
 
-                        runOnUiThread {
-                            showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                        }
                     } catch (e: Exception) {
                         runOnUiThread {
                             showAlertDialog(getString(R.string.errorDataBase))
@@ -771,7 +800,177 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
 
+    // для выбора обновить данные или же изменить имя
+    fun menuUpdateName(preset: Preset?, pm: Pm?, enfora: Enfora?) {
 
+        // Открываем менб изменения имени
+        binding.fonMenu.visibility = View.VISIBLE
+        binding.updateName.visibility = View.VISIBLE
+
+        if (preset != null) {
+            // обновление данных
+            binding.buttonEditData.setOnClickListener {
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        presetDao.updateByName(
+                            name = preset.name!!,
+                            mode = preset.mode,
+                            apn = preset.apn,
+                            server = preset.server,
+                            port = preset.port,
+                            login = preset.login,
+                            password = preset.password
+                        )
+                    }
+                }
+
+                // закрываем окно
+                binding.fonMenu.visibility = View.GONE
+                binding.updateName.visibility = View.GONE
+
+                showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+            }
+
+            // обновить имя
+            binding.buttonNewName.setOnClickListener {
+                if (preset.name != binding.inputUpdateName.text.toString().trim() &&
+                    binding.inputUpdateName.text.toString().trim().isNotEmpty()) {
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            presetDao.insert(
+                                Preset(
+                                    0,
+                                    name = binding.inputUpdateName.text.toString(),
+                                    mode = preset.mode,
+                                    apn = preset.apn,
+                                    server = preset.server,
+                                    port = preset.port,
+                                    login = preset.login,
+                                    password = preset.password
+                                )
+                            )
+                        }
+                    }
+
+                    // закрываем окно
+                    binding.fonMenu.visibility = View.GONE
+                    binding.updateName.visibility = View.GONE
+
+                    showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                } else {
+                    showAlertDialog(getString(R.string.notValidUpdateName))
+                }
+            }
+
+        } else if (pm != null) {
+            // обновление данных
+            binding.buttonEditData.setOnClickListener {
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        presetPmDao.updateByName(
+                            name = pm.name!!,
+                            mode = pm.mode,
+                            keyNet = pm.keyNet,
+                            power = pm.power,
+                            diopozone = pm.diopozone
+                        )
+                    }
+                }
+
+                // закрываем окно
+                binding.fonMenu.visibility = View.GONE
+                binding.updateName.visibility = View.GONE
+
+                showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+            }
+
+            // обновить имя
+            binding.buttonNewName.setOnClickListener {
+                if (pm.name != binding.inputUpdateName.text.toString().trim() &&
+                    binding.inputUpdateName.text.toString().trim().isNotEmpty()) {
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            presetPmDao.insert(
+                                Pm(
+                                    0,
+                                    name = binding.inputUpdateName.text.toString(),
+                                    mode = pm.mode,
+                                    keyNet = pm.keyNet,
+                                    power = pm.power,
+                                    diopozone = pm.diopozone
+                                )
+                            )
+                        }
+                    }
+
+                    // закрываем окно
+                    binding.fonMenu.visibility = View.GONE
+                    binding.updateName.visibility = View.GONE
+
+                    showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                } else {
+                    showAlertDialog(getString(R.string.notValidUpdateName))
+                }
+            }
+
+        } else if (enfora != null) {
+            // обновление данных
+            binding.buttonEditData.setOnClickListener {
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        presetEnforaDao.updateByName(
+                            name = enfora.name!!,
+                            apn = enfora.apn,
+                            login = enfora.login,
+                            password = enfora.password,
+                            server1 = enfora.server1,
+                            server2 = enfora.server2,
+                            timeout = enfora.timeout,
+                            sizeBuffer = enfora.sizeBuffer
+                        )
+                    }
+                }
+
+                // закрываем окно
+                binding.fonMenu.visibility = View.GONE
+                binding.updateName.visibility = View.GONE
+
+                showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+            }
+
+            // обновить имя
+            binding.buttonNewName.setOnClickListener {
+                if (enfora.name != binding.inputUpdateName.text.toString().trim() &&
+                    binding.inputUpdateName.text.toString().trim().isNotEmpty()) {
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            presetEnforaDao.insert(
+                                Enfora(
+                                    0,
+                                    name = binding.inputUpdateName.text.toString(),
+                                    apn = enfora.apn,
+                                    login = enfora.login,
+                                    password = enfora.password,
+                                    server1 = enfora.server1,
+                                    server2 = enfora.server2,
+                                    timeout = enfora.timeout,
+                                    sizeBuffer = enfora.sizeBuffer
+                                )
+                            )
+                        }
+                    }
+
+                    // закрываем окно
+                    binding.fonMenu.visibility = View.GONE
+                    binding.updateName.visibility = View.GONE
+
+                    showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                } else {
+                    showAlertDialog(getString(R.string.notValidUpdateName))
+                }
+            }
+        }
+    }
 
     // клик по фону уничтожение фрагментов меню
     fun onClickFonDarkMenu(view: View) {
@@ -785,6 +984,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     fun workFonDarkMenu() {
+
+        // закрытие меню изменения имени шаблона
+        binding.updateName.visibility = View.GONE
+
         try {
             val fragmentManager = supportFragmentManager
             val transaction = fragmentManager.beginTransaction()

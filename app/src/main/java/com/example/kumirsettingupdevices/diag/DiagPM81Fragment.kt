@@ -1,7 +1,10 @@
 package com.example.kumirsettingupdevices.diag
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -10,19 +13,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.compose.ui.graphics.Color
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.SettingsFragment
 import com.example.kumirsettingupdevices.adapters.ItemBaseStationAdapter.ItemBaseStationAdapter
 import com.example.kumirsettingupdevices.adapters.ItemPingrecvAdapter.ItemPingrecvAdapter
 import com.example.kumirsettingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentDiagPM81Binding
+import com.example.kumirsettingupdevices.filesManager.GenerationFiles
 import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemBaseStation
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemPingrecv
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.gms.location.LocationServices
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,11 +59,22 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
     val listBaseStation: MutableList<ItemBaseStation> = mutableListOf()
     val listBasePingrecv: MutableList<ItemPingrecv> = mutableListOf()
 
+    // текущий уровень сигнала у бащвой станции
+    var curentSignalBaseStation: String = "Не определено!"
+
+    var baseStation: Boolean = false
+    // для графика данных
+    val entries = ArrayList<Entry>()
+
 
     // флаг для работы анимации
     private var flagWorkAnimLoadingBaseStation: Boolean = true
     // поток для работы анимации
     private var animJob: Job? = null
+
+    // геопозиция
+
+    private var dataPosSignal: String = ""
 
     companion object {
 
@@ -57,6 +82,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 700
 
         const val DEFFAULT_KEY_NET: String = "7586-100000-000003"
+        const val LOCATION_PERMISSION_REQUEST_CODE: Int = 200
+        const val DIR_POS_DATA_DEFAULTE: String = "/posData"
     }
 
 
@@ -65,6 +92,30 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDiagPM81Binding.inflate(inflater)
+
+        // установка даных в tab layout
+        binding.tabPresets.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                when (tab.position) {
+                    0 -> {
+                        binding.recyclerItemnonPackg.visibility = View.VISIBLE
+                        binding.lineChart.visibility = View.GONE
+                    }
+                    1 -> {
+                        binding.recyclerItemnonPackg.visibility = View.GONE
+                        binding.lineChart.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // No-op
+            }
+        })
 
         // вывод названия типа устройства
         val context: Context = requireContext()
@@ -80,6 +131,17 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
             dataRecovery()
         }
 
+        // скачивание позиций с данными
+        binding.imageFilePositionData.setOnClickListener {
+            val generationFiles = GenerationFiles()
+
+            if (!generationFiles.createFile(dataPosSignal, "dataPos.txt", requireContext(),
+                    Environment.DIRECTORY_DOWNLOADS + DIR_POS_DATA_DEFAULTE))
+                showAlertDialog(getString(R.string.noSaveFiles)) else {
+                showAlertDialog(getString(R.string.yesSaveFiles))
+            }
+        }
+
         // стандартный ключ доступа в сеть
         binding.inputKeyNet.setText(DEFFAULT_KEY_NET)
 
@@ -88,8 +150,101 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
         createAdapters()
 
+        lineChart("0", "0")
+
         return binding.root
     }
+
+    fun extractFirstIntFromString(input: String): Int? {
+        val regex = Regex("-?\\d+")
+        val match = regex.find(input)
+        return match?.value?.toInt()
+    }
+
+
+
+    private fun getLastKnownLocation(callback: (Double, Double) -> Unit) {
+        val context: Context = requireContext()
+        if (context is MainActivity && context.checkLocationPermissions())  {
+
+
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) { return }
+
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    // Получение местоположения успешно
+                    location?.let {
+                        val latitude = it.latitude
+                        val longitude = it.longitude
+                        callback(latitude, longitude)
+                    } ?: run {
+                        // Местоположение не найдено
+                        callback(Double.NaN, Double.NaN)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Обработка ошибки
+                    e.printStackTrace()
+                    callback(Double.NaN, Double.NaN)
+                }
+        }
+    }
+
+    private fun lineChart(x: String, y: String, main: Boolean = false) {
+
+        val xInt = extractFirstIntFromString(x)
+        val yInt = extractFirstIntFromString(y)
+
+        // Создание данных для графика
+        entries.add(Entry(xInt?.toFloat()!!, yInt?.toFloat()!!))
+
+        if (entries.size > 20) {
+            entries.removeAt(0)
+        }
+
+        val dataSet = LineDataSet(entries, "Сигнал") // создаем набор данных с меткой
+        dataSet.color = ContextCompat.getColor(requireContext(), R.color.lineColor) // устанавливаем цвет линии
+        dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.valueTextColor) // устанавливаем цвет текста значений
+
+        // Настройка стиля точек
+        dataSet.setDrawCircles(true)
+        dataSet.setDrawCircleHole(false)
+        dataSet.circleRadius = 2f
+        dataSet.setCircleColor(ContextCompat.getColor(requireContext(), R.color.lineColor))
+
+        // Настройка выделенной точки, если main равен true
+        if (main) {
+            val lastIndex = entries.size - 1
+            if (lastIndex >= 0) {
+                dataSet.circleColors = MutableList(entries.size) {
+                    if (it == lastIndex) ContextCompat.getColor(requireContext(), R.color.lineColorMain)
+                    else ContextCompat.getColor(requireContext(), R.color.lineColor)
+                }
+                dataSet.circleRadius = 2f // Увеличиваем радиус для выделенной точки
+            }
+        }
+
+        val lineData = LineData(dataSet)
+        binding.lineChart.data = lineData
+
+        // Настройка описания
+        val description = Description()
+        description.text = "График сигнала!"
+        binding.lineChart.description = description
+
+        // Обновление графика
+        binding.lineChart.invalidate() // перерисовать график
+    }
+
+
     private fun createAdapters() {
 
         // адаптер для выбора диопазона
@@ -146,6 +301,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
             }
         } catch (_: Exception) {}
 
+        // очищение графика
+        entries.clear()
 
         // очещение буфера данных
         val context: Context = requireContext()
@@ -161,10 +318,16 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
     // востановление данных
     private fun dataRecovery() {
         val context: Context = requireContext()
-
-        if (context is MainActivity) {
-            context.showTimerDialog(this, nameDeviace, true)
+        if (!flagStartDiag) {
+            if (context is MainActivity) {
+                context.showTimerDialog(this, nameDeviace, true)
+            }
+        } else {
+            if (context is MainActivity) {
+                context.showAlertDialog(getString(R.string.notGoThread))
+            }
         }
+
     }
 
     // запсук диагностики
@@ -213,7 +376,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
                     listBaseStation.add(
                         ItemBaseStation(
                             d.substringAfter("BSS ").substringBefore(" "),
-                            d.substringAfter("SNR=")
+                            d.substringAfter("SNR="),
+                            main = false
                         )
                     )
                     flagBaseStations = true
@@ -221,9 +385,17 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
                     listBaseStation.add(
                         ItemBaseStation(
                             d.substringAfter("BSS ").substringBefore(" "),
-                            ""
+                            curentSignalBaseStation,
+                            main = true
                         )
                     )
+
+                    // позиция и данные
+                    getLastKnownLocation { latitude, longitude ->
+                        dataPosSignal += d + " latitude=$latitude,longitude=$longitude\n"
+                    }
+
+                    baseStation = true
                     flagBaseStations = true
                 } else if (d.contains("pingrecv")) {
                     listBasePingrecv.add(
@@ -233,6 +405,19 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
                             d.substringAfter("ms, ")
                         )
                     )
+
+                    // позиция и данные
+                    getLastKnownLocation { latitude, longitude ->
+                        dataPosSignal += d + " latitude=$latitude,longitude=$longitude\n"
+                    }
+
+                    curentSignalBaseStation = d.substringAfter("ms, ")
+                    if (!baseStation) {
+                        lineChart(d.substringAfter(": ").substringBefore(",").trim(), curentSignalBaseStation)
+                    } else {
+                        lineChart(d.substringAfter(": ").substringBefore(",").trim(), curentSignalBaseStation, true)
+                        baseStation = false
+                    }
                 }
             }
         }
@@ -270,6 +455,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
         // закратие анимации загрузки операторов
         animJob?.cancel()
+
+        dataPosSignal = ""
 
         // убераем найденые станций
         val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOf())

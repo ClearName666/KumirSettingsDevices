@@ -5,6 +5,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.kumirsettingupdevices.MainActivity
+import com.example.kumirsettingupdevices.R
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -32,10 +34,13 @@ interface PresetDao {
     suspend fun getFirstByName(presetName: String): Preset?
 
 
-    suspend fun upsert(preset: Preset) {
+    suspend fun upsert(preset: Preset, context: MainActivity) {
         val existingPreset = getFirstByName(preset.name ?: "")
         if (existingPreset != null) {
-            updateByName(
+            context.runOnUiThread {
+                context.menuUpdateName(preset, null, null)
+            }
+            /*updateByName(
                 name = preset.name!!,
                 mode = preset.mode,
                 apn = preset.apn,
@@ -43,9 +48,12 @@ interface PresetDao {
                 port = preset.port,
                 login = preset.login,
                 password = preset.password
-            )
+            )*/
         } else {
             insert(preset)
+            context.runOnUiThread {
+                context.showAlertDialog(context.getString(R.string.sucPresetSaveDataBase))
+            }
         }
     }
 }

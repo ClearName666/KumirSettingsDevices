@@ -14,4 +14,10 @@
 
     <color name="blue_switch_thumb_color">#115E9A</color> <!-- Цвет переключателя (бегунок) -->
     <color name="blue_switch_track_color">#111920</color> <!-- Цвет фона переключателя -->
+
+    <color name="lineColor">#EE00FF</color>
+    <color name="lineColorMain">#FF0000</color>
+    <color name="valueTextColor">#000000</color> <!-- Черный -->
+
+
 </resources>

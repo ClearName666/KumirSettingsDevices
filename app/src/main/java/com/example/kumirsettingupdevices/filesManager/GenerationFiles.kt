@@ -46,7 +46,11 @@ class GenerationFiles() {
     }
 
     // генерация ini файлов для экспорта
-    fun generationIniFilesPm(data: List<IniFilePmModel>, dirMain: String, context: Context): Boolean {
+    fun generationIniFilesPm(
+        data: List<IniFilePmModel>,
+        dirMain: String,
+        context: Context
+    ): Boolean {
         for (d in data) {
             val fileName = "${d.name}.ini"
 
@@ -68,6 +72,17 @@ class GenerationFiles() {
         }
 
         return true
+    }
+
+    fun createFile(content: String, fileName: String, context: Context, dirMain: String): Boolean {
+        return try {
+            saveFileToDownloadFolderQ(fileName, content, context, dirMain)
+            true
+        } catch (e: Exception) {
+            Log.d("IniFilePmModel", e.message.toString())
+            false
+        }
+
     }
 
     private fun saveFileToDownloadFolderQ(fileName: String, fileContent: String, context: Context, dirMain: String) {

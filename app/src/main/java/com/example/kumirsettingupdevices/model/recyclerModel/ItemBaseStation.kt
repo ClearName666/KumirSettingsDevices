@@ -1,6 +1,6 @@
 package com.example.kumirsettingupdevices.model.recyclerModel
 
-class ItemBaseStation(val bss: String, val snr: String) {
+class ItemBaseStation(val bss: String, val snr: String,val main: Boolean) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ItemBaseStation) return false

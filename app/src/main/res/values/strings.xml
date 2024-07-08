@@ -2,6 +2,7 @@
     <string name="app_name">Настройка устройств КУМИР</string>
 
     <string name="Usb_NoneConnect">Отсутствует подключение, воспользуйтесь кнопкой "ПОДКЛЮЧИТЬСЯ"</string>
+    <string name="notGoThread">Незя, т к идет диагностика, завершите ее и нажмите заного!</string>
     <string name="errorCodeNone">Что то пошло не так!</string>
     <string name="Disconnected">Подключение разорвано!</string>
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
@@ -44,6 +45,7 @@
     <string name="exitDiagRestart">Выход из режима диагностики возможен только путем перезагрузки модема.</string>
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
+    <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
     <string name="nonPathSaveFile">Путь не валиден!</string>
@@ -52,6 +54,7 @@
     <string name="yesSaveFiles">Файлы удалось сохранить!</string>
     <string name="noFileSave">Нет данных для сохранения!</string>
     <string name="nonPermissionsSaveFile">Не получино разрешения для сохранения!</string>
+    <string name="nonPermissionsPos">Вы не дали разрешения на геопозицию поэтому эта опция вам не доступна!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
     <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>
     <string name="nonIniFile">Выберите ini файл!</string>
@@ -540,6 +543,11 @@
     <string name="viewValues">Отображение значений</string>
     <string name="timeZero">00:00</string>
     <string name="ip">IP:</string>
+    <string name="updateNameTitle">Похоже что шаблон с таким именем уже есть! Вы хотите обновить существующий или можете дать новое имя шаблону!</string>
+    <string name="newNameTitle">Новое имя</string>
+    <string name="update">Обновить</string>
+    <string name="newName">Новое название</string>
+    <string name="grafick">График</string>
 
 
     <!--............................................................................-->

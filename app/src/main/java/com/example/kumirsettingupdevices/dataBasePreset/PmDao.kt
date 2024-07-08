@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.kumirsettingupdevices.MainActivity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,16 +31,12 @@ interface PmDao {
     @Query("SELECT * FROM Pm WHERE name = :name LIMIT 1")
     suspend fun getFirstByName(name: String): Pm?
 
-    suspend fun upsert(pm: Pm) {
+    suspend fun upsert(pm: Pm, context: MainActivity) {
         val existingPm = getFirstByName(pm.name ?: "")
         if (existingPm != null) {
-            updateByName(
-                name = pm.name!!,
-                mode = pm.mode,
-                keyNet = pm.keyNet,
-                power = pm.power,
-                diopozone = pm.diopozone
-            )
+            context.runOnUiThread {
+                context.menuUpdateName(null, pm, null)
+            }
         } else {
             insert(pm)
         }
