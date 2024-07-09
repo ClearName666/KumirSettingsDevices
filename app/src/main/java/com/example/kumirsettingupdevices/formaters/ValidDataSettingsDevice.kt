@@ -59,6 +59,67 @@ class ValidDataSettingsDevice {
         const val TIME_AB_MIN: Int = 2
     }
 
+    object Validator {
+        private val patterns = mapOf(
+            "devmode" to "^(?:KNET|TCP(?:CLIENT|SERVER)|MODEM)$".toRegex(),
+            "keepalive" to "^\\d{2,3}$".toRegex(),
+            "ctimeout" to "^\\d{1,4}$".toRegex(),
+            "smspin" to "^(?:\\d{4}|DISABLED)$".toRegex(),
+            "tzdata" to "^.{1,128}$".toRegex(),
+            "port1" to "^(\\d{4,6}),(\\d),([NOE]),(\\d),(\\d{1,4}),(\\d{3,5})$".toRegex(),
+            "port2" to "^(\\d{4,6}),(\\d),([NOE]),(\\d),(\\d{1,4}),(\\d{3,5})$".toRegex(),
+            "profile1" to "^\\d{1,4}$".toRegex(),
+            "profile2" to "^\\d{1,4}$".toRegex(),
+            "sim1pin" to "^(?:\\d{4}|DISABLED)$".toRegex(),
+            "sim1apn" to "^[\\d\\a\\-.]{1,128}$".toRegex(),
+            "sim1knet" to "^[\\d\\a\\-.]{1,122}(?::\\d{1,5})?$".toRegex(),
+            "sim1sntp" to "^(?:[\\d\\a\\-.]{1,128}|\\r)$".toRegex(),
+            "sim1tcp1" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim1tcp2" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim1tcp3" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim1tcp4" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim2pin" to "^(?:\\d{4}|DISABLED)$".toRegex(),
+            "sim2apn" to "^[\\d\\a\\-.]{1,128}$".toRegex(),
+            "sim2knet" to "^[\\d\\a\\-.]{1,122}(?::\\d{1,5})?$".toRegex(),
+            "sim2sntp" to "^(?:[\\d\\a\\-.]{1,128}|\\r)$".toRegex(),
+            "sim2tcp1" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim2tcp2" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim2tcp3" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "sim2tcp4" to "^(?:RS(?:232|485)@[\\d\\a\\-.]{1,116}(?::\\d{1,5})?|\\r)$".toRegex(),
+            "tcpport1" to "^\\d{1,5}$".toRegex(),
+            "tcpport2" to "^\\d{1,5}$".toRegex()
+        )
+
+        fun validDevmode(input: String): Boolean = patterns["devmode"]?.matches(input) ?: false
+        fun validKeepalive(input: String): Boolean = patterns["keepalive"]?.matches(input) ?: false
+        fun validCtimeout(input: String): Boolean = patterns["ctimeout"]?.matches(input) ?: false
+        fun validSmspin(input: String): Boolean = patterns["smspin"]?.matches(input) ?: false
+        fun validTzdata(input: String): Boolean = patterns["tzdata"]?.matches(input) ?: false
+        fun validPort1(input: String): Boolean = patterns["port1"]?.matches(input) ?: false
+        fun validPort2(input: String): Boolean = patterns["port2"]?.matches(input) ?: false
+        fun validProfile1(input: String): Boolean = patterns["profile1"]?.matches(input) ?: false
+        fun validProfile2(input: String): Boolean = patterns["profile2"]?.matches(input) ?: false
+        fun validSim1pin(input: String): Boolean = patterns["sim1pin"]?.matches(input) ?: false
+        fun validSim1apn(input: String): Boolean = patterns["sim1apn"]?.matches(input) ?: false
+        fun validSim1knet(input: String): Boolean = patterns["sim1knet"]?.matches(input) ?: false
+        fun validSim1sntp(input: String): Boolean = patterns["sim1sntp"]?.matches(input) ?: false
+        fun validSim1tcp1(input: String): Boolean = patterns["sim1tcp1"]?.matches(input) ?: false
+        fun validSim1tcp2(input: String): Boolean = patterns["sim1tcp2"]?.matches(input) ?: false
+        fun validSim1tcp3(input: String): Boolean = patterns["sim1tcp3"]?.matches(input) ?: false
+        fun validSim1tcp4(input: String): Boolean = patterns["sim1tcp4"]?.matches(input) ?: false
+        fun validSim2pin(input: String): Boolean = patterns["sim2pin"]?.matches(input) ?: false
+        fun validSim2apn(input: String): Boolean = patterns["sim2apn"]?.matches(input) ?: false
+        fun validSim2knet(input: String): Boolean = patterns["sim2knet"]?.matches(input) ?: false
+        fun validSim2sntp(input: String): Boolean = patterns["sim2sntp"]?.matches(input) ?: false
+        fun validSim2tcp1(input: String): Boolean = patterns["sim2tcp1"]?.matches(input) ?: false
+        fun validSim2tcp2(input: String): Boolean = patterns["sim2tcp2"]?.matches(input) ?: false
+        fun validSim2tcp3(input: String): Boolean = patterns["sim2tcp3"]?.matches(input) ?: false
+        fun validSim2tcp4(input: String): Boolean = patterns["sim2tcp4"]?.matches(input) ?: false
+        fun validTcpport1(input: String): Boolean = patterns["tcpport1"]?.matches(input) ?: false
+        fun validTcpport2(input: String): Boolean = patterns["tcpport2"]?.matches(input) ?: false
+    }
+
+
 
     private fun isCp1251String(str: String): Boolean {
         val charsetCp1251 = Charset.forName("windows-1251")

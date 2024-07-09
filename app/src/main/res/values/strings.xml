@@ -32,6 +32,7 @@
     <string name="notReadDevModeDevice">Не удалось получить режим работы устройства!</string>
     <string name="notReadRange">Не удалось получить диапазон устройства!</string>
     <string name="notReadActPortDevice">Не удалось получить активный порт устройсва</string>
+    <string name="notReadPortDevice">Не удалось получить порты устройсва</string>
     <string name="notDeviceType">Вы перепутали устройство у вас - </string>
     <string name="notDeviceTypeApp">Поступил неизвестный индитификатор! Выключите ваш модем и попробуйте еще раз! Убедитесь что он поддерживаемый!</string>
     <string name="errorSendDataWrite"> - не принился по какой то причине! Остальные данные не были сохранены!</string>
@@ -129,6 +130,17 @@
     <string name="devmodeGSMmodem">GSMmodem</string>
     <string name="devmodePipeClient">PipeClient</string>
     <string name="devdodePipeServer">PipeServer</string>
+
+    <!--Режимы м32д KNET
+        TCPCLIENT
+        TCPSERVER
+        MODEM-->
+    <string name="devModeKNET">KNET</string>
+    <string name="devModeTCPCLIENT">TCPCLIENT</string>
+    <string name="devModeTCPSERVER">TCPSERVER</string>
+    <string name="devModeMODEM">MODEM</string>
+    <!--Режимы м32д-->
+
 
     <string name="priset1">По умолчанию</string>
     <string name="priset2">Открытый «Билайн»</string>
@@ -419,6 +431,80 @@
     <string name="commandGetDataCore">AT$VZLREAD</string>
     <string name="commandSetDataCore">AT$VZLWRITE=</string>
 
+    <!--для м32 д ___________________________________________________________-->
+    <string name="commandGetMdmidM32D">AT$MDMID</string>
+    <string name="commandGetVersionM32D">AT$VERSION</string>
+    <string name="commandGetDevmodeM32D">AT$DEVMODE</string>
+    <string name="commandGetKeepaliveM32D">AT$KEEPALIVE</string>
+    <string name="commandGetCtimeoutM32D">AT$CTIMEOUT</string>
+    <string name="commandGetSmspinM32D">AT$SMSPIN</string>
+    <string name="commandGetTzdataM32D">AT$TZDATA</string>
+    <string name="commandGetPort1M32D">AT$PORT1</string>
+    <string name="commandGetPort2M32D">AT$PORT2</string>
+    <string name="commandGetProfile1M32D">AT$PROFILE1</string>
+    <string name="commandGetProfile2M32D">AT$PROFILE2</string>
+    <string name="commandGetSim1PinM32D">AT$SIM1PIN</string>
+    <string name="commandGetSim1ApnM32D">AT$SIM1APN</string>
+    <string name="commandGetSim1LoginM32D">AT$SIM1LOGIN</string>
+    <string name="commandGetSim1PasswM32D">AT$SIM1PASSW</string>
+    <string name="commandGetSim1KnetM32D">AT$SIM1KNET</string>
+    <string name="commandGetSim1SntpM32D">AT$SIM1SNTP</string>
+    <string name="commandGetSim1Tcp1M32D">AT$SIM1TCP1</string>
+    <string name="commandGetSim1Tcp2M32D">AT$SIM1TCP2</string>
+    <string name="commandGetSim1Tcp3M32D">AT$SIM1TCP3</string>
+    <string name="commandGetSim1Tcp4M32D">AT$SIM1TCP4</string>
+    <string name="commandGetSim2PinM32D">AT$SIM2PIN</string>
+    <string name="commandGetSim2ApnM32D">AT$SIM2APN</string>
+    <string name="commandGetSim2LoginM32D">AT$SIM2LOGIN</string>
+    <string name="commandGetSim2PasswM32D">AT$SIM2PASSW</string>
+    <string name="commandGetSim2KnetM32D">AT$SIM2KNET</string>
+    <string name="commandGetSim2SntpM32D">AT$SIM2SNTP</string>
+    <string name="commandGetSim2Tcp1M32D">AT$SIM2TCP1</string>
+    <string name="commandGetSim2Tcp2M32D">AT$SIM2TCP2</string>
+    <string name="commandGetSim2Tcp3M32D">AT$SIM2TCP3</string>
+    <string name="commandGetSim2Tcp4M32D">AT$SIM2TCP4</string>
+    <string name="commandGetTcpport1M32D">AT$TCPPORT1</string>
+    <string name="commandGetTcpport2M32D">AT$TCPPORT2</string>
+    <string name="commandGetDefaultM32D">AT$DEFAULT</string>
+    <string name="commandGetExitM32D">AT$EXIT</string>
+    <string name="commandGetDiagM32D">AT$DIAG</string>
+    <string name="commandGetViewM32D">AT$VIEW</string>
+
+    <string name="commandSetMdmidM32D">AT$MDMID=</string>
+    <string name="commandSetVersionM32D">AT$VERSION=</string>
+    <string name="commandSetDevmodeM32D">AT$DEVMODE=</string>
+    <string name="commandSetKeepaliveM32D">AT$KEEPALIVE=</string>
+    <string name="commandSetCtimeoutM32D">AT$CTIMEOUT=</string>
+    <string name="commandSetSmspinM32D">AT$SMSPIN=</string>
+    <string name="commandSetTzdataM32D">AT$TZDATA=</string>
+    <string name="commandSetPort1M32D">AT$PORT1=</string>
+    <string name="commandSetPort2M32D">AT$PORT2=</string>
+    <string name="commandSetProfile1M32D">AT$PROFILE1=</string>
+    <string name="commandSetProfile2M32D">AT$PROFILE2=</string>
+    <string name="commandSetSim1PinM32D">AT$SIM1PIN=</string>
+    <string name="commandSetSim1ApnM32D">AT$SIM1APN=</string>
+    <string name="commandSetSim1LoginM32D">AT$SIM1LOGIN=</string>
+    <string name="commandSetSim1PasswM32D">AT$SIM1PASSW=</string>
+    <string name="commandSetSim1KnetM32D">AT$SIM1KNET=</string>
+    <string name="commandSetSim1SntpM32D">AT$SIM1SNTP=</string>
+    <string name="commandSetSim1Tcp1M32D">AT$SIM1TCP1=</string>
+    <string name="commandSetSim1Tcp2M32D">AT$SIM1TCP2=</string>
+    <string name="commandSetSim1Tcp3M32D">AT$SIM1TCP3=</string>
+    <string name="commandSetSim1Tcp4M32D">AT$SIM1TCP4=</string>
+    <string name="commandSetSim2PinM32D">AT$SIM2PIN=</string>
+    <string name="commandSetSim2ApnM32D">AT$SIM2APN=</string>
+    <string name="commandSetSim2LoginM32D">AT$SIM2LOGIN=</string>
+    <string name="commandSetSim2PasswM32D">AT$SIM2PASSW=</string>
+    <string name="commandSetSim2KnetM32D">AT$SIM2KNET=</string>
+    <string name="commandSetSim2SntpM32D">AT$SIM2SNTP=</string>
+    <string name="commandSetSim2Tcp1M32D">AT$SIM2TCP1=</string>
+    <string name="commandSetSim2Tcp2M32D">AT$SIM2TCP2=</string>
+    <string name="commandSetSim2Tcp3M32D">AT$SIM2TCP3=</string>
+    <string name="commandSetSim2Tcp4M32D">AT$SIM2TCP4=</string>
+    <string name="commandSetTcpport1M32D">AT$TCPPORT1=</string>
+    <string name="commandSetTcpport2M32D">AT$TCPPORT2=</string>
+    <!--_____________________________________________________________________-->
+
     <!--Деффолтные настроки модемов enfora и M31 -->
     <string name="defaultAPN">kumir.dv</string>
     <string name="defaultSERVER1">\"172.27.0.15\",0</string>
@@ -548,6 +634,15 @@
     <string name="update">Обновить</string>
     <string name="newName">Новое название</string>
     <string name="grafick">График</string>
+    <string name="m32d">КУМИР M32D</string>
+    <string name="simCard1Title">1 сим карта</string>
+    <string name="simCard2Title">2 сим карта</string>
+    <string name="knet">Knet</string>
+    <string name="sntp">Sntp</string>
+    <string name="tcp_1">TCP 1</string>
+    <string name="tcp_2">TCP 2</string>
+    <string name="tcp_3">TCP 3</string>
+    <string name="tcp_4">TCP 4</string>
 
 
     <!--............................................................................-->

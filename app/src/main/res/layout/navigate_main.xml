@@ -39,21 +39,11 @@
                             android:id="@+id/textSelectTypyDevice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="18dp"
                             android:text="@string/selectTypeDevice"
                             android:textColor="@color/textColor"
                             android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageSelectTypeDevice"
-                            app:layout_constraintStart_toEndOf="@+id/imageSelectTypeDevice"
-                            app:layout_constraintTop_toTopOf="@+id/imageSelectTypeDevice" />
-
-                        <ImageView
-                            android:id="@+id/imageSelectTypeDevice"
-                            android:layout_width="53dp"
-                            android:layout_height="53dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/selectdevicestypy" />
+                            tools:layout_editor_absoluteX="70dp"
+                            tools:layout_editor_absoluteY="16dp" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/lineSet"
@@ -62,7 +52,7 @@
                             android:background="@color/fon2Element"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/imageSelectTypeDevice">
+                            tools:layout_editor_absoluteY="53dp">
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -597,6 +587,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
                             android:layout_marginStart="40dp"
+                            android:clickable="true"
+                            android:onClick="onClickACCB030CoreSettings"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/ACCB030Core">
@@ -617,6 +610,9 @@
                             android:id="@+id/ACCB030CoreDiag"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:clickable="true"
+                            android:onClick="onClickACCB030CoreDiag"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="@+id/ACCB030CoreSettings"
                             app:layout_constraintTop_toBottomOf="@+id/ACCB030CoreSettings">
@@ -627,6 +623,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="35dp"
                                 android:text="@string/diagTitle"
+                                android:textColor="@color/textColor"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -764,6 +761,97 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/M32D"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:onClick="onClickP101"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/P101">
+
+                            <ImageView
+                                android:id="@+id/imageM32DMenuButton"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="30dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/textM32D"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/down_2_svgrepo_com__1_" />
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+
+                            <TextView
+                                android:id="@+id/textM32D"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="17dp"
+                                android:text="@string/m32d"
+                                android:textColor="@color/textColor"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo10"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo10"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo10" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/M32DDiag"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="40dp"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/M32D">
+
+                            <TextView
+                                android:id="@+id/textM32DDiag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/diagTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/M32DSettings"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/M32DDiag"
+                            app:layout_constraintTop_toBottomOf="@+id/M32DDiag">
+
+                            <TextView
+                                android:id="@+id/textM32DSettings"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="35dp"
+                                android:text="@string/settingTitle"
+                                android:textColor="@color/textColor"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/lineSettings"
                             android:layout_width="0dp"
                             android:layout_height="2dp"
@@ -771,7 +859,7 @@
                             android:background="@color/fon2Element"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/P101">
+                            app:layout_constraintTop_toBottomOf="@+id/M32D">
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -814,6 +902,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
                 </LinearLayout>
             </ScrollView>
 

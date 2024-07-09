@@ -56,6 +56,7 @@ import com.example.kumirsettingupdevices.usb.UsbDeviceDescriptor
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
 import com.example.kumirsettingupdevices.usbFragments.K21K23Fragment
 import com.example.kumirsettingupdevices.usbFragments.M31Fragment
+import com.example.kumirsettingupdevices.usbFragments.M32DFragment
 import com.example.kumirsettingupdevices.usbFragments.M32Fragment
 import com.example.kumirsettingupdevices.usbFragments.M32LiteFragment
 import com.example.kumirsettingupdevices.usbFragments.P101Fragment
@@ -526,6 +527,32 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         val m32Diag = DiagFragment("KUMIR-M32 READY")
         createSettingFragment(m32Diag)
+    }
+
+    // раскрывающаяся понель
+    fun onClickM32D(view: View) {
+        if (binding.M32DSettings.visibility == View.GONE) {
+            binding.M32DSettings.visibility = View.VISIBLE
+            binding.M32DDiag.visibility = View.VISIBLE
+            binding.imageM32DMenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.top_arrow_5_svgrepo_com)
+            )
+        } else {
+            binding.M32DSettings.visibility = View.GONE
+            binding.M32DDiag.visibility = View.GONE
+            binding.imageM32DMenuButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.down_2_svgrepo_com__1_)
+            )
+        }
+    }
+    fun onClickM32DSettings(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val m32d = M32DFragment()
+        createSettingFragment(m32d)
+    }
+    fun onClickM32DDiag(view: View) {
+        // пока пусто
     }
 
 
