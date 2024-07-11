@@ -70,6 +70,8 @@ class ItemOperatorAdapter ( val context: Context,
                 holder.image.setBackgroundResource(R.drawable.mts__network_provider__logo_wine)
             } else if (currentItem.operator.contains("Bee Line GSM")) {
                 holder.image.setBackgroundResource(R.drawable.beeline_seeklogo)
+            } else if (currentItem.operator.contains("ROSTELECOM")) {
+                holder.image.setBackgroundResource(R.drawable.rostelecom)
             } else {
                 holder.image.setBackgroundResource(R.drawable.tele2_svgrepo_com)
             }

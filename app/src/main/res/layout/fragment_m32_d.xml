@@ -435,37 +435,18 @@ tools:context=".usbFragments.M32DFragment">
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Switch
-                    android:id="@+id/switchPinCodeSmsCommand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="70dp"
-                    android:layout_marginTop="30dp"
-                    android:outlineSpotShadowColor="@color/textColor"
-                    android:text="@string/YesNo"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectActivPort" />
+            <Switch
+                android:id="@+id/switchPinCodeSmsCommand"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_marginTop="60dp"
+                android:outlineSpotShadowColor="@color/textColor"
+                android:text="@string/YesNo"
+                android:textColor="@color/textColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/inputTimeoutConnectionLayout" />
 
-                <Spinner
-                    android:id="@+id/spinnerSelectActivPort"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:drawable/btn_dropdown"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textSelectActivPort" />
-
-                <TextView
-                    android:id="@+id/textSelectActivPort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="@string/activPortTitle"
-                    android:textColor="@color/textColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputTimeoutConnectionLayout" />
-
-                <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputTimeoutConnectionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1147,6 +1128,7 @@ tools:context=".usbFragments.M32DFragment">
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="@string/tcp_1"
+                        android:textColor="@color/textColor"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/layoutSim2Sntp" />
 

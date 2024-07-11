@@ -36,6 +36,7 @@ import com.example.kumirsettingupdevices.databinding.MainActivityBinding
 import com.example.kumirsettingupdevices.diag.ACCB030DiagFragment
 import com.example.kumirsettingupdevices.diag.DiagFragment
 import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
+import com.example.kumirsettingupdevices.diag.DiagM32DFragment
 import com.example.kumirsettingupdevices.diag.DiagPM81Fragment
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.ports.PortDeviceSetting
@@ -552,7 +553,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(m32d)
     }
     fun onClickM32DDiag(view: View) {
-        // пока пусто
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val m32Diag = DiagM32DFragment("KUMIR-M32D READY")
+        createSettingFragment(m32Diag)
     }
 
 

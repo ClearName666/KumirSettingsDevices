@@ -46,6 +46,8 @@
     <string name="exitDiagRestart">Выход из режима диагностики возможен только путем перезагрузки модема.</string>
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
+    <string name="errorSetModePreset">Невозможно установить режиим работы из шаблона т к он отсутствует!</string>
+    
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
@@ -348,6 +350,7 @@
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
     <string name="endDiagBeginning">CELLSCAN</string>
+    <string name="endDiagBeginningM32D">ICCID 2:</string>
 
     <string name="commandGetNetKey">AT$NETKEY?</string>
     <string name="commandGetPower">AT$POWER?</string>
@@ -432,43 +435,43 @@
     <string name="commandSetDataCore">AT$VZLWRITE=</string>
 
     <!--для м32 д ___________________________________________________________-->
-    <string name="commandGetMdmidM32D">AT$MDMID</string>
-    <string name="commandGetVersionM32D">AT$VERSION</string>
-    <string name="commandGetDevmodeM32D">AT$DEVMODE</string>
-    <string name="commandGetKeepaliveM32D">AT$KEEPALIVE</string>
-    <string name="commandGetCtimeoutM32D">AT$CTIMEOUT</string>
-    <string name="commandGetSmspinM32D">AT$SMSPIN</string>
-    <string name="commandGetTzdataM32D">AT$TZDATA</string>
-    <string name="commandGetPort1M32D">AT$PORT1</string>
-    <string name="commandGetPort2M32D">AT$PORT2</string>
-    <string name="commandGetProfile1M32D">AT$PROFILE1</string>
-    <string name="commandGetProfile2M32D">AT$PROFILE2</string>
-    <string name="commandGetSim1PinM32D">AT$SIM1PIN</string>
-    <string name="commandGetSim1ApnM32D">AT$SIM1APN</string>
-    <string name="commandGetSim1LoginM32D">AT$SIM1LOGIN</string>
-    <string name="commandGetSim1PasswM32D">AT$SIM1PASSW</string>
-    <string name="commandGetSim1KnetM32D">AT$SIM1KNET</string>
-    <string name="commandGetSim1SntpM32D">AT$SIM1SNTP</string>
-    <string name="commandGetSim1Tcp1M32D">AT$SIM1TCP1</string>
-    <string name="commandGetSim1Tcp2M32D">AT$SIM1TCP2</string>
-    <string name="commandGetSim1Tcp3M32D">AT$SIM1TCP3</string>
-    <string name="commandGetSim1Tcp4M32D">AT$SIM1TCP4</string>
-    <string name="commandGetSim2PinM32D">AT$SIM2PIN</string>
-    <string name="commandGetSim2ApnM32D">AT$SIM2APN</string>
-    <string name="commandGetSim2LoginM32D">AT$SIM2LOGIN</string>
-    <string name="commandGetSim2PasswM32D">AT$SIM2PASSW</string>
-    <string name="commandGetSim2KnetM32D">AT$SIM2KNET</string>
-    <string name="commandGetSim2SntpM32D">AT$SIM2SNTP</string>
-    <string name="commandGetSim2Tcp1M32D">AT$SIM2TCP1</string>
-    <string name="commandGetSim2Tcp2M32D">AT$SIM2TCP2</string>
-    <string name="commandGetSim2Tcp3M32D">AT$SIM2TCP3</string>
-    <string name="commandGetSim2Tcp4M32D">AT$SIM2TCP4</string>
-    <string name="commandGetTcpport1M32D">AT$TCPPORT1</string>
-    <string name="commandGetTcpport2M32D">AT$TCPPORT2</string>
+    <string name="commandGetMdmidM32D">AT$MDMID?</string>
+    <string name="commandGetVersionM32D">AT$VERSION?</string>
+    <string name="commandGetDevmodeM32D">AT$DEVMODE?</string>
+    <string name="commandGetKeepaliveM32D">AT$KEEPALIVE?</string>
+    <string name="commandGetCtimeoutM32D">AT$CTIMEOUT?</string>
+    <string name="commandGetSmspinM32D">AT$SMSPIN?</string>
+    <string name="commandGetTzdataM32D">AT$TZDATA?</string>
+    <string name="commandGetPort1M32D">AT$PORT1?</string>
+    <string name="commandGetPort2M32D">AT$PORT2?</string>
+    <string name="commandGetProfile1M32D">AT$PROFILE1?</string>
+    <string name="commandGetProfile2M32D">AT$PROFILE2?</string>
+    <string name="commandGetSim1PinM32D">AT$SIM1PIN?</string>
+    <string name="commandGetSim1ApnM32D">AT$SIM1APN?</string>
+    <string name="commandGetSim1LoginM32D">AT$SIM1LOGIN?</string>
+    <string name="commandGetSim1PasswM32D">AT$SIM1PASSW?</string>
+    <string name="commandGetSim1KnetM32D">AT$SIM1KNET?</string>
+    <string name="commandGetSim1SntpM32D">AT$SIM1SNTP?</string>
+    <string name="commandGetSim1Tcp1M32D">AT$SIM1TCP1?</string>
+    <string name="commandGetSim1Tcp2M32D">AT$SIM1TCP2?</string>
+    <string name="commandGetSim1Tcp3M32D">AT$SIM1TCP3?</string>
+    <string name="commandGetSim1Tcp4M32D">AT$SIM1TCP4?</string>
+    <string name="commandGetSim2PinM32D">AT$SIM2PIN?</string>
+    <string name="commandGetSim2ApnM32D">AT$SIM2APN?</string>
+    <string name="commandGetSim2LoginM32D">AT$SIM2LOGIN?</string>
+    <string name="commandGetSim2PasswM32D">AT$SIM2PASSW?</string>
+    <string name="commandGetSim2KnetM32D">AT$SIM2KNET?</string>
+    <string name="commandGetSim2SntpM32D">AT$SIM2SNTP?</string>
+    <string name="commandGetSim2Tcp1M32D">AT$SIM2TCP1?</string>
+    <string name="commandGetSim2Tcp2M32D">AT$SIM2TCP2?</string>
+    <string name="commandGetSim2Tcp3M32D">AT$SIM2TCP3?</string>
+    <string name="commandGetSim2Tcp4M32D">AT$SIM2TCP4?</string>
+    <string name="commandGetTcpport1M32D">AT$TCPPORT1?</string>
+    <string name="commandGetTcpport2M32D">AT$TCPPORT2?</string>
     <string name="commandGetDefaultM32D">AT$DEFAULT</string>
     <string name="commandGetExitM32D">AT$EXIT</string>
     <string name="commandGetDiagM32D">AT$DIAG</string>
-    <string name="commandGetViewM32D">AT$VIEW</string>
+    <string name="commandGetViewM32D">AT$VIEW?</string>
 
     <string name="commandSetMdmidM32D">AT$MDMID=</string>
     <string name="commandSetVersionM32D">AT$VERSION=</string>
@@ -643,6 +646,23 @@
     <string name="tcp_2">TCP 2</string>
     <string name="tcp_3">TCP 3</string>
     <string name="tcp_4">TCP 4</string>
+
+
+
+    <string name="errorValidM32DMode">Неверный режим работы</string>
+    <string name="errorValidM32DAPN">Неверный APN для 1 или 2 симки</string>
+    <string name="errorValidM32DLogin">Неверный логин для 1 или 2 симки</string>
+    <string name="errorValidM32DPassword">Неверный пароль для 1 или 2 симки</string>
+    <string name="errorValidM32DSmsPin">Неверный пин код для sms команд</string>
+    <string name="errorValidM32DPinCode">Неверный пин код для 1 или 2 симки</string>
+    <string name="errorValidM32DKnet">Неверный Knet для 1 или 2 симки</string>
+    <string name="errorValidM32DSntp">Неверный Sntp для 1 или 2 симки</string>
+    <string name="errorValidM32DTCP">Неверный какой то TCP для 1 или 2 симки</string>
+    <string name="errorValidM32DKeeplive">Неверный Keeplive</string>
+    <string name="errorValidM32DCtimeOut">Неверное время ожидания подключения</string>
+    <string name="errorValidPortSim">Не верные настройки для порта</string>
+
+
 
 
     <!--............................................................................-->

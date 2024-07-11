@@ -14,6 +14,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.databinding.FragmentM32DBinding
+import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.Priset
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
@@ -187,11 +188,6 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             getString(R.string.devModeTCPSERVER),
             getString(R.string.devModeMODEM)
         )
-        // адаптер для выбора порта
-        val itemsSpinnerActPort = listOf(
-            "1",
-            "2"
-        )
         // адаптер для выбора приборра учета
         val itemPortDeviceAccounting = listOf(
             getString(R.string.deviceAccountingAdvancedSettings),
@@ -277,8 +273,6 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         val adapter = ArrayAdapter(requireContext(),
             R.layout.item_spinner, itemsSpinnerDevMode)
-        val adapterActPort = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemsSpinnerActPort)
         val adapterPortDeviceAccounting = ArrayAdapter(requireContext(),
             R.layout.item_spinner, itemPortDeviceAccounting)
         val adapterSelectSpeed = ArrayAdapter(requireContext(),
@@ -292,7 +286,6 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        adapterActPort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapterPortDeviceAccounting.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
         adapterSelectSpeed.setDropDownViewResource(
@@ -304,7 +297,6 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         adapterSelectBitData.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
 
-        binding.spinnerSelectActivPort.adapter = adapterActPort
         binding.spinnerServer.adapter = adapter
         binding.spinnerSelectPort1MeteringDevice.adapter = adapterPortDeviceAccounting
         binding.spinnerSelectPort2MeteringDevice.adapter = adapterPortDeviceAccounting
@@ -497,7 +489,11 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         // симка 1----------------------------------------------------------------------------------
         binding.inputAPN.setText(settingMap[getString(R.string.commandGetSim1ApnM32D)])
         binding.inputTextLoginGPRS.setText(settingMap[getString(R.string.commandGetSim1LoginM32D)])
-        binding.inputPasswordGPRS.setText(settingMap[getString(R.string.commandGetSim1PasswM32D)])
+
+        if (settingMap[getString(R.string.commandGetSim1PasswM32D)]?.contains("****") == false) {
+            binding.inputPasswordGPRS.setText(settingMap[getString(R.string.commandGetSim1PasswM32D)])
+        }
+
 
         // установка переключетелей
         if (settingMap[getString(R.string.commandGetSim1PinM32D)]?.
@@ -520,7 +516,9 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         // симка 2----------------------------------------------------------------------------------
         binding.inputAPN2.setText(settingMap[getString(R.string.commandGetSim2ApnM32D)])
         binding.inputTextLoginGPRS2.setText(settingMap[getString(R.string.commandGetSim2LoginM32D)])
-        binding.inputPasswordGPRS2.setText(settingMap[getString(R.string.commandGetSim2PasswM32D)])
+        if (settingMap[getString(R.string.commandGetSim2PasswM32D)]?.contains("****") == false) {
+            binding.inputPasswordGPRS.setText(settingMap[getString(R.string.commandGetSim2PasswM32D)])
+        }
 
         // установка переключетелей
         if (settingMap[getString(R.string.commandGetSim2PinM32D)]?.
@@ -589,6 +587,8 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     override fun writeSettingStart() {
 
+        if (!validAll()) return
+
         val context: MainActivity = requireContext() as MainActivity
 
         var parityPort1 = "N"
@@ -609,7 +609,6 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             getString(R.string.commandSetDevmodeM32D) to binding.spinnerServer.selectedItem.toString(),
             getString(R.string.commandSetKeepaliveM32D) to binding.inputTimeOutKeeplive.text.toString(),
             getString(R.string.commandSetCtimeoutM32D) to binding.inputTimeoutConnection.text.toString(),
-            getString(R.string.commandSetSmspinM32D) to "",
             /*getString(R.string.commandSetTzdataM32D) to "",*/
             getString(R.string.commandSetPort1M32D) to binding.spinnerSpeed.selectedItem.toString() + "," +
                     binding.spinnerBitDataPort1.selectedItem.toString() + "," +
@@ -652,7 +651,7 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         // установка пин кода на карты
         // сим 1
         if (binding.switchPinCodeSmsCard.isChecked) {
-            if (binding.inputPinCodeSmsCard.text?.isNotEmpty() != false) {
+            if (binding.inputPinCodeSmsCard.text?.trim()?.isNotEmpty() == true) {
                 dataMap[getString(R.string.commandSetSim1PinM32D)] =
                     binding.inputPinCodeSmsCard.text.toString()
             }
@@ -662,12 +661,21 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         // сим 2
         if (binding.switchPinCodeSmsCard2.isChecked) {
-            if (binding.inputPinCodeSmsCard2.text?.isNotEmpty() != false) {
+            if (binding.inputPinCodeSmsCard2.text?.trim()?.isNotEmpty() == true) {
                 dataMap[getString(R.string.commandSetSim2PinM32D)] =
                     binding.inputPinCodeSmsCard2.text.toString()
             }
         } else {
             dataMap[getString(R.string.commandSetSim2PinM32D)] = getString(R.string.disabled)
+        }
+
+        if (binding.switchPinCodeSmsCommand.isChecked) {
+            if (binding.inputPinCodeCommand.text?.isNotEmpty() == true) {
+                dataMap[getString(R.string.commandSetSmsPin)] =
+                    binding.inputPinCodeCommand.text.toString()
+            }
+        } else {
+            dataMap[getString(R.string.commandSetSmsPin)] = getString(R.string.disabled)
         }
 
 
@@ -744,10 +752,178 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
 
     override fun printPriset(priset: Priset) {
+        // закрытие меню
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.workFonDarkMenu()
+        }
+        // подставление данных в поля
+        binding.inputAPN.setText(priset.apn)
+        binding.inputSim1Knet.setText(priset.server1)
+        binding.inputTextLoginGPRS.setText(priset.login)
+        binding.inputPasswordGPRS.setText(priset.password)
+
+        // подставление данных в поля
+        binding.inputAPN2.setText(priset.apn)
+        binding.inputSim2Knet.setText(priset.server1)
+        binding.inputTextLoginGPRS2.setText(priset.login)
+        binding.inputPasswordGPRS2.setText(priset.password)
+
+        try {
+            if (priset.mode < 4)
+                binding.spinnerServer.setSelection(priset.mode)
+        } catch (e: Exception) {
+            showAlertDialog(getString(R.string.errorDataBase))
+        }
 
     }
 
-    fun validAll(): Boolean {
+    private fun validAll(): Boolean {
+        val validServis = ValidDataSettingsDevice()
+
+        var parityPort1 = "N"
+        when(binding.spinnerSelectParityPort1.selectedItemPosition) {
+            0 -> parityPort1  = "N"
+            1 -> parityPort1  = "E"
+            2 -> parityPort1  = "O"
+        }
+
+        var parityPort2 = "N"
+        when(binding.spinnerSelectParityPort2.selectedItemPosition) {
+            0 -> parityPort2  = "N"
+            1 -> parityPort2  = "E"
+            2 -> parityPort2  = "O"
+        }
+        if (!validServis.validDevmode(binding.spinnerServer.selectedItem.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DMode))
+            return false
+        }
+        if (!validServis.validKeepalive(binding.inputTimeOutKeeplive.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DKeeplive))
+
+            return false
+        }
+        if (!validServis.validCtimeout(binding.inputTimeoutConnection.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DCtimeOut))
+            return false
+        }
+        if (!validServis.validSmspin(binding.inputPinCodeCommand.text.toString()) &&
+            binding.inputPinCodeCommand.text?.isNotEmpty() == true) {
+            showAlertDialog(getString(R.string.errorValidM32DSmsPin))
+            return false
+        }
+        if (!validServis.validPort1(binding.spinnerSpeed.selectedItem.toString() + "," +
+                    binding.spinnerBitDataPort1.selectedItem.toString() + "," +
+                    parityPort1  + "," +
+                    binding.spinnerSelectStopBitPort1.selectedItem.toString() +
+                    ",200,2000")) {
+            showAlertDialog(getString(R.string.errorValidPortSim))
+            return false
+        }
+        if (!validServis.validPort2(binding.spinnerSpeedPort2.selectedItem.toString() + "," +
+                    binding.spinnerBitDataPort2.selectedItem.toString() + "," +
+                    parityPort2  + "," +
+                    binding.spinnerSelectStopBitPort2.selectedItem.toString() +
+                    ",200,2000")) {
+            showAlertDialog(getString(R.string.errorValidPortSim))
+
+            return false
+        }
+        if (!validServis.validSim1pin(binding.switchPinCodeSmsCard.text.toString()) &&
+            binding.inputPinCodeSmsCard.text?.isNotEmpty() == true) {
+
+            showAlertDialog(getString(R.string.errorValidM32DPinCode))
+            return false
+        }
+        if (!validServis.validSim2pin(binding.switchPinCodeSmsCard2.text.toString()) &&
+            binding.inputPinCodeSmsCard2.text?.isNotEmpty() == true) {
+            showAlertDialog(getString(R.string.errorValidM32DPinCode))
+
+            return false
+        }
+
+        if (!validServis.validSim1apn(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DAPN))
+            return false
+        }
+        if (!validServis.validSim2apn(binding.inputAPN2.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DAPN))
+
+            return false
+        }
+
+        if (!validServis.validSim1knet(binding.inputSim1Knet.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DKnet))
+            return false
+        }
+        if (!validServis.validSim2knet(binding.inputSim2Knet.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DKnet))
+
+            return false
+        }
+
+        if (!validServis.validSim1sntp(binding.inputSim1Sntp.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DSntp))
+
+            return false
+        }
+        if (!validServis.validSim2sntp(binding.inputSim2Sntp.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidM32DSntp))
+
+            return false
+        }
+
+        if (!validServis.validSim1tcp1(binding.InputSim1TCP1.text.toString()) &&
+            binding.InputSim1TCP1.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+            return false
+        }
+        if (!validServis.validSim1tcp2(binding.InputSim1TCP2.text.toString()) &&
+            binding.InputSim1TCP2.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+        if (!validServis.validSim1tcp3(binding.InputSim1TCP3.text.toString()) &&
+            binding.InputSim1TCP3.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+        if (!validServis.validSim1tcp4(binding.InputSim1TCP4.text.toString()) &&
+            binding.InputSim1TCP4.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+
+
+        if (!validServis.validSim2tcp1(binding.InputSim2TCP1.text.toString()) &&
+            binding.InputSim2TCP1.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+        if (!validServis.validSim2tcp2(binding.InputSim2TCP2.text.toString()) &&
+            binding.InputSim2TCP2.text.toString().isNotEmpty() ) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+        if (!validServis.validSim2tcp3(binding.InputSim2TCP3.text.toString()) &&
+            binding.InputSim2TCP3.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+        if (!validServis.validSim2tcp4(binding.InputSim2TCP4.text.toString()) &&
+            binding.InputSim2TCP4.text.toString().isNotEmpty()) {
+            showAlertDialog(getString(R.string.errorValidM32DTCP))
+
+            return false
+        }
+
+
 
         return true
     }
