@@ -350,7 +350,7 @@
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
     <string name="endDiagBeginning">CELLSCAN</string>
-    <string name="endDiagBeginningM32D">ICCID 2:</string>
+    <string name="endDiagBeginningM32D">ICCID</string>
 
     <string name="commandGetNetKey">AT$NETKEY?</string>
     <string name="commandGetPower">AT$POWER?</string>

@@ -67,7 +67,8 @@ class UsbCommandsProtocol {
 
     // метод для получения настроек устройства
     fun readSettingDevice(commands: List<String>, context: Context,
-                          usbFragment: UsbFragment, speedFind: Boolean = false, flagReadAbonentsP101: Boolean = false) {
+                          usbFragment: UsbFragment, speedFind: Boolean = false, flagReadAbonentsP101: Boolean = false,
+                          flagM32D: Boolean = false) {
 
         val settingData: MutableMap<String, String> = mutableMapOf()
         var flagsSuccess: Boolean = true
@@ -177,6 +178,8 @@ class UsbCommandsProtocol {
 
                                 // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
                                 if (i == CNT_SAND_COMMAND_OK) {
+                                    // для того что бы успешно выходить если симка 1
+                                    if (flagM32D && command.contains("SIM2")) break@outer
                                     (context as Activity).runOnUiThread {
                                         context.showAlertDialog(
                                             command + context.getString(R.string.errorSendDataRead)

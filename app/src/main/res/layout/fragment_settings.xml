@@ -246,7 +246,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/namerPresetTitle"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -261,7 +261,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/apnTitle"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Spinner
@@ -281,7 +281,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/tcpTitle"
                         android:inputType="number"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -294,7 +294,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/gprsLoginTitle"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -307,7 +307,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/gprsPasswordTitle"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -320,7 +320,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/server_1Title"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -333,7 +333,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/server_2Title"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -347,7 +347,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/timeoutTitle"
                         android:inputType="number"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -361,7 +361,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/sizeBufferTitle"
                         android:inputType="number"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -374,7 +374,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/keyNetTitle"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -387,7 +387,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/powerCures"
-                        android:textColor="@color/background" />
+                        android:textColor="@color/textColor" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

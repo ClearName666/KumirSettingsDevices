@@ -31,12 +31,14 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
     private var flagViewDiag: Boolean = true
 
 
+    // флаг прошивкаи 2 или 1 сим карт
+    private var flagSim2: Boolean = true
+
+
     companion object {
         const val DROP_START_FOR_DATA: Int = 2
         const val DROP_END_FOR_DATA: Int = 2
 
-        // задержка для анимации загрузки операторов
-        const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 1000
 
         // для градации сигнала
         private const val SIGNAL_1: Int = 90
@@ -149,7 +151,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             } else if (operator.contains("ROSTELECOM")) {
                 binding.imageOperatorSim1.setBackgroundResource(R.drawable.rostelecom)
             } else {
-                binding.imageOperatorSim1.setBackgroundResource(R.drawable.tele2_svgrepo_com)
+                binding.imageOperatorSim1.setBackgroundResource(R.drawable.error_svgrepo_com)
             }
 
             // выводим градацию сигнала
@@ -167,7 +169,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
                     binding.imageSignalSim1.setBackgroundResource(R.drawable.signal_5)
                 }
             } catch (_: Exception) {}
-        } else if (operator.contains("SIM2: ")) {
+        } else if (operator.contains("SIM2: ") && flagSim2) {
             binding.progressBarOperators.visibility = View.GONE
 
             binding.Sim2Layout.visibility = View.VISIBLE
@@ -249,6 +251,13 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
 
         val versionPr: String = version
         binding.textVersionFirmware.text = versionPr
+
+        try {
+            val varsionSim: Int = version.substringAfter("HW: ").substringBefore(" ").toInt()
+            if (varsionSim < 4 || varsionSim == 16) flagSim2 = false
+        } catch (e: Exception) {
+            showAlertDialog(getString(R.string.errorCodeNone))
+        }
     }
 
 

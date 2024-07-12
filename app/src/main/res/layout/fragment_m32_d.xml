@@ -499,19 +499,19 @@ tools:context=".usbFragments.M32DFragment">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layoutSimsMain" />
 
-                <TextView
-                    android:id="@+id/textNetSettings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="2dp"
-                    android:text="@string/NetworkSettings"
-                    android:textColor="@color/textColor"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toTopOf="@+id/lineSettingsNet"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textNetSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="2dp"
+                android:text="@string/NetworkSettings"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/lineSettingsNet"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lineSettingsNet"
@@ -685,9 +685,10 @@ tools:context=".usbFragments.M32DFragment">
                 android:id="@+id/layoutSimsMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tabSims">
+                app:layout_constraintTop_toTopOf="@+id/tabSims">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layoutSim1"
