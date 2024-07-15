@@ -156,6 +156,18 @@
         app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
         app:layout_constraintTop_toBottomOf="@+id/scrollDiag" />
 
+    <TextView
+        android:id="@+id/textDialogExitDiag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/exitDiagRestart"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerItemOperators"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerItemOperators"
+        app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
+        app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
+
     <ProgressBar
         android:id="@+id/progressBarOperators"
         style="?android:attr/progressBarStyle"

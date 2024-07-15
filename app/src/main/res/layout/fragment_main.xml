@@ -12,13 +12,14 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
+        android:layout_marginBottom="100dp"
         android:layout_weight="1"
         android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toTopOf="@+id/imageReference"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textStep3"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon" />
 
     <TextView
@@ -36,15 +37,14 @@
         android:id="@+id/TextHiMainFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="53dp"
-        android:layout_marginEnd="53dp"
         android:gravity="center"
         android:text="@string/TextHiMain"
         android:textColor="@color/textColor"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imageReference"
+        app:layout_constraintEnd_toStartOf="@+id/imageReference"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/imageReference" />
 
 
     <TextView
@@ -59,59 +59,70 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textStep1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:text="@string/step1MainTitle"
-        android:textColor="@color/textColor"
-        app:layout_constraintEnd_toEndOf="@+id/TextHiMainFragment"
-        app:layout_constraintStart_toStartOf="@+id/TextHiMainFragment"
-        app:layout_constraintTop_toBottomOf="@+id/TextHiMainFragment" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reference"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:background="@drawable/rounded_background2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/imageReference"
+        app:layout_constraintEnd_toStartOf="@+id/imageReference">
 
-    <TextView
-        android:id="@+id/textStep2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:text="@string/step2MainTitle"
-        android:textColor="@color/textColor"
-        app:layout_constraintEnd_toEndOf="@+id/TextHiMainFragment"
-        app:layout_constraintStart_toStartOf="@+id/TextHiMainFragment"
-        app:layout_constraintTop_toBottomOf="@+id/textStep1" />
+        <TextView
+            android:id="@+id/textStep1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/step1MainTitle"
+            android:textColor="@color/background"
+            app:layout_constraintEnd_toStartOf="@+id/imageView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textStep3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:text="@string/step3MainTitle"
-        android:textColor="@color/textColor"
-        app:layout_constraintEnd_toEndOf="@+id/TextHiMainFragment"
-        app:layout_constraintStart_toStartOf="@+id/TextHiMainFragment"
-        app:layout_constraintTop_toBottomOf="@+id/textStep2" />
+        <TextView
+            android:id="@+id/textStep2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/step2MainTitle"
+            android:textColor="@color/background"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/textStep1"
+            app:layout_constraintTop_toBottomOf="@+id/textStep1" />
+
+        <TextView
+            android:id="@+id/textStep3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/step3MainTitle"
+            android:textColor="@color/background"
+            app:layout_constraintStart_toStartOf="@+id/textStep2"
+            app:layout_constraintTop_toBottomOf="@+id/textStep2" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/settings"
+            app:layout_constraintBottom_toBottomOf="@+id/textStep2"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/usb"
+            app:layout_constraintBottom_toBottomOf="@+id/textStep1"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageReference"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="3dp"
-        android:src="@drawable/settings"
-        app:layout_constraintBottom_toBottomOf="@+id/textStep2"
-        app:layout_constraintStart_toEndOf="@+id/textStep1"
-        app:layout_constraintTop_toTopOf="@+id/textStep2" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="3dp"
-        android:src="@drawable/usb"
-        app:layout_constraintBottom_toBottomOf="@+id/textStep1"
-        app:layout_constraintStart_toEndOf="@+id/textStep1"
-        app:layout_constraintTop_toTopOf="@+id/textStep1" />
+        android:clickable="true"
+        android:src="@drawable/encyclopedia_svgrepo_com"
+        app:layout_constraintBottom_toTopOf="@+id/textVersion"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/todo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

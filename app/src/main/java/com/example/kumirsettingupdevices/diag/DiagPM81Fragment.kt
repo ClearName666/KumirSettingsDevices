@@ -364,6 +364,9 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
     // вывод базовых станций
     override fun printAll(allBaseStations: String) {
+
+        binding.textDialogExitDiag.visibility = View.GONE
+
         var flagBaseStations: Boolean = false
 
         val list: List<String> = allBaseStations.split("\n")

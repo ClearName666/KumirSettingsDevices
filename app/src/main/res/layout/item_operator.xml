@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/mccTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textOperator"
                 app:layout_constraintTop_toBottomOf="@+id/textArfcn" />
 
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/mncTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textMCC"
                 app:layout_constraintTop_toBottomOf="@+id/textMCC" />
 
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rxlevTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textOperator"
                 app:layout_constraintTop_toBottomOf="@+id/textOperator" />
 
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cellidTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textMNC"
                 app:layout_constraintTop_toBottomOf="@+id/textMNC" />
 
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/operatorTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/arfcnTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textRxlev"
                 app:layout_constraintTop_toBottomOf="@+id/textRxlev" />
 
@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/lacTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textCellid"
                 app:layout_constraintTop_toBottomOf="@+id/textCellid" />
 
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:text="@string/bsicTitle"
-                android:textColor="@color/textColor"
+                android:textColor="@color/background"
                 app:layout_constraintStart_toStartOf="@+id/textLac"
                 app:layout_constraintTop_toBottomOf="@+id/textLac" />
 

@@ -169,7 +169,7 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
 
         binding.imagedischarge.setOnClickListener {
-            onClickReadSettingsDevice(it)
+            onClickReadSettingsDevice()
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
@@ -177,7 +177,23 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         createAdapters()
 
+        // активация чтения
+        onClickReadSettingsDevice()
+        binding.M32D.visibility = View.GONE
+
+
+
         return binding.root
+    }
+
+
+    override fun onDestroyView() {
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(true)
+        }
+
+        super.onDestroyView()
     }
 
     private fun createAdapters() {
@@ -315,6 +331,13 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     override fun printVersionProgram(versionProgram: String) {}
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        binding.M32D.visibility = View.VISIBLE
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(false)
+        }
+
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки
         val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
@@ -343,7 +366,6 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             replace(" ", "")?.toInt()!!
 
             // находим среди всех присетов индекс номера присета с настройками
-            val context: Context = requireContext()
             if (context is MainActivity) {
                 for (itemPreset in 0..<context.portsDeviceSetting.size) {
                     if (profile1 == context.portsDeviceSetting[itemPreset].priset) {
@@ -702,7 +724,7 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
     }
 
-    private fun onClickReadSettingsDevice(view: View) {
+    private fun onClickReadSettingsDevice() {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
@@ -753,7 +775,7 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
             // установка клика
             binding.imagedischarge.setOnClickListener {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             }
 
             binding.imageDownLoad.setOnClickListener {
@@ -777,17 +799,23 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         if (context is MainActivity) {
             context.workFonDarkMenu()
         }
-        // подставление данных в поля
-        binding.inputAPN.setText(priset.apn)
-        binding.inputSim1Knet.setText(priset.server1)
-        binding.inputTextLoginGPRS.setText(priset.login)
-        binding.inputPasswordGPRS.setText(priset.password)
 
-        // подставление данных в поля
-        binding.inputAPN2.setText(priset.apn)
-        binding.inputSim2Knet.setText(priset.server1)
-        binding.inputTextLoginGPRS2.setText(priset.login)
-        binding.inputPasswordGPRS2.setText(priset.password)
+        if (binding.inputAPN.visibility == View.VISIBLE) {
+            // подставление данных в поля
+            binding.inputAPN.setText(priset.apn)
+            binding.inputSim1Knet.setText(priset.server1)
+            binding.inputTextLoginGPRS.setText(priset.login)
+            binding.inputPasswordGPRS.setText(priset.password)
+        } else {
+            // подставление данных в поля
+            binding.inputAPN2.setText(priset.apn)
+            binding.inputSim2Knet.setText(priset.server1)
+            binding.inputTextLoginGPRS2.setText(priset.login)
+            binding.inputPasswordGPRS2.setText(priset.password)
+        }
+
+
+
 
         try {
             if (priset.mode < 4)

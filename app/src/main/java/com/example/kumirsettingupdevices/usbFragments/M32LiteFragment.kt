@@ -121,13 +121,15 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         //------------------------------------------------------------------------------------------
 
         binding.imagedischarge.setOnClickListener {
-            onClickReadSettingsDevice(it)
+            onClickReadSettingsDevice()
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
-
+        // активация чтения
+        onClickReadSettingsDevice()
+        binding.M32Lite.visibility = View.GONE
 
         return binding.root
     }
@@ -137,6 +139,7 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
+            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -271,7 +274,7 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.spinnerBitDataPort1.adapter = adapterSelectBitData
     }
 
-    private fun onClickReadSettingsDevice(view: View) {
+    private fun onClickReadSettingsDevice() {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
@@ -295,6 +298,13 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        binding.M32Lite.visibility = View.VISIBLE
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(false)
+        }
+
 
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки
@@ -320,7 +330,6 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             replace(" ", "")?.toInt()!!
 
             // находим среди всех присетов индекс номера присета с настройками
-            val context: Context = requireContext()
             if (context is MainActivity) {
                 for (itemPreset in 0..<context.portsDeviceSetting.size) {
                     if (profile1 == context.portsDeviceSetting[itemPreset].priset) {
@@ -562,7 +571,7 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
             // установка клика
             binding.imagedischarge.setOnClickListener {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             }
 
             binding.imageDownLoad.setOnClickListener {

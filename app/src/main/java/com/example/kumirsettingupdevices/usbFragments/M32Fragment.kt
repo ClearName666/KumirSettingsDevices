@@ -205,13 +205,15 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
 
         binding.imagedischarge.setOnClickListener {
-            onClickReadSettingsDevice(it)
+            onClickReadSettingsDevice()
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
-
+        // активация чтения
+        onClickReadSettingsDevice()
+        binding.M32.visibility = View.GONE
 
         return binding.root
     }
@@ -221,6 +223,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
+            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -387,7 +390,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.spinnerBitDataPort2.adapter = adapterSelectBitData
     }
 
-    private fun onClickReadSettingsDevice(view: View) {
+    private fun onClickReadSettingsDevice() {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
@@ -779,7 +782,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
             // установка клика
             binding.imagedischarge.setOnClickListener {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             }
 
             binding.imageDownLoad.setOnClickListener {

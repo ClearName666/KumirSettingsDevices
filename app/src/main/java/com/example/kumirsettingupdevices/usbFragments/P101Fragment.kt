@@ -76,14 +76,28 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
 
         // клики для чтения и записи
         binding.imagedischarge.setOnClickListener {
-            onClickReadSettingsDevice(it)
+            onClickReadSettingsDevice()
         }
 
         createAdapters()
 
+        // активация чтения
+        onClickReadSettingsDevice()
+        binding.P101.visibility = View.GONE
+
 
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(true)
+        }
+
+        super.onDestroyView()
     }
 
     private fun getAbonents() {
@@ -168,7 +182,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
         binding.spinnerBitData.adapter = adapterSelectBitData
     }
 
-    private fun onClickReadSettingsDevice(view: View) {
+    private fun onClickReadSettingsDevice() {
         readSettingStart()
     }
 
@@ -181,6 +195,13 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
     }
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        binding.P101.visibility = View.VISIBLE
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(false)
+        }
+
 
         // если чтение иначе вывод абанентов
         if (!flagRead) {
@@ -410,7 +431,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
 
             // установка клика
             binding.imagedischarge.setOnClickListener {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             }
         }
     }

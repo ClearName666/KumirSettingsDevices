@@ -136,11 +136,15 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         //------------------------------------------------------------------------------------------
 
         binding.imagedischarge.setOnClickListener {
-            onClickReadSettingsDevice(it)
+            onClickReadSettingsDevice()
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
+
+        // активация чтения
+        onClickReadSettingsDevice()
+        binding.PM81.visibility = View.GONE
 
 
 
@@ -152,6 +156,10 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
+        }
+
+        if (context is MainActivity) {
+            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -293,7 +301,7 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         binding.spinnerRange.adapter = adapterSelectRange
     }
 
-    private fun onClickReadSettingsDevice(view: View) {
+    private fun onClickReadSettingsDevice() {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
@@ -315,8 +323,11 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-
-
+        binding.PM81.visibility = View.VISIBLE
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(false)
+        }
 
         // сохраняем поля диопазона частот и интеренет ключа
         band = settingMap[getString(R.string.commandGetRange)]!!
@@ -579,7 +590,7 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
             // установка клика
             binding.imagedischarge.setOnClickListener {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             }
 
             binding.imageDownLoad.setOnClickListener {

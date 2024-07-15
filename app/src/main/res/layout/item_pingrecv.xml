@@ -35,7 +35,7 @@ android:layout_height="wrap_content">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/timeOutPackg"
-            android:textColor="@color/textColor"
+            android:textColor="@color/background"
             app:layout_constraintStart_toStartOf="@+id/textnumPackg"
             app:layout_constraintTop_toBottomOf="@+id/textnumPackg" />
 
@@ -45,7 +45,7 @@ android:layout_height="wrap_content">
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/numPackg"
-            android:textColor="@color/textColor"
+            android:textColor="@color/background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +54,7 @@ android:layout_height="wrap_content">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signelPackg"
-            android:textColor="@color/textColor"
+            android:textColor="@color/background"
             app:layout_constraintStart_toStartOf="@+id/texttimeOutPackg"
             app:layout_constraintTop_toBottomOf="@+id/texttimeOutPackg" />
 

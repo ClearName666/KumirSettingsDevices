@@ -134,7 +134,7 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.imagedischarge.setOnClickListener {
 
             if (!flagClickChackSignal) {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             } else {
                 showAlertDialog(getString(R.string.notUseSerialPort))
             }
@@ -149,8 +149,13 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             lockFromDisconnected(false)
         }
 
+        // активация чтения
+        onClickReadSettingsDevice()
+        binding.ACCB030Core.visibility = View.GONE
+
         return binding.root
     }
+
 
 
     override fun onDestroyView() {
@@ -158,13 +163,14 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
+            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
     }
 
 
-    private fun onClickReadSettingsDevice(view: View) {
+    private fun onClickReadSettingsDevice() {
         val context: Context = requireContext()
 
         if (context is MainActivity) {
@@ -323,6 +329,13 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
+        binding.ACCB030Core.visibility = View.VISIBLE
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.mainFragmentWork(false)
+        }
+
+
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки
         val drawablImageDownLoad = ContextCompat.getDrawable(requireContext(), R.drawable.download)
@@ -367,7 +380,6 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             replace(" ", "")?.toInt()!!
 
             // находим среди всех присетов индекс номера присета с настройками
-            val context: Context = requireContext()
             if (context is MainActivity) {
                 for (itemPreset in 0..<context.portsDeviceSetting.size) {
                     if (profile1 == context.portsDeviceSetting[itemPreset].priset) {
@@ -566,7 +578,7 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
             // установка клика
             binding.imagedischarge.setOnClickListener {
-                onClickReadSettingsDevice(it)
+                onClickReadSettingsDevice()
             }
 
             binding.imageDownLoad.setOnClickListener {

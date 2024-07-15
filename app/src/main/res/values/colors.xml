@@ -4,13 +4,19 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background">#FFFFFFFF</color>
     <color name="textColor">#FF000000</color>
+
+    <color name="fon2Element">#005695</color>
+    <color name="fon5Element">#005695</color>
+    <color name="fun3Element">#005695</color>
+    <color name="fon4Element">#005695</color>
     <color name="fonElement">#D9D9D9</color>
-    <color name="fon2Element">#919191</color>
-    <color name="fon5Element">#0D161E</color>
+<!--    <color name="fon2Element">#919191</color>-->
+<!--    <color name="fon5Element">#0D161E</color>-->
+<!--    <color name="fun3Element">#A7F1FA</color>-->
+<!--    <color name="fon4Element">#272727</color>-->
+
     <color name="fonDarkMenu">#A64F4F4F</color>
-    <color name="fun3Element">#A7F1FA</color>
     <color name="dangerous">#880000</color>
-    <color name="fon4Element">#272727</color>
 
     <color name="blue_switch_thumb_color">#115E9A</color> <!-- Цвет переключателя (бегунок) -->
     <color name="blue_switch_track_color">#111920</color> <!-- Цвет фона переключателя -->

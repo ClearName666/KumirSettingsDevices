@@ -93,12 +93,12 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         return binding.root
     }
 
-    override fun onStart() {
+    /*override fun onStart() {
         super.onStart()
 
         // вывод предупреждения об диагностики
         showAlertDialog(getString(R.string.exitDiagRestart))
-    }
+    }*/
 
     override fun onDestroyView() {
 
@@ -196,6 +196,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         flagViewDiag = true
 
         binding.progressBarOperators.visibility = View.GONE
+        binding.textDialogExitDiag.visibility = View.GONE
 
         val operatorsString: List<String> = allOperators.split("\n")
         val itemsOperators: MutableList<ItemOperator> = mutableListOf()
@@ -258,6 +259,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     }
 
     override fun printError() {
+
         binding.progressBarOperators.visibility = View.GONE
         binding.textNonFindOperators.visibility = View.VISIBLE
         flagWorkAnimLoadingOperators = false
