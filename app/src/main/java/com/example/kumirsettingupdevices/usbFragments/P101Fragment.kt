@@ -1,13 +1,19 @@
 package com.example.kumirsettingupdevices.usbFragments
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbDeviceConnection
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +27,21 @@ import com.example.kumirsettingupdevices.formaters.ValidDataSettingsDevice
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemAbanent
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
+import com.example.kumirsettingupdevices.usb.XModemSender
+import com.hoho.android.usbserial.driver.UsbSerialPort
+import com.hoho.android.usbserial.driver.UsbSerialProber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
 
     private lateinit var binding: FragmentP101Binding
 
     override val usbCommandsProtocol = UsbCommandsProtocol()
+
+    private lateinit var serialPort: UsbSerialPort
 
     private var listKeyAbanents: MutableList<String> = mutableListOf()
     private var flagRead: Boolean = false
@@ -40,12 +55,68 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
     // хранит текущего изменемого абанента
     var curentAbanent: ItemAbanent? = null
 
+    var fileName: String = ""
+
     companion object {
         private const val DEFFAULT_NUM_DEVICE: String = "234"
         private const val DEFFAULT_PASSWORD: String = ""
         private const val DEFFAULT_ADRES: String = "0"
         private const val DEFFAULT_TIMEOUT: String = "10"
+
+        private const val TIMEOUT_RESPONSE: Long = 100
     }
+    private lateinit var file: File
+
+    // получения файла
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+
+        uri?.let {
+            val tempFile = createTempFileFromUri(it)
+            if (tempFile != null) {
+                fileName = getFileNameFromUri(it)
+                file = tempFile
+                loadDriver(file)
+            }
+        }
+    }
+
+    private fun createTempFileFromUri(uri: Uri): File? {
+        val fileName = getFileNameFromUri(uri)
+        val tempFile = File.createTempFile(fileName, null, requireContext().cacheDir)
+        val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(tempFile)
+
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input?.copyTo(output)
+            }
+        }
+
+        return tempFile
+    }
+
+
+    // полуение имени файла по пути
+    private fun getFileNameFromUri(uri: Uri): String {
+        var fileName = ""
+        uri.let {
+            val cursor = requireContext().contentResolver.query(it, null, null, null, null)
+            cursor?.use {
+                if (cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        fileName = cursor.getString(nameIndex)
+                    }
+                }
+            }
+        }
+        return fileName.dropLast(".ini".length) // что бы убрать ini в конце названия
+    }
+
+    private fun selectFile() {
+        getContent.launch("*/*") // Можно указать конкретный тип файла, например, "application/octet-stream"
+    }
+
 
 
     override fun onCreateView(
@@ -126,6 +197,44 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
                 binding.editMenuAbanent.visibility = View.VISIBLE
             }
         }
+        // кнопка загрузки драйвера
+        binding.buttonLoadFile.visibility = View.VISIBLE
+        binding.buttonLoadFile.setOnClickListener {
+            selectFile() // выбор файла для загрузки драйвера
+        }
+    }
+
+    private fun setModeXmodemDevice(name: String) {
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.usb.writeDevice("AT\$UPLOAD=$name")
+        }
+    }
+
+    private fun loadDriver(file: File?) {
+        Thread {
+            (context as Activity).runOnUiThread {
+                showAlertDialog(fileName.substringBefore("_"))
+                showAlertDialog(file.toString())
+            }
+            setModeXmodemDevice(fileName.substringBefore("_"))
+            Thread.sleep(TIMEOUT_RESPONSE)
+
+            val context: Context = requireContext()
+            if (context is MainActivity) {
+                // пытаемся отправить
+                try {
+                    // создаем экземпляр класса для работы с xmodem
+                    val sender = XModemSender(context.usb.serialPort)
+
+                    sender.sendFile(file)
+                } catch (e: Exception) {
+                    (context as Activity).runOnUiThread {
+                        showAlertDialog("Произошла ошибка!")
+                    }
+                }
+            }
+        }.start()
     }
 
     private fun createAdapters() {

@@ -143,8 +143,7 @@
         android:text="@string/readAbanents"
         android:textColor="@color/background"
         app:layout_constraintBottom_toTopOf="@+id/futerSettingsDevice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fonWindowDarck"
@@ -392,5 +391,19 @@
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/buttonLoadFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/textColor"
+        android:text="@string/loadDriver"
+        android:textColor="@color/background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/futerSettingsDevice"
+        app:layout_constraintEnd_toStartOf="@+id/buttonAddAbanent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonAddAbanent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

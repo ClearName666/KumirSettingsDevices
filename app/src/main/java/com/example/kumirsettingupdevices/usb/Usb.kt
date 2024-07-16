@@ -17,6 +17,8 @@ import com.felhr.usbserial.UsbSerialInterface
 import com.felhr.usbserial.UsbSerialInterface.UsbCTSCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbDSRCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
+import com.hoho.android.usbserial.driver.UsbSerialPort
+import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -42,10 +44,11 @@ class Usb(private val context: Context) {
     private var lineFeed = "\r"
     private var lineFeedRead = "\r"
 
+    lateinit var serialPort: UsbSerialPort
 
-    private var connection: UsbDeviceConnection? = null
+    var connection: UsbDeviceConnection? = null
     private var usbSerialDevice: UsbSerialDevice? = null
-    private var deviceUsb: UsbDevice? = null
+    var deviceUsb: UsbDevice? = null
 
     private var curentDeviceName: String? = null
 
@@ -288,6 +291,7 @@ class Usb(private val context: Context) {
         dsrState = false
         ctsState = false
         connection?.close()
+        serialPort.close() // xmodem
         connection = null
         usbSerialDevice?.close()
         usbSerialDevice = null
@@ -378,7 +382,6 @@ class Usb(private val context: Context) {
                         curentDevice, connection)
                     usbSerialDevice?.open()
 
-
                     usbSerialDevice?.let {
                         if (it.open()) {
                             val readCallback = UsbReadCallback { bytes ->
@@ -431,6 +434,16 @@ class Usb(private val context: Context) {
                     onStartSerialSetting()
                     deviceUsb = curentDevice
                     curentDeviceName = curentDevice.deviceId.toString()
+
+                    // для подключения порта общения по xmodem
+                    val driver = UsbSerialProber.getDefaultProber().probeDevice(deviceUsb)
+                    if (driver != null) {
+                        val ports = driver.ports
+                        if (ports.isNotEmpty()) {
+                            serialPort = ports[0] // Используем первый доступный порт
+                            serialPort.open(connection)
+                        }
+                    }
 
                     // поток для отправки в фоновом режиме at команды
                     Thread {

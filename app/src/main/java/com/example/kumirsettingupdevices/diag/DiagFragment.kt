@@ -259,7 +259,6 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     }
 
     override fun printError() {
-
         binding.progressBarOperators.visibility = View.GONE
         binding.textNonFindOperators.visibility = View.VISIBLE
         flagWorkAnimLoadingOperators = false
