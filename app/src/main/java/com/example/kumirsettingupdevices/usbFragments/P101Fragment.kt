@@ -8,6 +8,7 @@ import android.hardware.usb.UsbDeviceConnection
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -75,7 +76,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
             if (tempFile != null) {
                 fileName = getFileNameFromUri(it)
                 file = tempFile
-                loadDriver(file)
+                setModeXmodemDevice(fileName)
             }
         }
     }
@@ -205,29 +206,36 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
     }
 
     private fun setModeXmodemDevice(name: String) {
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.usb.writeDevice("AT\$UPLOAD=$name")
+
+        val dataMap: Map<String, String> = mapOf(
+            getString(R.string.commandSetDriverMode) to name.substringBefore("_").uppercase()
+        )
+
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
+
+        // кнопка загрузки драйвера
+        binding.buttonLoadFile.visibility = View.VISIBLE
+        binding.buttonLoadFile.text = getString(R.string.loadDriverFin)
+        binding.buttonLoadFile.setOnClickListener {
+            loadDriver(file) // выбор файла для загрузки драйвера
         }
     }
 
     private fun loadDriver(file: File?) {
         Thread {
-            (context as Activity).runOnUiThread {
-                showAlertDialog(fileName.substringBefore("_"))
-                showAlertDialog(file.toString())
-            }
-            setModeXmodemDevice(fileName.substringBefore("_"))
-            Thread.sleep(TIMEOUT_RESPONSE)
-
             val context: Context = requireContext()
             if (context is MainActivity) {
                 // пытаемся отправить
                 try {
+                    Log.d("XModemSender", "Создание класса XModemSender")
                     // создаем экземпляр класса для работы с xmodem
-                    val sender = XModemSender(context.usb.serialPort)
-
-                    sender.sendFile(file)
+                    if (context.usb.usbSerialDevice != null) {
+                        val sender = XModemSender(context.usb.usbSerialDevice!!)
+                        Log.d("XModemSender", "Создан класс XModemSender")
+                        sender.sendFile(file)
+                    } else {
+                        Log.d("XModemSender", "serialPort = null")
+                    }
                 } catch (e: Exception) {
                     (context as Activity).runOnUiThread {
                         showAlertDialog("Произошла ошибка!")
@@ -304,6 +312,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
     }
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
+        //  если данных подоорительно мало то выходим
+        if (settingMap.size < 2) return
 
         binding.P101.visibility = View.VISIBLE
         val context: Context = requireContext()

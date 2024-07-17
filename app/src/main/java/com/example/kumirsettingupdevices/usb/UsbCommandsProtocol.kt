@@ -1301,7 +1301,8 @@ class UsbCommandsProtocol {
             // если команда не входит в список команд которые не должны давать ответа то ерорим все
             if (command != context.getString(R.string.commandSetResetModem) &&
                 command != context.getString(R.string.commandSetFormatParity) &&
-                command != context.getString(R.string.commandGetAdLoad)) {
+                command != context.getString(R.string.commandGetAdLoad) &&
+                command != context.getString(R.string.commandSetDriverMode)) {
                 return false
             }
 

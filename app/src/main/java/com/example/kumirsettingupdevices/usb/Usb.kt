@@ -1,15 +1,11 @@
 package com.example.kumirsettingupdevices.usb
 
 import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
 import android.util.Log
-import androidx.compose.runtime.remember
-import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
@@ -44,10 +40,10 @@ class Usb(private val context: Context) {
     private var lineFeed = "\r"
     private var lineFeedRead = "\r"
 
-    lateinit var serialPort: UsbSerialPort
+    var serialPort: UsbSerialPort? = null
 
     var connection: UsbDeviceConnection? = null
-    private var usbSerialDevice: UsbSerialDevice? = null
+    var usbSerialDevice: UsbSerialDevice? = null
     var deviceUsb: UsbDevice? = null
 
     private var curentDeviceName: String? = null
@@ -291,7 +287,7 @@ class Usb(private val context: Context) {
         dsrState = false
         ctsState = false
         connection?.close()
-        serialPort.close() // xmodem
+        serialPort?.close() // xmodem
         connection = null
         usbSerialDevice?.close()
         usbSerialDevice = null
@@ -435,14 +431,23 @@ class Usb(private val context: Context) {
                     deviceUsb = curentDevice
                     curentDeviceName = curentDevice.deviceId.toString()
 
-                    // для подключения порта общения по xmodem
+                    // Инициализация USB и получение serialPort
                     val driver = UsbSerialProber.getDefaultProber().probeDevice(deviceUsb)
                     if (driver != null) {
                         val ports = driver.ports
                         if (ports.isNotEmpty()) {
                             serialPort = ports[0] // Используем первый доступный порт
-                            serialPort.open(connection)
+                            try {
+                                serialPort?.open(connection)
+                                Log.d("XModemSender", "Serial port успешно открыт")
+                            } catch (e: IOException) {
+                                Log.e("XModemSender", "Ошибка при открытии serial port", e)
+                            }
+                        } else {
+                            Log.e("XModemSender", "Нет доступных портов")
                         }
+                    } else {
+                        Log.e("XModemSender", "Не удалось найти драйвер для устройства USB")
                     }
 
                     // поток для отправки в фоновом режиме at команды
