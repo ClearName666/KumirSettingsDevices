@@ -1,6 +1,11 @@
 package com.example.kumirsettingupdevices.usb
 
+import android.app.Activity
+import android.content.Context
 import android.util.Log
+import com.example.kumirsettingupdevices.LoadInterface
+import com.example.kumirsettingupdevices.MainActivity
+import com.example.kumirsettingupdevices.R
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import java.io.File
@@ -9,13 +14,17 @@ import java.io.IOException
 import java.util.Arrays
 import kotlin.experimental.inv
 
-class XModemSender(private val serialPort: UsbSerialDevice) {
+class XModemSender(private val serialPort: UsbSerialDevice,
+                   val context: MainActivity,
+                   val loadInterface: LoadInterface
+) {
 
     private var ackReceived = false
     private var nakReceived = false
 
     private val mCallback = UsbSerialInterface.UsbReadCallback { data ->
         if (data.isNotEmpty()) {
+            Log.d(TAG, data.joinToString { "%02x".format(it) })
             when (data[0]) {
                 ACK -> {
                     ackReceived = true
@@ -38,33 +47,61 @@ class XModemSender(private val serialPort: UsbSerialDevice) {
 
     @Throws(IOException::class)
     fun sendFile(file: File?) {
+
+        // для прогресс бара
+        val sizeFile = file?.length()
+        val progressK = sizeFile?.div(128)?.div(100)
+        var progress = 0
+
         Log.d(TAG, "Начало отправки файла")
+
         val fis = FileInputStream(file)
         val buffer = ByteArray(PACKET_SIZE)
         var bytesRead: Int
         var packetNumber = 1
         try {
             while (fis.read(buffer).also { bytesRead = it } != -1) {
-                Log.d(TAG, "Чтение пакета номер $packetNumber, байтов прочитано: $bytesRead")
+                Log.d(TAG, "Чтние пакета номер $packetNumber, байтов прочитано: $bytesRead")
+
                 if (bytesRead < PACKET_SIZE) {
                     Arrays.fill(buffer, bytesRead, PACKET_SIZE, 0x1A.toByte()) // Заполнение EOF
                     Log.d(TAG, "Заполнение оставшегося буфера символом EOF")
                 }
                 sendPacket(buffer, packetNumber)
                 packetNumber++
+
+                // вывод прогресса на экран
+                if (packetNumber % progressK?.toInt()!! == 0)
+                    (context as Activity).runOnUiThread {
+                        progress++
+                        loadInterface.loadingProgress(progress)
+                    }
             }
             sendEOT()
+
+            // прогресс на 100%
+            (context as Activity).runOnUiThread {
+                loadInterface.loadingProgress(100)
+            }
         } finally {
             Log.d(TAG, "Закрытие файла")
+
+            // выходим из режима загрузки драйверов
+            Log.d(TAG, "Отправка файла завершена")
+
+            // закрываем меню загрузки
+            (context as Activity).runOnUiThread {
+                loadInterface.closeMenuProgress()
+            }
+
             fis.close()
         }
-        Log.d(TAG, "Отправка файла завершена")
     }
 
     @Throws(IOException::class)
     private fun sendPacket(data: ByteArray, packetNumber: Int) {
         Log.d(TAG, "Отправка пакета номер $packetNumber")
-        val packet = ByteArray(PACKET_SIZE + 5)
+        val packet = ByteArray(PACKET_SIZE + 4)
         packet[0] = SOH
         packet[1] = packetNumber.toByte()
         packet[2] = packetNumber.toByte().inv()
@@ -86,9 +123,9 @@ class XModemSender(private val serialPort: UsbSerialDevice) {
             }
         }
 
-        if (!ackReceived) {
+        /*if (!ackReceived) {
             throw IOException("ACK not received for packet number $packetNumber after $MAX_RETRIES retries")
-        }
+        }*/
     }
 
     @Throws(IOException::class)
@@ -102,7 +139,8 @@ class XModemSender(private val serialPort: UsbSerialDevice) {
             serialPort.write(eot)
 
             waitForAckOrNak()
-            if (ackReceived) {
+            if (ackReceived)
+            {
                 Log.d(TAG, "EOT успешно отправлен и подтвержден")
                 return
             } else if (nakReceived) {
@@ -123,11 +161,13 @@ class XModemSender(private val serialPort: UsbSerialDevice) {
     }
 
     private fun calculateChecksum(data: ByteArray): Byte {
-        var checksum = 0
-        for (b in data) {
-            checksum = (checksum + b) % 256
+        var crc: Byte = 0
+
+        for (element in data) {
+            crc = (crc + element).toByte()
         }
-        return checksum.toByte()
+
+        return crc
     }
 
 

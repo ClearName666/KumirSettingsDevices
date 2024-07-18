@@ -3,8 +3,6 @@ package com.example.kumirsettingupdevices.usbFragments
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbDeviceConnection
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -19,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kumirsettingupdevices.EditDelIntrface
+import com.example.kumirsettingupdevices.LoadInterface
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.ItemAbanentAdapter.ItemAbanentAdapter
@@ -30,13 +29,11 @@ import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usb.XModemSender
 import com.hoho.android.usbserial.driver.UsbSerialPort
-import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
-class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
+class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, LoadInterface {
 
     private lateinit var binding: FragmentP101Binding
 
@@ -206,31 +203,73 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
     }
 
     private fun setModeXmodemDevice(name: String) {
+        val context: Context = requireContext()
 
-        val dataMap: Map<String, String> = mapOf(
-            getString(R.string.commandSetDriverMode) to name.substringBefore("_").uppercase()
-        )
+        if (context is MainActivity) {
+            // очищение буфера перед отправкой
+            context.curentDataByte = byteArrayOf()
+            val dataMap: Map<String, String> = mapOf(
+                getString(R.string.commandSetDriverMode) to name.substringBefore("_").uppercase()
+            )
 
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
+            usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
 
-        // кнопка загрузки драйвера
-        binding.buttonLoadFile.visibility = View.VISIBLE
-        binding.buttonLoadFile.text = getString(R.string.loadDriverFin)
-        binding.buttonLoadFile.setOnClickListener {
-            loadDriver(file) // выбор файла для загрузки драйвера
+            // поток для отслеживания ответа от модема
+            Thread {
+                var cnt = 0
+                while (true) {
+                    cnt++
+                    // если данные поступили то
+                    if (context.curentDataByte.isNotEmpty()) {
+                        (context as Activity).runOnUiThread {
+                            // кнопка загрузки драйвера
+                            binding.buttonLoadFile.visibility = View.VISIBLE
+                            binding.buttonLoadFile.text = getString(R.string.loadDriverFin)
+                            binding.buttonLoadFile.setOnClickListener {
+                                // открываем загрузочное меню
+                                binding.loadMenuProgress.visibility = View.VISIBLE
+                                binding.fonLoadDriver.visibility = View.VISIBLE
+
+                                loadDriver(file) // выбор файла для загрузки драйвера
+                            }
+                        }
+                    }
+                    // задержка
+                    Thread.sleep(300)
+
+                    // выход если слишком долго
+                    if (cnt == 30) break
+                }
+            }.start()
         }
     }
 
+    // вывод прогресса загрузки
+    override fun loadingProgress(prgress: Int) {
+        binding.progressBarLoad.progress = prgress
+    }
+
+    // закрытие меню прогресс бара
+    override fun closeMenuProgress() {
+        binding.loadMenuProgress.visibility = View.GONE
+        binding.fonLoadDriver.visibility = View.GONE
+    }
+
     private fun loadDriver(file: File?) {
+        val loadInterface = this
         Thread {
             val context: Context = requireContext()
             if (context is MainActivity) {
+
+                // активируем флаг записи что бы не было возможности выйти
+                usbCommandsProtocol.flagWorkWrite = true
+
                 // пытаемся отправить
                 try {
                     Log.d("XModemSender", "Создание класса XModemSender")
                     // создаем экземпляр класса для работы с xmodem
                     if (context.usb.usbSerialDevice != null) {
-                        val sender = XModemSender(context.usb.usbSerialDevice!!)
+                        val sender = XModemSender(context.usb.usbSerialDevice!!, context, loadInterface)
                         Log.d("XModemSender", "Создан класс XModemSender")
                         sender.sendFile(file)
                     } else {
@@ -241,6 +280,16 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
                         showAlertDialog("Произошла ошибка!")
                     }
                 }
+
+                // выход из режима загрузки драйверов
+                if (!context.usb.writeDevice(context.getString(R.string.commandGetExitM32D))) {
+                    (context as Activity).runOnUiThread {
+                        context.showAlertDialog("Ошибка выхода из режима загрузки драйверов перезегрузите модем!")
+                    }
+                }
+
+                // загрузка завершина
+                usbCommandsProtocol.flagWorkWrite = false
             }
         }.start()
     }
@@ -313,7 +362,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        //  если данных подоорительно мало то выходим
+        //  если данных подоорительно мало то выходим скорее всего это
         if (settingMap.size < 2) return
 
         binding.P101.visibility = View.VISIBLE

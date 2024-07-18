@@ -216,7 +216,6 @@ class UsbModBasCommandProtocol {
                             }
                         }
                     }
-
                     // очищение буфера
                     context.curentDataByte = byteArrayOf()
                 }

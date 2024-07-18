@@ -2,6 +2,7 @@ package com.example.kumirsettingupdevices.usb
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.example.kumirsettingupdevices.diag.DiagFragmentInterface
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
@@ -30,7 +31,7 @@ class UsbCommandsProtocol {
         "AT\$EVENT?",
         "AT\$DRVLIST",
         "AT\$ABLIST",
-        "AT\$ABVIEW",
+        "AT\$ABVIEW"
 
     )
 
@@ -256,6 +257,7 @@ class UsbCommandsProtocol {
                     for (i in 1..CNT_SAND_COMMAND_OK) {
                         // очищение прошлых данных
                         context.curentData = ""
+                        context.curentDataByte = byteArrayOf()
 
                         val dataSend: String = key + value
 
@@ -1307,6 +1309,17 @@ class UsbCommandsProtocol {
             }
 
         }
+
+        // проверка на команду загрузки драйвера
+        if (command == context.getString(R.string.commandSetDriverMode)) {
+            if (context.curentDataByte.isEmpty() || context.curentDataByte[0] != 0x15.toByte()) {
+
+                Log.d("XModemSender", context.curentDataByte[0].toString())
+                Log.d("XModemSender", context.curentDataByte.joinToString { "%02x".format(it) })
+                return false
+            }
+        }
+
         return true
     }
 

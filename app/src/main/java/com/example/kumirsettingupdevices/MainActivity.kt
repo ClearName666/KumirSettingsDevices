@@ -11,6 +11,7 @@ import android.hardware.usb.UsbManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // буферы денных
     var curentData: String = ""
     var curentDataByte: ByteArray = byteArrayOf()
+    var curentDataByteNonClear: ByteArray = byteArrayOf()
 
     // flag Для контроля передачи информации
     var flagThreadSerialCommands: Boolean = false
