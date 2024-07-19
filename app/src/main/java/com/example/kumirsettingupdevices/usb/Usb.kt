@@ -40,7 +40,7 @@ class Usb(private val context: Context) {
     private var lineFeed = "\r"
     private var lineFeedRead = "\r"
 
-    var serialPort: UsbSerialPort? = null
+    //var serialPort: UsbSerialPort? = null
 
     var connection: UsbDeviceConnection? = null
     var usbSerialDevice: UsbSerialDevice? = null
@@ -287,7 +287,7 @@ class Usb(private val context: Context) {
         dsrState = false
         ctsState = false
         connection?.close()
-        serialPort?.close() // xmodem
+        //serialPort?.close() // xmodem
         connection = null
         usbSerialDevice?.close()
         usbSerialDevice = null
@@ -368,6 +368,15 @@ class Usb(private val context: Context) {
         }
     }
 
+    fun reconnect() {
+        executorUsb.execute {
+            onClear() // очищение
+
+            // переподлключение
+            attemptConnect()
+        }
+    }
+
 
     // регистрация широковещятельного приемника
     fun connect(connection: UsbDeviceConnection?, curentDevice: UsbDevice) {
@@ -432,7 +441,7 @@ class Usb(private val context: Context) {
                     curentDeviceName = curentDevice.deviceId.toString()
 
                     // Инициализация USB и получение serialPort
-                    val driver = UsbSerialProber.getDefaultProber().probeDevice(deviceUsb)
+                    /*val driver = UsbSerialProber.getDefaultProber().probeDevice(deviceUsb)
                     if (driver != null) {
                         val ports = driver.ports
                         if (ports.isNotEmpty()) {
@@ -448,7 +457,7 @@ class Usb(private val context: Context) {
                         }
                     } else {
                         Log.e("XModemSender", "Не удалось найти драйвер для устройства USB")
-                    }
+                    }*/
 
                     // поток для отправки в фоновом режиме at команды
                     Thread {

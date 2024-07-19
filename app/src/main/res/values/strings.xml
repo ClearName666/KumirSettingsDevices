@@ -10,6 +10,7 @@
     <string name="UsbNoneConnectDevice">Нет подключения, пожалуйста, выберите COM-порт и подключитесь!</string>
     <string name="readActivThread">На данный момент у вас активное общение с устройством. Мы не можем перенаправить вас на другое окно!</string>
     <string name="ConnectSuccess">Подключение успешно установлено</string>
+    <string name="errorReconnect">Не удалось переподключиться</string>
     <string name="errorUnknown">Неизвестная ошибка! Попробуйте перезайти в приложение!</string>
     <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
     <string name="identifyDeviceFailed">Идентифицировать устройство не удалось!</string>
@@ -25,6 +26,7 @@
     <string name="notAdresValidP101">Сетевой адресс не может быть пустым!</string>
     <string name="notValidTimeOutP101">Отображение значений должно быть в диапазоне от 1 до 600</string>
     <string name="notValidTimeP101">Время ожидания должна быть в диапазоне от 200 до 5000</string>
+    <string name="notDriver">Нету драйвера!</string>
     <string name="errorSettingPort">Для данного модема такие настройки порта не валидны!</string>
     <string name="errorFindSpeedSerial">Поиск скорости не дал результата! Убедитесь что кабель подключен надежно и имеет контакты для связи с serial port!</string>
     <string name="notReadDevice">Вы еще не прочитали устройство!</string>
@@ -47,6 +49,7 @@
     <string name="nonNamePreset">Перед сохранением шаблона, нужно вписать название в поле \"Название шаблона\"!</string>
     <string name="errorDataBase">Ошибка базы данных!</string>
     <string name="errorSetModePreset">Невозможно установить режиим работы из шаблона т к он отсутствует!</string>
+    <string name="nonSelectDriver">Вы не выбрали драйвер</string>
     
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
@@ -91,7 +94,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 0.1.58</string>
+    <string name="versionApp">Версия: 0.1.59</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -295,6 +298,7 @@
     <string name="commandSetPortSet">AT$ABPORT=</string>
     <string name="commandSetParams">AT$ABPARAMS=</string>
     <string name="commandSetDelAbonent">AT$ABDEL=</string>
+    <string name="commandSetDelDriver">AT$REMOVE=</string>
     
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
@@ -665,6 +669,8 @@
     <string name="loadDriver">Загрузить драйвер</string>
     <string name="loadingDriver">Загрузка драйвера</string>
     <string name="loadDriverFin">Установить драйвер</string>
+    <string name="delDrivers">Удаление драйверов</string>
+    <string name="delete">Удалить</string>
 
 
     <!--............................................................................-->

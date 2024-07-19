@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     companion object {
         const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
         const val NORM_LENGHT_DATA_START = 5
+        const val TIMEOUT_RECONNECT = 1000L
 
     }
 
@@ -1359,7 +1360,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // если фрагмент является фрагментом usbFragment то
         curentFragment.let { fragment ->
             if (fragment is UsbFragment) {
-                fragment.lockFromDisconnected(false)
+                /*Thread {
+                    // ждем время и проверяем вдруг это просто переподключение
+                    Thread.sleep(TIMEOUT_RECONNECT)
+                    if (!usb.checkConnectToDevice()) {
+                        runOnUiThread {*/
+                            fragment.lockFromDisconnected(false)
+                       /* }
+                    }
+                }.start()*/
             }
         }
 
