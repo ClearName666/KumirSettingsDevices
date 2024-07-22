@@ -234,7 +234,7 @@ class Usb(private val context: Context) {
 
 
     // проверка подклюения девайса к устройству
-    fun checkConnectToDevice(show: Boolean = false): Boolean {
+    fun checkConnectToDevice(show: Boolean = false, at: Boolean = false): Boolean {
         if (context is UsbActivityInterface) {
             val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
             val devises: HashMap<String, UsbDevice> = usbManager.deviceList
@@ -250,7 +250,10 @@ class Usb(private val context: Context) {
             Thread {
                 for (i in 0..CNT_RECONNECT_DEVISE) {
                     Thread.sleep(TIMEOUT_RECONNECT)
-                    if (attemptConnect()) break
+                    if (attemptConnect()) {
+                        if (at) flagAtCommandYesNo = true
+                        break
+                    }
                 }
             }.start()
 
@@ -375,9 +378,7 @@ class Usb(private val context: Context) {
         executorUsb.execute {
             onClear() // очищение
 
-            // переподлключение
-            if (attemptConnect())
-                flagAtCommandYesNo = true
+            checkConnectToDevice(at = true)
         }
     }
 
@@ -468,25 +469,23 @@ class Usb(private val context: Context) {
                     }*/
 
                     // поток для отправки в фоновом режиме at команды
-                    if (!flagAtCommand) {
-                        Thread {
-                            flagAtCommand = true
-                            while (flagAtCommand) {
-                                while (flagAtCommandYesNo && flagAtCommand) {
-                                    Thread.sleep(TIMEOUT_MOVE_AT)
-                                    if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
-                                        writeDevice(at, false)
-                                        Log.d("atSand", at)
-                                        flagIgnorRead = true
-                                        Thread.sleep(TIMEOUT_IGNORE_AT)
-                                        flagIgnorRead = false
-                                    }
+                    Thread {
+                        flagAtCommand = true
+                        while (flagAtCommand) {
+                            while (flagAtCommandYesNo) {
+                                Thread.sleep(TIMEOUT_MOVE_AT)
+                                if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
+                                    writeDevice(at, false)
+                                    Log.d("atSand", at)
+                                    flagIgnorRead = true
+                                    Thread.sleep(TIMEOUT_IGNORE_AT)
+                                    flagIgnorRead = false
                                 }
-                                Thread.sleep(TIMEOUT_MOVE_AT / 30)
                             }
+                            Thread.sleep(TIMEOUT_MOVE_AT / 30)
+                        }
 
-                        }.start()
-                    }
+                    }.start()
 
                     // постоянная проверка подключения к устройству
                     Thread {

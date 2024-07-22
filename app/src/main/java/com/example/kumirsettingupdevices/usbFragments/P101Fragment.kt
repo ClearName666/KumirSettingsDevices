@@ -75,10 +75,16 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
         uri?.let {
             val tempFile = createTempFileFromUri(it)
-            if (tempFile != null) {
-                fileName = getFileNameFromUri(it)
+            fileName = getFileNameFromUri(it)
+            if (tempFile != null && (
+                        fileName.endsWith(".BIN") ||
+                        fileName.endsWith(".bin") ||
+                        fileName.contains(".bin") ||
+                        fileName.contains(".BIN"))) {
                 file = tempFile
                 setModeXmodemDevice(fileName)
+            } else {
+                showAlertDialog("Файл не валидный")
             }
         }
     }
@@ -113,7 +119,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 }
             }
         }
-        return fileName.dropLast(".ini".length) // что бы убрать ini в конце названия
+        return fileName // что бы убрать ini в конце названия
     }
 
     private fun selectFile() {
