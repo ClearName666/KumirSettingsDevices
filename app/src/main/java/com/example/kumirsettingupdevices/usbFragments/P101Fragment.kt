@@ -31,6 +31,7 @@ import com.example.kumirsettingupdevices.usb.XModemSender
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 
 class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, LoadInterface {
@@ -177,6 +178,8 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
         createAdapters()
 
+
+
         // активация чтения
         onClickReadSettingsDevice()
         binding.P101.visibility = View.GONE
@@ -191,6 +194,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.mainFragmentWork(true)
+
+            // возврат к at командам
+            context.usb.setAtCommand(null)
         }
 
         super.onDestroyView()
@@ -249,6 +255,10 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                     // если данные поступили то
                     if (context.curentDataByte.isNotEmpty()) {
                         (context as Activity).runOnUiThread {
+
+                            // убераем кнопку уделения драйвера
+                            binding.buttonDriversDel.visibility = View.GONE
+
                             // кнопка загрузки драйвера
                             binding.buttonLoadFile.visibility = View.VISIBLE
                             binding.buttonLoadFile.text = getString(R.string.loadDriverFin)
@@ -259,13 +269,16 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                                     binding.fonLoadDriver.visibility = View.VISIBLE
 
                                     loadDriver(file) // выбор файла для загрузки драйвера
+
                                 }
 
                             }
 
                             // убераем возможность нажать на кнопку для редактирования пользователей
                             binding.buttonAddAbanent.visibility = View.GONE
+
                         }
+                        break
                     }
                     // задержка
                     Thread.sleep(300)
@@ -286,6 +299,23 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     override fun closeMenuProgress() {
         binding.loadMenuProgress.visibility = View.GONE
         binding.fonLoadDriver.visibility = View.GONE
+
+        // переподключение
+        Thread {
+            Thread.sleep(3000)
+            val context: Context = requireContext()
+            if (context is MainActivity)
+                context.usb.reconnect()
+        }.start()
+    }
+
+    override fun errorCloseMenuProgress() {
+        binding.loadMenuProgress.visibility = View.GONE
+        binding.fonLoadDriver.visibility = View.GONE
+    }
+
+    override fun errorSend() {
+        showAlertDialog(getString(R.string.errorSandDriver))
     }
 
     private fun loadDriver(file: File?) {
@@ -296,6 +326,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
                 // активируем флаг записи что бы не было возможности выйти
                 usbCommandsProtocol.flagWorkWrite = true
+                context.usb.flagAtCommandYesNo = false
                 flagLoadDriver = true
 
                 // пытаемся отправить
@@ -303,30 +334,51 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                     Log.d("XModemSender", "Создание класса XModemSender")
                     // создаем экземпляр класса для работы с xmodem
                     if (context.usb.usbSerialDevice != null) {
-                        val sender = XModemSender(context.usb.usbSerialDevice!!, context, loadInterface)
+                        val sender = XModemSender(context.usb.usbSerialDevice, context, loadInterface)
                         Log.d("XModemSender", "Создан класс XModemSender")
-                        sender.sendFile(file)
 
-                        // драйвер появляется в названии драйвера
-                        (context as Activity).runOnUiThread {
-                            binding.textDriverVersion.text = getString(R.string.driverTitle) + "\n" + file?.name
+                        try {
+                            sender.sendFile(file)
+                        } catch (e: IOException) {
+                            Log.d("XModemSender", "IOException - sender.sendFile(file)")
+                            (context as Activity).runOnUiThread {
+                                showAlertDialog("Произошла ошибка!")
+                            }
+                        } finally {
+                            Log.d("XModemSender", "1")
+                            // драйвер появляется в названии драйвера
+                            (context as Activity).runOnUiThread {
+                                binding.textDriverVersion.text = getString(R.string.driverTitle) + "\n" + file?.name?.substringBefore(".")
+                                Log.d("XModemSender", "2")
+                                // возвраения возможности добавления абанентов
+                                binding.buttonAddAbanent.visibility = View.VISIBLE
+                                Log.d("XModemSender", "3")
+                                // кнопка для установки дарайвера
+                                binding.buttonLoadFile.text = getString(R.string.loadDriver)
+                                binding.buttonLoadFile.setOnClickListener {
+                                    selectFile() // выбор файла для загрузки драйвера
+                                }
+                                Log.d("XModemSender", "4")
 
-                            // возвраения возможности добавления абанентов
-                            binding.buttonAddAbanent.visibility = View.VISIBLE
+                                // удаление драйвера
+                                binding.buttonDriversDel.visibility = View.VISIBLE
+                                Log.d("XModemSender", "5")
 
-                            // кнопка для установки дарайвера
-                            binding.buttonLoadFile.text = getString(R.string.loadDriver)
-                            binding.buttonLoadFile.setOnClickListener {
-                                selectFile() // выбор файла для загрузки драйвера
+                                // обновление адаптеров отображения драйверов
+                                itemDrivers.add(fileName.substringBefore("_").uppercase())
+                                Log.d("XModemSender", "6")
+
+                                updateDrivers()
+                                Log.d("XModemSender", "7")
+
                             }
 
-                            // обновление адаптеров отображения драйверов
-                            itemDrivers.add(fileName.substringBefore("_").uppercase())
-                            updateDrivers()
-                        }
+                            // загрузка завершина
+                            usbCommandsProtocol.flagWorkWrite = false
+                            context.usb.flagAtCommandYesNo = true
+                            flagLoadDriver = false
 
-                        // переподключение
-                        context.usb.reconnect()
+                        }
 
                     } else {
                         Log.d("XModemSender", "serialPort = null")
@@ -342,14 +394,16 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                     (context as Activity).runOnUiThread {
                         context.showAlertDialog("Ошибка выхода из режима загрузки драйверов перезегрузите модем!")
                     }
-                }*/
+                }
 
                 // загрузка завершина
                 usbCommandsProtocol.flagWorkWrite = false
-                flagLoadDriver = false
+                context.usb.flagAtCommandYesNo = true
+                flagLoadDriver = false*/
             }
         }.start()
     }
+
 
     private fun createAdapters() {
 
@@ -426,7 +480,11 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.mainFragmentWork(false)
+
+            // сменя ат команд на другие
+            context.usb.setAtCommand(getString(R.string.commandGetSerialNum))
         }
+
 
 
         // если чтение иначе вывод абанентов
@@ -447,8 +505,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                     "\n" + settingMap[getString(R.string.commandGetVersionFirmware)]
 
 
-            binding.textSizeMember.text = getString(R.string.sizeMemberTitle) +
-                    "\n" + settingMap[getString(R.string.commandGetFspace)]
+            binding.textSizeMember.text = getString(R.string.sizeMemberTitle) + " " + settingMap[getString(R.string.commandGetFspace)]
 
             binding.textDriverVersion.text = getString(R.string.driverTitle) +
                     "\n" + settingMap[getString(R.string.commandGetDriver)]?.
@@ -736,7 +793,6 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
         // удаление в отобрадении
         itemsAbonents.remove(data)
-        binding.textDriverVersion.text = getString(R.string.driverTitle)
 
         val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
         binding.recyclerView.adapter = itemAbonentAdapter
@@ -757,6 +813,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         // обновление адаптеров отображения драйверов
         itemDrivers.remove(nameDriver)
         updateDrivers()
+
+        // удаление отображения наверху
+        binding.textDriverVersion.text = getString(R.string.driverTitle)
     }
 
     override fun edit(data: ItemAbanent) {

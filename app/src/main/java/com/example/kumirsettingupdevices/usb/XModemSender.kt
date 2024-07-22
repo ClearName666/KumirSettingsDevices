@@ -14,9 +14,10 @@ import java.io.IOException
 import java.util.Arrays
 import kotlin.experimental.inv
 
-class XModemSender(private val serialPort: UsbSerialDevice,
-                   val context: MainActivity,
-                   val loadInterface: LoadInterface
+class XModemSender(
+    private val serialPort: UsbSerialDevice?,
+    val context: MainActivity,
+    val loadInterface: LoadInterface
 ) {
 
     private var ackReceived = false
@@ -42,11 +43,15 @@ class XModemSender(private val serialPort: UsbSerialDevice,
     }
 
     init {
-        serialPort.read(mCallback)
+        serialPort?.read(mCallback)
     }
 
     @Throws(IOException::class)
     fun sendFile(file: File?) {
+        // Проверка на подключение устройства
+        if (serialPort == null) {
+            throw IOException("Serial port not connected")
+        }
 
         // для прогресс бара
         val sizeFile = file?.length()
@@ -61,17 +66,19 @@ class XModemSender(private val serialPort: UsbSerialDevice,
         var packetNumber = 1
         try {
             while (fis.read(buffer).also { bytesRead = it } != -1) {
-                Log.d(TAG, "Чтние пакета номер $packetNumber, байтов прочитано: $bytesRead")
+                Log.d(TAG, "Чтение пакета номер $packetNumber, байтов прочитано: $bytesRead")
 
                 if (bytesRead < PACKET_SIZE) {
                     Arrays.fill(buffer, bytesRead, PACKET_SIZE, 0x1A.toByte()) // Заполнение EOF
                     Log.d(TAG, "Заполнение оставшегося буфера символом EOF")
                 }
+                if (!context.usb.checkConnectToDevice())
+                    throw IOException("Serial port not connected")
                 sendPacket(buffer, packetNumber)
                 packetNumber++
 
                 // вывод прогресса на экран
-                if (packetNumber % progressK?.toInt()!! == 0)
+                if (progressK != null && packetNumber % progressK.toInt() == 0)
                     (context as Activity).runOnUiThread {
                         progress++
                         loadInterface.loadingProgress(progress)
@@ -82,16 +89,22 @@ class XModemSender(private val serialPort: UsbSerialDevice,
             // прогресс на 100%
             (context as Activity).runOnUiThread {
                 loadInterface.loadingProgress(100)
+                if (context.usb.checkConnectToDevice())
+                    loadInterface.closeMenuProgress()
             }
+
+        } catch (e: IOException) {
+            Log.e(TAG, "Ошибка при отправке файла: ${e.message}")
+            (context as Activity).runOnUiThread {
+                loadInterface.errorSend()
+            }
+            throw e
         } finally {
             Log.d(TAG, "Закрытие файла")
 
-            // выходим из режима загрузки драйверов
-            Log.d(TAG, "Отправка файла завершена")
-
             // закрываем меню загрузки
             (context as Activity).runOnUiThread {
-                loadInterface.closeMenuProgress()
+                loadInterface.errorCloseMenuProgress()
             }
 
             fis.close()
@@ -110,8 +123,14 @@ class XModemSender(private val serialPort: UsbSerialDevice,
         Log.d(TAG, "Пакет сформирован: ${packet.joinToString { "%02x".format(it) }}")
 
         repeat(MAX_RETRIES) { attempt ->
+            if (serialPort == null) {
+                throw IOException("Serial port disconnected during packet sending")
+            }
+
             ackReceived = false
             nakReceived = false
+            if (!context.usb.checkConnectToDevice())
+                throw IOException("Serial port not connected")
             serialPort.write(packet)
 
             waitForAckOrNak()
@@ -123,9 +142,11 @@ class XModemSender(private val serialPort: UsbSerialDevice,
             }
         }
 
-        /*if (!ackReceived) {
-            throw IOException("ACK not received for packet number $packetNumber after $MAX_RETRIES retries")
-        }*/
+        (context as Activity).runOnUiThread {
+            loadInterface.errorSend()
+        }
+
+        throw IOException("ACK not received for packet number $packetNumber after $MAX_RETRIES retries")
     }
 
     @Throws(IOException::class)
@@ -134,13 +155,18 @@ class XModemSender(private val serialPort: UsbSerialDevice,
         val eot = byteArrayOf(EOT)
 
         repeat(MAX_RETRIES) { attempt ->
+            if (serialPort == null) {
+                throw IOException("Serial port disconnected during EOT sending")
+            }
+
             ackReceived = false
             nakReceived = false
+            if (!context.usb.checkConnectToDevice())
+                throw IOException("Serial port not connected")
             serialPort.write(eot)
 
             waitForAckOrNak()
-            if (ackReceived)
-            {
+            if (ackReceived) {
                 Log.d(TAG, "EOT успешно отправлен и подтвержден")
                 return
             } else if (nakReceived) {
@@ -148,15 +174,19 @@ class XModemSender(private val serialPort: UsbSerialDevice,
             }
         }
 
-        if (!ackReceived) {
-            throw IOException("ACK not received for EOT after $MAX_RETRIES retries")
+        (context as Activity).runOnUiThread {
+            loadInterface.errorSend()
         }
+
+        throw IOException("ACK not received for EOT after $MAX_RETRIES retries")
     }
 
+    @Throws(IOException::class)
     private fun waitForAckOrNak() {
         val startTime = System.currentTimeMillis()
         while (!ackReceived && !nakReceived && System.currentTimeMillis() - startTime < TIMEOUT) {
-            // Ждем подтверждения ACK или NAK
+            if (!context.usb.checkConnectToDevice())
+                throw IOException("Serial port not connected")
         }
     }
 
@@ -170,7 +200,6 @@ class XModemSender(private val serialPort: UsbSerialDevice,
         return crc
     }
 
-
     companion object {
         private const val TAG = "XModemSender"
         private const val PACKET_SIZE = 128
@@ -182,9 +211,3 @@ class XModemSender(private val serialPort: UsbSerialDevice,
         private const val MAX_RETRIES = 5 // Максимальное количество повторных попыток отправки
     }
 }
-
-
-
-
-
-

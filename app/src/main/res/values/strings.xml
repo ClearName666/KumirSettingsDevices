@@ -50,6 +50,7 @@
     <string name="errorDataBase">Ошибка базы данных!</string>
     <string name="errorSetModePreset">Невозможно установить режиим работы из шаблона т к он отсутствует!</string>
     <string name="nonSelectDriver">Вы не выбрали драйвер</string>
+    <string name="errorSandDriver">Драйвер не удалось отправить, возможно были проблемы с подключением или можем вышел из режима загрузки драйвера!</string>
     
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>

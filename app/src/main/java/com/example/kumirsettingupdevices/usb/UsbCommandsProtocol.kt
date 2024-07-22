@@ -350,9 +350,6 @@ class UsbCommandsProtocol {
                     }
 
                     usbFragment.readSettingStart()
-
-                    // включение ат команд
-                    context.usb.flagAtCommandYesNo = true
                 }
 
                 if (flagRead) {
@@ -365,11 +362,15 @@ class UsbCommandsProtocol {
 
                 context.flagThreadSerialCommands = false // говорим что не работает поток ввода
 
+                // включение ат команд
+                context.usb.flagAtCommandYesNo = true
+
                 // окончание прогресса
                 (context as Activity).runOnUiThread {
                     context.printInfoTermAndLoaging("", 100)
                 }
             }
+
             flagWorkWrite = false
         }.start()
     }

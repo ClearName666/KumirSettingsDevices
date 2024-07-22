@@ -60,6 +60,9 @@ class Usb(private val context: Context) {
     private var dsrState = false
     private var ctsState = false
 
+    // ат команда по умолчанию
+    var at: String = "AT"
+
 
     // настрока dsr cts
     fun onSelectDsrCts(numDsrCts: Int) {
@@ -373,8 +376,13 @@ class Usb(private val context: Context) {
             onClear() // очищение
 
             // переподлключение
-            attemptConnect()
+            if (attemptConnect())
+                flagAtCommandYesNo = true
         }
+    }
+
+    fun setAtCommand(commandAt: String?) {
+        at = commandAt ?: "AT"
     }
 
 
@@ -460,22 +468,25 @@ class Usb(private val context: Context) {
                     }*/
 
                     // поток для отправки в фоновом режиме at команды
-                    Thread {
-                        flagAtCommand = true
-                        while (flagAtCommand) {
-                            while (flagAtCommandYesNo) {
-                                Thread.sleep(TIMEOUT_MOVE_AT)
-                                if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
-                                    writeDevice(context.getString(R.string.at), false)
-                                    flagIgnorRead = true
-                                    Thread.sleep(TIMEOUT_IGNORE_AT)
-                                    flagIgnorRead = false
+                    if (!flagAtCommand) {
+                        Thread {
+                            flagAtCommand = true
+                            while (flagAtCommand) {
+                                while (flagAtCommandYesNo && flagAtCommand) {
+                                    Thread.sleep(TIMEOUT_MOVE_AT)
+                                    if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
+                                        writeDevice(at, false)
+                                        Log.d("atSand", at)
+                                        flagIgnorRead = true
+                                        Thread.sleep(TIMEOUT_IGNORE_AT)
+                                        flagIgnorRead = false
+                                    }
                                 }
+                                Thread.sleep(TIMEOUT_MOVE_AT / 30)
                             }
-                            Thread.sleep(TIMEOUT_MOVE_AT / 30)
-                        }
 
-                    }.start()
+                        }.start()
+                    }
 
                     // постоянная проверка подключения к устройству
                     Thread {
