@@ -720,6 +720,10 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
 
+            binding.buttonDriversDel.visibility = View.GONE
+            binding.buttonAddAbanent.visibility = View.GONE
+            binding.buttonLoadFile.visibility = View.GONE
+
         } else {
             drawablImageDischarge?.let {
                 val wrappedDrawable = DrawableCompat.wrap(it)
@@ -731,6 +735,14 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             binding.imagedischarge.setOnClickListener {
                 onClickReadSettingsDevice()
             }
+
+            binding.buttonDriversDel.visibility = View.VISIBLE
+            binding.buttonAddAbanent.visibility = View.VISIBLE
+            binding.buttonLoadFile.visibility = View.VISIBLE
+
+            val context: Context = requireContext()
+            if (context is MainActivity)
+                context.usb.flagAtCommandYesNo = true
         }
     }
 
@@ -790,21 +802,25 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     }
 
     override fun del(data: ItemAbanent) {
+        val context: Context = requireContext()
+        if (context is MainActivity && context.usb.checkConnectToDevice()) {
+            val dataMap: Map<String, String> = mapOf(
+                getString(R.string.commandSetDelAbonent) to data.num
+            )
 
-        val dataMap: Map<String, String> = mapOf(
-            getString(R.string.commandSetDelAbonent) to data.num
-        )
+            usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
 
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
+            // удаление в отобрадении
+            itemsAbonents.remove(data)
 
-        // удаление в отобрадении
-        itemsAbonents.remove(data)
+            val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
+            binding.recyclerView.adapter = itemAbonentAdapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
-        binding.recyclerView.adapter = itemAbonentAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            flagReAbanents = true
+        }
 
-        flagReAbanents = true
+
 
 
     }
@@ -825,35 +841,37 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     }
 
     override fun edit(data: ItemAbanent) {
-        binding.fonWindowDarck.visibility = View.VISIBLE
-        binding.editMenuAbanent.visibility = View.VISIBLE
+        val context: Context = requireContext()
+        if (context is MainActivity && context.usb.checkConnectToDevice()) {
+            binding.fonWindowDarck.visibility = View.VISIBLE
+            binding.editMenuAbanent.visibility = View.VISIBLE
 
-        binding.inputKey.setText(data.num.trim())
-        binding.inputName.setText(data.name.trim())
-        binding.inputNumDevice.setText(data.numDevice.trim())
+            binding.inputKey.setText(data.num.trim())
+            binding.inputName.setText(data.name.trim())
+            binding.inputNumDevice.setText(data.numDevice.trim())
 
-        // уубераем воможность редактировать ключ
-        binding.inputKey.visibility = View.GONE
+            // уубераем воможность редактировать ключ
+            binding.inputKey.visibility = View.GONE
 
-        // выводим информацию об порте
-        val ports: List<String> = data.port.split(",")
-        try {
-            val formatDataProtocol = FormatDataProtocol()
-            binding.inputRange.setText(ports[4])
-            binding.inputTimeOut.setText(ports[5])
+            // выводим информацию об порте
+            val ports: List<String> = data.port.split(",")
+            try {
+                val formatDataProtocol = FormatDataProtocol()
+                binding.inputRange.setText(ports[4])
+                binding.inputTimeOut.setText(ports[5])
 
-            binding.spinnerSpeed.setSelection(formatDataProtocol.getSpeedIndax(ports[0]+2))
-            binding.spinnerBitData.setSelection(formatDataProtocol.formatBitData(ports[1]))
-            binding.spinnerParity.setSelection(formatDataProtocol.formatPatity(ports[2]))
-            binding.spinnerStopBit.setSelection(formatDataProtocol.formatStopBit(ports[3]))
+                binding.spinnerSpeed.setSelection(formatDataProtocol.getSpeedIndax(ports[0] + 2))
+                binding.spinnerBitData.setSelection(formatDataProtocol.formatBitData(ports[1]))
+                binding.spinnerParity.setSelection(formatDataProtocol.formatPatity(ports[2]))
+                binding.spinnerStopBit.setSelection(formatDataProtocol.formatStopBit(ports[3]))
 
-            // установка драйвера
-            // пока нету
-        } catch (_: Exception) {
-            showAlertDialog(getString(R.string.errorUnknown))
-        }
+                // установка драйвера
+                // пока нету
+            } catch (_: Exception) {
+                showAlertDialog(getString(R.string.errorUnknown))
+            }
 
-        /*
+            /*
             Параметры:
                 d=234 (234,236,204) - тип прибора, по умолчанию: 234
                 p=222222h (в конце: h - hex, a - ascii) - пароль администратора,
@@ -864,37 +882,46 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                        по умолчанию: 10 секунд.
         */
 
-        // выводим информацииюю об пареметрах
+            // выводим информацииюю об пареметрах
 
-        if (data.values.contains("d=")) {
-            binding.inputNumDevice.setText(data.values.substringAfter("d=").substringBefore(";").trim())
-        } else {
-            binding.inputNumDevice.setText(DEFFAULT_NUM_DEVICE)
-        }
+            if (data.values.contains("d=")) {
+                binding.inputNumDevice.setText(
+                    data.values.substringAfter("d=").substringBefore(";").trim()
+                )
+            } else {
+                binding.inputNumDevice.setText(DEFFAULT_NUM_DEVICE)
+            }
 
-        if (data.values.contains("p=")) {
-            if (!data.values.contains("p=a")) {
-                binding.inputPassword.setText(data.values.substringAfter("p=").substringBefore(";").trim().dropLast(1))
+            if (data.values.contains("p=")) {
+                if (!data.values.contains("p=a")) {
+                    binding.inputPassword.setText(
+                        data.values.substringAfter("p=").substringBefore(";").trim().dropLast(1)
+                    )
+                } else {
+                    binding.inputPassword.setText(DEFFAULT_PASSWORD)
+                }
             } else {
                 binding.inputPassword.setText(DEFFAULT_PASSWORD)
             }
-        } else {
-            binding.inputPassword.setText(DEFFAULT_PASSWORD)
-        }
 
-        if (data.values.contains("n=")) {
-            binding.inputAdress.setText(data.values.substringAfter("n=").substringBefore(";").trim())
-        } else {
-            binding.inputAdress.setText(DEFFAULT_ADRES)
-        }
+            if (data.values.contains("n=")) {
+                binding.inputAdress.setText(
+                    data.values.substringAfter("n=").substringBefore(";").trim()
+                )
+            } else {
+                binding.inputAdress.setText(DEFFAULT_ADRES)
+            }
 
-        if (data.values.contains("t=")) {
-            binding.inputValues.setText(data.values.substringAfter("t=").substringBefore(";").trim())
-        } else {
-            binding.inputValues.setText(DEFFAULT_TIMEOUT)
-        }
+            if (data.values.contains("t=")) {
+                binding.inputValues.setText(
+                    data.values.substringAfter("t=").substringBefore(";").trim()
+                )
+            } else {
+                binding.inputValues.setText(DEFFAULT_TIMEOUT)
+            }
 
-        // загружаем абанента в текущие
-        curentAbanent = data
+            // загружаем абанента в текущие
+            curentAbanent = data
+        }
     }
 }
