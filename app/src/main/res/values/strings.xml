@@ -51,7 +51,7 @@
     <string name="errorSetModePreset">Невозможно установить режиим работы из шаблона т к он отсутствует!</string>
     <string name="nonSelectDriver">Вы не выбрали драйвер</string>
     <string name="errorSandDriver">Драйвер не удалось отправить, возможно были проблемы с подключением или можем вышел из режима загрузки драйвера!</string>
-    
+
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
@@ -95,7 +95,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 0.1.60</string>
+    <string name="versionApp">Версия: 0.2.61</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -125,7 +125,6 @@
     <string name="write">Запись</string>
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
     <string name="restartDevicePlease">Перезагрузите устройство!!! Ожидание перезагрузки! 00.00.30</string>
-    
 
 
     <string name="disabled">DISABLED</string>
@@ -300,7 +299,7 @@
     <string name="commandSetParams">AT$ABPARAMS=</string>
     <string name="commandSetDelAbonent">AT$ABDEL=</string>
     <string name="commandSetDelDriver">AT$REMOVE=</string>
-    
+
     <string name="commandGetSerialNum">AT$MDMID?</string>
     <string name="commandGetVersionFirmware">AT$VERSION?</string>
 
@@ -654,7 +653,6 @@
     <string name="tcp_4">TCP 4</string>
 
 
-
     <string name="errorValidM32DMode">Неверный режим работы</string>
     <string name="errorValidM32DAPN">Неверный APN для 1 или 2 симки</string>
     <string name="errorValidM32DLogin">Неверный логин для 1 или 2 симки</string>
@@ -669,9 +667,16 @@
     <string name="errorValidPortSim">Не верные настройки для порта</string>
     <string name="loadDriver">Загрузить драйвер</string>
     <string name="loadingDriver">Загрузка драйвера</string>
+    <string name="scan">Сканирование</string>
     <string name="loadDriverFin">Установить драйвер</string>
     <string name="delDrivers">Удаление драйверов</string>
     <string name="delete">Удалить</string>
+    <string name="Sensors">Датчики</string>
+    <string name="sensorDT112">ДТ112</string>
+    <string name="search">Поиск</string>
+    <string name="chackSensors">Вы можете просканировать сетку и проверить присутствие датчика в сетке!</string>
+    <string name="startScaner">Начать сканирование</string>
+    <string name="findCoincidences">Найдено совпадений:</string>
 
 
     <!--............................................................................-->

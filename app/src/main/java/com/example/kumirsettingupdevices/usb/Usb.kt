@@ -6,6 +6,7 @@ import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
 import android.util.Log
+import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
@@ -18,6 +19,8 @@ import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 
 class Usb(private val context: Context) {
@@ -35,6 +38,9 @@ class Usb(private val context: Context) {
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
     }
+
+    // для общего доступа
+    val TIMEOUT_GET_ONEWIRE: Long = 1000
 
     // переводы строк
     private var lineFeed = "\r"
@@ -57,11 +63,18 @@ class Usb(private val context: Context) {
     private var flagReadDsrCts: Boolean = false
     private var flagIgnorRead: Boolean = false
 
+    private var flagSandAtOk: Boolean = false
+
     private var dsrState = false
     private var ctsState = false
 
     // ат команда по умолчанию
     var at: String = "AT"
+
+    // лист для хранения адресов на линии
+    var listOneWireAddres = mutableListOf<String>()
+
+
 
 
     // настрока dsr cts
@@ -386,6 +399,150 @@ class Usb(private val context: Context) {
         at = commandAt ?: "AT"
     }
 
+    fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol) {
+        executorUsb.execute {
+
+            usbCommandsProtocol.flagWorkRead = true
+
+            listOneWireAddres.clear() // Очищаем список перед сканированием
+            var lastDiscrepancy = 0
+            var lastDeviceFlag = false
+            val romNo = ByteArray(8)
+            var searchResult: Boolean
+
+            while (!lastDeviceFlag) {
+                searchResult = searchRom(romNo, lastDiscrepancy)
+
+                if (searchResult) {
+                    // Преобразуем найденный ROM в строку и добавляем в список
+                    val romAddress = romNo.joinToString("") { byte -> "%02X".format(byte) }
+                    listOneWireAddres.add(romAddress)
+
+                    // Обновляем lastDiscrepancy для следующего поиска
+                    lastDiscrepancy = getLastDiscrepancy(romNo, lastDiscrepancy)
+
+                    if (lastDiscrepancy == 0) {
+                        lastDeviceFlag = true
+                    }
+                } else {
+                    break
+                }
+            }
+
+            usbCommandsProtocol.flagWorkRead = false
+        }
+    }
+
+    fun searchRom(romNo: ByteArray, lastDiscrepancy: Int): Boolean {
+        usbSerialDevice?.let { device ->
+            val romBit = ByteArray(64)
+            var idBitNumber = 1
+            var lastZero = 0
+            var romByteNumber = 0
+            var romByteMask = 1
+            var searchDirection: Byte
+
+            if (!reset()) return false
+
+            writeByte(0xF0) // Команда Search ROM
+
+            while (idBitNumber <= 64) {
+                val idBit = readBit()
+                val cmpIdBit = readBit()
+
+                if (idBit == 1 && cmpIdBit == 1) {
+                    return false // Конфликт
+                }
+
+                searchDirection = when {
+                    idBit != cmpIdBit -> idBit.toByte()
+                    idBitNumber < lastDiscrepancy -> if ((romNo[romByteNumber].toInt() and romByteMask) > 0) 1 else 0
+                    idBitNumber == lastDiscrepancy -> 1
+                    else -> 0
+                }.toByte()
+
+                if (searchDirection == 0.toByte() && idBitNumber < 9) {
+                    lastZero = idBitNumber
+                }
+
+                writeBit(searchDirection)
+
+                romBit[idBitNumber - 1] = searchDirection
+                idBitNumber++
+
+                if (romByteMask == 128) {
+                    romByteNumber++
+                    romByteMask = 1
+                } else {
+                    romByteMask = romByteMask shl 1
+                }
+            }
+
+            for (i in romBit.indices) {
+                if (romBit[i].toInt() == 1) {
+                    romNo[i / 8] = (romNo[i / 8].toInt() or (1 shl (i % 8))).toByte()
+                } else {
+                    romNo[i / 8] = (romNo[i / 8].toInt() and (1 shl (i % 8)).inv()).toByte()
+                }
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    fun reset(): Boolean {
+        var result = false
+        usbSerialDevice?.let { device ->
+            device.write(byteArrayOf(0xF0.toByte())) // Формируем Импульс Сброса
+            device.read(object : UsbSerialInterface.UsbReadCallback {
+                override fun onReceivedData(data: ByteArray) {
+                    if (data.isNotEmpty() && data[0] != 0xF0.toByte()) {
+                        result = true // Присутствие устройств обнаружено
+                    }
+                }
+            })
+        }
+        return result
+    }
+
+    fun writeByte(data: Int) {
+        usbSerialDevice?.write(byteArrayOf(data.toByte()))
+    }
+
+    fun readBit(): Int {
+        var result = 0
+        usbSerialDevice?.let { device ->
+            device.write(byteArrayOf(0xFF.toByte())) // Запрос чтения бита
+            device.read(object : UsbSerialInterface.UsbReadCallback {
+                override fun onReceivedData(data: ByteArray) {
+                    if (data.isNotEmpty() && data[0].toInt() and 0x01 == 0x01) {
+                        result = 1
+                    }
+                }
+            })
+        }
+        return result
+    }
+
+
+    fun writeBit(bit: Byte) {
+        val data = if (bit.toInt() == 1) 0xFF.toByte() else 0x00.toByte()
+        usbSerialDevice?.write(byteArrayOf(data))
+    }
+
+    fun getLastDiscrepancy(romNo: ByteArray, lastDiscrepancy: Int): Int {
+        for (i in romNo.indices) {
+            for (j in 0..7) {
+                if ((romNo[i].toInt() and (1 shl j)) == 0) {
+                    return (i * 8 + j + 1)
+                }
+            }
+        }
+        return lastDiscrepancy
+    }
+
 
     // регистрация широковещятельного приемника
     fun connect(connection: UsbDeviceConnection?, curentDevice: UsbDevice) {
@@ -401,6 +558,8 @@ class Usb(private val context: Context) {
                             val readCallback = UsbReadCallback { bytes ->
                                 if (!flagIgnorRead) {
                                     printUIThread(String(bytes, Charsets.UTF_8), bytes)
+                                } else {
+                                    flagSandAtOk = String(bytes, Charsets.UTF_8).contains("OK")
                                 }
                             }
 

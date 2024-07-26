@@ -767,7 +767,7 @@
                             android:background="?attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:onClick="onClickP101"
+                            android:onClick="onClickM32D"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/P101">
@@ -813,6 +813,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
                             android:layout_marginStart="40dp"
+                            android:clickable="true"
+                            android:onClick="onClickM32DDiag"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -834,6 +836,8 @@
                             android:id="@+id/M32DSettings"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:clickable="true"
+                            android:onClick="onClickM32DSettings"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="@+id/M32DDiag"
@@ -855,11 +859,11 @@
                             android:id="@+id/lineSettings"
                             android:layout_width="0dp"
                             android:layout_height="2dp"
-                            android:layout_marginTop="80dp"
+                            android:layout_marginTop="60dp"
                             android:background="@color/fon2Element"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/M32D">
+                            app:layout_constraintTop_toBottomOf="@+id/SnsorDT112">
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -899,6 +903,60 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageSettings"
                                 app:layout_constraintStart_toEndOf="@+id/imageSettings"
                                 app:layout_constraintTop_toTopOf="@+id/imageSettings" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/textSensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="39dp"
+                            android:text="@string/Sensors"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/M32DSettings" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/lineSensors"
+                            android:layout_width="0dp"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="3dp"
+                            android:background="@color/fon2Element"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textSensor">
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/SnsorDT112"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/lineSensors">
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo11"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+
+                            <TextView
+                                android:id="@+id/textDT112"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="17dp"
+                                android:text="@string/sensorDT112"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo11"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo11"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo11" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

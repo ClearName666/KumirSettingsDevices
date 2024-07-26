@@ -53,6 +53,7 @@ import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030CoreFragment
 import com.example.kumirsettingupdevices.usbFragments.ACCB030Fragment
 import com.example.kumirsettingupdevices.diag.Enfora1318DiagFragment
+import com.example.kumirsettingupdevices.sensors.SensorDT112Fragment
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbDeviceDescriptor
 import com.example.kumirsettingupdevices.usbFragments.Enfora1318Fragment
@@ -285,6 +286,32 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             usbDevice?.let {
                 connectToUsbDevice(usbDevice)
             }
+
+            binding.fragmentContaineContent.visibility = View.GONE
+
+            // проверка если человек на активности которая отображается то убераем MainFragment
+            Thread {
+                while (true) {
+                    if (binding.fragmentContainerMainContent.visibility == View.VISIBLE &&
+                        binding.fragmentContaineContent.visibility == View.VISIBLE) {
+
+                        // в главном потоке убераем оплошность
+                        runOnUiThread {
+                            mainFragmentWork(false)
+                        }
+
+                    } else if (binding.fragmentContainerMainContent.visibility == View.GONE &&
+                        binding.fragmentContaineContent.visibility == View.GONE) {
+                        // в главном потоке убераем оплошность
+                        runOnUiThread {
+                            binding.fragmentContainerMainContent.visibility = View.VISIBLE
+                        }
+                    }
+
+                    // задержка
+                    Thread.sleep(50)
+                }
+            }.start()
 
 
 
@@ -673,6 +700,17 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     }
 
+    // проверка датчиков (сетка)
+    fun onClickSensorDT112(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val dt112 = SensorDT112Fragment()
+        createSettingFragment(dt112)
+
+        mainFragmentWork(false)
+    }
+
+
     fun onSettings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -818,8 +856,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                         mainFragmentWork(true)
                         fragment.view?.visibility = View.GONE
                     }
-                    else
+                    else {
                         mainFragmentWork(false)
+                        binding.fragmentContaineContent.visibility = View.VISIBLE
+                    }
+
 
                     if (fragment is UsbFragment) {
                         curentFragmentComProtocol = fragment.usbCommandsProtocol
@@ -841,8 +882,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                     mainFragmentWork(true)
                     fragment.view?.visibility = View.GONE
-                } else
+                } else {
                     mainFragmentWork(false)
+                    binding.fragmentContaineContent.visibility = View.VISIBLE
+                }
 
                 if (fragment is UsbFragment) {
                     curentFragmentComProtocol = fragment.usbCommandsProtocol
@@ -1341,7 +1384,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     override fun printDataByte(data: ByteArray) {
         curentDataByte = data
-
+        Log.d("dataByte", data.joinToString(separator = "") { "%02X".format(it) })
         // прокурчивание вниз
         binding.ScrollWriteLoadingForDevice.post {
             binding.ScrollWriteLoadingForDevice.fullScroll(View.FOCUS_DOWN)
