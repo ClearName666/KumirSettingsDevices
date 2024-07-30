@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // буферы денных
     var curentData: String = ""
     var curentDataByte: ByteArray = byteArrayOf()
+    var curentDataByteAll: ByteArray = byteArrayOf() // все данные в кучи
     var curentDataByteNonClear: ByteArray = byteArrayOf()
 
     // flag Для контроля передачи информации
@@ -1384,11 +1385,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     override fun printDataByte(data: ByteArray) {
         curentDataByte = data
+
         Log.d("dataByte", data.joinToString(separator = "") { "%02X".format(it) })
         // прокурчивание вниз
         binding.ScrollWriteLoadingForDevice.post {
             binding.ScrollWriteLoadingForDevice.fullScroll(View.FOCUS_DOWN)
         }
+        curentDataByteAll += data
     }
 
     override fun printDSR_CTS(dsr: Int, cts: Int) {

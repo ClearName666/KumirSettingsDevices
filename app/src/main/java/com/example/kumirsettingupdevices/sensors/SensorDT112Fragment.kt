@@ -48,11 +48,10 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                     var cntContains = 0 // счетчик совпадений
 
                     // перебор всех адресов
+                    var allAdreses = ""
                     for (id in context.usb.listOneWireAddres) {
-                        if (id.contains(binding.inputSearch.text.toString())) {
-
-                            binding.textSesrchRezult.text = binding.textSesrchRezult.text.toString() + " " + id
-
+                        if (id.lowercase().contains(binding.inputSearch.text.toString().lowercase())) {
+                            allAdreses += " $id"
                             cntContains++
                         }
                     }
@@ -61,6 +60,8 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                     if (cntContains == 0) {
                         binding.textSesrchRezult.text = getString(R.string.findCoincidences) + " " +
                                 getString(R.string.No)
+                    } else {
+                        binding.textSesrchRezult.text = getString(R.string.findCoincidences) + allAdreses
                     }
                 }
             }
@@ -74,12 +75,6 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
         // кнопка для начала диагностики
         binding.layoutButtonScanerStart.setOnClickListener {
             getSensorsIDAndPrint()
-        }
-
-        //переключение скорости на 9600
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.usb.onSerialSpeed(5)
         }
 
         return binding.root
@@ -110,12 +105,12 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
             binding.fonLoadMenu.visibility = View.VISIBLE
 
             // запускаем поиск
-            context.usb.scanOneWireDevices(usbCommandsProtocol)
+            context.usb.scanOneWireDevices(usbCommandsProtocol, (requireContext() as MainActivity))
 
             // поток для ожидания приход данных
             Thread {
                 // ждем получения данных
-                Thread.sleep(context.usb.TIMEOUT_GET_ONEWIRE * 2)
+                Thread.sleep(context.usb.TIMEOUT_GET_ONEWIRE + 100)
 
                 // выполнение в фоновом потоке
                 (context as Activity).runOnUiThread {
@@ -146,7 +141,7 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                 }
 
                 // шаг для загрузки прогрсс бара
-                val page: Long = (context.usb.TIMEOUT_GET_ONEWIRE * 2) / 100
+                val page: Long = (context.usb.TIMEOUT_GET_ONEWIRE + 100) / 100
 
                 // делаем загрузку
                 for (i in 1..100) {
