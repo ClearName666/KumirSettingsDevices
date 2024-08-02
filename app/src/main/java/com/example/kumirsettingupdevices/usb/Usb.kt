@@ -8,6 +8,7 @@ import android.hardware.usb.UsbManager
 import android.util.Log
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
+import com.example.kumirsettingupdevices.model.recyclerModel.StSearchOneWire
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
@@ -17,6 +18,11 @@ import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
+import kotlin.math.abs
 
 
 class Usb(private val context: Context) {
@@ -37,7 +43,7 @@ class Usb(private val context: Context) {
     }
 
     // для общего доступа
-    val TIMEOUT_GET_ONEWIRE: Long = 700
+    val TIMEOUT_GET_ONEWIRE: Long = 3000
 
     // переводы строк
     private var lineFeed = "\r"
@@ -396,168 +402,6 @@ class Usb(private val context: Context) {
         at = commandAt ?: "AT"
     }
 
-    // код для получения адресов oneWire
-    fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
-        Thread {
-
-            usbCommandsProtocol.flagWorkRead = true
-
-            // изменение сскорости на 9600
-            onSerialSpeed(5)
-            sendSleepDataReceive(context, byteArrayOf(0xF0.toByte()))
-
-
-            if (context.curentDataByteAll.isNotEmpty() && context.curentDataByteAll[0] != 0xF0.toByte()) {
-                val addresses = mutableListOf<String>()
-
-                // иинициализация буфера длля отправки и буфераа для ответа
-                val size = 64 // 64 на данные
-
-
-                // командный байт 0x33 -> 0011_0011
-                val bufCommand = byteArrayOf(
-                    0xC0.toByte(),
-                    0xC0.toByte(),
-                    0xFF.toByte(),
-                    0xFF.toByte(),
-
-                    0xC0.toByte(),
-                    0xC0.toByte(),
-                    0xFF.toByte(),
-                    0xFF.toByte()
-                )
-                val buf = ByteArray(size) { 0xFF.toByte() }
-
-                // переключение скорости на 115200
-                onSerialSpeed(9)
-
-                // отправка реверсивно начиная с младщего байта ВАЖНО
-                sendSleepDataReceive(context, bufCommand.reversedArray())
-
-
-                // отправка буфера данных
-                sendSleepDataReceive(context, buf)
-
-                // логирование отправленых данных
-                var logData: String = buf.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-                Log.d("dataOneWire", "Отправлено {$logData}")
-
-
-                // Задержка, чтобы успеть получить данные
-                Thread.sleep(TIMEOUT_GET_ONEWIRE)
-
-                // логирование полученых данных
-                logData = context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte)}
-                Log.d("dataOneWire", "Получено {$logData}")
-
-
-                // получение и распарс данных
-                if (context.curentDataByteAll.size == 64) {
-                    addresses.add(parseOneWireAddress(context.curentDataByteAll.reversedArray(), size))
-
-                    Log.d("dataOneWire", context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) })
-                    listOneWireAddres = addresses
-                } else {
-                    Log.d("dataOneWire", "По какой то причине данные не валидны")
-                }
-            } else {
-                val byteRez = context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-                Log.d("dataOneWire", "На линии некого нет. Пришел байт {$byteRez}")
-            }
-
-            usbCommandsProtocol.flagWorkRead = false
-        }.start()
-    }
-
-    // для ожидания прихода данных максимальная забержка TIME_MAX_DEL_ONE_WIRE
-    private fun sendSleepDataReceive(context: MainActivity, byteArray: ByteArray) {
-        // очищение буферов
-        context.curentDataByteAll = byteArrayOf()
-        /*Log.d("dataOneWire", "буфер отчищен curentDataByteAll {${
-            context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")*/
-        context.curentDataByte = byteArrayOf()
-        /*Log.d("dataOneWire", "буфер отчищен curentDataByte {${
-            context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")*/
-
-
-        // отправка
-        usbSerialDevice?.write(byteArray)
-        Log.d("dataOneWire", "отправлено byteArray ${
-            byteArray.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }")
-
-
-        // ждем ответа
-        var time = 0
-        while (context.curentDataByteAll.isEmpty() && time <= TIME_MAX_DEL_ONE_WIRE) {
-            time++
-
-            Thread.sleep(1)
-        }
-        Log.d("dataOneWire", "выход time = $time получены данные: {${
-            context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")
-    }
-
-    private fun parseOneWireAddress(buf: ByteArray, size: Int): String {
-        // Шаг 1: Преобразуем байты в строку из 1 и 0
-        val binaryString = buf.joinToString("") { byte ->
-            when (byte) {
-                0xFF.toByte() -> "1"
-                0xFC.toByte() -> "0"
-                else -> error("Unexpected byte value")
-            }
-        }
-
-        // Шаг 2: Разбиваем строку на части по 8 символов и преобразуем в символы ASCII
-        return try {
-            val result = StringBuilder()
-            for (i in 0 until size step 8) {
-                val byteString = binaryString.substring(i, i + 8)
-                val ascii2Char = getChar2Byte16(byteString)
-                result.append(ascii2Char)
-            }
-
-            // Итоговая строка из 16 символов
-            result.toString()
-        } catch (e: Exception) {
-            context.getString(R.string.error)
-        }
-    }
-
-    private fun getChar2Byte16(byteString: String): String { // "11111101" -> пример ввода
-        // первый символ
-        val charByte2_1 = byteString.drop(4)
-        val charByte2_2 = byteString.dropLast(4)
-
-        return convertToByte16(charByte2_2).toString() + convertToByte16(charByte2_1)
-
-    }
-
-    private fun convertToByte16(byteString: String): Char {
-        return when(byteString) {
-            "0000" -> '0'
-            "0001" -> '1'
-            "0010" -> '2'
-            "0011" -> '3'
-            "0100" -> '4'
-            "0101" -> '5'
-            "0110" -> '6'
-            "0111" -> '7'
-            "1000" -> '8'
-            "1001" -> '9'
-            "1010" -> 'A'
-            "1011" -> 'B'
-            "1100" -> 'C'
-            "1101" -> 'D'
-            "1110" -> 'E'
-            "1111" -> 'F'
-            else -> 'n'
-        }
-    }
-
     // регистрация широковещятельного приемника
     fun connect(connection: UsbDeviceConnection?, curentDevice: UsbDevice) {
         try {
@@ -690,4 +534,377 @@ class Usb(private val context: Context) {
 
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // протокол OneWire вынести в отдельный класс
+    // код для получения адресов oneWire
+    fun scanOneWireDevice(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
+        Thread {
+
+            usbCommandsProtocol.flagWorkRead = true
+
+            // изменение сскорости на 9600
+            onSerialSpeed(5)
+            sendSleepDataReceive(context, byteArrayOf(0xF0.toByte()))
+
+
+            if (context.curentDataByteAll.isNotEmpty() && context.curentDataByteAll[0] != 0xF0.toByte()) {
+                val addresses = mutableListOf<String>()
+
+                // иинициализация буфера длля отправки и буфераа для ответа
+                val size = 64 // 64 на данные
+
+
+                // командный байт 0x33 -> 0011_0011
+                val bufCommand = byteArrayOf(
+                    0xC0.toByte(),
+                    0xC0.toByte(),
+                    0xFF.toByte(),
+                    0xFF.toByte(),
+
+                    0xC0.toByte(),
+                    0xC0.toByte(),
+                    0xFF.toByte(),
+                    0xFF.toByte()
+                )
+                val buf = ByteArray(size) { 0xFF.toByte() }
+
+                // переключение скорости на 115200
+                onSerialSpeed(9)
+
+                // отправка реверсивно начиная с младщего байта ВАЖНО
+                sendSleepDataReceive(context, bufCommand.reversedArray())
+
+                // отправка буфера данных
+                sendSleepDataReceive(context, buf)
+
+                // получение и распарс данных
+                if (context.curentDataByteAll.size == 64) {
+                    addresses.add(parseOneWireAddress(context.curentDataByteAll.reversedArray(), size))
+
+                    Log.d("dataOneWire", context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) })
+                    listOneWireAddres = addresses
+                } else {
+                    Log.d("dataOneWire", "По какой то причине данные не валидны")
+                }
+            } else {
+                val byteRez = context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) }
+                Log.d("dataOneWire", "На линии некого нет. Пришел байт {$byteRez}")
+            }
+
+            usbCommandsProtocol.flagWorkRead = false
+        }.start()
+    }
+
+    // для ожидания прихода данных максимальная забержка TIME_MAX_DEL_ONE_WIRE
+    private fun sendSleepDataReceive(context: MainActivity, byteArray: ByteArray) {
+        // очищение буферов
+        context.curentDataByteAll = byteArrayOf()
+        /*Log.d("dataOneWire", "буфер отчищен curentDataByteAll {${
+            context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
+        }}")*/
+        context.curentDataByte = byteArrayOf()
+        /*Log.d("dataOneWire", "буфер отчищен curentDataByte {${
+            context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) }
+        }}")*/
+
+
+        // отправка
+        usbSerialDevice?.write(byteArray)
+        Log.d("dataOneWire", "отправлено byteArray ${
+            byteArray.joinToString(separator = " ") { byte -> "%02X".format(byte) }
+        }")
+
+
+        // ждем ответа
+        var time = 0
+        while (context.curentDataByteAll.isEmpty() && time <= TIME_MAX_DEL_ONE_WIRE) {
+            time++
+
+            Thread.sleep(1)
+        }
+        //Thread.sleep(TIMEOUT_RECONNECT*5)
+        Log.d("dataOneWire", "выход time = $time получены данные: {${
+            context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
+        }}")
+
+    }
+
+    private fun parseOneWireAddress(buf: ByteArray, size: Int): String {
+        // Шаг 1: Преобразуем байты в строку из 1 и 0
+        val binaryString = buf.joinToString("") { byte ->
+            when (byte) {
+                0xFF.toByte() -> "1"
+                0xFC.toByte() -> "0"
+                else -> error("Unexpected byte value")
+            }
+        }
+
+        // Шаг 2: Разбиваем строку на части по 8 символов и преобразуем в символы ASCII
+        return try {
+            val result = StringBuilder()
+            for (i in 0 until size step 8) {
+                val byteString = binaryString.substring(i, i + 8)
+                val ascii2Char = getChar2Byte16(byteString)
+                result.append(ascii2Char)
+            }
+
+            // Итоговая строка из 16 символов
+            result.toString()
+        } catch (e: Exception) {
+            context.getString(R.string.error)
+        }
+    }
+
+    private fun getChar2Byte16(byteString: String): String { // "11111101" -> пример ввода
+        // первый символ
+        val charByte2_1 = byteString.drop(4)
+        val charByte2_2 = byteString.dropLast(4)
+
+        return convertToByte16(charByte2_2).toString() + convertToByte16(charByte2_1)
+
+    }
+
+    private fun convertToByte16(byteString: String): Char {
+        return when(byteString) {
+            "0000" -> '0'
+            "0001" -> '1'
+            "0010" -> '2'
+            "0011" -> '3'
+            "0100" -> '4'
+            "0101" -> '5'
+            "0110" -> '6'
+            "0111" -> '7'
+            "1000" -> '8'
+            "1001" -> '9'
+            "1010" -> 'A'
+            "1011" -> 'B'
+            "1100" -> 'C'
+            "1101" -> 'D'
+            "1110" -> 'E'
+            "1111" -> 'F'
+            else -> 'n'
+        }
+    }
+
+
+    fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
+        Thread {
+            usbCommandsProtocol.flagWorkRead = true
+
+            // обьект для полученя адресов
+            val stSearch = StSearchOneWire(0, 0, 0, byteArrayOf(
+                0x00.toByte(),
+                0x00.toByte(),
+                0x00.toByte(),
+                0x00.toByte(),
+
+                0x00.toByte(),
+                0x00.toByte(),
+                0x00.toByte(),
+                0x00.toByte()
+            ))
+            var address: ByteArray
+
+            // пока есть устройства опраиваем
+            do {
+                address = owSearchNext(context, stSearch)
+
+                if (address.isNotEmpty()) {
+                    try {
+                        // пребразуем число в строку из  1 и 0 и после  разделяем их по 4 символа
+                        val strAddress: String = address.reversedArray().joinToString(separator = " ") { byte -> "%02X".format(byte) }.replace(" ", "")
+                        Log.d("dataOneWire", "Адресс: $strAddress")
+
+                        // добавление результата
+                        listOneWireAddres.add(strAddress)
+                    } catch (_: Exception) {
+                        Log.d("dataOneWire", "Произошла ошибка")
+                    }
+                } else {
+                    Log.d("dataOneWire", "Алгоритм неправельный")
+                }
+
+            } while (address.isNotEmpty())
+
+
+            usbCommandsProtocol.flagWorkRead = false
+        }.start()
+    }
+
+
+    // проверка есть ли кто то не линии
+    private fun owReset(context: MainActivity): Boolean {
+        // изменение сскорости на 9600
+        onSerialSpeed(5)
+        sendSleepDataReceive(context, byteArrayOf(0xF0.toByte()))
+
+        // возвращяем скорость 115200
+        onSerialSpeed(9)
+
+        return context.curentDataByteAll.isNotEmpty() &&
+                context.curentDataByteAll[0] != 0xF0.toByte()
+    }
+
+
+    private fun owSearchNext(context: MainActivity, stSearch: StSearchOneWire): ByteArray {
+        var iSearchDirection: Byte
+        var iIDBit: Int
+        var iCmpIDBit: Int
+
+        /* Инициализация для поиска */
+        var iROMByteMask: Byte = 1
+        var iCRC: Byte = 0
+        var iIDBitNumber: Int = 1
+        var iLastZero: Int = 0
+        var iROMByteNumber: Int = 0
+        var iSearchResult: Int = 0
+
+        if (stSearch.iLastDeviceFlag == 0x00.toByte()) {
+
+            // если некого на линии нету то сбрасываем и выходим
+            if (!owReset(context)) {
+                stSearch.onClearSearch()
+                return byteArrayOf()
+            }
+
+            // байт поиска 0xF0 1111_0000
+            val byteSearch = byteArrayOf(
+                0xFF.toByte(),
+                0xFF.toByte(),
+                0xFF.toByte(),
+                0xFF.toByte(),
+
+                0xC0.toByte(),
+                0xC0.toByte(),
+                0xC0.toByte(),
+                0xC0.toByte()
+            )
+
+            sendSleepDataReceive(context, byteSearch.reversedArray())
+
+            do {
+                // отправляем (FF,FF) и читаем что ответит устройства
+                Log.d("dataOneWire", "Отправляем (FF,FF) и читаем что ответит устройство")
+                sendSleepDataReceive(context, byteArrayOf(0xFF.toByte(), 0xFF.toByte()))
+                try {
+                    // проверяем 1 и 2 бит которые пришли
+                    Log.d("dataOneWire", "Проверяем 1 и 2 бит которые пришли")
+                    iIDBit = if (context.curentDataByteAll[0] == 0xFF.toByte()) 1 else 0
+                    iCmpIDBit = if (context.curentDataByteAll[1] == 0xFF.toByte()) 1 else 0
+
+                    // если некого нет то выходим из цикла
+                    Log.d("dataOneWire", "Если некто не ответил, выходим из цикла")
+                    if ((iIDBit == 1) && (iCmpIDBit == 1)) break
+
+                    // кто-то ответил
+                    Log.d("dataOneWire", "Кто-то ответил")
+                    if (iIDBit != iCmpIDBit) {
+                        // все подключенные устройства имеют одинаковое начало адреса
+                        Log.d("dataOneWire", "Все подключенные устройства имеют одинаковое начало адреса")
+                        iSearchDirection = iIDBit.toByte()
+                    } else {
+                        iSearchDirection = if (iIDBitNumber < stSearch.iLastDiscrepancy) {
+                            if ((stSearch.ROM[iROMByteNumber] and iROMByteMask) > 0) 1 else 0
+                        } else
+                            if (iIDBitNumber.toByte() == stSearch.iLastDiscrepancy) 1 else 0
+
+                        if (iSearchDirection == 0x00.toByte()) {
+                            iLastZero = iIDBitNumber
+
+                            if (iLastZero < 9)
+                                stSearch.iLastFamilyDiscrepancy = iLastZero.toByte()
+                        }
+                    }
+
+                    // Установить или сбросить бит в байте ROM с помощью маски rom_byte_mask
+                    Log.d("dataOneWire", "Устанавливаем или сбрасываем бит в байте ROM с помощью маски rom_byte_mask")
+                    if (iSearchDirection.toInt() == 1) {
+                        stSearch.ROM[iROMByteNumber] = stSearch.ROM[iROMByteNumber] or iROMByteMask
+                    } else {
+                        stSearch.ROM[iROMByteNumber] = stSearch.ROM[iROMByteNumber] and iROMByteMask.inv()
+                    }
+
+                    // Установка направления поиска серийного номера
+                    Log.d("dataOneWire", "Установка направления поиска серийного номера")
+                    val byteSend = if (iSearchDirection > 0) 0xFF.toByte() else 0xC0.toByte()
+                    sendSleepDataReceive(context, byteArrayOf(byteSend))
+
+                    iIDBitNumber++
+                    iROMByteMask = (iROMByteMask.toInt() shl 1).toByte()
+
+                    // Если маска равна 0, перейти к новому байту ROM и сбросить маску
+                    Log.d("dataOneWire", "Если маска равна 0, переходим к новому байту ROM и сбрасываем маску")
+                    if (iROMByteMask == 0x00.toByte()) {
+                        // Накопление CRC
+                        Log.d("dataOneWire", "Накопление CRC")
+                        iCRC = stSearch.ROM[iROMByteNumber] xor iCRC
+                        Log.e("dataOneWire", "iCRC = " +
+                                "${stSearch.ROM[iROMByteNumber].toString(16)} xor ${iCRC.toString(16)}  " +
+                                "результат ${(stSearch.ROM[iROMByteNumber] xor iCRC).toString(16)}"
+                        )
+                        iROMByteNumber++
+                        iROMByteMask = 1
+                    }
+
+                } catch (e: Exception) {
+                    // ошибка нечего не пришло в ответ или пришло неправильно
+                    Log.d("dataOneWire", "Ошибка: нечего не пришло в ответ или пришло неправильно")
+                    return byteArrayOf()
+                }
+
+            } while (iROMByteNumber < 8) // Цикл до тех пор, пока не пройдем все байты ROM с 0 до 7
+
+
+            Log.d("dataOneWire", "iIDBitNumber = $iIDBitNumber")
+            Log.d("dataOneWire", "iCRC = $iCRC")
+
+
+            /* Если поиск был успешным, тогда */
+            if (!((iIDBitNumber < 65) || (iCRC == 0x00.toByte()))) {
+                stSearch.iLastDiscrepancy = iLastZero.toByte()
+
+                /* Проверка на последнее устройство */
+                if (stSearch.iLastDiscrepancy == 0x00.toByte())
+                    stSearch.iLastDeviceFlag = 1
+
+                iSearchResult = 1
+                Log.d("dataOneWire", "stSearch.iLastDiscrepancy = $stSearch.iLastDiscrepancy")
+            }
+        }
+
+        /* Если устройство не найдено, сбрасываем счетчики, чтобы следующий поиск был как первый */
+        if (iSearchResult == 0 || stSearch.ROM[0] == 0x00.toByte()) {
+            stSearch.iLastDiscrepancy = 0
+            stSearch.iLastDeviceFlag = 0
+            stSearch.iLastFamilyDiscrepancy = 0
+            return byteArrayOf()
+        }
+
+        return stSearch.ROM
+    }
 }
+
