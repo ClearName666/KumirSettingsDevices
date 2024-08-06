@@ -18,6 +18,7 @@ class UsbCommandsProtocol {
     var flagWorkDiagPm: Boolean = false
     var flagWorkWrite: Boolean = false
     var flagWorkRead: Boolean = false
+    var flagWorkOneWire: Boolean = false
 
     // потоки
     lateinit var threadChackSignalEnfora: Thread

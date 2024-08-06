@@ -101,8 +101,12 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
         val context: Context = requireContext()
         if (context is MainActivity) {
 
+            // отчистка прошлых данных
+            context.usb.listOneWireAddres.clear()
+
             // откурваем загрузочное окно и фон
             binding.fonLoadMenu.visibility = View.VISIBLE
+            binding.loadMenuProgress.visibility = View.VISIBLE
 
             // запускаем поиск
             context.usb.scanOneWireDevices(usbCommandsProtocol, (requireContext() as MainActivity))
@@ -110,7 +114,14 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
             // поток для ожидания приход данных
             Thread {
                 // ждем получения данных
-                Thread.sleep(context.usb.TIMEOUT_GET_ONEWIRE + 100)
+                Thread.sleep(100) // задержка для того что бы подождать старта
+
+                val timeMax = 500000 // 500 секунда на то что бы получить все
+                var time = 0
+                while (usbCommandsProtocol.flagWorkOneWire && timeMax > time) {
+                    time++
+                    Thread.sleep(1)
+                }
 
                 // выполнение в фоновом потоке
                 (context as Activity).runOnUiThread {
@@ -126,31 +137,12 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                         binding.recyclerSensors.layoutManager =
                             LinearLayoutManager(requireContext())
 
+
+                        binding.textCntDev.text = context.usb.listOneWireAddres.size.toString()
                     }
 
                     // закрытие меню загрузки
                     binding.fonLoadMenu.visibility = View.GONE
-                    binding.loadMenuProgress.visibility = View.GONE
-                }
-            }.start()
-
-            // поток для анимации
-            Thread {
-                (context as Activity).runOnUiThread {
-                    binding.loadMenuProgress.visibility = View.VISIBLE
-                }
-
-                // шаг для загрузки прогрсс бара
-                val page: Long = (context.usb.TIMEOUT_GET_ONEWIRE + 100) / 100
-
-                // делаем загрузку
-                for (i in 1..100) {
-                    Thread.sleep(page)
-                    (context as Activity).runOnUiThread {
-                        binding.progressBarLoad.progress = i
-                    }
-                }
-                (context as Activity).runOnUiThread {
                     binding.loadMenuProgress.visibility = View.GONE
                 }
             }.start()

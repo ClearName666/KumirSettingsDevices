@@ -38,12 +38,34 @@ class Usb(private val context: Context) {
         const val TIMEOUT_RECONNECT: Long = 10
         const val TIME_MAX_DEL_ONE_WIRE: Int = 100
 
+
+        // максимальное количество датчиков
+        const val MAX_CNT_DEV_ONEWIRE: Int = 200
+
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
-    }
 
-    // для общего доступа
-    val TIMEOUT_GET_ONEWIRE: Long = 3000
+
+        // таблица контрольных сумм
+        val crcTable = listOf(
+            0, 94, 188, 226, 97, 63, 221, 131, 194, 156, 126, 32, 163, 253, 31, 65,
+            157, 195, 33, 127, 252, 162, 64, 30, 95, 1, 227, 189, 62, 96, 130, 220,
+            35, 125, 159, 193, 66, 28, 254, 160, 225, 191, 93, 3, 128, 222, 60, 98,
+            190, 224, 2, 92, 223, 129, 99, 61, 124, 34, 192, 158, 29, 67, 161, 255,
+            70, 24, 250, 164, 39, 121, 155, 197, 132, 218, 56, 102, 229, 187, 89, 7,
+            219, 133, 103, 57, 186, 228, 6, 88, 25, 71, 165, 251, 120, 38, 196, 154,
+            101, 59, 217, 135, 4, 90, 184, 230, 167, 249, 27, 69, 198, 152, 122, 36,
+            248, 166, 68, 26, 153, 199, 37, 123, 58, 100, 134, 216, 91, 5, 231, 185,
+            140, 210, 48, 110, 237, 179, 81, 15, 78, 16, 242, 172, 47, 113, 147, 205,
+            17, 79, 173, 243, 112, 46, 204, 146, 211, 141, 111, 49, 178, 236, 14, 80,
+            175, 241, 19, 77, 206, 144, 114, 44, 109, 51, 209, 143, 12, 82, 176, 238,
+            50, 108, 142, 208, 83, 13, 239, 177, 240, 174, 76, 18, 145, 207, 45, 115,
+            202, 148, 118, 40, 171, 245, 23, 73, 8, 86, 180, 234, 105, 55, 213, 139,
+            87, 9, 235, 181, 54, 104, 138, 212, 149, 203, 41, 119, 244, 170, 72, 22,
+            233, 183, 85, 11, 136, 214, 52, 106, 43, 117, 151, 201, 74, 20, 246, 168,
+            116, 42, 200, 150, 21, 75, 169, 247, 182, 232, 10, 84, 215, 137, 107, 53
+        )
+    }
 
     // переводы строк
     private var lineFeed = "\r"
@@ -714,6 +736,7 @@ class Usb(private val context: Context) {
     fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
         Thread {
             usbCommandsProtocol.flagWorkRead = true
+            usbCommandsProtocol.flagWorkOneWire = true
 
             // обьект для полученя адресов
             val stSearch = StSearchOneWire(0, 0, 0, byteArrayOf(
@@ -730,9 +753,10 @@ class Usb(private val context: Context) {
             var address: ByteArray
 
             // пока есть устройства опраиваем
+            var addresCnt = 0
             do {
+                addresCnt++
                 address = owSearchNext(context, stSearch)
-
                 if (address.isNotEmpty()) {
                     try {
                         // пребразуем число в строку из  1 и 0 и после  разделяем их по 4 символа
@@ -740,7 +764,9 @@ class Usb(private val context: Context) {
                         Log.d("dataOneWire", "Адресс: $strAddress")
 
                         // добавление результата
-                        listOneWireAddres.add(strAddress)
+                        if (strAddress !in listOneWireAddres)
+                            listOneWireAddres.add(strAddress)
+
                     } catch (_: Exception) {
                         Log.d("dataOneWire", "Произошла ошибка")
                     }
@@ -748,10 +774,11 @@ class Usb(private val context: Context) {
                     Log.d("dataOneWire", "Алгоритм неправельный")
                 }
 
-            } while (address.isNotEmpty())
+            } while (address.isNotEmpty() && addresCnt < MAX_CNT_DEV_ONEWIRE)
 
 
             usbCommandsProtocol.flagWorkRead = false
+            usbCommandsProtocol.flagWorkOneWire = false
         }.start()
     }
 
@@ -808,23 +835,17 @@ class Usb(private val context: Context) {
 
             do {
                 // отправляем (FF,FF) и читаем что ответит устройства
-                Log.d("dataOneWire", "Отправляем (FF,FF) и читаем что ответит устройство")
                 sendSleepDataReceive(context, byteArrayOf(0xFF.toByte(), 0xFF.toByte()))
                 try {
                     // проверяем 1 и 2 бит которые пришли
-                    Log.d("dataOneWire", "Проверяем 1 и 2 бит которые пришли")
                     iIDBit = if (context.curentDataByteAll[0] == 0xFF.toByte()) 1 else 0
                     iCmpIDBit = if (context.curentDataByteAll[1] == 0xFF.toByte()) 1 else 0
 
                     // если некого нет то выходим из цикла
-                    Log.d("dataOneWire", "Если некто не ответил, выходим из цикла")
                     if ((iIDBit == 1) && (iCmpIDBit == 1)) break
 
                     // кто-то ответил
-                    Log.d("dataOneWire", "Кто-то ответил")
                     if (iIDBit != iCmpIDBit) {
-                        // все подключенные устройства имеют одинаковое начало адреса
-                        Log.d("dataOneWire", "Все подключенные устройства имеют одинаковое начало адреса")
                         iSearchDirection = iIDBit.toByte()
                     } else {
                         iSearchDirection = if (iIDBitNumber < stSearch.iLastDiscrepancy) {
@@ -841,7 +862,6 @@ class Usb(private val context: Context) {
                     }
 
                     // Установить или сбросить бит в байте ROM с помощью маски rom_byte_mask
-                    Log.d("dataOneWire", "Устанавливаем или сбрасываем бит в байте ROM с помощью маски rom_byte_mask")
                     if (iSearchDirection.toInt() == 1) {
                         stSearch.ROM[iROMByteNumber] = stSearch.ROM[iROMByteNumber] or iROMByteMask
                     } else {
@@ -849,7 +869,6 @@ class Usb(private val context: Context) {
                     }
 
                     // Установка направления поиска серийного номера
-                    Log.d("dataOneWire", "Установка направления поиска серийного номера")
                     val byteSend = if (iSearchDirection > 0) 0xFF.toByte() else 0xC0.toByte()
                     sendSleepDataReceive(context, byteArrayOf(byteSend))
 
@@ -857,34 +876,21 @@ class Usb(private val context: Context) {
                     iROMByteMask = (iROMByteMask.toInt() shl 1).toByte()
 
                     // Если маска равна 0, перейти к новому байту ROM и сбросить маску
-                    Log.d("dataOneWire", "Если маска равна 0, переходим к новому байту ROM и сбрасываем маску")
                     if (iROMByteMask == 0x00.toByte()) {
                         // Накопление CRC
-                        Log.d("dataOneWire", "Накопление CRC")
-                        iCRC = stSearch.ROM[iROMByteNumber] xor iCRC
-                        Log.e("dataOneWire", "iCRC = " +
-                                "${stSearch.ROM[iROMByteNumber].toString(16)} xor ${iCRC.toString(16)}  " +
-                                "результат ${(stSearch.ROM[iROMByteNumber] xor iCRC).toString(16)}"
-                        )
+                        iCRC = crcTable[(stSearch.ROM[iROMByteNumber] xor iCRC).toUByte().toInt()].toByte()
                         iROMByteNumber++
                         iROMByteMask = 1
                     }
 
                 } catch (e: Exception) {
-                    // ошибка нечего не пришло в ответ или пришло неправильно
-                    Log.d("dataOneWire", "Ошибка: нечего не пришло в ответ или пришло неправильно")
                     return byteArrayOf()
                 }
 
             } while (iROMByteNumber < 8) // Цикл до тех пор, пока не пройдем все байты ROM с 0 до 7
 
-
-            Log.d("dataOneWire", "iIDBitNumber = $iIDBitNumber")
-            Log.d("dataOneWire", "iCRC = $iCRC")
-
-
             /* Если поиск был успешным, тогда */
-            if (!((iIDBitNumber < 65) || (iCRC == 0x00.toByte()))) {
+            if (!(iIDBitNumber < 65 || iCRC != 0x00.toByte())) {
                 stSearch.iLastDiscrepancy = iLastZero.toByte()
 
                 /* Проверка на последнее устройство */
@@ -892,7 +898,6 @@ class Usb(private val context: Context) {
                     stSearch.iLastDeviceFlag = 1
 
                 iSearchResult = 1
-                Log.d("dataOneWire", "stSearch.iLastDiscrepancy = $stSearch.iLastDiscrepancy")
             }
         }
 
