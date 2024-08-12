@@ -13,4 +13,14 @@
         android:gravity="center"
         android:text="ID"
         android:textColor="@color/background" />
+
+    <TextView
+        android:id="@+id/textSensorTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_background2"
+        android:gravity="center"
+        android:text="Temp"
+        android:textColor="@color/background" />
 </LinearLayout>

@@ -14,7 +14,7 @@ import com.example.kumirsettingupdevices.model.recyclerModel.ItemSensorID
 
 // адаптер для вывода пакетов базовых станций
 class ItemSensorIDAdapter (val context: Context,
-                           private val list: List<String>
+                           private val list: List<ItemSensorID>
 ) : RecyclerView.Adapter<ItemSensorIDAdapter.ItemSensorIDHolder>() {
 
 
@@ -31,11 +31,22 @@ class ItemSensorIDAdapter (val context: Context,
         val currentItem = list[position]
 
         // присваеваем индитифкатор в отображения
-        holder.textSensorID.text = currentItem
+        holder.textSensorID.text = currentItem.sensorID
+
+        // проверяем какая температура ошибочная это -300 и выводим ее либо ошибку с красным фоном
+        if (currentItem.temp != -300F) {
+            holder.textSensorTemp.text = currentItem.temp.toString()
+            holder.textSensorTemp.background = context.getDrawable(R.drawable.rounded_background2)
+        } else {
+            holder.textSensorTemp.text = context.getString(R.string.error)
+            holder.textSensorTemp.background = context.getDrawable(R.drawable.error_rounded_background)
+        }
+
     }
 
     class ItemSensorIDHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textSensorID: TextView = itemView.findViewById(R.id.textSensorID)
+        val textSensorTemp: TextView = itemView.findViewById(R.id.textSensorTemp)
     }
 
 }

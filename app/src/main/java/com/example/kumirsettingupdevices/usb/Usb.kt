@@ -36,7 +36,6 @@ class Usb(private val context: Context) {
         // при попытки повторного подключения ...
         const val CNT_RECONNECT_DEVISE: Int = 700
         const val TIMEOUT_RECONNECT: Long = 10
-        const val TIME_MAX_DEL_ONE_WIRE: Int = 100
 
 
         // максимальное количество датчиков
@@ -45,26 +44,6 @@ class Usb(private val context: Context) {
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
 
-
-        // таблица контрольных сумм
-        val crcTable = listOf(
-            0, 94, 188, 226, 97, 63, 221, 131, 194, 156, 126, 32, 163, 253, 31, 65,
-            157, 195, 33, 127, 252, 162, 64, 30, 95, 1, 227, 189, 62, 96, 130, 220,
-            35, 125, 159, 193, 66, 28, 254, 160, 225, 191, 93, 3, 128, 222, 60, 98,
-            190, 224, 2, 92, 223, 129, 99, 61, 124, 34, 192, 158, 29, 67, 161, 255,
-            70, 24, 250, 164, 39, 121, 155, 197, 132, 218, 56, 102, 229, 187, 89, 7,
-            219, 133, 103, 57, 186, 228, 6, 88, 25, 71, 165, 251, 120, 38, 196, 154,
-            101, 59, 217, 135, 4, 90, 184, 230, 167, 249, 27, 69, 198, 152, 122, 36,
-            248, 166, 68, 26, 153, 199, 37, 123, 58, 100, 134, 216, 91, 5, 231, 185,
-            140, 210, 48, 110, 237, 179, 81, 15, 78, 16, 242, 172, 47, 113, 147, 205,
-            17, 79, 173, 243, 112, 46, 204, 146, 211, 141, 111, 49, 178, 236, 14, 80,
-            175, 241, 19, 77, 206, 144, 114, 44, 109, 51, 209, 143, 12, 82, 176, 238,
-            50, 108, 142, 208, 83, 13, 239, 177, 240, 174, 76, 18, 145, 207, 45, 115,
-            202, 148, 118, 40, 171, 245, 23, 73, 8, 86, 180, 234, 105, 55, 213, 139,
-            87, 9, 235, 181, 54, 104, 138, 212, 149, 203, 41, 119, 244, 170, 72, 22,
-            233, 183, 85, 11, 136, 214, 52, 106, 43, 117, 151, 201, 74, 20, 246, 168,
-            116, 42, 200, 150, 21, 75, 169, 247, 182, 232, 10, 84, 215, 137, 107, 53
-        )
     }
 
     // переводы строк
@@ -96,8 +75,7 @@ class Usb(private val context: Context) {
     // ат команда по умолчанию
     var at: String = "AT"
 
-    // лист для хранения адресов на линии
-    var listOneWireAddres = mutableListOf<String>()
+
 
 
 
@@ -221,7 +199,7 @@ class Usb(private val context: Context) {
         }
     }
 
-   /* // настрока сериал порта <DTR>
+
     fun onSerialDTR(indexDTR: Int) {
         ConstUsbSettings.dtr = indexDTR
 
@@ -245,7 +223,7 @@ class Usb(private val context: Context) {
                 else -> {}
             }
         }
-    }*/
+    }
 
     // настройка серийного порта при подключении
     fun onStartSerialSetting(flagOnSelectDsrCts: Boolean = true) {
@@ -555,361 +533,6 @@ class Usb(private val context: Context) {
             printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))
 
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // протокол OneWire вынести в отдельный класс
-    // код для получения адресов oneWire
-    fun scanOneWireDevice(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
-        Thread {
-
-            usbCommandsProtocol.flagWorkRead = true
-
-            // изменение сскорости на 9600
-            onSerialSpeed(5)
-            sendSleepDataReceive(context, byteArrayOf(0xF0.toByte()))
-
-
-            if (context.curentDataByteAll.isNotEmpty() && context.curentDataByteAll[0] != 0xF0.toByte()) {
-                val addresses = mutableListOf<String>()
-
-                // иинициализация буфера длля отправки и буфераа для ответа
-                val size = 64 // 64 на данные
-
-
-                // командный байт 0x33 -> 0011_0011
-                val bufCommand = byteArrayOf(
-                    0xC0.toByte(),
-                    0xC0.toByte(),
-                    0xFF.toByte(),
-                    0xFF.toByte(),
-
-                    0xC0.toByte(),
-                    0xC0.toByte(),
-                    0xFF.toByte(),
-                    0xFF.toByte()
-                )
-                val buf = ByteArray(size) { 0xFF.toByte() }
-
-                // переключение скорости на 115200
-                onSerialSpeed(9)
-
-                // отправка реверсивно начиная с младщего байта ВАЖНО
-                sendSleepDataReceive(context, bufCommand.reversedArray())
-
-                // отправка буфера данных
-                sendSleepDataReceive(context, buf)
-
-                // получение и распарс данных
-                if (context.curentDataByteAll.size == 64) {
-                    addresses.add(parseOneWireAddress(context.curentDataByteAll.reversedArray(), size))
-
-                    Log.d("dataOneWire", context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) })
-                    listOneWireAddres = addresses
-                } else {
-                    Log.d("dataOneWire", "По какой то причине данные не валидны")
-                }
-            } else {
-                val byteRez = context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-                Log.d("dataOneWire", "На линии некого нет. Пришел байт {$byteRez}")
-            }
-
-            usbCommandsProtocol.flagWorkRead = false
-        }.start()
-    }
-
-    // для ожидания прихода данных максимальная забержка TIME_MAX_DEL_ONE_WIRE
-    private fun sendSleepDataReceive(context: MainActivity, byteArray: ByteArray) {
-        // очищение буферов
-        context.curentDataByteAll = byteArrayOf()
-        /*Log.d("dataOneWire", "буфер отчищен curentDataByteAll {${
-            context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")*/
-        context.curentDataByte = byteArrayOf()
-        /*Log.d("dataOneWire", "буфер отчищен curentDataByte {${
-            context.curentDataByte.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")*/
-
-
-        // отправка
-        usbSerialDevice?.write(byteArray)
-        Log.d("dataOneWire", "отправлено byteArray ${
-            byteArray.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }")
-
-
-        // ждем ответа
-        var time = 0
-        while (context.curentDataByteAll.isEmpty() && time <= TIME_MAX_DEL_ONE_WIRE) {
-            time++
-
-            Thread.sleep(1)
-        }
-        //Thread.sleep(TIMEOUT_RECONNECT*5)
-        Log.d("dataOneWire", "выход time = $time получены данные: {${
-            context.curentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")
-
-    }
-
-    private fun parseOneWireAddress(buf: ByteArray, size: Int): String {
-        // Шаг 1: Преобразуем байты в строку из 1 и 0
-        val binaryString = buf.joinToString("") { byte ->
-            when (byte) {
-                0xFF.toByte() -> "1"
-                0xFC.toByte() -> "0"
-                else -> error("Unexpected byte value")
-            }
-        }
-
-        // Шаг 2: Разбиваем строку на части по 8 символов и преобразуем в символы ASCII
-        return try {
-            val result = StringBuilder()
-            for (i in 0 until size step 8) {
-                val byteString = binaryString.substring(i, i + 8)
-                val ascii2Char = getChar2Byte16(byteString)
-                result.append(ascii2Char)
-            }
-
-            // Итоговая строка из 16 символов
-            result.toString()
-        } catch (e: Exception) {
-            context.getString(R.string.error)
-        }
-    }
-
-    private fun getChar2Byte16(byteString: String): String { // "11111101" -> пример ввода
-        // первый символ
-        val charByte2_1 = byteString.drop(4)
-        val charByte2_2 = byteString.dropLast(4)
-
-        return convertToByte16(charByte2_2).toString() + convertToByte16(charByte2_1)
-
-    }
-
-    private fun convertToByte16(byteString: String): Char {
-        return when(byteString) {
-            "0000" -> '0'
-            "0001" -> '1'
-            "0010" -> '2'
-            "0011" -> '3'
-            "0100" -> '4'
-            "0101" -> '5'
-            "0110" -> '6'
-            "0111" -> '7'
-            "1000" -> '8'
-            "1001" -> '9'
-            "1010" -> 'A'
-            "1011" -> 'B'
-            "1100" -> 'C'
-            "1101" -> 'D'
-            "1110" -> 'E'
-            "1111" -> 'F'
-            else -> 'n'
-        }
-    }
-
-
-    fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
-        Thread {
-            usbCommandsProtocol.flagWorkRead = true
-            usbCommandsProtocol.flagWorkOneWire = true
-
-            // обьект для полученя адресов
-            val stSearch = StSearchOneWire(0, 0, 0, byteArrayOf(
-                0x00.toByte(),
-                0x00.toByte(),
-                0x00.toByte(),
-                0x00.toByte(),
-
-                0x00.toByte(),
-                0x00.toByte(),
-                0x00.toByte(),
-                0x00.toByte()
-            ))
-            var address: ByteArray
-
-            // пока есть устройства опраиваем
-            var addresCnt = 0
-            do {
-                addresCnt++
-                address = owSearchNext(context, stSearch)
-                if (address.isNotEmpty()) {
-                    try {
-                        // пребразуем число в строку из  1 и 0 и после  разделяем их по 4 символа
-                        val strAddress: String = address.reversedArray().joinToString(separator = " ") { byte -> "%02X".format(byte) }.replace(" ", "")
-                        Log.d("dataOneWire", "Адресс: $strAddress")
-
-                        // добавление результата
-                        if (strAddress !in listOneWireAddres)
-                            listOneWireAddres.add(strAddress)
-
-                    } catch (_: Exception) {
-                        Log.d("dataOneWire", "Произошла ошибка")
-                    }
-                } else {
-                    Log.d("dataOneWire", "Алгоритм неправельный")
-                }
-
-            } while (address.isNotEmpty() && addresCnt < MAX_CNT_DEV_ONEWIRE)
-
-
-            usbCommandsProtocol.flagWorkRead = false
-            usbCommandsProtocol.flagWorkOneWire = false
-        }.start()
-    }
-
-
-    // проверка есть ли кто то не линии
-    private fun owReset(context: MainActivity): Boolean {
-        // изменение сскорости на 9600
-        onSerialSpeed(5)
-        sendSleepDataReceive(context, byteArrayOf(0xF0.toByte()))
-
-        // возвращяем скорость 115200
-        onSerialSpeed(9)
-
-        return context.curentDataByteAll.isNotEmpty() &&
-                context.curentDataByteAll[0] != 0xF0.toByte()
-    }
-
-
-    private fun owSearchNext(context: MainActivity, stSearch: StSearchOneWire): ByteArray {
-        var iSearchDirection: Byte
-        var iIDBit: Int
-        var iCmpIDBit: Int
-
-        /* Инициализация для поиска */
-        var iROMByteMask: Byte = 1
-        var iCRC: Byte = 0
-        var iIDBitNumber: Int = 1
-        var iLastZero: Int = 0
-        var iROMByteNumber: Int = 0
-        var iSearchResult: Int = 0
-
-        if (stSearch.iLastDeviceFlag == 0x00.toByte()) {
-
-            // если некого на линии нету то сбрасываем и выходим
-            if (!owReset(context)) {
-                stSearch.onClearSearch()
-                return byteArrayOf()
-            }
-
-            // байт поиска 0xF0 1111_0000
-            val byteSearch = byteArrayOf(
-                0xFF.toByte(),
-                0xFF.toByte(),
-                0xFF.toByte(),
-                0xFF.toByte(),
-
-                0xC0.toByte(),
-                0xC0.toByte(),
-                0xC0.toByte(),
-                0xC0.toByte()
-            )
-
-            sendSleepDataReceive(context, byteSearch.reversedArray())
-
-            do {
-                // отправляем (FF,FF) и читаем что ответит устройства
-                sendSleepDataReceive(context, byteArrayOf(0xFF.toByte(), 0xFF.toByte()))
-                try {
-                    // проверяем 1 и 2 бит которые пришли
-                    iIDBit = if (context.curentDataByteAll[0] == 0xFF.toByte()) 1 else 0
-                    iCmpIDBit = if (context.curentDataByteAll[1] == 0xFF.toByte()) 1 else 0
-
-                    // если некого нет то выходим из цикла
-                    if ((iIDBit == 1) && (iCmpIDBit == 1)) break
-
-                    // кто-то ответил
-                    if (iIDBit != iCmpIDBit) {
-                        iSearchDirection = iIDBit.toByte()
-                    } else {
-                        iSearchDirection = if (iIDBitNumber < stSearch.iLastDiscrepancy) {
-                            if ((stSearch.ROM[iROMByteNumber] and iROMByteMask) > 0) 1 else 0
-                        } else
-                            if (iIDBitNumber.toByte() == stSearch.iLastDiscrepancy) 1 else 0
-
-                        if (iSearchDirection == 0x00.toByte()) {
-                            iLastZero = iIDBitNumber
-
-                            if (iLastZero < 9)
-                                stSearch.iLastFamilyDiscrepancy = iLastZero.toByte()
-                        }
-                    }
-
-                    // Установить или сбросить бит в байте ROM с помощью маски rom_byte_mask
-                    if (iSearchDirection.toInt() == 1) {
-                        stSearch.ROM[iROMByteNumber] = stSearch.ROM[iROMByteNumber] or iROMByteMask
-                    } else {
-                        stSearch.ROM[iROMByteNumber] = stSearch.ROM[iROMByteNumber] and iROMByteMask.inv()
-                    }
-
-                    // Установка направления поиска серийного номера
-                    val byteSend = if (iSearchDirection > 0) 0xFF.toByte() else 0xC0.toByte()
-                    sendSleepDataReceive(context, byteArrayOf(byteSend))
-
-                    iIDBitNumber++
-                    iROMByteMask = (iROMByteMask.toInt() shl 1).toByte()
-
-                    // Если маска равна 0, перейти к новому байту ROM и сбросить маску
-                    if (iROMByteMask == 0x00.toByte()) {
-                        // Накопление CRC
-                        iCRC = crcTable[(stSearch.ROM[iROMByteNumber] xor iCRC).toUByte().toInt()].toByte()
-                        iROMByteNumber++
-                        iROMByteMask = 1
-                    }
-
-                } catch (e: Exception) {
-                    return byteArrayOf()
-                }
-
-            } while (iROMByteNumber < 8) // Цикл до тех пор, пока не пройдем все байты ROM с 0 до 7
-
-            /* Если поиск был успешным, тогда */
-            if (!(iIDBitNumber < 65 || iCRC != 0x00.toByte())) {
-                stSearch.iLastDiscrepancy = iLastZero.toByte()
-
-                /* Проверка на последнее устройство */
-                if (stSearch.iLastDiscrepancy == 0x00.toByte())
-                    stSearch.iLastDeviceFlag = 1
-
-                iSearchResult = 1
-            }
-        }
-
-        /* Если устройство не найдено, сбрасываем счетчики, чтобы следующий поиск был как первый */
-        if (iSearchResult == 0 || stSearch.ROM[0] == 0x00.toByte()) {
-            stSearch.iLastDiscrepancy = 0
-            stSearch.iLastDeviceFlag = 0
-            stSearch.iLastFamilyDiscrepancy = 0
-            return byteArrayOf()
-        }
-
-        return stSearch.ROM
     }
 }
 

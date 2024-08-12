@@ -2,6 +2,7 @@
     <string name="app_name">Настройка устройств КУМИР</string>
 
     <string name="Usb_NoneConnect">Отсутствует подключение, воспользуйтесь кнопкой "ПОДКЛЮЧИТЬСЯ"</string>
+    <string name="errorReadTemp">Температура не считалась не у одного датчика!</string>
     <string name="notGoThread">Незя, т к идет диагностика, завершите ее и нажмите заного!</string>
     <string name="errorCodeNone">Что то пошло не так!</string>
     <string name="Disconnected">Подключение разорвано!</string>

@@ -14,6 +14,7 @@ import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.ItemPingrecvAdapter.ItemSensorIDAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentSensorDT112Binding
+import com.example.kumirsettingupdevices.usb.OneWire
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
@@ -21,12 +22,22 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
 
     override val usbCommandsProtocol = UsbCommandsProtocol()
     private lateinit var binding: FragmentSensorDT112Binding
+    private var flagWorkScan = false
+
+    private lateinit var oneWire: OneWire
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSensorDT112Binding.inflate(inflater)
+
+        // инициализация класса для общения по oneWire
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            oneWire = OneWire(context.usb, context)
+        }
+
 
         // отслеживание того что найдено
         binding.inputSearch.addTextChangedListener(object : TextWatcher {
@@ -49,8 +60,8 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
 
                     // перебор всех адресов
                     var allAdreses = ""
-                    for (id in context.usb.listOneWireAddres) {
-                        if (id.lowercase().contains(binding.inputSearch.text.toString().lowercase())) {
+                    for (id in oneWire.listOneWireAddres) {
+                        if (id.sensorID.lowercase().contains(binding.inputSearch.text.toString().lowercase())) {
                             allAdreses += " $id"
                             cntContains++
                         }
@@ -98,57 +109,82 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
 
 
     private fun getSensorsIDAndPrint() {
+
+        // защита от двойного нажатия
+        if (flagWorkScan) return
+        flagWorkScan = true
+
         val context: Context = requireContext()
         if (context is MainActivity) {
-
-            // отчистка прошлых данных
-            context.usb.listOneWireAddres.clear()
 
             // откурваем загрузочное окно и фон
             binding.fonLoadMenu.visibility = View.VISIBLE
             binding.loadMenuProgress.visibility = View.VISIBLE
 
-            // запускаем поиск
-            context.usb.scanOneWireDevices(usbCommandsProtocol, (requireContext() as MainActivity))
-
             // поток для ожидания приход данных
             Thread {
-                // ждем получения данных
-                Thread.sleep(100) // задержка для того что бы подождать старта
+                // запускаем поиск
+                oneWire.scanOneWireDevices(usbCommandsProtocol, (requireContext() as MainActivity))
 
-                val timeMax = 500000 // 500 секунда на то что бы получить все
-                var time = 0
-                while (usbCommandsProtocol.flagWorkOneWire && timeMax > time) {
-                    time++
-                    Thread.sleep(1)
-                }
+                // ждем получения данных
+                expectationDataOneWite()
 
                 // выполнение в фоновом потоке
                 (context as Activity).runOnUiThread {
                     // проверка данных
-                    if (context.usb.listOneWireAddres.isEmpty()) {
+                    if (oneWire.listOneWireAddres.isEmpty()) {
                         error()
                     } else {
 
                         // выводим все найденые устройства
                         val itemSensorIDAdapter =
-                            ItemSensorIDAdapter(requireContext(), context.usb.listOneWireAddres)
+                            ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
                         binding.recyclerSensors.adapter = itemSensorIDAdapter
                         binding.recyclerSensors.layoutManager =
                             LinearLayoutManager(requireContext())
 
 
-                        binding.textCntDev.text = context.usb.listOneWireAddres.size.toString()
+                        binding.textCntDev.text = oneWire.listOneWireAddres.size.toString()
                     }
+                }
+                // теперь читаем температуру
 
+                if (oneWire.listOneWireAddres.isNotEmpty()) {
+                    oneWire.getTempsDT112(usbCommandsProtocol)
+
+                    expectationDataOneWite()
+
+                    (context as Activity).runOnUiThread {
+                        // выводим все найденые устройства
+                        val itemSensorIDAdapter =
+                            ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
+                        binding.recyclerSensors.adapter = itemSensorIDAdapter
+                        binding.recyclerSensors.layoutManager =
+                            LinearLayoutManager(requireContext())
+                    }
+                }
+                context.runOnUiThread {
                     // закрытие меню загрузки
                     binding.fonLoadMenu.visibility = View.GONE
                     binding.loadMenuProgress.visibility = View.GONE
                 }
+                // заита от двойного нажатия
+                flagWorkScan = false
             }.start()
         }
     }
 
+
+    private fun expectationDataOneWite() {
+        Thread.sleep(100) // задержка для того что бы подождать старта
+
+        val timeMax = 50000 // 500 секунда на то что бы получить все
+        var time = 0
+        while (usbCommandsProtocol.flagWorkOneWire && timeMax > time) {
+            time++
+            Thread.sleep(1)
+        }
+    }
 
 
     private fun showAlertDialog(text: String) {
@@ -173,6 +209,7 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
         }
     }
 
+    // нунужные мметоды
     override fun printSerifalNumber(serialNumber: String) {}
     override fun printVersionProgram(versionProgram: String) {}
     override fun printSettingDevice(settingMap: Map<String, String>) {}
