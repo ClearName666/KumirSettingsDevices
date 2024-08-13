@@ -1,10 +1,14 @@
 package com.example.kumirsettingupdevices.usb
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.model.recyclerModel.ItemSensorID
 import com.example.kumirsettingupdevices.model.recyclerModel.StSearchOneWire
+import com.example.kumirsettingupdevices.sensors.OneWireInterfacePower
+import com.example.kumirsettingupdevices.sensors.RealUpdateTempInterface
+import com.example.kumirsettingupdevices.sensors.SensorDT112Fragment
 import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
@@ -110,6 +114,19 @@ class OneWire(val usb: Usb, private val context: Context) {
             0xFF.toByte()
         )
 
+        // B4 получение режима питания паразитное или от акб
+        val GET_POWER_MODE = byteArrayOf(
+            0xFF.toByte(),
+            0xC0.toByte(),
+            0xFF.toByte(),
+            0xFF.toByte(),
+
+            0xC0.toByte(),
+            0xFF.toByte(),
+            0xC0.toByte(),
+            0xC0.toByte()
+        )
+
         // 72 бита
         val GET_TEMP_BITS: ByteArray = ByteArray(SIZE_BUF_GET_TEMP) { 0xFF.toByte() }
     }
@@ -167,7 +184,7 @@ class OneWire(val usb: Usb, private val context: Context) {
     }
 
     // получение адресов
-    fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol, context: MainActivity) {
+    fun scanOneWireDevices(usbCommandsProtocol: UsbCommandsProtocol,sensorDT112Fragment: SensorDT112Fragment, context: MainActivity) {
         // отчистка прошлых данных
         listOneWireAddres.clear()
         listOneWireAddresHex.clear()
@@ -189,7 +206,7 @@ class OneWire(val usb: Usb, private val context: Context) {
 
             while (numberAddress > 0) {
                 //addresCnt++
-                address = owSearchNext(context, stSearch)
+                address = owSearchNext(context, sensorDT112Fragment, stSearch)
 
                 if (address.isNotEmpty()) {
                     try {
@@ -214,7 +231,8 @@ class OneWire(val usb: Usb, private val context: Context) {
                 }
 
                 // проверка если подключение разорвано
-                if (!usb.checkConnectToDevice() || context.curentDataByteAll.isEmpty()) {
+                if (!usb.checkConnectToDevice() || context.curentDataByteAll.isEmpty() ||
+                    sensorDT112Fragment.flagСancellation) {
                     listOneWireAddres.clear()
                     listOneWireAddresHex.clear()
                     break
@@ -243,7 +261,7 @@ class OneWire(val usb: Usb, private val context: Context) {
 
 
     // алгоритм поиска адресов
-    private fun owSearchNext(context: MainActivity, stSearch: StSearchOneWire): ByteArray {
+    private fun owSearchNext(context: MainActivity, sensorDT112Fragment: SensorDT112Fragment, stSearch: StSearchOneWire): ByteArray {
         var iSearchDirection: Byte
         var iIDBit: Int
         var iCmpIDBit: Int
@@ -271,7 +289,9 @@ class OneWire(val usb: Usb, private val context: Context) {
 
             do {
                 // отправляем (FF,FF) и читаем что ответит устройства
-                if (!sendSleepDataReceive(context, byteArrayOf(0xFF.toByte(), 0xFF.toByte()))){
+                if (!sendSleepDataReceive(context, byteArrayOf(0xFF.toByte(), 0xFF.toByte())) ||
+                    sensorDT112Fragment.flagСancellation ||
+                    !usb.checkConnectToDevice()){
                     flagExit = true
                     break
                 }
@@ -350,17 +370,49 @@ class OneWire(val usb: Usb, private val context: Context) {
     }
 
 
-    // получение температыры всех датчиков
-    fun getTempsDT112(usbCommandsProtocol: UsbCommandsProtocol) {
-
-        // проверка получены ли адресы
-        if (listOneWireAddresHex.isEmpty()) return
+    // чтение флага питания (отдельное или паразитное )
+    fun getFlagPower(context: MainActivity, usbCommandsProtocol: UsbCommandsProtocol, oneWireInterfacePower: OneWireInterfacePower) {
+        usbCommandsProtocol.flagWorkRead = true
+        usbCommandsProtocol.flagWorkOneWire = true
 
         Thread {
             usb.onSerialRTS(1)
 
-            usbCommandsProtocol.flagWorkRead = true
-            usbCommandsProtocol.flagWorkOneWire = true
+            // отправка команды для чтения режима питания
+            sendSleepDataReceive(context, GET_POWER_MODE.reversedArray())
+
+            // чтения флага ответа
+            if (context.curentDataByteAll.isNotEmpty() && context.curentDataByteAll.last() == 0xFF.toByte()) {
+                (context as Activity).runOnUiThread {
+                    oneWireInterfacePower.printFlagPower(true)
+                }
+            } else {
+                (context as Activity).runOnUiThread {
+                    oneWireInterfacePower.printFlagPower(false)
+                }
+            }
+
+            usb.onSerialRTS(0)
+            usbCommandsProtocol.flagWorkRead = false
+            usbCommandsProtocol.flagWorkOneWire = false
+        }.start()
+    }
+
+
+    // получение температыры всех датчиков
+    fun getTempsDT112(usbCommandsProtocol: UsbCommandsProtocol, sensorDT112Fragment: SensorDT112Fragment, realTimeUpdate: Boolean = false, realUpdateTempInterface: RealUpdateTempInterface<ItemSensorID>? = null) {
+
+        // проверка получены ли адресы
+        if (listOneWireAddresHex.isEmpty()) return
+
+        // проверка что фрагмент передан для
+        if (realTimeUpdate && realUpdateTempInterface == null) return
+
+        usbCommandsProtocol.flagWorkRead = true
+        usbCommandsProtocol.flagWorkOneWire = true
+
+        Thread {
+            usb.onSerialRTS(1)
 
             var iCRC: Byte = 0
 
@@ -377,7 +429,7 @@ class OneWire(val usb: Usb, private val context: Context) {
 
             // перебор всех адресов для получения температур
             for (address in listOneWireAddresHex) {
-                if (!usb.checkConnectToDevice() || context.curentDataByteAll.isEmpty()) break
+                if (!usb.checkConnectToDevice() || context.curentDataByteAll.isEmpty() || sensorDT112Fragment.flagСancellation) break
 
                 // чтение данных
                 for (io in 1..3) { // 3 попытки
@@ -415,6 +467,16 @@ class OneWire(val usb: Usb, private val context: Context) {
                     if (!(temp == 1360 && sendByteArr[6] == 0x0C.toByte())) {
                         val itemSensorID = listOneWireAddres[curent_index]
                         itemSensorID.temp = (temp * 0.0625).toFloat()
+
+                        // обновление в реальном времени если стоит флаг
+                        if (realTimeUpdate) {
+                            // переменные для того что бы не было конфликтов переменных (их используют 2 потока )
+                            val tempNewItem = itemSensorID
+                            val index = curent_index
+                            (context as Activity).runOnUiThread {
+                                realUpdateTempInterface!!.updateTempItem(index, tempNewItem)
+                            }
+                        }
                         listOneWireAddres[curent_index] = itemSensorID
                     }
 

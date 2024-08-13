@@ -1,6 +1,7 @@
 package com.example.kumirsettingupdevices.sensors
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -14,15 +15,22 @@ import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
 import com.example.kumirsettingupdevices.adapters.ItemPingrecvAdapter.ItemSensorIDAdapter
 import com.example.kumirsettingupdevices.databinding.FragmentSensorDT112Binding
+import com.example.kumirsettingupdevices.model.recyclerModel.ItemSensorID
 import com.example.kumirsettingupdevices.usb.OneWire
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 
-class SensorDT112Fragment : Fragment(), UsbFragment {
+class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<ItemSensorID>, OneWireInterfacePower {
 
     override val usbCommandsProtocol = UsbCommandsProtocol()
+    var flagСancellation = false
+
     private lateinit var binding: FragmentSensorDT112Binding
     private var flagWorkScan = false
+
+
+    // адаптер для вывода адресов и температур датчиков
+    private lateinit var itemSensorIDAdapter: ItemSensorIDAdapter
 
     private lateinit var oneWire: OneWire
 
@@ -38,10 +46,51 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
             oneWire = OneWire(context.usb, context)
         }
 
+        // кнопка отмены
+        binding.buttonStop.setOnClickListener {
+            showConfirmationDialog()
+        }
+
+        binding.buttonOKStop.setOnClickListener {
+            flagСancellation = true
+            binding.menuStopScan.visibility = View.GONE
+        }
+
+        binding.buttonNoStop.setOnClickListener {
+            binding.menuStopScan.visibility = View.GONE
+        }
+
+        // если выстаавлен флаг онлайн считывания температуры то флаг получения температуры выставляем тоже
+        binding.checkBoxOnline.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                binding.switchTemp.isChecked = true
+            else
+                flagСancellation = true
+        }
+        binding.switchTemp.setOnCheckedChangeListener { _, isChacked ->
+            if (binding.checkBoxOnline.isChecked && !isChacked)
+                binding.switchTemp.isChecked = true
+        }
 
         // отслеживание того что найдено
         binding.inputSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (binding.checkBoxOnline.isChecked) {
+                    showAlertDialog("Для того что-бы произвести поиск убаерите галочку автоматическогоо обновления значений")
+                    return
+                }
+
+                // обновляем все до изначального
+                for (i in 0..<oneWire.listOneWireAddres.size) {
+                    oneWire.listOneWireAddres[i].sensorID = oneWire.listOneWireAddres[i].sensorID.replace("\n", "")
+                }
+
+                itemSensorIDAdapter = ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
+                binding.recyclerSensors.adapter = itemSensorIDAdapter
+                binding.recyclerSensors.layoutManager =
+                    LinearLayoutManager(requireContext())
+
                 // Код, который выполняется в момент изменения текста
 
                 //  если нечего нет то выходим и убераем поле результата посика
@@ -59,11 +108,13 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                     var cntContains = 0 // счетчик совпадений
 
                     // перебор всех адресов
+                    val listIndexesAddress = mutableListOf<Int>()
                     var allAdreses = ""
-                    for (id in oneWire.listOneWireAddres) {
+                    for ((indexAddress, id) in oneWire.listOneWireAddres.withIndex()) {
                         if (id.sensorID.lowercase().contains(binding.inputSearch.text.toString().lowercase())) {
-                            allAdreses += " $id"
+                            allAdreses += " ${id.sensorID}"
                             cntContains++
+                            listIndexesAddress.add(indexAddress)
                         }
                     }
 
@@ -73,6 +124,13 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                                 getString(R.string.No)
                     } else {
                         binding.textSesrchRezult.text = getString(R.string.findCoincidences) + allAdreses
+
+                        // перебираем и обновлеям меняя местами и перемещяя наверх найденое и выдиляя
+                        for (addressIndex in listIndexesAddress) {
+                            val currentItem = oneWire.listOneWireAddres[addressIndex]
+                            currentItem.sensorID += '\n'
+                            itemSensorIDAdapter.currentHighlighting(addressIndex, currentItem)
+                        }
                     }
                 }
             }
@@ -101,6 +159,25 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
         super.onDestroyView()
     }
 
+    private fun showConfirmationDialog() {
+
+        binding.menuStopScan.visibility = View.VISIBLE
+
+        /*val myText = getString(R.string.checkingForCancellation)
+
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(myText)
+            .setPositiveButton("ОК") { dialog, _ ->
+                flagСancellation = true
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+        val dialog = builder.create()
+        dialog.show()*/
+    }
+
 
 
     private fun error(msg: String = "") {
@@ -113,18 +190,26 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
         // защита от двойного нажатия
         if (flagWorkScan) return
         flagWorkScan = true
-
+        flagСancellation = false
         val context: Context = requireContext()
         if (context is MainActivity) {
 
             // откурваем загрузочное окно и фон
             binding.fonLoadMenu.visibility = View.VISIBLE
             binding.loadMenuProgress.visibility = View.VISIBLE
+            binding.textLoadMenu.text = getString(R.string.scanAddreses)
 
             // поток для ожидания приход данных
             Thread {
+                // чтение флага питания
+                oneWire.getFlagPower((requireContext() as MainActivity), usbCommandsProtocol, this)
+
+
+                // ждем получения данных
+                expectationDataOneWite()
+
                 // запускаем поиск
-                oneWire.scanOneWireDevices(usbCommandsProtocol, (requireContext() as MainActivity))
+                oneWire.scanOneWireDevices(usbCommandsProtocol, this, (requireContext() as MainActivity))
 
                 // ждем получения данных
                 expectationDataOneWite()
@@ -133,44 +218,77 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
                 (context as Activity).runOnUiThread {
                     // проверка данных
                     if (oneWire.listOneWireAddres.isEmpty()) {
-                        error()
+                        if (!flagСancellation) error()
                     } else {
 
                         // выводим все найденые устройства
-                        val itemSensorIDAdapter =
-                            ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
+                        itemSensorIDAdapter = ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
                         binding.recyclerSensors.adapter = itemSensorIDAdapter
                         binding.recyclerSensors.layoutManager =
                             LinearLayoutManager(requireContext())
 
-
+                        // вывод количства адресов
                         binding.textCntDev.text = oneWire.listOneWireAddres.size.toString()
                     }
                 }
+
                 // теперь читаем температуру
-
-                if (oneWire.listOneWireAddres.isNotEmpty()) {
-                    oneWire.getTempsDT112(usbCommandsProtocol)
-
-                    expectationDataOneWite()
-
+                if (binding.switchTemp.isChecked && oneWire.listOneWireAddres.isNotEmpty()) {
+                    // перееключение текста на поиск адресов
                     (context as Activity).runOnUiThread {
-                        // выводим все найденые устройства
-                        val itemSensorIDAdapter =
-                            ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
-                        binding.recyclerSensors.adapter = itemSensorIDAdapter
-                        binding.recyclerSensors.layoutManager =
-                            LinearLayoutManager(requireContext())
+                        binding.textLoadMenu.text = getString(R.string.scanTemp)
+                    }
+                    // измерение температры
+                    if (!binding.checkBoxOnline.isChecked) {
+                        oneWire.getTempsDT112(usbCommandsProtocol, this)
+                        expectationDataOneWite()
+                        (context as Activity).runOnUiThread {
+                            // выводим все найденые устройства
+                            itemSensorIDAdapter = ItemSensorIDAdapter(requireContext(), oneWire.listOneWireAddres)
+                            binding.recyclerSensors.adapter = itemSensorIDAdapter
+                            binding.recyclerSensors.layoutManager =
+                                LinearLayoutManager(requireContext())
+                        }
+                    } else {
+                        // закрытие меню загрузки
+                        closeMenuLoadUIThread()
+
+                        // бесконечно пока флаг включен опрашиваем датчики
+                        while (binding.checkBoxOnline.isChecked) {
+                            oneWire.getTempsDT112(usbCommandsProtocol, this, true, this)
+                            expectationDataOneWite()
+                        }
                     }
                 }
-                context.runOnUiThread {
-                    // закрытие меню загрузки
-                    binding.fonLoadMenu.visibility = View.GONE
-                    binding.loadMenuProgress.visibility = View.GONE
-                }
+
+                //закрываем меню
+                // закрытие меню загрузки
+                closeMenuLoadUIThread()
+
                 // заита от двойного нажатия
                 flagWorkScan = false
             }.start()
+        }
+    }
+
+    private fun closeMenuLoadUIThread() {
+        (context as Activity).runOnUiThread {
+            binding.fonLoadMenu.visibility = View.GONE
+            binding.loadMenuProgress.visibility = View.GONE
+        }
+    }
+
+    // метод для обновления температуры в 1 элементе
+    override fun updateTempItem(index: Int, newItem: ItemSensorID) {
+        itemSensorIDAdapter.updateItem(index, newItem)
+    }
+
+    // метод для вывода типа питания датчиков
+    override fun printFlagPower(flagPower: Boolean) {
+        if (flagPower) {
+            binding.textAddres.text = getString(R.string.addres)
+        } else {
+            binding.textAddres.text = getString(R.string.addres) + "\uD83D\uDC1B"
         }
     }
 
@@ -215,4 +333,5 @@ class SensorDT112Fragment : Fragment(), UsbFragment {
     override fun printSettingDevice(settingMap: Map<String, String>) {}
     override fun readSettingStart() {}
     override fun writeSettingStart() {}
+
 }

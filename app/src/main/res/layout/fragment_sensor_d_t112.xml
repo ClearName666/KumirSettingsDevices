@@ -8,26 +8,45 @@
     tools:context=".sensors.SensorDT112Fragment">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/textCntDev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBoxOnline"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/textHintCheckSensors"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/textHintCheckSensors" />
 
-        <TextView
-            android:id="@+id/textCntDev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/textAddres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="@string/addres"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerSensors"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textTTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="@string/temp"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerSensors"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Switch
         android:id="@+id/switchTemp"
@@ -37,6 +56,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layoutButtonScanerStart"
         app:layout_constraintTop_toTopOf="@+id/layoutButtonScanerStart" />
+
+    <TextView
+        android:id="@+id/textTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:text="@string/temp"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toTopOf="@+id/switchTemp"
+        app:layout_constraintEnd_toEndOf="@+id/switchTemp"
+        app:layout_constraintStart_toStartOf="@+id/switchTemp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutInputSearch"
@@ -60,8 +90,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginTop="3dp"
-        android:layout_marginEnd="2dp"
-        android:text="@string/chackSensors"
+        android:layout_marginEnd="50dp"
+        android:text="@string/automaticUpdateTemp"
         android:textColor="@color/blue_switch_thumb_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,6 +143,27 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutSearchRezult"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@color/blue_switch_track_color"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textHintCheckSensors">
+
+        <TextView
+            android:id="@+id/textSesrchRezult"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/findCoincidences"
+            android:textColor="@color/background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fonLoadMenu"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -131,7 +182,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loadMenuProgress"
         android:layout_width="350dp"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:background="@drawable/rounded_background2"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -141,12 +192,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.499">
 
+        <Button
+            android:id="@+id/buttonStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/dangerous"
+            android:text="@string/cancellation"
+            android:textColor="@color/background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progressBarScan" />
+
         <ProgressBar
             android:id="@+id/progressBarScan"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textLoadMenu" />
@@ -156,7 +218,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/scan"
+            android:text="@string/scanAddreses"
             android:textColor="@color/background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,23 +227,50 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutSearchRezult"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/blue_switch_track_color"
+        android:id="@+id/menuStopScan"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/error_rounded_background"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textHintCheckSensors">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textSesrchRezult"
-            android:layout_width="0dp"
+            android:id="@+id/textDialogStop"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/findCoincidences"
+            android:gravity="center"
+            android:text="@string/dialogStopScan"
             android:textColor="@color/background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/buttonOKStop"
+            android:layout_width="66dp"
+            android:layout_height="36dp"
+            android:backgroundTint="@color/lineColorMain"
+            android:text="@string/ok"
+            android:textColor="@color/background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDialogStop" />
+
+        <Button
+            android:id="@+id/buttonNoStop"
+            android:layout_width="191dp"
+            android:layout_height="70dp"
+            android:backgroundTint="@color/sucColor"
+            android:text="@string/cancellation"
+            android:textColor="@color/background"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDialogStop" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

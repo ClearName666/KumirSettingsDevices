@@ -96,7 +96,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 0.4.62</string>
+    <string name="versionApp">Версия: 1.4.64</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -668,16 +668,21 @@
     <string name="errorValidPortSim">Не верные настройки для порта</string>
     <string name="loadDriver">Загрузить драйвер</string>
     <string name="loadingDriver">Загрузка драйвера</string>
-    <string name="scan">Сканирование</string>
+    <string name="scanAddreses">Сканирование адресов</string>
+    <string name="scanTemp">Получение температуры!</string>
     <string name="loadDriverFin">Установить драйвер</string>
     <string name="delDrivers">Удаление драйверов</string>
     <string name="delete">Удалить</string>
     <string name="Sensors">Датчики</string>
     <string name="sensorDT112">ДТ112</string>
     <string name="search">Поиск</string>
-    <string name="chackSensors">Вы можете просканировать сетку и проверить присутствие датчика в сетке!</string>
+    <string name="automaticUpdateTemp">Для автоматического обнавляения значений датчиков выставите этот флаг</string>
     <string name="startScaner">Начать сканирование</string>
     <string name="findCoincidences">Найдено совпадений:</string>
+    <string name="temp">temp</string>
+    <string name="addres">Адреса</string>
+    <string name="checkingForCancellation">Вы увернены что хотите отменить процесс?</string>
+    <string name="dialogStopScan">Вы точно уверены в том что вы хотите прикратить сканирование? Это может привести к непредвиденым ошибкам! Советую не делать! :)</string>
 
 
     <!--............................................................................-->

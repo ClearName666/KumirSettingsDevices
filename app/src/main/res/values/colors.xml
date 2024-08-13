@@ -14,6 +14,8 @@
 <!--    <color name="fon5Element">#0D161E</color>-->
 <!--    <color name="fun3Element">#A7F1FA</color>-->
 <!--    <color name="fon4Element">#272727</color>-->
+    <color name="sucColor">#A6008000</color>
+    <color name="currentColor">#A67B0079</color>
 
     <color name="fonDarkMenu">#A64F4F4F</color>
     <color name="dangerous">#880000</color>
