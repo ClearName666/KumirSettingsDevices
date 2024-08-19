@@ -28,7 +28,6 @@ import com.example.kumirsettingupdevices.model.recyclerModel.ItemAbanent
 import com.example.kumirsettingupdevices.usb.UsbCommandsProtocol
 import com.example.kumirsettingupdevices.usb.UsbFragment
 import com.example.kumirsettingupdevices.usb.XModemSender
-import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

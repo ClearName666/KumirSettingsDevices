@@ -52,6 +52,8 @@
     <string name="errorSetModePreset">Невозможно установить режиим работы из шаблона т к он отсутствует!</string>
     <string name="nonSelectDriver">Вы не выбрали драйвер</string>
     <string name="errorSandDriver">Драйвер не удалось отправить, возможно были проблемы с подключением или можем вышел из режима загрузки драйвера!</string>
+    <string name="sand">Отправка</string>
+
 
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
@@ -75,6 +77,8 @@
     <string name="errorValidIPDNS">Длина Адреса сервера не должена привышать 63 символа</string>
     <string name="errorValidLogin">Длина логина не должна привышать 63 символа</string>
     <string name="errorValidPassword">Длина пароля не должна привышать 63 символа</string>
+    <string name="errorValidPasswordRim">Длина пароля должна состоять из 6 символов</string>
+    <string name="errorValidAddressRim">Адрес должен быть в диопазоне от 0 до 255</string>
     <string name="errorValidSim">Пин код для sim должен состоять из 4 цыфр</string>
     <string name="errorKEEPALIVE">Время отправки сигнала должно быть в диапазоне от 10 до 600</string>
     <string name="errorTimeCall">Время вызова должно быть в диапазоне от 2 до 30</string>
@@ -92,11 +96,15 @@
     <string name="errorValidAPNEnfora">Длина APN не должена привышать 128 символов</string>
     <string name="errorValidNumberPhone">Не коррекктный номер телефона! Введите в формате +70000000000</string>
 
+    <string name="sucLoadRim">Настройки успешно записаны в рим!</string>
+    <string name="errorLoadRim">Настройки по какой-то причине НЕ ЗАПИСАНЫ!</string>
+    <string name="errorPasswordRim">Возможно вы ввели неверный пароль, если у вас заводской пароль то установите тумблер _Пароль по умочанию_</string>
+
     <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.4.64</string>
+    <string name="versionApp">Версия: 1.5.64</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -237,6 +245,11 @@
     <string name="speed_115200">115200</string>
 
 
+    <!--Протоколы-->
+    <string name="rs485">RS485</string>
+    <string name="modbas">MODBAS</string>
+
+
     <string name="rangeTitle">Диапазон</string>
     <string name="keyNetTitle">Ключ доступа к сети (макс. 60 симв.)</string>
     <string name="powerCures">Мощность излучения(-16dBm .. 14bBm)</string>
@@ -260,6 +273,8 @@
     <string name="loadingTitle">Загрузка... Подождите!\n</string>
     <string name="closeViewTitle">Закрыть окно</string>
     <string name="settingInterfTitle">Настройки интерфейса</string>
+    <string name="newSettings">Настройки для записи</string>
+    <string name="settingInterfTitleNow">Текущие настройки интерфейса</string>
     <string name="selectMeteringDeviceTitle">Выбор прибора учета</string>
     <string name="speedTitle">Скорость</string>
     <string name="bitDataTitle">Биты данных</string>
@@ -634,6 +649,10 @@
     <string name="numDevTitle">Номер прибора</string>
     <string name="range1Title">Интервал</string>
     <string name="adminPasswordTitle">Пароль администратора</string>
+    <string name="password6Char">Пароль 6 символов</string>
+    <string name="password6CharNow">Текущий пароль 6 символов</string>
+    <string name="address">Адрес</string>
+    <string name="addressNow">Текущий адрес</string>
     <string name="netAdressTitle">Сетевой адресс</string>
     <string name="viewValues">Отображение значений</string>
     <string name="timeZero">00:00</string>
@@ -683,6 +702,8 @@
     <string name="addres">Адреса</string>
     <string name="checkingForCancellation">Вы увернены что хотите отменить процесс?</string>
     <string name="dialogStopScan">Вы точно уверены в том что вы хотите прикратить сканирование? Это может привести к непредвиденым ошибкам! Советую не делать! :)</string>
+    <string name="rim">Рим</string>
+    <string name="protocol">Протокол</string>
 
 
     <!--............................................................................-->

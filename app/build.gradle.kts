@@ -111,6 +111,4 @@ dependencies {
     implementation("com.google.android.material:material:1.5.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
-
-    implementation("com.github.mik3y:usb-serial-for-android:3.3.0")
 }

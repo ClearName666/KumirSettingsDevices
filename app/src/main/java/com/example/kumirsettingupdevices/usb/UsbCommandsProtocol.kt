@@ -66,7 +66,6 @@ class UsbCommandsProtocol {
     }
 
 
-
     // метод для получения настроек устройства
     fun readSettingDevice(commands: List<String>, context: Context,
                           usbFragment: UsbFragment, speedFind: Boolean = false, flagReadAbonentsP101: Boolean = false,

@@ -57,6 +57,10 @@ class ValidDataSettingsDevice {
         // время ожидания вывзова
         const val TIME_AB_MAX: Int = 30
         const val TIME_AB_MIN: Int = 2
+
+        // валидность строки кода символа от 1 до 255
+        const val CHAR_BYTE_MAX: Int = 255
+        const val CHAR_BYTE_MIN: Int = 0
     }
 
     private val patterns = mapOf(
@@ -119,11 +123,26 @@ class ValidDataSettingsDevice {
 
 
 
+
     private fun isCp1251String(str: String): Boolean {
         val charsetCp1251 = Charset.forName("windows-1251")
         val bytes = str.toByteArray(charsetCp1251)
         val decodedString = String(bytes, charsetCp1251)
         return str == decodedString
+    }
+
+    fun validCharStringCode(char: String): Boolean {
+        val value = char.toInt()
+        return try {
+            !(char.toInt() >= CHAR_BYTE_MAX ||
+                    char.toInt() <= CHAR_BYTE_MIN)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun validPassword(password: String): Boolean {
+        return password.length == PASSWORD_SIZE
     }
 
     fun isValidPhoneNumber(phoneNumber: String): Boolean {

@@ -65,6 +65,7 @@ import com.example.kumirsettingupdevices.usbFragments.M32LiteFragment
 import com.example.kumirsettingupdevices.usbFragments.P101Fragment
 import com.example.kumirsettingupdevices.usbFragments.PM81Fragment
 import com.example.kumirsettingupdevices.usbFragments.PrisetFragment
+import com.example.kumirsettingupdevices.usbFragments.RimFragment
 import com.example.testappusb.settings.ConstUsbSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -701,6 +702,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     }
 
+    fun onClickRim(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val rim = RimFragment()
+        createSettingFragment(rim)
+    }
+
     // проверка датчиков (сетка)
     fun onClickSensorDT112(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
@@ -850,18 +858,17 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     transaction.commit()
 
                     // для того что бы сразу не отображать перед чтением данные
-                    if (fragment is ACCB030CoreFragment || fragment is M32Fragment ||
+                    /*if (fragment is ACCB030CoreFragment || fragment is M32Fragment ||
                         fragment is M32DFragment || fragment is M32LiteFragment ||
                         fragment is P101Fragment || fragment is PM81Fragment) {
 
                         mainFragmentWork(true)
                         fragment.view?.visibility = View.GONE
-                    }
-                    else {
+                    }*/
+                    /*else {*/
                         mainFragmentWork(false)
                         binding.fragmentContaineContent.visibility = View.VISIBLE
-                    }
-
+                   /* }*/
 
                     if (fragment is UsbFragment) {
                         curentFragmentComProtocol = fragment.usbCommandsProtocol
@@ -877,16 +884,16 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 transaction.commit()
 
                 // для того что бы сразу не отображать перед чтением данные
-                if (fragment is ACCB030CoreFragment || fragment is M32Fragment ||
+                /*if (fragment is ACCB030CoreFragment || fragment is M32Fragment ||
                     fragment is M32DFragment || fragment is M32LiteFragment ||
                     fragment is P101Fragment || fragment is PM81Fragment) {
 
                     mainFragmentWork(true)
-                    fragment.view?.visibility = View.GONE
-                } else {
+                    //fragment.view?.visibility = View.GONE
+                } else {*/
                     mainFragmentWork(false)
                     binding.fragmentContaineContent.visibility = View.VISIBLE
-                }
+                /*}*/
 
                 if (fragment is UsbFragment) {
                     curentFragmentComProtocol = fragment.usbCommandsProtocol

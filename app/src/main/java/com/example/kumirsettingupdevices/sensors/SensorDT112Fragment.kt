@@ -38,13 +38,19 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+
+
         binding = FragmentSensorDT112Binding.inflate(inflater)
 
         // инициализация класса для общения по oneWire
         val context: Context = requireContext()
         if (context is MainActivity) {
             oneWire = OneWire(context.usb, context)
+
+
         }
+
 
         // кнопка отмены
         binding.buttonStop.setOnClickListener {

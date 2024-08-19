@@ -6,9 +6,7 @@ import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
 import android.util.Log
-import com.example.kumirsettingupdevices.MainActivity
 import com.example.kumirsettingupdevices.R
-import com.example.kumirsettingupdevices.model.recyclerModel.StSearchOneWire
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
@@ -18,11 +16,6 @@ import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.experimental.and
-import kotlin.experimental.inv
-import kotlin.experimental.or
-import kotlin.experimental.xor
-import kotlin.math.abs
 
 
 class Usb(private val context: Context) {
@@ -160,6 +153,8 @@ class Usb(private val context: Context) {
                 0 -> it.setParity(UsbSerialInterface.PARITY_NONE)
                 1 -> it.setParity(UsbSerialInterface.PARITY_EVEN)
                 2 -> it.setParity(UsbSerialInterface.PARITY_ODD)
+                3 -> it.setParity(UsbSerialInterface.PARITY_MARK)
+                4 -> it.setParity(UsbSerialInterface.PARITY_SPACE)
                 else -> {}
             }
         }
@@ -242,12 +237,14 @@ class Usb(private val context: Context) {
 
     // вычисление контрольной суммы данных
     private fun calculateChecksum(data: ByteArray): ByteArray {
-        val crc = CRC16Modbus()
-        crc.update(data)
-        val checkSum = crc.crcBytes
-        return data + checkSum
+        return data + checkSum(data)
     }
 
+    fun checkSum(data: ByteArray): ByteArray {
+        val crc = CRC16Modbus()
+        crc.update(data)
+        return crc.crcBytes
+    }
 
     // проверка подклюения девайса к устройству
     fun checkConnectToDevice(show: Boolean = false, at: Boolean = false): Boolean {
@@ -334,14 +331,21 @@ class Usb(private val context: Context) {
     }
 
     // отправка данных в сериал порт
-    fun writeDevice(message: String, flagPrint: Boolean = true, byteArray: ByteArray? = null): Boolean {
+    @OptIn(ExperimentalStdlibApi::class)
+    fun writeDevice(message: String, flagPrint: Boolean = true, byteArray: ByteArray? = null, flagCheckSum: Boolean = true): Boolean {
         return if (usbSerialDevice != null) {
             executorUsb.execute {
                 try {
-                    var bytesToSend = (message + lineFeed).toByteArray()
+                    // вычисление кс если нужно если не нужно то тогда просто помещяем строку или просто массив бдайт без нечего
+                    val bytesToSend =
+                        if (byteArray != null) {
+                            if (flagCheckSum) calculateChecksum(byteArray)
+                            else byteArray
+                        } else {
+                            (message + lineFeed).toByteArray()
+                        }
 
-                    if (byteArray != null)
-                        bytesToSend = calculateChecksum(byteArray)
+                    Log.d("usbData", "write: ${bytesToSend.toHexString()} size = ${bytesToSend.size}")
 
                     when (ConstUsbSettings.numDsrCts) {
                         0 -> usbSerialDevice?.write(bytesToSend)
@@ -403,6 +407,7 @@ class Usb(private val context: Context) {
     }
 
     // регистрация широковещятельного приемника
+    @OptIn(ExperimentalStdlibApi::class)
     fun connect(connection: UsbDeviceConnection?, curentDevice: UsbDevice) {
         try {
             if (connection != null) {
@@ -419,6 +424,8 @@ class Usb(private val context: Context) {
                                 } else {
                                     flagSandAtOk = String(bytes, Charsets.UTF_8).contains("OK")
                                 }
+
+                                Log.d("usbData", "read: ${bytes.toHexString()}")
                             }
 
                             // чтение cts

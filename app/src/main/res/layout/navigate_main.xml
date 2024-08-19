@@ -856,6 +856,40 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/Rim"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/M32DSettings">
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo11"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+
+                            <TextView
+                                android:id="@+id/textRim"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="17dp"
+                                android:text="@string/rim"
+                                android:textColor="@color/textColor"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo11"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/lineSettings"
                             android:layout_width="0dp"
                             android:layout_height="2dp"
@@ -910,10 +944,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
-                            android:layout_marginTop="39dp"
+                            android:layout_marginTop="20dp"
                             android:text="@string/Sensors"
+                            android:textColor="@color/textColor"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/M32DSettings" />
+                            app:layout_constraintTop_toBottomOf="@+id/Rim" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/lineSensors"
@@ -932,12 +967,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
+                            android:clickable="true"
+                            android:onClick="onClickSensorDT112"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/lineSensors">
 
                             <ImageView
-                                android:id="@+id/imageDevoceLogo11"
+                                android:id="@+id/imageDevoceLogo12"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
@@ -951,12 +988,13 @@
                                 android:id="@+id/textDT112"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="17dp"
+                                android:layout_marginStart="30dp"
                                 android:text="@string/sensorDT112"
+                                android:textColor="@color/textColor"
                                 android:textSize="16sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo11"
-                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo11"
-                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo11" />
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo12"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo12"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo12" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
