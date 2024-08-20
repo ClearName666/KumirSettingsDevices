@@ -177,24 +177,9 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         createAdapters()
 
-        // активация чтения
-        onClickReadSettingsDevice()
-        binding.M32D.visibility = View.GONE
-
-
-
         return binding.root
     }
 
-
-    override fun onDestroyView() {
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.mainFragmentWork(true)
-        }
-
-        super.onDestroyView()
-    }
 
     private fun createAdapters() {
         // адаптер для выбора режима работы модема
@@ -332,11 +317,7 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        binding.M32D.visibility = View.VISIBLE
         val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.mainFragmentWork(false)
-        }
 
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки

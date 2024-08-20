@@ -149,10 +149,6 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             lockFromDisconnected(false)
         }
 
-        // активация чтения
-        onClickReadSettingsDevice()
-        binding.ACCB030Core.visibility = View.GONE
-
         return binding.root
     }
 
@@ -163,7 +159,6 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
-            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -329,12 +324,7 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        binding.ACCB030Core.visibility = View.VISIBLE
         val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.mainFragmentWork(false)
-        }
-
 
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки

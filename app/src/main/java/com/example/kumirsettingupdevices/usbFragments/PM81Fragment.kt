@@ -142,12 +142,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
-        // активация чтения
-        onClickReadSettingsDevice()
-        binding.PM81.visibility = View.GONE
-
-
-
         return binding.root
     }
 
@@ -156,10 +150,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
-        }
-
-        if (context is MainActivity) {
-            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -322,12 +312,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
     }
 
     override fun printSettingDevice(settingMap: Map<String, String>) {
-
-        binding.PM81.visibility = View.VISIBLE
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.mainFragmentWork(false)
-        }
 
         // сохраняем поля диопазона частот и интеренет ключа
         band = settingMap[getString(R.string.commandGetRange)]!!

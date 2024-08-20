@@ -114,24 +114,40 @@ tools:context=".usbFragments.RimFragment">
             android:visibility="visible">
 
             <Spinner
+                android:id="@+id/spinnerDataProtocol"
+                android:layout_width="150dp"
+                android:layout_height="0dp"
+                android:background="@android:drawable/btn_dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textProtocolNow" />
+
+            <TextView
+                android:id="@+id/textProtocolNow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/protocol"
+                android:textColor="@color/textColor"
+                app:layout_constraintBottom_toTopOf="@+id/spinnerSpeed"
+                app:layout_constraintEnd_toEndOf="@+id/spinnerDataProtocol"
+                app:layout_constraintStart_toStartOf="@+id/spinnerDataProtocol"
+                app:layout_constraintTop_toBottomOf="@+id/layoutInputAddress" />
+
+            <Spinner
                 android:id="@+id/spinnerSpeed"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@android:drawable/btn_dropdown"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layoutInputAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/textSpeedPort" />
 
             <TextView
                 android:id="@+id/textSpeedPort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:text="@string/speedTitle"
                 android:textColor="@color/textColor"
-                app:layout_constraintBottom_toBottomOf="@+id/spinnerSpeed"
-                app:layout_constraintEnd_toStartOf="@+id/spinnerSpeed"
+                app:layout_constraintEnd_toEndOf="@+id/spinnerSpeed"
+                app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
                 app:layout_constraintTop_toBottomOf="@+id/layoutInputAddress" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -176,8 +192,8 @@ tools:context=".usbFragments.RimFragment">
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintBottom_toBottomOf="@+id/spinnerProtocol"
-                app:layout_constraintEnd_toStartOf="@+id/spinnerProtocol"
+                app:layout_constraintBottom_toBottomOf="@+id/spinnerDataProtocolNow"
+                app:layout_constraintEnd_toStartOf="@+id/spinnerDataProtocolNow"
                 app:layout_constraintStart_toEndOf="@+id/spinnerSpeedNow"
                 app:layout_constraintTop_toTopOf="@+id/textProtocol">
 
@@ -211,7 +227,7 @@ tools:context=".usbFragments.RimFragment">
                 app:layout_constraintTop_toBottomOf="@+id/lineSettingsPorts" />
 
             <Spinner
-                android:id="@+id/spinnerProtocol"
+                android:id="@+id/spinnerDataProtocolNow"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -227,7 +243,7 @@ tools:context=".usbFragments.RimFragment">
                 android:text="@string/protocol"
                 android:textColor="@color/textColor"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/spinnerProtocol"
+                app:layout_constraintStart_toStartOf="@+id/spinnerDataProtocolNow"
                 app:layout_constraintTop_toTopOf="@+id/textSpeedPortNow" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

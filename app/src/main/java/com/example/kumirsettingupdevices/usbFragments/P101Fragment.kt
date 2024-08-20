@@ -183,26 +183,18 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
         createAdapters()
 
-
-
-        // активация чтения
-        onClickReadSettingsDevice()
-        binding.P101.visibility = View.GONE
-
-
-
         return binding.root
     }
 
     override fun onDestroyView() {
 
-        val context: Context = requireContext()
+        /*val context: Context = requireContext()
         if (context is MainActivity) {
             context.mainFragmentWork(true)
 
             // возврат к at командам
             context.usb.setAtCommand(null)
-        }
+        }*/
 
         super.onDestroyView()
     }
@@ -481,14 +473,14 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         //  если данных подоорительно мало то выходим скорее всего это
         if (settingMap[getString(R.string.commandGetSerialNum)] == null && settingMap[getString(R.string.commandGetAbView) + "1"] == null) return
 
-        binding.P101.visibility = View.VISIBLE
+        /*binding.P101.visibility = View.VISIBLE
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.mainFragmentWork(false)
 
             // сменя ат команд на другие
             context.usb.setAtCommand(getString(R.string.commandGetSerialNum))
-        }
+        }*/
 
 
 

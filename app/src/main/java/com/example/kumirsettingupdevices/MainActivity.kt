@@ -207,13 +207,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             binding = MainActivityBinding.inflate(layoutInflater)
             setContentView(binding.root)
 
-            val mainFragment = MainFragment()
 
+            // создание главного фрагмента (отображается при открытии)
+            val mainFragment = MainFragment()
             val fragmentManager = supportFragmentManager
             val transaction = fragmentManager.beginTransaction()
-
             // Новый фрагент
-            transaction.replace(binding.fragmentContainerMainContent.id, mainFragment)
+            transaction.replace(binding.fragmentContaineContent.id, mainFragment)
             //transaction.addToBackStack("MainFragment")
             transaction.commit()
 
@@ -288,32 +288,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             usbDevice?.let {
                 connectToUsbDevice(usbDevice)
             }
-
-            binding.fragmentContaineContent.visibility = View.GONE
-
-            // проверка если человек на активности которая отображается то убераем MainFragment
-            Thread {
-                while (true) {
-                    if (binding.fragmentContainerMainContent.visibility == View.VISIBLE &&
-                        binding.fragmentContaineContent.visibility == View.VISIBLE) {
-
-                        // в главном потоке убераем оплошность
-                        runOnUiThread {
-                            mainFragmentWork(false)
-                        }
-
-                    } else if (binding.fragmentContainerMainContent.visibility == View.GONE &&
-                        binding.fragmentContaineContent.visibility == View.GONE) {
-                        // в главном потоке убераем оплошность
-                        runOnUiThread {
-                            binding.fragmentContainerMainContent.visibility = View.VISIBLE
-                        }
-                    }
-
-                    // задержка
-                    Thread.sleep(50)
-                }
-            }.start()
 
 
 
@@ -716,7 +690,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val dt112 = SensorDT112Fragment()
         createSettingFragment(dt112)
 
-        mainFragmentWork(false)
     }
 
 
@@ -854,21 +827,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                     // Новый фрагент
                     transaction.replace(binding.fragmentContaineContent.id, fragment)
-                    //transaction.addToBackStack("SettingDeviceFragment")
                     transaction.commit()
-
-                    // для того что бы сразу не отображать перед чтением данные
-                    /*if (fragment is ACCB030CoreFragment || fragment is M32Fragment ||
-                        fragment is M32DFragment || fragment is M32LiteFragment ||
-                        fragment is P101Fragment || fragment is PM81Fragment) {
-
-                        mainFragmentWork(true)
-                        fragment.view?.visibility = View.GONE
-                    }*/
-                    /*else {*/
-                        mainFragmentWork(false)
-                        binding.fragmentContaineContent.visibility = View.VISIBLE
-                   /* }*/
 
                     if (fragment is UsbFragment) {
                         curentFragmentComProtocol = fragment.usbCommandsProtocol
@@ -880,20 +839,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                 // Новый фрагент
                 transaction.replace(binding.fragmentContaineContent.id, fragment)
-                //transaction.addToBackStack("SettingDeviceFragment")
                 transaction.commit()
-
-                // для того что бы сразу не отображать перед чтением данные
-                /*if (fragment is ACCB030CoreFragment || fragment is M32Fragment ||
-                    fragment is M32DFragment || fragment is M32LiteFragment ||
-                    fragment is P101Fragment || fragment is PM81Fragment) {
-
-                    mainFragmentWork(true)
-                    //fragment.view?.visibility = View.GONE
-                } else {*/
-                    mainFragmentWork(false)
-                    binding.fragmentContaineContent.visibility = View.VISIBLE
-                /*}*/
 
                 if (fragment is UsbFragment) {
                     curentFragmentComProtocol = fragment.usbCommandsProtocol
@@ -903,14 +849,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         } else {
             showAlertDialog(getString(R.string.UsbNoneConnectDevice))
         }
-    }
-
-    fun mainFragmentWork(flag: Boolean) {
-        if (flag)
-            binding.fragmentContainerMainContent.visibility = View.VISIBLE
-        else
-            binding.fragmentContainerMainContent.visibility = View.GONE
-
     }
 
 

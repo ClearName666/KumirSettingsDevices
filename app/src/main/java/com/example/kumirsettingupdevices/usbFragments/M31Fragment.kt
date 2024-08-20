@@ -176,7 +176,7 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                 usbCommandsProtocol.flagWorkChackSignal = false
                 usbCommandsProtocol.threadChackSignalEnfora.interrupt()
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
 
 
@@ -360,22 +360,9 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         binding.textVersionFirmware.text = version
 
         // вывод настроек
-        //binding.APN.text = settingMap[getString(R.string.commandGetApnEnforaM31)]
 
         val loginPassword: List<String>? = settingMap[getString(R.string.commandGetUsernamePassword)]?.
         substringAfter("\"")?.substringBefore("\"")?.split(",")
-
-        /*if (settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false) {
-            binding.login.text = loginPassword?.get(0) ?: ""
-            binding.password.text = loginPassword?.get(1) ?: ""
-        }*/
-
-        /*binding.server1.text = settingMap[getString(R.string.commandServer1EnforaOrM31)]
-        binding.server2.text = settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
-            substringAfter("02, 1,")?.substringBefore("\n")
-        binding.timeout.text = settingMap[getString(R.string.commandGetPadTimeout)]
-        binding.buffer.text = settingMap[getString(R.string.commandGetPadBlockSize)]*/
-
 
 
         // вывод настроек в inputы

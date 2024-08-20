@@ -211,19 +211,15 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
-        // активация чтения
-        onClickReadSettingsDevice()
-        binding.M32.visibility = View.GONE
-
         return binding.root
     }
 
     override fun onDestroyView() {
         val context: Context = requireContext()
 
+        // выключение ат команд
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
-            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -413,6 +409,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
+
 
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки

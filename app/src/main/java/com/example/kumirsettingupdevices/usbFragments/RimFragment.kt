@@ -118,7 +118,8 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
         binding.spinnerSpeed.adapter = adapterSelectSpeed
         binding.spinnerSpeedNow.adapter = adapterSelectSpeed
 
-        binding.spinnerProtocol.adapter = adapterSelectProtocol
+        binding.spinnerDataProtocolNow.adapter = adapterSelectProtocol
+        binding.spinnerDataProtocol.adapter = adapterSelectProtocol
     }
 
 
@@ -155,8 +156,14 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                 binding.inputPasswordNow.text.toString()[5].code.toByte()
             )
 
+        // байт протокола с которым будем ориться
+        val protocolByte =
+            if (binding.spinnerDataProtocol.selectedItem == getString(R.string.rs485)) 0x00.toByte()
+            else 0x40.toByte()
+
+
         // если выбран rs485 то
-        if (binding.spinnerProtocol.selectedItem.toString() == getString(R.string.rs485))
+        if (binding.spinnerDataProtocolNow.selectedItem.toString() == getString(R.string.rs485))
         {
             // поток для отправки данных
             binding.loadMenuProgress.visibility = View.VISIBLE
@@ -183,7 +190,7 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                             0x03.toByte(),
                             0x04.toByte(),
                             binding.inputAddress.text.toString().toInt().toByte(),
-                            binding.spinnerSpeed.selectedItemPosition.toByte()
+                            (binding.spinnerSpeed.selectedItemPosition.toByte() or protocolByte)
                         ),
                         this,
                         true
@@ -217,7 +224,7 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                             0x03.toByte(),
                             0x04.toByte(),
                             binding.inputAddress.text.toString().toInt().toByte(),
-                            (binding.spinnerSpeed.selectedItemPosition.toByte() or 0x40.toByte())
+                            (binding.spinnerSpeed.selectedItemPosition.toByte() or protocolByte)
                         ),
                         this,
                         true
@@ -295,6 +302,7 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                 // помещяем из новых в тикущие для удобства
                 binding.inputAddressNow.setText(binding.inputAddress.text.toString())
                 binding.spinnerSpeedNow.setSelection(binding.spinnerSpeed.selectedItemPosition)
+                binding.spinnerDataProtocolNow.setSelection(binding.spinnerDataProtocol.selectedItemPosition)
 
                 showAlertDialog(getString(R.string.sucLoadRim))
             } else if (data == "error_password") {

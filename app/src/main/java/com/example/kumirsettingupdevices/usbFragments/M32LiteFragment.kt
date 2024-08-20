@@ -63,9 +63,7 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
         // вывод названия типа устройства
@@ -127,19 +125,14 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             showAlertDialog(getString(R.string.nonWriteSetting))
         }
 
-        // активация чтения
-        onClickReadSettingsDevice()
-        binding.M32Lite.visibility = View.GONE
-
         return binding.root
     }
 
     override fun onDestroyView() {
         val context: Context = requireContext()
-
+        // отключение ат команд
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
-            context.mainFragmentWork(true)
         }
 
         super.onDestroyView()
@@ -299,12 +292,7 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     // функция для вставки данных настроек устройсва
     override fun printSettingDevice(settingMap: Map<String, String>) {
 
-        binding.M32Lite.visibility = View.VISIBLE
         val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.mainFragmentWork(false)
-        }
-
 
         // -------------активайия кнопки после прочтения-------------
         // перекраска в красный цвет кнопки загрузки

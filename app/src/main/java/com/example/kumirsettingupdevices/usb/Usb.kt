@@ -54,6 +54,10 @@ class Usb(private val context: Context) {
     // поток для usb
     private val executorUsb: ExecutorService = Executors.newSingleThreadExecutor()
 
+    private lateinit var threadAtCommand: Thread
+    private var flagActivThreadATCommand: Boolean = false
+
+
     var flagAtCommandYesNo: Boolean = false
 
     private var flagAtCommand: Boolean = true
@@ -303,6 +307,7 @@ class Usb(private val context: Context) {
     fun onClear() {
         flagReadDsrCts = false
         flagAtCommand = false
+        flagActivThreadATCommand = false
         dsrState = false
         ctsState = false
         connection?.close()
@@ -473,43 +478,33 @@ class Usb(private val context: Context) {
                     deviceUsb = curentDevice
                     curentDeviceName = curentDevice.deviceId.toString()
 
-                    // Инициализация USB и получение serialPort
-                    /*val driver = UsbSerialProber.getDefaultProber().probeDevice(deviceUsb)
-                    if (driver != null) {
-                        val ports = driver.ports
-                        if (ports.isNotEmpty()) {
-                            serialPort = ports[0] // Используем первый доступный порт
-                            try {
-                                serialPort?.open(connection)
-                                Log.d("XModemSender", "Serial port успешно открыт")
-                            } catch (e: IOException) {
-                                Log.e("XModemSender", "Ошибка при открытии serial port", e)
-                            }
-                        } else {
-                            Log.e("XModemSender", "Нет доступных портов")
-                        }
-                    } else {
-                        Log.e("XModemSender", "Не удалось найти драйвер для устройства USB")
-                    }*/
-
                     // поток для отправки в фоновом режиме at команды
-                    Thread {
-                        flagAtCommand = true
-                        while (flagAtCommand) {
-                            while (flagAtCommandYesNo) {
-                                Thread.sleep(TIMEOUT_MOVE_AT)
-                                if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
-                                    writeDevice(at, false)
-                                    Log.d("atSand", at)
-                                    flagIgnorRead = true
-                                    Thread.sleep(TIMEOUT_IGNORE_AT)
-                                    flagIgnorRead = false
+                    if (!flagActivThreadATCommand) {
+                        threadAtCommand = Thread {
+                            Log.d("threadInfo", "AT поток создан")
+                            flagAtCommand = true
+                            end@while (flagAtCommand) {
+                                while (flagAtCommandYesNo) {
+                                    Thread.sleep(TIMEOUT_MOVE_AT)
+                                    if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
+                                        writeDevice(at, false)
+                                        Log.d("atSand", at)
+                                        flagIgnorRead = true
+                                        Thread.sleep(TIMEOUT_IGNORE_AT)
+                                        flagIgnorRead = false
+                                    } else { // нету подключение вылет из потока
+                                        break@end
+                                    }
                                 }
+                                Thread.sleep(TIMEOUT_MOVE_AT / 30)
                             }
-                            Thread.sleep(TIMEOUT_MOVE_AT / 30)
+
                         }
 
-                    }.start()
+                        threadAtCommand.start()
+                        flagActivThreadATCommand = true
+                    }
+
 
                     // постоянная проверка подключения к устройству
                     Thread {
