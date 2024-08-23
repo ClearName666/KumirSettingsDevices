@@ -160,7 +160,8 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             binding.switchCastomSet.setBackgroundResource(R.color.dangerous)
         }
 
-
+        // устанавливаем по умолчанию автоматический поиск
+        binding.switchSearchSpeed.isChecked = true
 
         return binding.root
     }
@@ -286,6 +287,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         val adapterSelectBitData = ArrayAdapter(requireContext(),
             R.layout.item_spinner, itemSelectBitData)
 
+
         adapterPortDeviceAccounting.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
         adapterSelectSpeed.setDropDownViewResource(
@@ -302,6 +304,11 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         binding.spinnerSelectParityPort1.adapter = adapterSelectParity
         binding.spinnerSelectStopBitPort1.adapter = adapterSelectStopBit
         binding.spinnerBitDataPort1.adapter = adapterSelectBitData
+
+        binding.spinnerSpeedCurrent.adapter = adapterSelectSpeed
+        binding.spinnerSelectParityCurrent.adapter = adapterSelectParity
+        binding.spinnerSelectStopBitCurrent.adapter = adapterSelectStopBit
+        binding.spinnerBitDataCurrent.adapter = adapterSelectBitData
     }
 
 
@@ -489,7 +496,21 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             getString(R.string.commandGetUsernamePassword)
         )
 
-        usbCommandsProtocol.readSettingDevice(command, requireContext(), this, true)
+        // если нужно искать скорость
+        if (binding.switchSearchSpeed.isChecked)
+            usbCommandsProtocol.readSettingDevice(command, requireContext(), this, true)
+        else { // если не нужно искть скорость
+            val context: MainActivity = (requireContext() as MainActivity)
+
+            context.usb.onSerialSpeed(binding.spinnerSpeedCurrent.selectedItemPosition)
+            context.usb.onSerialParity(binding.spinnerSelectParityCurrent.selectedItemPosition)
+            context.usb.onSerialStopBits(binding.spinnerSelectStopBitCurrent.selectedItemPosition)
+            context.usb.onSelectUumBit(
+                binding.spinnerBitDataCurrent.selectedItemPosition == 0
+            )
+
+            usbCommandsProtocol.readSettingDevice(command, requireContext(), this, false)
+        }
     }
 
     override fun writeSettingStart() {

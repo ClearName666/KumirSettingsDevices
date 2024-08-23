@@ -18,7 +18,7 @@
     <string name="errorTimeOutSand">Время ожидание ответа слишком большое, наверное вы отсоединили модем!</string>
     <string name="errorVersionModem">Похоже что ваша версия модема не поддерживает диагностику (</string>
     <string name="notValidData">Похоже что пришедщие данные не валидны!</string>
-    <string name="notAnonents">К сожалению нету абонентов которые вы можете прочесть с этого устройства! Вы можете добавить их нажав кнопку еще раз!</string>
+    <string name="notAnonents">На этом устройтве нет записаных абонентов!</string>
     <string name="notValidPasswordP101">Пароль не должен содержать символы отличеные от ASCII, должен состоять из 6 символов!</string>
     <string name="notValidRangeP101">Интервал должн быть в диапазоне от 10 до 200</string>
     <string name="notIdDeviceP101">Номер прибора может быть только: 234, 236, 204, 230</string>
@@ -70,6 +70,7 @@
     <string name="nonIniFile">Выберите ini файл!</string>
     <string name="nonValidIniFile">Ваш файл ini не валиден!</string>
     <string name="delFileYesNo">Вы уверены что хотите удалить шаблон </string>
+    <string name="delObanent">Вы уверены что хотите удалить обанента- </string>
     <string name="readAlready">Вы уже прочли устройство</string>
 
     <string name="errorValidPole">Не все поля введены валидно!</string>
@@ -104,7 +105,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.6.65</string>
+    <string name="versionApp">Версия: 1.6.67</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -289,6 +290,7 @@
     <string name="communicationOperatorTitle">Оператор мобильной связи: </string>
     <string name="LevelSignalTitle">Уровень сигнала: </string>
     <string name="errorsSignalTitle">Ошибки сигнала: </string>
+    <string name="errorNotFindSpeedRim">Не удалось найти скорость, проверьте верно ли вы указали адрес и протокол!</string>
     <string name="ipAdressTitle">IP-адрес</string>
 
 
@@ -638,15 +640,15 @@
     <string name="forExportIniTitle">Для экспорта ini файлов нажмите</string>
     <string name="forimportIniTitle">Для загрузки ini файла нажмите</string>
     <string name="driverTitle">Драйвер:</string>
-    <string name="sizeMemberTitle">Обьем памяти:</string>
+    <string name="sizeMemberTitle">Объём памяти:</string>
     <string name="addAbanentTitle">Добавить абанента</string>
     <string name="readAbanents">Получить абанентов</string>
-    <string name="numberAbanentTitle">Абанент номер:</string>
+    <string name="numberAbanentTitle">Абонент номер:</string>
     <string name="keyTitlee">Ключ</string>
     <string name="paramsTitle">Параметры:</string>
-    <string name="setPorsTitle">Настроки порта</string>
+    <string name="setPorsTitle">Настроки порта: </string>
     <string name="nameTitle">Имя</string>
-    <string name="numDevTitle">Номер прибора</string>
+    <string name="numDevTitle">Номер прибора: </string>
     <string name="range1Title">Интервал</string>
     <string name="adminPasswordTitle">Пароль администратора</string>
     <string name="password6Char">Пароль 6 символов</string>
@@ -685,6 +687,7 @@
     <string name="errorValidM32DKeeplive">Неверный Keeplive</string>
     <string name="errorValidM32DCtimeOut">Неверное время ожидания подключения</string>
     <string name="errorValidPortSim">Не верные настройки для порта</string>
+    <string name="errorValidSettingsToDevice">Настройки для данного устройства не верны! Попробуйте другие, попробуйте чекнуть документацию</string>
     <string name="loadDriver">Загрузить драйвер</string>
     <string name="loadingDriver">Загрузка драйвера</string>
     <string name="scanAddreses">Сканирование адресов</string>
@@ -704,6 +707,8 @@
     <string name="dialogStopScan">Вы точно уверены в том что вы хотите прикратить сканирование? Это может привести к непредвиденым ошибкам! Советую не делать! :)</string>
     <string name="rim">Рим</string>
     <string name="protocol">Протокол</string>
+    <string name="serchSpeed">Поиск скорости</string>
+
 
 
     <!--............................................................................-->

@@ -10,6 +10,7 @@ class RimUsb(val context: MainActivity, val usbCommandsProtocol: UsbCommandsProt
     companion object {
         const val TIME_WAIT_SWND_MAX: Int = 200
         const val ERROR_PASSWORD: Byte = 0x94.toByte()
+        const val ERROR_SETTINGS: Byte = 0x83.toByte()
     }
 
 
@@ -53,6 +54,8 @@ class RimUsb(val context: MainActivity, val usbCommandsProtocol: UsbCommandsProt
         context.runOnUiThread {
             if (context.curentDataByteAll.isNotEmpty() && context.curentDataByteAll[0] == ERROR_PASSWORD) {
                 dataShowInterface.showData("error_password")
+            } else if (context.curentDataByteAll.isNotEmpty() && context.curentDataByteAll[0] == ERROR_SETTINGS) {
+                dataShowInterface.showData("error_settings")
             } else {
                 if (flagMainSend) {
                     dataShowInterface.showData(if (flagSuc) "yes" else "no")

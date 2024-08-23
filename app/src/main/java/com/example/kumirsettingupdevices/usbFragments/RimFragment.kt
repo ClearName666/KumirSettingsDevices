@@ -32,6 +32,9 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
     companion object {
         private const val SIZE_PASSWORD: Int = 6
         val DEFAULT_PASSWORD = ByteArray(SIZE_PASSWORD) { 0x00.toByte() }
+
+        private const val SEARCH_SPEED_INDEX: Int = 5;
+        private const val MAX_TIME_WAIT_SEARCH_SPEED_ANSWER = 700L
     }
 
 
@@ -71,6 +74,9 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
 
         createAdapters()
 
+        binding.spinnerSpeedNow.setSelection(SEARCH_SPEED_INDEX)
+
+
 
         return binding.root
     }
@@ -95,8 +101,10 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
             getString(R.string.speed_9600),
             getString(R.string.speed_19200),
             getString(R.string.speed_38400),
-            getString(R.string.speed_57600)
+            getString(R.string.speed_57600),
+            getString(R.string.serchSpeed)
         )
+
 
         val itemSelectProtocol = listOf(
             getString(R.string.rs485),
@@ -104,10 +112,15 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
         )
 
 
-        val adapterSelectSpeed = ArrayAdapter(requireContext(),
+        val adapterSelectSpeedNow = ArrayAdapter(requireContext(),
             R.layout.item_spinner, itemSelectSpeed)
+        val adapterSelectSpeed = ArrayAdapter(requireContext(),
+            R.layout.item_spinner, itemSelectSpeed.dropLast(1)) // dropLast т к поиск скорости ненужен в записывемых скоростях
         val adapterSelectProtocol = ArrayAdapter(requireContext(),
             R.layout.item_spinner, itemSelectProtocol)
+
+        adapterSelectSpeedNow.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
 
         adapterSelectSpeed.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
@@ -115,8 +128,10 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
         adapterSelectProtocol.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
 
+
+
         binding.spinnerSpeed.adapter = adapterSelectSpeed
-        binding.spinnerSpeedNow.adapter = adapterSelectSpeed
+        binding.spinnerSpeedNow.adapter = adapterSelectSpeedNow
 
         binding.spinnerDataProtocolNow.adapter = adapterSelectProtocol
         binding.spinnerDataProtocol.adapter = adapterSelectProtocol
@@ -134,7 +149,16 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
         // проверка на валидность
         if (!validAll()) return
 
-        (context as MainActivity).usb.onSerialSpeed(binding.spinnerSpeedNow.selectedItemPosition + 4)
+        // проверяем выставлено ли значение поиска скаорости
+        if (binding.spinnerSpeedNow.selectedItemPosition != SEARCH_SPEED_INDEX)
+            (context as MainActivity).usb.onSerialSpeed(binding.spinnerSpeedNow.selectedItemPosition + 4)
+        else {
+            // посик скорости и выход потому что когда она найдется эта функция автоматически ее включет
+            searchSpeed()
+            return
+        }
+
+
 
         val rimUsb = RimUsb((requireContext() as MainActivity), usbCommandsProtocol)
 
@@ -196,7 +220,6 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                         true
                     )
                 }
-
             }.start()
         } else { // modbus
             binding.loadMenuProgress.visibility = View.VISIBLE
@@ -262,6 +285,122 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
     }
 
 
+    private fun searchSpeed() {
+        val address: Byte = binding.inputAddressNow.text.toString().toByte()
+
+        // отккрываем згрузочное меню
+        binding.loadMenuProgress.visibility = View.VISIBLE
+        binding.fonLoadMenu.visibility = View.VISIBLE
+        binding.textLoadMenu.text = getString(R.string.serchSpeed)
+
+        val context: MainActivity = (requireContext() as MainActivity)
+
+        // если протокол 485 то
+        if (binding.spinnerDataProtocolNow.selectedItem == getString(R.string.rs485)) {
+
+            // поток поиска скорости при протоколе
+            Thread {
+
+                context.usb.onSerialParity(3) // переходим на четность PARITY_MARK
+                Thread.sleep(500)
+
+                var speedFind = -1;
+                end@for (i in 0..4) {
+                    for (p in 0..1) { // 2 попытки
+                        // очищение буфера приема
+                        context.curentDataByteAll = byteArrayOf()
+
+                        context.usb.onSerialSpeed(i + 4) // +4 потому что скорости начинаются с 4800
+
+                        // отправка адреса для того что бы посмотреть ответит ли кто то
+                        context.usb.writeDevice("", false, byteArrayOf(address), false)
+
+                        // ожидание ответа
+                        val startTime = System.currentTimeMillis()
+                        while (System.currentTimeMillis() - startTime < MAX_TIME_WAIT_SEARCH_SPEED_ANSWER) {
+                            if (context.curentDataByteAll.isNotEmpty()) {
+                                speedFind = i
+                                break@end
+                            }
+                        }
+                    }
+                }
+
+                // если поиск прошел успешно
+                context.runOnUiThread {
+                    if (speedFind != -1) {
+                        binding.spinnerSpeedNow.setSelection(speedFind)
+                        writeSettingStart() // начинаем запись
+                    } else {
+                        // не успешно поэтому кидаем сообщение что скорость не удалось найти
+                        showAlertDialog(getString(R.string.errorNotFindSpeedRim))
+
+                        // закрытие меню
+                        binding.loadMenuProgress.visibility = View.GONE
+                        binding.fonLoadMenu.visibility = View.GONE
+                    }
+
+                    binding.textLoadMenu.text = getString(R.string.sand)
+                }
+            }.start()
+        } else {
+
+            val passwordByteSand = byteArrayOf(    // команда ввода пароля]
+                    0x14.toByte(),
+                    0x08.toByte(),
+                    binding.inputPasswordNow.text.toString()[0].code.toByte(),
+                    binding.inputPasswordNow.text.toString()[1].code.toByte(),
+                    binding.inputPasswordNow.text.toString()[2].code.toByte(),
+                    binding.inputPasswordNow.text.toString()[3].code.toByte(),
+                    binding.inputPasswordNow.text.toString()[4].code.toByte(),
+                    binding.inputPasswordNow.text.toString()[5].code.toByte()
+                )
+            Thread {
+
+                context.usb.onSerialParity(3) // переходим на четность PARITY_NONE
+                Thread.sleep(500)
+
+                var speedFind = -1;
+                end@for (i in 0..4) {
+                    for (p in 0..1) { // 2 попытки
+                        // очищение буфера приема
+                        context.curentDataByteAll = byteArrayOf()
+
+                        context.usb.onSerialSpeed(i + 4) // +4 потому что скорости начинаются с 4800
+
+                        // отправка адреса для того что бы посмотреть ответит ли кто то
+                        context.usb.writeDevice("", false, byteArrayOf(address) + passwordByteSand, true)
+
+                        // ожидание ответа
+                        val startTime = System.currentTimeMillis()
+                        while (System.currentTimeMillis() - startTime < MAX_TIME_WAIT_SEARCH_SPEED_ANSWER) {
+                            if (context.curentDataByteAll.isNotEmpty()) {
+                                speedFind = i
+                                break@end
+                            }
+                        }
+                    }
+                }
+
+                // если поиск прошел успешно
+                context.runOnUiThread {
+                    if (speedFind != -1) {
+                        binding.spinnerSpeedNow.setSelection(speedFind)
+                        writeSettingStart() // начинаем запись
+                    } else {
+                        // не успешно поэтому кидаем сообщение что скорость не удалось найти
+                        showAlertDialog(getString(R.string.errorNotFindSpeedRim))
+
+                        // закрытие меню
+                        binding.loadMenuProgress.visibility = View.GONE
+                        binding.fonLoadMenu.visibility = View.GONE
+                    }
+
+                    binding.textLoadMenu.text = getString(R.string.sand)
+                }
+            }.start()
+        }
+    }
 
     private fun showAlertDialog(text: String) {
         val context: Context = requireContext()
@@ -307,8 +446,10 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                 showAlertDialog(getString(R.string.sucLoadRim))
             } else if (data == "error_password") {
                 showAlertDialog(getString(R.string.errorPasswordRim))
-            }
-            else showAlertDialog(getString(R.string.errorLoadRim))
+            } else if (data == "error_settings") {
+                showAlertDialog(getString(R.string.errorValidSettingsToDevice))
+            } else
+                showAlertDialog(getString(R.string.errorLoadRim))
 
 
             flagPermissionShow = false

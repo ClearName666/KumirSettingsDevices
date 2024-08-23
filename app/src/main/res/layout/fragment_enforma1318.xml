@@ -31,6 +31,95 @@
                 android:layout_marginEnd="20dp"
                 android:visibility="visible">
 
+                <Spinner
+                    android:id="@+id/spinnerSelectParityCurrent"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textParityCurrent" />
+
+                <TextView
+                    android:id="@+id/textParityCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/parityTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataCurrent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataCurrent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerBitDataCurrent" />
+
+                <Spinner
+                    android:id="@+id/spinnerSelectStopBitCurrent"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textStopBitCurrent" />
+
+                <TextView
+                    android:id="@+id/textStopBitCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/stopDitTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerSelectStopBitCurrent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerSelectStopBitCurrent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSpeedCurrent" />
+
+                <Spinner
+                    android:id="@+id/spinnerBitDataCurrent"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    app:layout_constraintBottom_toBottomOf="@+id/spinnerSpeedCurrent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/spinnerSpeedCurrent" />
+
+                <TextView
+                    android:id="@+id/textBitCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bitDataTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toTopOf="@+id/spinnerSpeedCurrent"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataCurrent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerBitDataCurrent"
+                    app:layout_constraintTop_toTopOf="@+id/textSpeedPortCurrent" />
+
+                <Spinner
+                    android:id="@+id/spinnerSpeedCurrent"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSpeedPortCurrent" />
+
+                <TextView
+                    android:id="@+id/textSpeedPortCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/speedTitle"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintEnd_toEndOf="@+id/spinnerSpeedCurrent"
+                    app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
+                    app:layout_constraintTop_toBottomOf="@+id/lineCurrentSettings" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lineCurrentSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/fon2Element"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textCurentSettings">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <Button
                     android:id="@+id/buttonSavePreset"
                     android:layout_width="wrap_content"
@@ -372,14 +461,14 @@
                     android:id="@+id/textSettingPorts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="60dp"
                     android:text="@string/settingInterfTitle"
                     android:textColor="@color/textColor"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@+id/lineSettingsPort1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/switchSearchSpeed" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/DisActivPort1SetiingsPriset"
@@ -426,6 +515,28 @@
                     app:layout_constraintTop_toTopOf="@+id/textAPNName">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textCurentSettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/settingInterfTitleNow"
+                    android:textColor="@color/textColor"
+                    android:textSize="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/switchSearchSpeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/serchSpeed"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitCurrent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

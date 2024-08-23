@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@color/fun3Element"
+        android:background="@drawable/rounded_background2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutNumAbanent"
@@ -72,7 +72,7 @@
             android:background="@drawable/rounded_background3"
             app:layout_constraintEnd_toEndOf="@+id/lalyoutName"
             app:layout_constraintStart_toStartOf="@+id/lalyoutName"
-            app:layout_constraintTop_toBottomOf="@+id/lalyoutName" >
+            app:layout_constraintTop_toBottomOf="@+id/lalyoutName">
 
             <TextView
                 android:id="@+id/textNumDevice"
@@ -94,7 +94,7 @@
             android:background="@drawable/rounded_background3"
             app:layout_constraintEnd_toEndOf="@+id/lalyoutNumDevice"
             app:layout_constraintStart_toStartOf="@+id/lalyoutNumDevice"
-            app:layout_constraintTop_toBottomOf="@+id/lalyoutNumDevice" >
+            app:layout_constraintTop_toBottomOf="@+id/lalyoutNumDevice">
 
             <TextView
                 android:id="@+id/textDriver"
@@ -116,7 +116,7 @@
             android:background="@drawable/rounded_background3"
             app:layout_constraintEnd_toEndOf="@+id/lalyoutDriver"
             app:layout_constraintStart_toStartOf="@+id/lalyoutDriver"
-            app:layout_constraintTop_toBottomOf="@+id/lalyoutDriver" >
+            app:layout_constraintTop_toBottomOf="@+id/lalyoutDriver">
 
             <TextView
                 android:id="@+id/textSettingsRS485"
@@ -138,7 +138,7 @@
             android:background="@drawable/rounded_background3"
             app:layout_constraintEnd_toEndOf="@+id/lalyoutSettingsRS485"
             app:layout_constraintStart_toStartOf="@+id/lalyoutSettingsRS485"
-            app:layout_constraintTop_toBottomOf="@+id/lalyoutSettingsRS485" >
+            app:layout_constraintTop_toBottomOf="@+id/lalyoutSettingsRS485">
 
             <TextView
                 android:id="@+id/textParams"
@@ -167,10 +167,9 @@
             android:id="@+id/imageEdit"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginTop="10dp"
             android:clickable="true"
             app:layout_constraintStart_toStartOf="@+id/lalyoutParams"
-            app:layout_constraintTop_toBottomOf="@+id/lalyoutParams"
+            app:layout_constraintTop_toTopOf="@+id/imageDel"
             app:srcCompat="@drawable/edit_svgrepo_com" />
 
         <ImageView

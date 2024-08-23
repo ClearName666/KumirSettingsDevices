@@ -29,6 +29,7 @@ class Usb(private val context: Context) {
         // при попытки повторного подключения ...
         const val CNT_RECONNECT_DEVISE: Int = 700
         const val TIMEOUT_RECONNECT: Long = 10
+        private const val RECONNECT_TIMEOUT = 2000L
 
 
         // максимальное количество датчиков
@@ -56,6 +57,7 @@ class Usb(private val context: Context) {
 
     private lateinit var threadAtCommand: Thread
     private var flagActivThreadATCommand: Boolean = false
+    private var flagActivThreadChaeckConnection: Boolean = false
 
 
     var flagAtCommandYesNo: Boolean = false
@@ -251,7 +253,7 @@ class Usb(private val context: Context) {
     }
 
     // проверка подклюения девайса к устройству
-    fun checkConnectToDevice(show: Boolean = false, at: Boolean = false): Boolean {
+    fun checkConnectToDevice(show: Boolean = false, at: Boolean = false, reconnect: Boolean = true): Boolean {
         if (context is UsbActivityInterface) {
             val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
             val devises: HashMap<String, UsbDevice> = usbManager.deviceList
@@ -261,18 +263,22 @@ class Usb(private val context: Context) {
                     return true
                 }
             }
+
             onClear()
 
             // поток попуток пповторного подключения
-            Thread {
-                for (i in 0..CNT_RECONNECT_DEVISE) {
-                    Thread.sleep(TIMEOUT_RECONNECT)
-                    if (attemptConnect()) {
-                        if (at) flagAtCommandYesNo = true
-                        break
+            if (reconnect) {            // если выставлен флаг переподключения то пытаемся переподключиться
+                Thread {
+                    for (i in 0..CNT_RECONNECT_DEVISE) {
+                        Thread.sleep(TIMEOUT_RECONNECT)
+                        if (attemptConnect()) {
+                            if (at) flagAtCommandYesNo = true
+                            break
+                        }
                     }
-                }
-            }.start()
+                }.start()
+            }
+
 
             // отобрадения статуса отключено
             if (show) {
@@ -307,7 +313,10 @@ class Usb(private val context: Context) {
     fun onClear() {
         flagReadDsrCts = false
         flagAtCommand = false
+
         flagActivThreadATCommand = false
+        flagActivThreadChaeckConnection = false
+
         dsrState = false
         ctsState = false
         connection?.close()
@@ -351,6 +360,7 @@ class Usb(private val context: Context) {
                         }
 
                     Log.d("usbData", "write: ${bytesToSend.toHexString()} size = ${bytesToSend.size}")
+                    Log.d("usbData", "write_message: $message")
 
                     when (ConstUsbSettings.numDsrCts) {
                         0 -> usbSerialDevice?.write(bytesToSend)
@@ -365,7 +375,6 @@ class Usb(private val context: Context) {
                             }
                         }
                     }
-
 
                     if (flagPrint) {
                         printUIThread(message, bytesToSend)
@@ -390,6 +399,7 @@ class Usb(private val context: Context) {
             }
         }
     }
+
     // отправка сообщений в ui радительский поток
     private fun printWithdrawalsShow(msg: String) {
         if (context is UsbActivityInterface) {
@@ -399,26 +409,37 @@ class Usb(private val context: Context) {
         }
     }
 
-    fun reconnect() {
+    // переподключение для п101
+    fun reconnectToDevice() {
         executorUsb.execute {
-            onClear() // очищение
 
-            checkConnectToDevice(at = true)
+            onClear() // очищение подключения
+            Thread.sleep(2000)
+
+            // повторное подключение
+            attemptConnect()
         }
     }
 
-    fun setAtCommand(commandAt: String?) {
-        at = commandAt ?: "AT"
+    // ожиадание подключения по usb
+    fun waitConnection(): Boolean {
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < RECONNECT_TIMEOUT) {
+            if (checkConnectToDevice()) return true
+            Thread.sleep(2)
+        }
+
+        return false
     }
 
     // регистрация широковещятельного приемника
     @OptIn(ExperimentalStdlibApi::class)
-    fun connect(connection: UsbDeviceConnection?, curentDevice: UsbDevice) {
+    fun connect(connection: UsbDeviceConnection?, currentDevice: UsbDevice) {
         try {
             if (connection != null) {
                 try {
                     usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(
-                        curentDevice, connection)
+                        currentDevice, connection)
                     usbSerialDevice?.open()
 
                     usbSerialDevice?.let {
@@ -475,8 +496,8 @@ class Usb(private val context: Context) {
                     }
 
                     onStartSerialSetting()
-                    deviceUsb = curentDevice
-                    curentDeviceName = curentDevice.deviceId.toString()
+                    deviceUsb = currentDevice
+                    curentDeviceName = currentDevice.deviceId.toString()
 
                     // поток для отправки в фоновом режиме at команды
                     if (!flagActivThreadATCommand) {
@@ -507,17 +528,21 @@ class Usb(private val context: Context) {
 
 
                     // постоянная проверка подключения к устройству
-                    Thread {
-                        if (context is UsbActivityInterface) {
-                            while (checkConnectToDevice(true)) {
-                                Thread.sleep(TIMEOUT_CHECK_CONNECT)
+                    if (!flagActivThreadChaeckConnection) {
+                        Thread {
+                            if (context is UsbActivityInterface) {
+                                while (checkConnectToDevice(true)) {
+                                    Thread.sleep(TIMEOUT_CHECK_CONNECT)
+                                }
                             }
-                        }
-                    }.start()
+                        }.start()
+                        flagActivThreadChaeckConnection = true
+                    }
+
 
                     (context as Activity).runOnUiThread {
                         if (context is UsbActivityInterface) {
-                            context.showDeviceName(curentDevice.productName.toString())
+                            context.showDeviceName(currentDevice.productName.toString())
                         }
                     }
 
