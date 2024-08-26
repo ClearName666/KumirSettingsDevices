@@ -5,11 +5,16 @@ plugins {
 }
 
 android {
-    namespace = "com.example.kumirsettingupdevices"
+    namespace = "com.kumir.settingupdevices"
     compileSdk = 34
 
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
     defaultConfig {
-        applicationId = "com.example.kumirsettingupdevices"
+        applicationId = "com.kumir.settingupdevices"
         minSdk = 29
         targetSdk = 34
         versionCode = 1

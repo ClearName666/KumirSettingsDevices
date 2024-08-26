@@ -36,6 +36,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/btn_dropdown"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textParityCurrent" />
 
@@ -46,6 +47,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/parityTitle"
                     android:textColor="@color/textColor"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataCurrent"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataCurrent"
                     app:layout_constraintTop_toBottomOf="@+id/spinnerBitDataCurrent" />
@@ -55,6 +57,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/btn_dropdown"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textStopBitCurrent" />
 
@@ -65,6 +68,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/stopDitTitle"
                     android:textColor="@color/textColor"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerSelectStopBitCurrent"
                     app:layout_constraintStart_toStartOf="@+id/spinnerSelectStopBitCurrent"
                     app:layout_constraintTop_toBottomOf="@+id/spinnerSpeedCurrent" />
@@ -74,6 +78,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/btn_dropdown"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/spinnerSpeedCurrent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/spinnerSpeedCurrent" />
@@ -84,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bitDataTitle"
                     android:textColor="@color/textColor"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/spinnerSpeedCurrent"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerBitDataCurrent"
                     app:layout_constraintStart_toStartOf="@+id/spinnerBitDataCurrent"
@@ -94,6 +100,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/btn_dropdown"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textSpeedPortCurrent" />
 
@@ -104,6 +111,7 @@
                     android:layout_marginTop="6dp"
                     android:text="@string/speedTitle"
                     android:textColor="@color/textColor"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerSpeedCurrent"
                     app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
                     app:layout_constraintTop_toBottomOf="@+id/lineCurrentSettings" />
@@ -533,7 +541,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/serchSpeed"
+                    android:text="@string/autodetectSettingsInterface"
+                    android:textColor="@color/textColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitCurrent" />

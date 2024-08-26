@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.5.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.5.2)" variant="fatal" version="8.5.2">
+
+    <issue
+        id="UnknownId"
+        message="The id &quot;`textInputIPAdressLayout`&quot; is not defined anywhere."
+        errorLine1="        app:layout_constraintBottom_toTopOf=&quot;@+id/textInputIPAdressLayout&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_a_c_c_b030_diag.xml"
+            line="16"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotSibling"
+        message="`@+id/lineSet` is not a sibling in the same `ConstraintLayout`"
+        errorLine1="        app:layout_constraintTop_toBottomOf=&quot;@+id/lineSet&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_a_c_c_b030_diag.xml"
+            line="108"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotSibling"
+        message="`@+id/recyclerItemOperators` is not a sibling in the same `ConstraintLayout`"
+        errorLine1="        app:layout_constraintStart_toStartOf=&quot;@+id/recyclerItemOperators&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_diag_p_m81.xml"
+            line="19"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotSibling"
+        message="`@+id/tabPresets` is not a sibling in the same `ConstraintLayout`"
+        errorLine1="                        app:layout_constraintTop_toBottomOf=&quot;@+id/tabPresets&quot; />"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_m32_d.xml"
+            line="712"
+            column="25"/>
+    </issue>
+
+</issues>

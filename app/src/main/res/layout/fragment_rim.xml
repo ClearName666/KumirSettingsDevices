@@ -18,17 +18,17 @@ tools:context=".usbFragments.RimFragment">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<TextView
-    android:id="@+id/serinerNumber"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="3dp"
-    android:text="@string/serinerNumber"
-    android:textColor="@color/textColor"
-    android:textSize="12sp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/lineSet" />
+    <TextView
+        android:id="@+id/serinerNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:text="@string/serinerNumber"
+        android:textColor="@color/textColor"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 
 <TextView
     android:id="@+id/textVersionFirmware"
@@ -42,16 +42,15 @@ tools:context=".usbFragments.RimFragment">
     app:layout_constraintStart_toEndOf="@+id/serinerNumber"
     app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/line2Set"
-    android:layout_width="match_parent"
-    android:layout_height="2dp"
-    android:layout_marginTop="3dp"
-    android:background="@color/fon2Element"
-    app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
-    tools:layout_editor_absoluteX="0dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/line2Set"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/fon2Element"
+        app:layout_constraintTop_toBottomOf="@+id/serinerNumber"
+        tools:layout_editor_absoluteX="0dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/futerSettingsDevice"
@@ -151,31 +150,13 @@ tools:context=".usbFragments.RimFragment">
                 app:layout_constraintTop_toBottomOf="@+id/layoutInputAddress" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutInputPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lineSettingsNet">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/password6Char" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutInputAddress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layoutInputPassword">
+                app:layout_constraintTop_toBottomOf="@+id/textNetSettings">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputAddress"
@@ -190,25 +171,23 @@ tools:context=".usbFragments.RimFragment">
                 android:id="@+id/layoutInputAddressNow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                app:layout_constraintBottom_toBottomOf="@+id/spinnerDataProtocolNow"
-                app:layout_constraintEnd_toStartOf="@+id/spinnerDataProtocolNow"
-                app:layout_constraintStart_toEndOf="@+id/spinnerSpeedNow"
-                app:layout_constraintTop_toTopOf="@+id/textProtocol">
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textSettingPorts">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputAddressNow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/addressNow"
+                    android:hint="@string/address"
                     android:inputType="number"
                     android:textColor="@color/textColor" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Spinner
                 android:id="@+id/spinnerSpeedNow"
-                android:layout_width="110dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:background="@android:drawable/btn_dropdown"
@@ -219,16 +198,16 @@ tools:context=".usbFragments.RimFragment">
                 android:id="@+id/textSpeedPortNow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/speedTitle"
                 android:textColor="@color/textColor"
                 app:layout_constraintEnd_toEndOf="@+id/spinnerSpeedNow"
                 app:layout_constraintStart_toStartOf="@+id/spinnerSpeedNow"
-                app:layout_constraintTop_toBottomOf="@+id/lineSettingsPorts" />
+                app:layout_constraintTop_toBottomOf="@+id/textInfoAddress" />
 
             <Spinner
                 android:id="@+id/spinnerDataProtocolNow"
-                android:layout_width="110dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="4dp"
@@ -313,9 +292,21 @@ tools:context=".usbFragments.RimFragment">
                 android:id="@+id/switchPasswordDefault"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:text="Пароль по умолчанию"
                 android:textColor="@color/textColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinnerSpeedNow" />
+
+            <TextView
+                android:id="@+id/textInfoAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/infoReferenceRimAddress"
+                android:textColor="@color/lineColorMain"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layoutInputAddressNow" />
 
