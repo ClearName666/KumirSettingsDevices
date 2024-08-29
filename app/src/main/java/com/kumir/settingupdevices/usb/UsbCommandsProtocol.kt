@@ -21,6 +21,10 @@ class UsbCommandsProtocol {
     var flagWorkRead: Boolean = false
     var flagWorkOneWire: Boolean = false
 
+    // флаг успешности последней операции записи
+    var flagSuccessfullyWrite = true
+
+
     // потоки
     lateinit var threadChackSignalEnfora: Thread
     lateinit var threadDiag: Thread
@@ -258,7 +262,7 @@ class UsbCommandsProtocol {
                     for (i in 1..CNT_SAND_COMMAND_OK) {
                         // очищение прошлых данных
                         context.curentData = ""
-                        context.curentDataByte = byteArrayOf()
+                        context.currentDataByteAll = byteArrayOf()
 
                         val dataSend: String = key + value
 
@@ -334,6 +338,8 @@ class UsbCommandsProtocol {
                         }
                     }
                 }
+
+                flagSuccessfullyWrite = !flagError
 
                 if (!flagError && saveFlag) {
 
@@ -1316,10 +1322,10 @@ class UsbCommandsProtocol {
 
         // проверка на команду загрузки драйвера
         if (command == context.getString(R.string.commandSetDriverMode)) {
-            if (context.curentDataByte.isEmpty() || context.curentDataByte[0] != 0x15.toByte()) {
+            if (context.currentDataByteAll.isEmpty() || context.currentDataByteAll[0] != 0x15.toByte()) {
 
-                Log.d("XModemSender", context.curentDataByte[0].toString())
-                Log.d("XModemSender", context.curentDataByte.joinToString { "%02x".format(it) })
+                Log.d("XModemSender", context.currentDataByteAll[0].toString())
+                Log.d("XModemSender", context.currentDataByteAll.joinToString { "%02x".format(it) })
                 return false
             }
         }

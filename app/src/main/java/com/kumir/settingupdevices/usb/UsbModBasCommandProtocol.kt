@@ -51,7 +51,7 @@ class UsbModBasCommandProtocol {
 
                     for (item in 0..CNT_SAND_COMMAND_OK) {
                         // очищение прошлых данных
-                        context.curentDataByte = byteArrayOf()
+                        context.currentDataByteAll = byteArrayOf()
 
                         if(!context.usb.writeDevice("", false, command)) {
                             break@end
@@ -72,7 +72,7 @@ class UsbModBasCommandProtocol {
 
 
                         // вывод в диалог
-                        val curentData: String = context.curentDataByte.dropLast(CNT_BYTE_DROP_LAST).
+                        val curentData: String = context.currentDataByteAll.dropLast(CNT_BYTE_DROP_LAST).
                             drop(CNT_BYTE_DROP).toString()
 
                         // вывод в загрузочное диалог информации
@@ -85,7 +85,7 @@ class UsbModBasCommandProtocol {
 
                         // проверка на валидность принатых данных возможно нужно еще раз опрасить
                         // проверка принялись ли данные
-                        if (!sandOkCommand(context.curentDataByte)) {
+                        if (!sandOkCommand(context.currentDataByteAll)) {
 
                             // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
                             if (item == CNT_SAND_COMMAND_OK) {
@@ -98,46 +98,46 @@ class UsbModBasCommandProtocol {
                             }
                         } else {
                             // если команда чтения портов то команда + номер порта, иначе просто команда
-                            if (context.curentDataByte.isNotEmpty())
-                                if (context.curentDataByte.size > CNT_DATA_PORT)
-                                    settingData[context.curentDataByte[0].toString() +
-                                        context.curentDataByte[1].toString()] =
-                                            context.curentDataByte.
+                            if (context.currentDataByteAll.isNotEmpty())
+                                if (context.currentDataByteAll.size > CNT_DATA_PORT)
+                                    settingData[context.currentDataByteAll[0].toString() +
+                                        context.currentDataByteAll[1].toString()] =
+                                            context.currentDataByteAll.
                                                 drop(CNT_BYTE_DROP_PORT).dropLast(CNT_BYTE_DROP_LAST).
                                                     toString()
                                 else
-                                    settingData[context.curentDataByte[0].toString()] =
-                                        context.curentDataByte[1].toString()
+                                    settingData[context.currentDataByteAll[0].toString()] =
+                                        context.currentDataByteAll[1].toString()
                             break
                         }
                     }
 
                     // очищение буфера
-                    context.curentDataByte = byteArrayOf()
+                    context.currentDataByteAll = byteArrayOf()
                 }
 
 
 
                 context.curentData = ""
-                context.curentDataByte = byteArrayOf()
+                context.currentDataByteAll = byteArrayOf()
 
                 context.flagThreadSerialCommands = false // говорим что не работает поток чтения
 
                 // окончание прогресса
                 (context as Activity).runOnUiThread {
                     context.printInfoTermAndLoaging("", 100)
-                    usbFragment.printSettingDevice(settingData)
 
-                    /*if (settingData.isNotEmpty()) {
-                        // включение ат команд
-                        context.usb.flagAtCommandYesNo = true
-                    }*/
+                    // проверка подключения что бы не позволять приложению открывать доступ к кнопке
+                    if (context.usb.checkConnectToDevice())
+                        usbFragment.printSettingDevice(settingData)
+
                 }
             }
         }.start()
     }
 
     // метод для получения настроек устройства
+    @OptIn(ExperimentalStdlibApi::class)
     fun writeSettingDevice(commands: List<ByteArray>, context: Context) {
 
         Thread {
@@ -163,7 +163,7 @@ class UsbModBasCommandProtocol {
 
                     for (item in 0..CNT_SAND_COMMAND_OK) {
                         // очищение прошлых данных
-                        context.curentDataByte = byteArrayOf()
+                        context.currentDataByteAll = byteArrayOf()
 
 
                         if(!context.usb.writeDevice("", false, command)) {
@@ -185,22 +185,19 @@ class UsbModBasCommandProtocol {
 
 
                         // вывод в диалог
-                        val curentData: String = context.curentDataByte.dropLast(
-                            CNT_BYTE_DROP_LAST
-                        ).
-                        drop(CNT_BYTE_DROP).toString()
+                        val currentData: ByteArray = context.currentDataByteAll
 
                         // вывод в загрузочное диалог информации
                         (context as Activity).runOnUiThread {
-                            context.printInfoTermAndLoaging("command: ${command}\n", prograss)
-                            context.printInfoTermAndLoaging("answer: ${curentData}\n", prograss)
+                            context.printInfoTermAndLoaging("command: ${command.toHexString()}\n", prograss)
+                            context.printInfoTermAndLoaging("answer: ${currentData.toHexString()}\n", prograss)
                         }
 
 
 
                         // проверка на валидность принатых данных возможно нужно еще раз опрасить
                         // проверка принялись ли данные
-                        if (!sandOkCommandWrite(context.curentDataByte)) {
+                        if (!sandOkCommandWrite(context.currentDataByteAll)) {
 
                             // если CNT_SAND_COMMAND_OK попытка не сработала то выбрасываемся
                             if (item == CNT_SAND_COMMAND_OK) {
@@ -211,17 +208,17 @@ class UsbModBasCommandProtocol {
                                 }
                                 break@end
                             }
-                        }
+                        } else break // успешно выходим из цикла попыток отправки
                     }
                     // очищение буфера
-                    context.curentDataByte = byteArrayOf()
+                    context.currentDataByteAll = byteArrayOf()
                 }
 
                 /*// включение ат команд
                 context.usb.flagAtCommandYesNo = true*/
 
                 context.curentData = ""
-                context.curentDataByte = byteArrayOf()
+                context.currentDataByteAll = byteArrayOf()
 
                 context.flagThreadSerialCommands = false // говорим что не работает поток чтения
 
@@ -259,7 +256,7 @@ class UsbModBasCommandProtocol {
 
         // Ожидание что устройство отправит хоть что то
         var maxCntIter: Int = MAX_CNT_EXPECTATION_SAND
-        while (context.curentDataByte.isEmpty()) {
+        while (context.currentDataByteAll.isEmpty()) {
 
             if (maxCntIter == 0) {
                 return false
@@ -269,11 +266,11 @@ class UsbModBasCommandProtocol {
         }
 
         // ожидание что бы все данные были отправлены
-        var cnt: Int = context.curentDataByte.size
-        while (context.curentDataByte.isNotEmpty()) {
+        var cnt: Int = context.currentDataByteAll.size
+        while (context.currentDataByteAll.isNotEmpty()) {
             Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
 
-            val newCnt = context.curentDataByte.size
+            val newCnt = context.currentDataByteAll.size
             if (cnt == newCnt) {
                 return true
             } else {

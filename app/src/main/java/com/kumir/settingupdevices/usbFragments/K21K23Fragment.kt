@@ -3,10 +3,12 @@ package com.kumir.settingupdevices.usbFragments
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -23,7 +25,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
 
     private lateinit var binding: FragmentK21k23Binding
 
-    private var NAME_TYPE_DEVICE = "KUMIR-К21К23 READY"
+    // private var NAME_TYPE_DEVICE = "KUMIR-К21К23 READY"
 
     override val usbCommandsProtocol = UsbCommandsProtocol()
 
@@ -38,6 +40,9 @@ class K21K23Fragment : Fragment(), UsbFragment {
         if (context is MainActivity) {
             context.printDeviceTypeName(getString(R.string.k21_k23))
         }
+
+        // обработчик для выбора прибора учета на портах
+        createHandlersForSelectDev()
 
         // клики
 
@@ -68,6 +73,117 @@ class K21K23Fragment : Fragment(), UsbFragment {
 
         return binding.root
     }
+
+
+    // создание обработчиков для выбора прибора учета
+    private fun createHandlersForSelectDev() {
+
+        // выбор присетов устройства учета порт 1
+        binding.spinnerSelectPort1MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                val context: Context = requireContext()
+
+                if (position == 0) {
+                    // в случае если расширенныйе настроки то можно менять их
+                    binding.DisActivPort1SetiingsPriset.visibility = View.GONE
+                } else {
+                    if (context is MainActivity) {
+                        binding.spinnerSpeed.setSelection(context.portsDeviceSetting[position-1].speed)
+                        binding.spinnerSelectParityPort1.setSelection(context.portsDeviceSetting[position-1].parity)
+                        binding.spinnerSelectStopBitPort1.setSelection(context.portsDeviceSetting[position-1].stopBit)
+                        binding.spinnerBitDataPort1.setSelection(context.portsDeviceSetting[position-1].bitData)
+
+                        binding.DisActivPort1SetiingsPriset.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+        // выбор присетов устройства учета порт 2
+        binding.spinnerSelectPort2MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                val context: Context = requireContext()
+
+                if (position == 0) {
+                    // в случае если расширенныйе настроки то можно менять их
+                    binding.DisActivPort2SetiingsPriset.visibility = View.GONE
+                } else {
+                    if (context is MainActivity) {
+                        binding.spinnerSpeed2.setSelection(context.portsDeviceSetting[position-1].speed)
+                        binding.spinnerSelectParityPort2.setSelection(context.portsDeviceSetting[position-1].parity)
+                        binding.spinnerSelectStopBitPort2.setSelection(context.portsDeviceSetting[position-1].stopBit)
+                        binding.spinnerBitDataPort2.setSelection(context.portsDeviceSetting[position-1].bitData)
+
+                        binding.DisActivPort2SetiingsPriset.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        // выбор присетов устройства учета порт 3
+        binding.spinnerSelectPort3MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                val context: Context = requireContext()
+
+                if (position == 0) {
+                    // в случае если расширенныйе настроки то можно менять их
+                    binding.DisActivPort3SetiingsPriset.visibility = View.GONE
+                } else {
+                    if (context is MainActivity) {
+                        binding.spinnerSpeed3.setSelection(context.portsDeviceSetting[position-1].speed)
+                        binding.spinnerSelectParityPort3.setSelection(context.portsDeviceSetting[position-1].parity)
+                        binding.spinnerSelectStopBitPort3.setSelection(context.portsDeviceSetting[position-1].stopBit)
+                        binding.spinnerBitDataPort3.setSelection(context.portsDeviceSetting[position-1].bitData)
+
+                        binding.DisActivPort3SetiingsPriset.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        // выбор присетов устройства учета порт 4
+        binding.spinnerSelectPort4MeteringDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+
+                val context: Context = requireContext()
+
+                if (position == 0) {
+                    // в случае если расширенныйе настроки то можно менять их
+                    binding.DisActivPort4SetiingsPriset.visibility = View.GONE
+                } else {
+                    if (context is MainActivity) {
+                        binding.spinnerSpeed4.setSelection(context.portsDeviceSetting[position-1].speed)
+                        binding.spinnerSelectParityPort4.setSelection(context.portsDeviceSetting[position-1].parity)
+                        binding.spinnerSelectStopBitPort4.setSelection(context.portsDeviceSetting[position-1].stopBit)
+                        binding.spinnerBitDataPort4.setSelection(context.portsDeviceSetting[position-1].bitData)
+
+                        binding.DisActivPort4SetiingsPriset.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+    }
+
+
     private fun createAdapters() {
         // адаптер для выбора режима работы модема
         val itemsSpinnerDevMode = listOf(
@@ -414,9 +530,15 @@ class K21K23Fragment : Fragment(), UsbFragment {
             binding.imagedischarge.setOnClickListener {
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
+            Log.d("lockUsb", "noRead ))")
             binding.imageDownLoad.setOnClickListener {
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
+            Log.d("lockUsb", "noWrite ))")
+            binding.imageDownLoad.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+
         } else {
             drawablImageDischarge?.let {
                 val wrappedDrawable = DrawableCompat.wrap(it)
@@ -436,12 +558,7 @@ class K21K23Fragment : Fragment(), UsbFragment {
     }
 
     private fun onClickReadSettingsDevice(view: View) {
-        val context: Context = requireContext()
-
-        if (context is MainActivity) {
-            context.curentData = NAME_TYPE_DEVICE // обход проверки индитификатора
-            context.showTimerDialog(this, NAME_TYPE_DEVICE, false,false)
-        }
+        readSettingStart()
     }
 
     private fun onClickWriteSettingsDevice(view: View) {

@@ -278,6 +278,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/keyTitlee"
                         android:inputType="number"
+                        android:maxLength="63"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -295,6 +296,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/nameTitle"
+                        android:maxLength="63"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -323,6 +325,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/numDevTitle"
                         android:inputType="number"
+                        android:maxLength="63"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -378,6 +381,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/range1Title"
                         android:inputType="number"
+                        android:maxLength="3"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -396,6 +400,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/timeoutTitle"
                         android:inputType="number"
+                        android:maxLength="4"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -413,6 +418,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/adminPasswordTitle"
+                        android:maxLength="6"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -431,6 +437,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/netAdressTitle"
                         android:inputType="number"
+                        android:maxLength="63"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -449,6 +456,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/viewValues"
                         android:inputType="number"
+                        android:maxLength="63"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>

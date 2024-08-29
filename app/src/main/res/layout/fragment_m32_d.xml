@@ -432,6 +432,7 @@ tools:context=".usbFragments.M32DFragment">
                         android:layout_height="wrap_content"
                         android:hint="@string/sms_commandPinCode"
                         android:inputType="number"
+                        android:maxLength="4"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -454,12 +455,13 @@ tools:context=".usbFragments.M32DFragment">
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textTimeoutConnection">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inputTimeoutConnection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textColor="@color/textColor" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputTimeoutConnection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -486,6 +488,7 @@ tools:context=".usbFragments.M32DFragment">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
+                        android:maxLength="3"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -723,6 +726,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:id="@+id/inputAPN"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -774,6 +778,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:id="@+id/inputPasswordGPRS"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -793,6 +798,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:layout_height="wrap_content"
                             android:hint="@string/smsPinCodeCard"
                             android:inputType="number"
+                            android:maxLength="4"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -828,6 +834,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:id="@+id/inputSim1Knet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -853,6 +860,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:id="@+id/inputSim1Sntp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -879,6 +887,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:id="@+id/InputSim1TCP1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -929,6 +938,7 @@ tools:context=".usbFragments.M32DFragment">
                             android:id="@+id/InputSim1TCP3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 

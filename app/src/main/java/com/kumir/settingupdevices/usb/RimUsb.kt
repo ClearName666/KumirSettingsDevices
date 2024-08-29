@@ -13,7 +13,7 @@ class RimUsb(val context: MainActivity, val usbCommandsProtocol: UsbCommandsProt
 
 
     // отправка данных пл протоколу rs485
-    fun writeRS485(address: Byte, data: ByteArray, dataShowInterface: DataShowInterface, flagMainSend: Boolean = false): Boolean {
+    fun writeRS485(address: Byte, data: ByteArray, dataShowInterface: DataShowInterface, flagMainSend: Boolean = false, flagShow: Boolean = true): Boolean {
         usbCommandsProtocol.flagWorkWrite = true
 
         // влаг успешности
@@ -34,14 +34,16 @@ class RimUsb(val context: MainActivity, val usbCommandsProtocol: UsbCommandsProt
             Thread.sleep(500)
             if (!waitAndSand(data, true)) {
                 if (!waitAndSand(data, true)) {
-                    flagSuc = false
+                    if (!waitAndSand(data)) {
+                        flagSuc = false
+                    }
                 }
             }
         }
 
 
         // отправка результатов для вывода во внешний поток
-        showUI(context, flagMainSend, flagSuc, dataShowInterface)
+        if (flagShow) showUI(context, flagMainSend, flagSuc, dataShowInterface)
         usbCommandsProtocol.flagWorkWrite = false
 
         return flagSuc
@@ -82,7 +84,7 @@ class RimUsb(val context: MainActivity, val usbCommandsProtocol: UsbCommandsProt
         }
     }
 
-    fun writeModBus(data: ByteArray, dataShowInterface: DataShowInterface, flagMainSend: Boolean = false): Boolean {
+    fun writeModBus(data: ByteArray, dataShowInterface: DataShowInterface, flagMainSend: Boolean = false, flagShow: Boolean = true): Boolean {
         usbCommandsProtocol.flagWorkWrite = true
 
         // флаг успешности
@@ -94,12 +96,14 @@ class RimUsb(val context: MainActivity, val usbCommandsProtocol: UsbCommandsProt
         Thread.sleep(500)
         if (!waitAndSand(data)) {
             if (!waitAndSand(data)) {
-                flagSuc = false
+                if (!waitAndSand(data)) {
+                    flagSuc = false
+                }
             }
         }
 
         // отправка результатов для вывода во внешний поток
-        showUI(context, flagMainSend, flagSuc, dataShowInterface, 1)
+        if (flagShow) showUI(context, flagMainSend, flagSuc, dataShowInterface, 1)
 
         usbCommandsProtocol.flagWorkWrite = false
 

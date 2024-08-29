@@ -201,7 +201,7 @@ class XModemSender(
         // очищение
         context.usb.onClear()
         // переподключение
-        context.usb.reconnectToDevice()
+        context.usb.reconnectCDC()
 
         // ждем возможное подключение
         if (context.usb.waitConnection()) {

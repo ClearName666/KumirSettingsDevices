@@ -77,17 +77,18 @@ class SettingsFragment : Fragment() {
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            /*if (it.toString().endsWith(".ini")) {*/
+            if (getFileNameFromUri(uri, true).endsWith(".ini")) {
+                contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
                 fileName = getFileNameFromUri(it)
                 readIniFileContent(it)
-            /*} else {
+            } else {
                 contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
-            }*/
+            }
         }
     }
 
     // полуение имени файла по пути
-    private fun getFileNameFromUri(uri: Uri): String {
+    private fun getFileNameFromUri(uri: Uri, flagYesIniEnd: Boolean = false): String {
         var fileName = ""
         uri.let {
             val cursor = requireContext().contentResolver.query(it, null, null, null, null)
@@ -100,6 +101,8 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
+        if (flagYesIniEnd) return fileName
+
         return fileName.dropLast(".ini".length) // что бы убрать ini в конце названия
     }
 
@@ -590,22 +593,26 @@ class SettingsFragment : Fragment() {
     }
 
     private fun readIniFileContent(uri: Uri) {
-        val context: Context? = context
-        context?.let {
-            val inputStream = it.contentResolver.openInputStream(uri)
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val content = StringBuilder()
-            var line: String?
-
+        val context: Context = requireContext()
+        context.let {
             try {
-                while (reader.readLine().also { line = it } != null) {
-                    content.append(line).append("\n")
+                val inputStream = it.contentResolver.openInputStream(uri)
+                val reader = BufferedReader(InputStreamReader(inputStream))
+                val content = StringBuilder()
+                var line: String?
+
+                try {
+                    while (reader.readLine().also { line = it } != null) {
+                        content.append(line).append("\n")
+                    }
+                    parseIniContent(content.toString())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    inputStream?.close()
                 }
-                parseIniContent(content.toString())
             } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                inputStream?.close()
+                showAlertDialog(getString(R.string.fileError))
             }
         }
     }
@@ -1098,5 +1105,12 @@ class SettingsFragment : Fragment() {
         }
 
         return true
+    }
+
+    private fun showAlertDialog(text: String) {
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.showAlertDialog(text)
+        }
     }
 }

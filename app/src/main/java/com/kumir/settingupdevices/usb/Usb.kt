@@ -1,18 +1,19 @@
 package com.kumir.settingupdevices.usb
 
+import android.R.attr.data
 import android.app.Activity
 import android.content.Context
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
 import android.util.Log
-import com.kumir.settingupdevices.R
-import com.kumir.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import com.felhr.usbserial.UsbSerialInterface.UsbCTSCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbDSRCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
+import com.kumir.settingupdevices.R
+import com.kumir.testappusb.settings.ConstUsbSettings
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -255,7 +256,7 @@ class Usb(private val context: Context) {
             val devises: HashMap<String, UsbDevice> = usbManager.deviceList
 
             for (device in devises) {
-                if (device.value.deviceName == deviceUsb?.deviceName) {
+                if (device.value.deviceName == deviceUsb?.deviceName && connection != null) {
                     return true
                 }
             }
@@ -274,7 +275,6 @@ class Usb(private val context: Context) {
                     }
                 }.start()
             }
-
 
             // отобрадения статуса отключено
             if (show) {
@@ -315,10 +315,12 @@ class Usb(private val context: Context) {
 
         dsrState = false
         ctsState = false
-        connection?.close()
         //serialPort?.close() // xmodem
-        connection = null
+
+        connection?.close()
         usbSerialDevice?.close()
+
+        connection = null
         usbSerialDevice = null
         deviceUsb = null
         if (context is UsbActivityInterface) {
@@ -406,7 +408,7 @@ class Usb(private val context: Context) {
     }
 
     // переподключение для п101
-    fun reconnectToDevice() {
+    /*fun reconnectToDevice() {
         executorUsb.execute {
 
             onClear() // очищение подключения
@@ -415,6 +417,34 @@ class Usb(private val context: Context) {
             // повторное подключение
             attemptConnect()
         }
+    }*/
+
+    // переподлючения
+    fun reconnectCDC() {
+        executorUsb.execute {
+            if (checkConnectToDevice()) {
+                connection?.controlTransfer(
+                    0x21,
+                    0x22,
+                    0x0000,
+                    0,
+                    null,
+                    0,
+                    5000
+                )
+
+                connection?.controlTransfer(
+                    0x21,
+                    0x22,
+                    0x0003,
+                    0,
+                    null,
+                    0,
+                    5000
+                )
+            }
+        }
+
     }
 
     // ожиадание подключения по usb
@@ -494,6 +524,8 @@ class Usb(private val context: Context) {
                     onStartSerialSetting()
                     deviceUsb = currentDevice
                     curentDeviceName = currentDevice.deviceId.toString()
+
+                    this.connection = connection
 
                     // поток для отправки в фоновом режиме at команды
                     if (!flagActivThreadATCommand) {

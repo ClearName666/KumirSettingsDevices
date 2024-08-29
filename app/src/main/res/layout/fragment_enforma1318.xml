@@ -182,6 +182,7 @@
                         android:id="@+id/inputAPN"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:maxLength="63"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -208,6 +209,7 @@
                         android:id="@+id/inputLogin"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:maxLength="63"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -234,6 +236,7 @@
                         android:id="@+id/inputPassword"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:maxLength="63"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -260,6 +263,7 @@
                         android:id="@+id/inputServer1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:maxLength="63"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -286,6 +290,7 @@
                         android:id="@+id/inputServer2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:maxLength="63"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -313,6 +318,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="number"
+                        android:maxLength="4"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -340,6 +346,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="number"
+                        android:maxLength="5"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 

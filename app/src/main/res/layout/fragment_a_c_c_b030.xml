@@ -309,6 +309,7 @@
                             android:id="@+id/inputPasswordGPRS"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -334,6 +335,7 @@
                             android:id="@+id/inputTextLoginGPRS"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -360,6 +362,7 @@
                             android:id="@+id/inputIPDNS"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -385,6 +388,7 @@
                             android:id="@+id/inputAPN"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:maxLength="63"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 

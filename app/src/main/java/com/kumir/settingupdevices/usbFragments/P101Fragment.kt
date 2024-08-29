@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +33,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, LoadInterface {
+class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, LoadInterface {
 
     private lateinit var binding: FragmentP101Binding
 
@@ -40,7 +41,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
     //private lateinit var serialPort: UsbSerialPort
 
-    private var listKeyAbanents: MutableList<String> = mutableListOf()
+    private var listKeyAbanents: MutableSet<String> = mutableSetOf()
     private var flagRead: Boolean = false
 
     private var flagReAbanents: Boolean = false
@@ -49,14 +50,14 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     private var flagReconnect: Boolean = false
 
     // список всех драйверов
-    var itemDrivers: MutableList<String> = mutableListOf()
+    var itemDrivers: MutableSet<String> = mutableSetOf()
 
 
     // хранит всех абанентов
     val itemsAbonents: MutableList<ItemAbanent> = mutableListOf()
 
     // хранит текущего изменемого абанента
-    var curentAbanent: ItemAbanent? = null
+    var currentAbanent: ItemAbanent? = null
 
     var fileName: String = ""
 
@@ -69,7 +70,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         private const val DEFFAULT_ADRES: String = "0"
         private const val DEFFAULT_TIMEOUT: String = "10"
 
-        private const val TIMEOUT_RESPONSE: Long = 100
+        // private const val TIMEOUT_RESPONSE: Long = 100
     }
     private lateinit var file: File
 
@@ -77,9 +78,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
 
         uri?.let {
-            val tempFile = createTempFileFromUri(it)
             fileName = getFileNameFromUri(it)
-            if (tempFile != null && (
+            val tempFile = createTempFileFromUri(it)
+             if (tempFile != null && (
                         fileName.endsWith(".BIN") ||
                         fileName.endsWith(".bin") ||
                         fileName.contains(".bin") ||
@@ -87,24 +88,33 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 file = tempFile
                 setModeXmodemDevice(fileName)
             } else {
-                showAlertDialog("Файл не валидный")
+                if (!(requireContext() as MainActivity).usb.checkConnectToDevice())
+                    showAlertDialog(getString(R.string.noConnected))
+
+                showAlertDialog(getString(R.string.notFormatFile))
             }
         }
     }
 
     private fun createTempFileFromUri(uri: Uri): File? {
-        val fileName = getFileNameFromUri(uri)
-        val tempFile = File.createTempFile(fileName, null, requireContext().cacheDir)
-        val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(tempFile)
+        val context: Context = requireContext()
+        try {
+            val tempFile = File.createTempFile(fileName, null, context.cacheDir)
+            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(tempFile)
 
-        inputStream.use { input ->
-            outputStream.use { output ->
-                input?.copyTo(output)
+            inputStream.use { input ->
+                outputStream.use { output ->
+                    input?.copyTo(output)
+                }
             }
-        }
 
-        return tempFile
+            return tempFile
+
+        } catch (e: Exception) {
+            Log.d("myErrorFile", e.message.toString())
+            return null
+        }
     }
 
 
@@ -137,11 +147,21 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     ): View {
         binding = FragmentP101Binding.inflate(inflater)
 
+
+
+        // вывод названия типа устройства
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.printDeviceTypeName(getString(R.string.controller_p_101))
+        }
+
+
+
         // назначение клика на меню что бы добавлять и удалять данные
         binding.fonWindowDarck.setOnClickListener {
             binding.editMenuAbanent.visibility = View.GONE
             binding.fonWindowDarck.visibility = View.GONE
-            curentAbanent = null // для того что бы не удалять прсото так
+            currentAbanent = null // для того что бы не удалять прсото так
         }
         // назначение кликак что бы добавлять абанента
         binding.buttonSave.setOnClickListener {
@@ -205,6 +225,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         }
 
         if (command.isNotEmpty()) {
+            (requireContext() as MainActivity).usb.reconnectCDC()
             usbCommandsProtocol.readSettingDevice(command, requireContext(), this, flagReadAbonentsP101 = true)
         } else {
             showAlertDialog(getString(R.string.notAnonents))
@@ -226,14 +247,20 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     private fun setModeXmodemDevice(name: String) {
         val context: Context = requireContext()
 
+        if (!(context as MainActivity).usb.checkConnectToDevice()) {
+            showAlertDialog(getString(R.string.nonConnectAdapter))
+            return
+        }
+
         if (context is MainActivity) {
             // очищение буфера перед отправкой
-            context.curentDataByte = byteArrayOf()
+            context.currentDataByteAll = byteArrayOf()
             val dataMap: Map<String, String> = mapOf(
                 getString(R.string.commandSetDriverMode) to name.substringBefore("_").uppercase()
             )
 
-
+            // переподключения перед отправкой команды
+            context.usb.reconnectCDC()
             usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
 
             // поток для отслеживания ответа от модема
@@ -242,30 +269,15 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 while (true) {
                     cnt++
                     // если данные поступили то
-                    if (context.curentDataByte.isNotEmpty()) {
+                    if (context.currentDataByteAll.isNotEmpty()) {
                         (context as Activity).runOnUiThread {
-
-                            // убераем кнопку уделения драйвера
-                            binding.buttonDriversDel.visibility = View.GONE
-
-                            // кнопка загрузки драйвера
-                            binding.buttonLoadFile.visibility = View.VISIBLE
-                            binding.buttonLoadFile.text = getString(R.string.loadDriverFin)
-                            binding.buttonLoadFile.setOnClickListener {
-                                if (!flagLoadDriver) {
-                                    // открываем загрузочное меню
-                                    binding.loadMenuProgress.visibility = View.VISIBLE
-                                    binding.fonLoadDriver.visibility = View.VISIBLE
-
-                                    loadDriver(file) // выбор файла для загрузки драйвера
-
-                                }
-
+                            // начать установку драйвера
+                            if (!flagLoadDriver) {
+                                (requireContext() as MainActivity).openCloseLoadingView(false)
+                                binding.loadMenuProgress.visibility = View.VISIBLE
+                                binding.fonLoadDriver.visibility = View.VISIBLE
+                                loadDriver(file)
                             }
-
-                            // убераем возможность нажать на кнопку для редактирования пользователей
-                            binding.buttonAddAbanent.visibility = View.GONE
-
                         }
                         break
                     }
@@ -320,22 +332,11 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                     // драйвер появляется в названии драйвера
                     (context as Activity).runOnUiThread {
                         binding.textDriverVersion.text = getString(R.string.driverTitle) + "\n" + file?.name?.substringBefore(".")
-                        // возвраения возможности добавления абанентов
-                        binding.buttonAddAbanent.visibility = View.VISIBLE
-                        // кнопка для установки дарайвера
-                        binding.buttonLoadFile.text = getString(R.string.loadDriver)
-                        binding.buttonLoadFile.setOnClickListener {
-                            selectFile() // выбор файла для загрузки драйвера
-                        }
-
-                        // удаление драйвера
-                        binding.buttonDriversDel.visibility = View.VISIBLE
 
                         // обновление адаптеров отображения драйверов если запись была успешно
                         itemDrivers.add(fileName.substringBefore("_").uppercase())
 
-
-                        updateDrivers()
+                        updateDriversShowView()
                     }
                 }
 
@@ -418,16 +419,6 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         //  если данных подоорительно мало то выходим скорее всего это
         if (settingMap[getString(R.string.commandGetSerialNum)] == null && settingMap[getString(R.string.commandGetAbView) + "1"] == null) return
 
-        /*binding.P101.visibility = View.VISIBLE
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.mainFragmentWork(false)
-
-            // сменя ат команд на другие
-            context.usb.setAtCommand(getString(R.string.commandGetSerialNum))
-        }*/
-
-
 
         // если чтение иначе вывод абанентов
         if (!flagRead) {
@@ -455,7 +446,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
             // запись абанентов в лист
             val listAbanent: List<String> = settingMap[getString(R.string.commandGetAbanents)]?.replace("OK", "")?.split("\n")!!
-            listKeyAbanents = listAbanent.map { it.substringAfter("ABONENT: ") }.toMutableList()
+            listKeyAbanents = listAbanent.map { it.substringAfter("ABONENT: ") }.toMutableSet()
 
 
             // выводим кнопку для удаления драйверов
@@ -466,9 +457,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 replace("OK", "")?.split("\n")!!
                 .filter { it.trim().isNotEmpty() }
 
-            itemDrivers = listDriverStr.map { it.substringAfter("DRIVER: ").substringBefore(".") }.toMutableList()
+            itemDrivers = listDriverStr.map { it.substringAfter("DRIVER: ").substringBefore(".") }.toMutableSet()
 
-            updateDrivers()
+            updateDriversShowView()
 
             // для контроля
             flagRead = true
@@ -504,20 +495,29 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 }
             }
 
-            val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
-            binding.recyclerView.adapter = itemAbonentAdapter
+            // устанавливаем все которые возможны ключи для проверок
+            addAllInListKeys()
+
+            val itemAbonnentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
+            binding.recyclerView.adapter = itemAbonnentAdapter
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
-    private fun updateDrivers() {
-        // очищение на всякий случай от мусора (дубликатов)
-        if (itemDrivers.size > 1) itemDrivers.distinct()
+    private fun addAllInListKeys() {
+        for (ab in itemsAbonents) {
+            listKeyAbanents.add(ab.num)
+        }
+    }
+
+
+    private fun updateDriversShowView() {
+
 
 
         // обновляем все спинеры где есть вывод драйверов
         val adapterDrivers = ArrayAdapter(requireContext(),
-            R.layout.item_spinner, itemDrivers)
+            R.layout.item_spinner, itemDrivers.toList())
         adapterDrivers.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDriver.adapter = adapterDrivers
@@ -526,6 +526,11 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
 
     override fun readSettingStart() {
+
+        // проверка на подлючение
+        val context: MainActivity = requireContext() as MainActivity
+        if (!context.usb.checkConnectToDevice()) return
+
         // если не читали до этого то читаем если нет то скорее всего жто добавление абанента и его нужно добавить
         if (!flagRead) {
             val command: List<String> = arrayListOf(
@@ -537,6 +542,8 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 getString(R.string.commandGetDevList)
             )
 
+            // переподлючаемся перед отправкой
+            context.usb.reconnectCDC()
             usbCommandsProtocol.readSettingDevice(command, requireContext(), this)
         } else {
 
@@ -559,6 +566,16 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             }
             values.dropLast(1) // убераем последний ";"
 
+
+            // проверка есть ли данные абонент
+            for (obj in itemsAbonents) {
+                if (obj.num == binding.inputKey.text.toString())  {
+                    // удаляем старую версию перед тем как запихнуть новую
+                    itemsAbonents.remove(obj)
+                    break
+                }
+            }
+
             itemsAbonents.add(
                 ItemAbanent(
                     binding.inputKey.text.toString(),
@@ -579,6 +596,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 )
             )
 
+            // устанавливаем все которые возможны ключи для проверок
+            addAllInListKeys()
+
             val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
             binding.recyclerView.adapter = itemAbonentAdapter
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -592,13 +612,14 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         if (!validAll()) return
 
         // если идет изменение то нужно удалит старую
-        if (curentAbanent != null) {
-            itemsAbonents.remove(curentAbanent)
-            curentAbanent = null
+        if (currentAbanent != null) {
+            itemsAbonents.remove(currentAbanent)
+            currentAbanent = null
         }
 
         // добавляем нового абанента в лист
-        listKeyAbanents.add(binding.inputKey.text.toString())
+        if (binding.inputKey.text.toString() !in listKeyAbanents)
+            listKeyAbanents.add(binding.inputKey.text.toString())
 
         // закрфваем окно с редактированием абанента
         binding.fonWindowDarck.visibility = View.GONE
@@ -634,6 +655,9 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         )
 
 
+
+        // переподключения перед отправкой команды
+        (requireContext() as MainActivity).usb.reconnectCDC()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false,
             flagRead=true)
 
@@ -712,10 +736,10 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             showAlertDialog(getString(R.string.notValidRangeP101))
             return false
         }
-        if (!validDataSettingsDevice.validIdDeviceP101(binding.inputNumDevice.text.toString())) {
+        /*if (!validDataSettingsDevice.validIdDeviceP101(binding.inputNumDevice.text.toString())) {
             showAlertDialog(getString(R.string.notIdDeviceP101))
             return false
-        }
+        }*/
         if (!validDataSettingsDevice.validNameP101(binding.inputName.text.toString())) {
             showAlertDialog(getString(R.string.notValidNameP101))
             return false
@@ -740,6 +764,12 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
         if (itemDrivers.isEmpty()) {
             showAlertDialog(getString(R.string.notDriver))
+
+            return false
+        }
+
+        if (binding.inputKey.text.toString() in listKeyAbanents) {
+            showAlertDialog(getString(R.string.abonnentPresent))
 
             return false
         }
@@ -777,9 +807,12 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 getString(R.string.commandSetDelAbonent) to data.num
             )
 
+            // переподлючаемся перед отправкой
+            context.usb.reconnectCDC()
             usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
 
-            // удаление в отобрадении
+            // удаление в отобрадении и в листе
+            listKeyAbanents.remove(data.num)
             itemsAbonents.remove(data)
 
             val itemAbonentAdapter = ItemAbanentAdapter(requireContext(), itemsAbonents, this)
@@ -795,14 +828,35 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             getString(R.string.commandSetDelDriver) to nameDriver
         )
 
+        val context: MainActivity = requireContext() as MainActivity
+
+        // переподлючаемся перед отправкой
+        context.usb.reconnectCDC()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
 
-        // обновление адаптеров отображения драйверов
-        itemDrivers.remove(nameDriver)
-        updateDrivers()
+        // поток ожидающий пока завершится операция удаления и
+        // потом смотрит успешна она или нет и в
+        // зависимости от этого удаляет или не удаляет информацию в UI
+        Thread {
+            while (!usbCommandsProtocol.flagWorkWrite) { Thread.sleep(1)}
+            while (usbCommandsProtocol.flagWorkWrite) {
+                Thread.sleep(1)
+                if (!usbCommandsProtocol.flagWorkWrite) {
+                    break
+                }
+            }
 
-        // удаление отображения наверху
-        binding.textDriverVersion.text = getString(R.string.driverTitle)
+            if (usbCommandsProtocol.flagSuccessfullyWrite) {
+                (requireContext() as Activity).runOnUiThread {
+                    // обновление адаптеров отображения драйверов
+                    itemDrivers.remove(nameDriver)
+                    updateDriversShowView()
+
+                    // удаление отображения наверху
+                    binding.textDriverVersion.text = getString(R.string.driverTitle)
+                }
+            }
+        }.start()
     }
 
     override fun edit(data: ItemAbanent) {
@@ -886,7 +940,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             }
 
             // загружаем абанента в текущие
-            curentAbanent = data
+            currentAbanent = data
         }
     }
 }

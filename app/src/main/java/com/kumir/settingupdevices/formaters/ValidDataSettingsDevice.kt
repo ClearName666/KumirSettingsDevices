@@ -172,8 +172,8 @@ class ValidDataSettingsDevice {
     // проверка интервала п101
     fun validRangeP101(timeout: String): Boolean {
         return try {
-            !(timeout.toInt() >= RENGE_P101_MAX ||
-                    timeout.toInt() <= RENGE_P101_MIN)
+            !(timeout.toInt() > RENGE_P101_MAX ||
+                    timeout.toInt() < RENGE_P101_MIN)
         } catch (e: Exception) {
             false
         }
@@ -182,8 +182,8 @@ class ValidDataSettingsDevice {
     // проверка задержки п101
     fun validTimeOutP101(timeout: String): Boolean {
         return try {
-            !(timeout.toInt() >= TIMEOUT_P101_MAX ||
-                    timeout.toInt() <= TIMEOUT_P101_MIN)
+            !(timeout.toInt() > TIMEOUT_P101_MAX ||
+                    timeout.toInt() < TIMEOUT_P101_MIN)
         } catch (e: Exception) {
             false
         }
@@ -200,9 +200,9 @@ class ValidDataSettingsDevice {
     }
 
     // проверка п101 индитификатора девайса
-    fun validIdDeviceP101(devId: String): Boolean {
+    /*fun validIdDeviceP101(devId: String): Boolean {
         return devId == "234" || devId == "236" || devId == "204" || devId == "230"
-    }
+    }*/
 
     fun validPM81KeyNet(keyNet: String): Boolean {
         return keyNet.length <= KEYNET_CHAR_MAX

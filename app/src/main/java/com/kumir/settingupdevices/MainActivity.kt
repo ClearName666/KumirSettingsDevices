@@ -1,9 +1,12 @@
 package com.kumir.settingupdevices
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.AlertDialog
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.usb.UsbDevice
@@ -81,7 +84,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // буферы денных
     var curentData: String = ""
-    var curentDataByte: ByteArray = byteArrayOf()
+    //var curentDataByte: ByteArray = byteArrayOf()
     var currentDataByteAll: ByteArray = byteArrayOf() // все данные в кучи
     // var curentDataByteNonClear: ByteArray = byteArrayOf()
 
@@ -196,11 +199,44 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     )
 
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (usb.ACTION_USB_PERMISSION == intent.action) {
+            synchronized(this) {
+                val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
 
+                if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                    device?.apply {
+                        connectToUsbDevice(device)
+                    }
+                }
+            }
+        }
+    }
+
+    private val usbReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (usb.ACTION_USB_PERMISSION == intent.action) {
+                synchronized(this) {
+                    val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        device?.apply {
+                            connectToUsbDevice(device)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             super.onCreate(savedInstanceState)
+
+            val filter = IntentFilter(usb.ACTION_USB_PERMISSION)
+            registerReceiver(usbReceiver, filter)
 
             binding = MainActivityBinding.inflate(layoutInflater)
             setContentView(binding.root)
@@ -217,64 +253,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             //transaction.addToBackStack("MainFragment")
             transaction.commit()
 
-            // загрузка базы данных
-            val database = AppDatabase.getDatabase(this)
-            presetDao = database.presetDao()
-            presetEnforaDao = database.enforaDao()
-            presetPmDao = database.pmDao()
-
-            // загрузка всех присетов из базы данных
-            try {
-                lifecycleScope.launch {
-                    // присеты m32
-                    presetDao.getAll().collect { presets ->
-                        for (preset in presets) {
-                            PrisetsValue.prisets[preset.name!!] = Priset(
-                                preset.name, preset.mode!!, preset.apn!!,
-                                preset.port!!, preset.server!!, preset.login!!, preset.password!!
-                            )
-                        }
-                    }
-                }
-            } catch (_: Exception) {
-            }
-
-            // загрузка всех присетов enfora
-            try {
-                lifecycleScope.launch {
-                    // присеты enfora
-                    presetEnforaDao.getAll().collect { presets ->
-                        for (enforaPreseet in presets) {
-                            PresetsEnforaValue.presets[enforaPreseet.name!!] =
-                                Enfora(
-                                    0, enforaPreseet.name, enforaPreseet.apn!!,
-                                    enforaPreseet.login!!, enforaPreseet.password!!,
-                                    enforaPreseet.server1!!, enforaPreseet.server2!!,
-                                    enforaPreseet.timeout!!, enforaPreseet.sizeBuffer!!
-                                )
-                        }
-                    }
-                }
-            } catch (_: Exception) {
-            }
-
-            // загрузка всех присетов Pm
-            try {
-                lifecycleScope.launch {
-                    // присеты enfora
-                    presetPmDao.getAll().collect { presets ->
-                        for (PmPreset in presets) {
-                            PrisetsPmValue.presets[PmPreset.name!!] =
-                                Pm(
-                                    0, PmPreset.name, PmPreset.mode, PmPreset.keyNet!!,
-                                    PmPreset.power!!, PmPreset.diopozone
-                                )
-                        }
-                    }
-                }
-            } catch (_: Exception) {
-            }
-
+            loadInfoDataBase()
 
             // смена настроек usb ---------------------------------------------------
             ConstUsbSettings.speedIndex = 9 // скорость 115200
@@ -298,10 +277,72 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
 
+
+    private fun loadInfoDataBase() {
+
+        // загрузка базы данных
+        val database = AppDatabase.getDatabase(this)
+        presetDao = database.presetDao()
+        presetEnforaDao = database.enforaDao()
+        presetPmDao = database.pmDao()
+
+
+        // загрузка всех присетов из базы данных
+        try {
+            lifecycleScope.launch {
+                // присеты m32
+                presetDao.getAll().collect { presets ->
+                    for (preset in presets) {
+                        PrisetsValue.prisets[preset.name!!] = Priset(
+                            preset.name, preset.mode!!, preset.apn!!,
+                            preset.port!!, preset.server!!, preset.login!!, preset.password!!
+                        )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+
+        // загрузка всех присетов enfora
+        try {
+            lifecycleScope.launch {
+                // присеты enfora
+                presetEnforaDao.getAll().collect { presets ->
+                    for (enforaPreseet in presets) {
+                        PresetsEnforaValue.presets[enforaPreseet.name!!] =
+                            Enfora(
+                                0, enforaPreseet.name, enforaPreseet.apn!!,
+                                enforaPreseet.login!!, enforaPreseet.password!!,
+                                enforaPreseet.server1!!, enforaPreseet.server2!!,
+                                enforaPreseet.timeout!!, enforaPreseet.sizeBuffer!!
+                            )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+
+        // загрузка всех присетов Pm
+        try {
+            lifecycleScope.launch {
+                // присеты enfora
+                presetPmDao.getAll().collect { presets ->
+                    for (PmPreset in presets) {
+                        PrisetsPmValue.presets[PmPreset.name!!] =
+                            Pm(
+                                0, PmPreset.name, PmPreset.mode, PmPreset.keyNet!!,
+                                PmPreset.power!!, PmPreset.diopozone
+                            )
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+    }
+
     fun checkLocationPermissions(): Boolean {
         val permissionState = ContextCompat.checkSelfPermission(
             this,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION
         )
         return permissionState == PackageManager.PERMISSION_GRANTED
     }
@@ -309,20 +350,20 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     private fun requestLocationPermissions() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(ACCESS_FINE_LOCATION),
             0
         )
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 0) {
             if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 requestLocationPermissions()
             }
         }
-    }
+    }*/
 
     override fun onDestroy() {
         usb.onDestroy()
@@ -1329,7 +1370,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun printDataByte(data: ByteArray) {
-        curentDataByte = data
+        // curentDataByte = data
 
         Log.d("dataByte", data.joinToString(separator = "") { "%02X".format(it) })
         // прокурчивание вниз

@@ -157,7 +157,7 @@ class OneWire(val usb: Usb, private val context: Context) {
 
         // очищение буферов
         context.currentDataByteAll = byteArrayOf()
-        context.curentDataByte = byteArrayOf()
+        // context.curentDataByte = byteArrayOf()
 
 
         // отправка

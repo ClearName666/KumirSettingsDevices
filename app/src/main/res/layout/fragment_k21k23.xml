@@ -531,6 +531,62 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/DisActivPort1SetiingsPriset"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/fonDarkMenu"
+                android:clickable="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textSpeedPort">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/DisActivPort2SetiingsPriset"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/fonDarkMenu"
+                android:clickable="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textSpeedPort2">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/DisActivPort3SetiingsPriset"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/fonDarkMenu"
+                android:clickable="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textSpeedPort3">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/DisActivPort4SetiingsPriset"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/fonDarkMenu"
+                android:clickable="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectStopBitPort4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textSpeedPort4">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Добавьте другие элементы здесь -->

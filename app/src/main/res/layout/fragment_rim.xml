@@ -52,7 +52,7 @@ tools:context=".usbFragments.RimFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/futerSettingsDevice"
     android:layout_width="match_parent"
     android:layout_height="57dp"
@@ -164,6 +164,7 @@ tools:context=".usbFragments.RimFragment">
                     android:layout_height="wrap_content"
                     android:hint="@string/address"
                     android:inputType="number"
+                    android:maxLength="3"
                     android:textColor="@color/textColor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -182,6 +183,7 @@ tools:context=".usbFragments.RimFragment">
                     android:layout_height="wrap_content"
                     android:hint="@string/address"
                     android:inputType="number"
+                    android:maxLength="3"
                     android:textColor="@color/textColor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -303,11 +305,21 @@ tools:context=".usbFragments.RimFragment">
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="32dp"
                 android:text="@string/infoReferenceRimAddress"
                 android:textColor="@color/lineColorMain"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layoutInputAddressNow" />
+
+            <ImageView
+                android:id="@+id/imageButtonHelpAddress"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/encyclopedia_svgrepo_com"
+                app:layout_constraintBottom_toBottomOf="@+id/textInfoAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textInfoAddress"
                 app:layout_constraintTop_toBottomOf="@+id/layoutInputAddressNow" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -316,6 +328,30 @@ tools:context=".usbFragments.RimFragment">
 
     </LinearLayout>
 </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/halpLayoutAddressRim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fonDarkMenu"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageHalpImgForCheckAddress"
+            android:layout_width="match_parent"
+            android:layout_height="295dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/help_for_address_rim"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fonLoadMenu"

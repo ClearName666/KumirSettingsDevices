@@ -30,7 +30,8 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
     override val usbCommandsProtocol = UsbCommandsProtocol()
 
 
-    private var flagPermissionShow: Boolean = false
+    private var flagReadDevice = false
+
 
     // эта переменная создана для того что бы сдвигать в зависимости от протокола индексы в ответах потому что в modbus в начле добавляется адрес
     private var shift = 0
@@ -61,6 +62,16 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
 
             // убераем ат команды на всякий случай
             context.usb.flagAtCommandYesNo = false
+        }
+
+        // кнопка для вывода картинки помощи
+        binding.imageButtonHelpAddress.setOnClickListener {
+            binding.halpLayoutAddressRim.visibility = View.VISIBLE
+        }
+
+        // закрытие фото помощи
+        binding.halpLayoutAddressRim.setOnClickListener {
+            binding.halpLayoutAddressRim.visibility = View.GONE
         }
 
         binding.imageDownLoad.setOnClickListener {
@@ -208,8 +219,6 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
 
                 shift = 0
 
-                // разрешение на вывод данных т к идет общение
-                flagPermissionShow = true
 
                 // отправка по rs485
                 val flagSucSendPassword = rimUsb.writeRS485(
@@ -221,25 +230,51 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                 // только если пароль введен успешно
                 if (flagSucSendPassword) {
                     // дополнительно получаем версию и номер прошивки
-                    rimUsb.writeRS485(
-                        binding.inputAddressNow.text.toString().toByte(),
-                        byteArrayOf(
-                            0x00.toByte(),
-                            0x02.toByte(),
-                        ),
-                        this,
-                        true
-                    )
+                    // если устройство еще не прочитано
+                    if (!flagReadDevice) {
+                        rimUsb.writeRS485(
+                            binding.inputAddressNow.text.toString().toByte(),
+                            byteArrayOf(
+                                0x00.toByte(),
+                                0x02.toByte(),
+                            ),
+                            this,
+                            true
+                        )
+                        if (rimUsb.writeRS485(
+                                binding.inputAddressNow.text.toString().toByte(),
+                                byteArrayOf(
+                                    0x01.toByte(),
+                                    0x02.toByte(),
+                                ),
+                                this,
+                                true
+                            )) {
+                            rimUsb.writeRS485(
+                                binding.inputAddressNow.text.toString().toByte(),
+                                byteArrayOf(    // команда ввода настройки адреса
+                                    0x03.toByte(),
+                                    0x04.toByte(),
+                                    binding.inputAddress.text.toString().toInt().toByte(),
+                                    (binding.spinnerSpeed.selectedItemPosition.toByte() or protocolByte)
+                                ),
+                                this,
+                                true
+                            )
 
-                    if (rimUsb.writeRS485(
-                        binding.inputAddressNow.text.toString().toByte(),
-                        byteArrayOf(
-                            0x01.toByte(),
-                            0x02.toByte(),
-                        ),
-                        this,
-                        true
-                    )) {
+                            // отправка еще 1 команды для того что бы прибор перешел на нужную скорость
+                            rimUsb.writeRS485(
+                                binding.inputAddressNow.text.toString().toByte(),
+                                byteArrayOf(
+                                    0x00.toByte(),
+                                    0x02.toByte(),
+                                ),
+                                this,
+                                false,
+                                false
+                            )
+                        }
+                    } else {
                         rimUsb.writeRS485(
                             binding.inputAddressNow.text.toString().toByte(),
                             byteArrayOf(    // команда ввода настройки адреса
@@ -251,12 +286,21 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                             this,
                             true
                         )
+
+                        // отправка еще 1 команды для того что бы прибор перешел на нужную скорость
+                        rimUsb.writeRS485(
+                            binding.inputAddressNow.text.toString().toByte(),
+                            byteArrayOf(
+                                0x00.toByte(),
+                                0x02.toByte(),
+                            ),
+                            this,
+                            false,
+                            false
+                        )
                     }
                 }
 
-                // запрет на вывод данных т к общение завершилось
-                Thread.sleep(2000)
-                flagPermissionShow = false
             }.start()
         } else { // modbus
             binding.loadMenuProgress.visibility = View.VISIBLE
@@ -267,8 +311,6 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
 
                 shift = 1
 
-                // разрешение на вывод данных т к идет общение
-                flagPermissionShow = true
 
                 val flagSucSendPassword = rimUsb.writeModBus(
                     byteArrayOf(
@@ -280,26 +322,53 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
 
                 // только если пароль введен успешно
                 if (flagSucSendPassword) {
-                    // дополнительно получаем версию и номер прошивки
-                    rimUsb.writeModBus(
-                        byteArrayOf(
-                            binding.inputAddressNow.text.toString().toByte(),
-                            0x00.toByte(),
-                            0x02.toByte(),
-                        ),
-                        this,
-                        true
-                    )
+                    // если устройство еще не прочитано
+                    if (!flagReadDevice) {
+                        // дополнительно получаем версию и номер прошивки
+                        rimUsb.writeModBus(
+                            byteArrayOf(
+                                binding.inputAddressNow.text.toString().toByte(),
+                                0x00.toByte(),
+                                0x02.toByte(),
+                            ),
+                            this,
+                            true
+                        )
 
-                    if (rimUsb.writeModBus(
-                        byteArrayOf(
-                            binding.inputAddressNow.text.toString().toByte(),
-                            0x01.toByte(),
-                            0x02.toByte(),
-                        ),
-                        this,
-                        true
-                    )) {
+                        if (rimUsb.writeModBus(
+                            byteArrayOf(
+                                binding.inputAddressNow.text.toString().toByte(),
+                                0x01.toByte(),
+                                0x02.toByte(),
+                            ),
+                            this,
+                            true
+                        )) {
+                            rimUsb.writeModBus(
+                                byteArrayOf(    // команда ввода настройки адреса
+                                    binding.inputAddressNow.text.toString().toByte(),
+                                    0x03.toByte(),
+                                    0x04.toByte(),
+                                    binding.inputAddress.text.toString().toInt().toByte(),
+                                    (binding.spinnerSpeed.selectedItemPosition.toByte() or protocolByte)
+                                ),
+                                this,
+                                true
+                            )
+
+                            // отправка еще 1 команды для того что бы прибор перешел на нужную скорость
+                            rimUsb.writeModBus(
+                                byteArrayOf(
+                                    binding.inputAddressNow.text.toString().toByte(),
+                                    0x00.toByte(),
+                                    0x02.toByte(),
+                                ),
+                                this,
+                                false,
+                                false
+                            )
+                        }
+                    } else {
                         rimUsb.writeModBus(
                             byteArrayOf(    // команда ввода настройки адреса
                                 binding.inputAddressNow.text.toString().toByte(),
@@ -311,14 +380,20 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                             this,
                             true
                         )
+
+                        // отправка еще 1 команды для того что бы прибор перешел на нужную скорость
+                        rimUsb.writeModBus(
+                            byteArrayOf(
+                                binding.inputAddressNow.text.toString().toByte(),
+                                0x00.toByte(),
+                                0x02.toByte(),
+                            ),
+                            this,
+                            false,
+                            false
+                        )
                     }
-
-
                 }
-
-                // запрет на вывод данных т к общение завершилось
-                Thread.sleep(2000)
-                flagPermissionShow = false
             }.start()
         }
     }
@@ -502,68 +577,68 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
         // пришли пустые данные или их нет то выходим
         if (dataByteArray == null) return
 
-        if (flagPermissionShow) {
+        // закрываем только через некоторое веремя
+        Thread {
+            Thread.sleep(2000)
+            (requireContext() as Activity).runOnUiThread {
+                // закрываем диалоговое окно
+                binding.loadMenuProgress.visibility = View.GONE
+                binding.fonLoadMenu.visibility = View.GONE
+            }
+        }.start()
 
-            // закрываем только через некоторое веремя
-            Thread {
-                Thread.sleep(2000)
-                (requireContext() as Activity).runOnUiThread {
-                    // закрываем диалоговое окно
-                    binding.loadMenuProgress.visibility = View.GONE
-                    binding.fonLoadMenu.visibility = View.GONE
-                }
-            }.start()
+        // вывоод результата отправки данных
+        if (data == "yes")  {
+            // помещяем из новых в тикущие для удобства
+            binding.inputAddressNow.setText(binding.inputAddress.text.toString())
+            binding.spinnerSpeedNow.setSelection(binding.spinnerSpeed.selectedItemPosition)
+            binding.spinnerDataProtocolNow.setSelection(binding.spinnerDataProtocol.selectedItemPosition)
 
-            // вывоод результата отправки данных
-            if (data == "yes")  {
-                // помещяем из новых в тикущие для удобства
-                binding.inputAddressNow.setText(binding.inputAddress.text.toString())
-                binding.spinnerSpeedNow.setSelection(binding.spinnerSpeed.selectedItemPosition)
-                binding.spinnerDataProtocolNow.setSelection(binding.spinnerDataProtocol.selectedItemPosition)
+            showAlertDialog(getString(R.string.sucLoadRim))
+        } else if (data == "error_password") {
+            showAlertDialog(getString(R.string.errorPasswordRim))
+        } else if (data == "error_settings") {
+            showAlertDialog(getString(R.string.errorValidSettingsToDevice))
+        } else if (data == "version_programming") {
+            //val context: MainActivity = (requireContext() as MainActivity)
 
-                showAlertDialog(getString(R.string.sucLoadRim))
-            } else if (data == "error_password") {
-                showAlertDialog(getString(R.string.errorPasswordRim))
-            } else if (data == "error_settings") {
-                showAlertDialog(getString(R.string.errorValidSettingsToDevice))
-            } else if (data == "version_programming") {
-                //val context: MainActivity = (requireContext() as MainActivity)
+            // проверка нужный ли размер у посылки
+            if (dataByteArray.size == SERIAL_VERSION_PROGRAMMING_BYTE + shift) {
 
-                // проверка нужный ли размер у посылки
-                if (dataByteArray.size == SERIAL_VERSION_PROGRAMMING_BYTE + shift) {
+                /*if (dataByteArray[0] != binding.inputAddressNow)*/
+                binding.textVersionFirmware.text = getString(R.string.versionProgram) + " " +
+                        dataByteArray[3 + shift].toString()
+            } else {
+                showAlertDialog(getString(R.string.errorGetSerialNumberOrVErsion))
+            }
+        } else if (data == "serial_number") {
+            // val context: MainActivity = (requireContext() as MainActivity)
 
-                    /*if (dataByteArray[0] != binding.inputAddressNow)*/
-                    binding.textVersionFirmware.text = getString(R.string.versionProgram) + " " +
-                            dataByteArray[3 + shift].toString()
-                } else {
-                    showAlertDialog(getString(R.string.errorGetSerialNumberOrVErsion))
-                }
-            } else if (data == "serial_number") {
-                val context: MainActivity = (requireContext() as MainActivity)
+            Log.d("DataNumber", "true")
+            // проверка нужный ли размер у посылки
+            if (dataByteArray.size == SERIAL_NUMBER_SIZE_BYTE + shift) {
 
-                Log.d("DataNumber", "true")
-                // проверка нужный ли размер у посылки
-                if (dataByteArray.size == SERIAL_NUMBER_SIZE_BYTE + shift) {
+                // преобразование в число
+                val number: Int = ByteBuffer.wrap(
+                    byteArrayOf(
+                        0x00.toByte(),
+                        dataByteArray[4 + shift],
+                        dataByteArray[3 + shift],
+                        dataByteArray[2 + shift]
+                    )
+                ).int
+                Log.d("DataNumber", "number - $number")
 
-                    // преобразование в число
-                    val number: Int = ByteBuffer.wrap(
-                        byteArrayOf(
-                            0x00.toByte(),
-                            dataByteArray[4 + shift],
-                            dataByteArray[3 + shift],
-                            dataByteArray[2 + shift]
-                        )
-                    ).int
-                    Log.d("DataNumber", "number - $number")
+                binding.serinerNumber.text = getString(R.string.serinerNumber) + "\n" + number.toString()
 
-                    binding.serinerNumber.text = getString(R.string.serinerNumber) + "\n" + number.toString()
+                // если все хорошо то выставляем флаг что наш маодем прочитан
+                flagReadDevice = true
 
-                } else {
-                    showAlertDialog(getString(R.string.errorGetSerialNumberOrVErsion))
-                }
-            } else
-                showAlertDialog(getString(R.string.errorLoadRim))
-        }
+            } else {
+                showAlertDialog(getString(R.string.errorGetSerialNumberOrVErsion))
+            }
+        } else
+            showAlertDialog(getString(R.string.errorLoadRim))
     }
 
     // ненужные переопределения
