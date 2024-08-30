@@ -22,11 +22,6 @@ class XModemSender(
     private var nakReceived = false
 
 
-    // обна попытка переподключения для встановление
-    var flagReconnect: Boolean = true
-    var flagSendDataRestart: Boolean = false
-    var flagReconnectionCompleted: Boolean = false
-
     fun sendFile(file: File?): Boolean {
 
         // Проверка на подключение устройства
@@ -67,19 +62,12 @@ class XModemSender(
 
             // если в отправке ошибка то
             if (!sendPacket(buffer, packetNumber)) {
-
-                // проверяяем можем ли мы переподключиться для то го что бы заного начать загружать драйвер
-                if (flagSendDataRestart && flagReconnectionCompleted) {
-                    fis.close()
-                    return sendFile(file)
-                } else { // мы не можем тогда выходим с ошибкой
-                    (context as Activity).runOnUiThread {
-                        loadInterface.errorSend()
-                    }
-                    fis.close()
-                    return false
+                // мы не можем тогда выходим с ошибкой
+                (context as Activity).runOnUiThread {
+                    loadInterface.errorSend()
                 }
-
+                fis.close()
+                return false
             }
             packetNumber++
 
@@ -247,12 +235,7 @@ class XModemSender(
         }
 
         // если нечсего не ответил то пробуем перезапустить потому что это странно
-        if (flagReconnect && !ackReceived && !nakReceived) {
-
-            flagReconnect = false
-            flagSendDataRestart = true
-
-            flagReconnectionCompleted = reconnectSendToXModemP101()
+        if (!ackReceived && !nakReceived) {
             return false
         }
 
@@ -276,7 +259,7 @@ class XModemSender(
         private const val EOT: Byte = 0x04
         private const val ACK: Byte = 0x06
         private const val NAK: Byte = 0x15
-        private const val TIMEOUT = 1000L // Timeout для ожидания подтверждения в миллисекундах
+        private const val TIMEOUT = 3000L // Timeout для ожидания подтверждения в миллисекундах
         private const val TIMEOUT_EOT = 2000L
         private const val MAX_RETRIES = 5 // Максимальное количество повторных попыток отправки
     }

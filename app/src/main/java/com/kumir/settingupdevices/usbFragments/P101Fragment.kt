@@ -60,6 +60,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
     var currentAbanent: ItemAbanent? = null
 
     var fileName: String = ""
+    var nameDriver: String = "driver"
 
     // хранит текущее наименование драйвера которое хочет записать пользователь
     var nameCurrentLoadDriver = ""
@@ -86,7 +87,11 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
                         fileName.contains(".bin") ||
                         fileName.contains(".BIN"))) {
                 file = tempFile
-                setModeXmodemDevice(fileName)
+
+                 // выбор названия для загрузки драйвера
+                 setNameDriver()
+
+                //setModeXmodemDevice(fileName)
             } else {
                 if (!(requireContext() as MainActivity).usb.checkConnectToDevice())
                     showAlertDialog(getString(R.string.noConnected))
@@ -155,6 +160,31 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             context.printDeviceTypeName(getString(R.string.controller_p_101))
         }
 
+
+        // назначения клика на меню выбора названия имени
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        binding.buttonSetName.setOnClickListener {
+            if (binding.inputSetName.text.toString().isNotEmpty() && validDataSettingsDevice.isAscii(
+                binding.inputSetName.text.toString()
+            )) {
+                nameDriver = binding.inputSetName.text.toString().uppercase()
+                setModeXmodemDevice(fileName)
+            } else {
+                showAlertDialog(getString(R.string.nameNotValid))
+            }
+        }
+
+        binding.buttonLoadFile.setOnClickListener {
+            selectFile() // выбор файла для загрузки драйвера
+        }
+
+        binding.buttonCancellationDriverWrite.setOnClickListener {
+            binding.mainLayoutSetName.visibility = View.GONE
+        }
+
+        binding.mainLayoutSetName.setOnClickListener {
+            binding.mainLayoutSetName.visibility = View.GONE
+        }
 
 
         // назначение клика на меню что бы добавлять и удалять данные
@@ -232,19 +262,22 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             // клик добавления абанента
             binding.buttonAddAbanent.text = getString(R.string.addAbanentTitle)
             binding.buttonAddAbanent.setOnClickListener {
-                binding.inputKey.visibility = View.VISIBLE
+                binding.layoutInputKey.visibility = View.VISIBLE
                 binding.fonWindowDarck.visibility = View.VISIBLE
                 binding.editMenuAbanent.visibility = View.VISIBLE
             }
         }
-        // кнопка загрузки драйвера
-        binding.buttonLoadFile.visibility = View.VISIBLE
-        binding.buttonLoadFile.setOnClickListener {
-            selectFile() // выбор файла для загрузки драйвера
-        }
+    }
+
+    private fun setNameDriver() {
+        binding.mainLayoutSetName.visibility = View.VISIBLE
     }
 
     private fun setModeXmodemDevice(name: String) {
+
+        // закрываем меню выбора имени
+        binding.mainLayoutSetName.visibility = View.GONE
+
         val context: Context = requireContext()
 
         if (!(context as MainActivity).usb.checkConnectToDevice()) {
@@ -256,7 +289,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             // очищение буфера перед отправкой
             context.currentDataByteAll = byteArrayOf()
             val dataMap: Map<String, String> = mapOf(
-                getString(R.string.commandSetDriverMode) to name.substringBefore("_").uppercase()
+                getString(R.string.commandSetDriverMode) to nameDriver/*name.substringBefore("_").uppercase()*/
             )
 
             // переподключения перед отправкой команды
@@ -300,7 +333,6 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
     override fun closeMenuProgress() {
         binding.loadMenuProgress.visibility = View.GONE
         binding.fonLoadDriver.visibility = View.GONE
-
     }
 
     override fun errorSend() {
@@ -334,7 +366,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
                         binding.textDriverVersion.text = getString(R.string.driverTitle) + "\n" + file?.name?.substringBefore(".")
 
                         // обновление адаптеров отображения драйверов если запись была успешно
-                        itemDrivers.add(fileName.substringBefore("_").uppercase())
+                        itemDrivers.add(nameDriver.uppercase())
 
                         updateDriversShowView()
                     }
@@ -424,6 +456,9 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
         if (!flagRead) {
             binding.buttonAddAbanent.visibility = View.VISIBLE
 
+            // кнопка загрузки драйвера
+            binding.buttonLoadFile.visibility = View.VISIBLE
+
             // делаем так что бы больше незя было прочитать устройство и нарушить алгаритм исполнения
             binding.imagedischarge.setOnClickListener {
                 showAlertDialog(getString(R.string.readAlready))
@@ -467,7 +502,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             // клик добавления абанента
             binding.buttonAddAbanent.text = getString(R.string.addAbanentTitle)
             binding.buttonAddAbanent.setOnClickListener {
-                binding.inputKey.visibility = View.VISIBLE
+                binding.layoutInputKey.visibility = View.VISIBLE
                 binding.fonWindowDarck.visibility = View.VISIBLE
                 binding.editMenuAbanent.visibility = View.VISIBLE
             }
@@ -625,7 +660,8 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
         binding.fonWindowDarck.visibility = View.GONE
         binding.editMenuAbanent.visibility = View.GONE
 
-        var values: String = "a=t;"
+        var values = "a=f;"
+        if (binding.switchAddParams.isChecked) values = "a=t;"
         if (binding.inputPassword.text.toString().isNotEmpty()) {
             values += "p=${binding.inputPassword.text}a;"
         }
@@ -713,14 +749,6 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             binding.imagedischarge.setOnClickListener {
                 onClickReadSettingsDevice()
             }
-
-            /*binding.buttonDriversDel.visibility = View.VISIBLE
-            binding.buttonAddAbanent.visibility = View.VISIBLE
-            binding.buttonLoadFile.visibility = View.VISIBLE*/
-
-            val context: Context = requireContext()
-            if (context is MainActivity)
-                context.usb.flagAtCommandYesNo = true
         }
     }
 
@@ -768,7 +796,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             return false
         }
 
-        if (binding.inputKey.text.toString() in listKeyAbanents) {
+        if (currentAbanent == null && binding.inputKey.text.toString() in listKeyAbanents) {
             showAlertDialog(getString(R.string.abonnentPresent))
 
             return false
@@ -870,14 +898,14 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             binding.inputNumDevice.setText(data.numDevice.trim())
 
             // уубераем воможность редактировать ключ
-            binding.inputKey.visibility = View.GONE
+            binding.layoutInputKey.visibility = View.GONE
 
             // выводим информацию об порте
             val ports: List<String> = data.port.split(",")
             try {
                 val formatDataProtocol = FormatDataProtocol()
-                binding.inputRange.setText(ports[4])
-                binding.inputTimeOut.setText(ports[5])
+                binding.inputRange.setText(ports[4].trim())
+                binding.inputTimeOut.setText(ports[5].trim())
 
                 binding.spinnerSpeed.setSelection(formatDataProtocol.getSpeedIndax(ports[0] + 2))
                 binding.spinnerBitData.setSelection(formatDataProtocol.formatBitData(ports[1]))

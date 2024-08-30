@@ -131,8 +131,20 @@ class ValidDataSettingsDevice {
         return str == decodedString
     }
 
+    // проверка на аски символы
+    fun isAscii(input: String): Boolean {
+        if (!input.matches("^\\p{ASCII}*$".toRegex())) return false
+
+        for (c in input) {
+            if ((c.code !in 48..57 && (c.code < 65 ||  c.code > 122)) ||
+                (c.code in 91..96))
+                if (c.code != 95) return false
+        }
+
+        return true
+    }
+
     fun validCharStringCode(char: String): Boolean {
-        val value = char.toInt()
         return try {
             !(char.toInt() >= CHAR_BYTE_MAX ||
                     char.toInt() <= CHAR_BYTE_MIN)
@@ -192,8 +204,8 @@ class ValidDataSettingsDevice {
     // проверка ожидания п101
     fun validTimeP101(timeout: String): Boolean {
         return try {
-            !(timeout.toInt() >= TIME_P101_MAX ||
-                    timeout.toInt() <= TIME_P101_MIN)
+            !(timeout.toInt() > TIME_P101_MAX ||
+                    timeout.toInt() < TIME_P101_MIN)
         } catch (e: Exception) {
             false
         }

@@ -441,6 +441,7 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
 
             // поток поиска скорости при протоколе
             Thread {
+                usbCommandsProtocol.flagWorkWrite = true
 
                 context.usb.onSerialParity(3) // переходим на четность PARITY_MARK
                 Thread.sleep(500)
@@ -467,6 +468,9 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                         }
                     }
                 }
+
+                usbCommandsProtocol.flagWorkWrite = false
+
 
                 // если поиск прошел успешно
                 context.runOnUiThread {

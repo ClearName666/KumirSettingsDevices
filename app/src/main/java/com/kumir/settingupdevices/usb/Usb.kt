@@ -421,7 +421,7 @@ class Usb(private val context: Context) {
 
     // переподлючения
     fun reconnectCDC() {
-        executorUsb.execute {
+        /*executorUsb.execute {*/
             if (checkConnectToDevice()) {
                 connection?.controlTransfer(
                     0x21,
@@ -443,7 +443,7 @@ class Usb(private val context: Context) {
                     5000
                 )
             }
-        }
+        /*}*/
 
     }
 

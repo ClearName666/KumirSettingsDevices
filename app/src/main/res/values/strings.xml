@@ -27,7 +27,7 @@
     <string name="notAddressValidP101">Сетевой адрес не может быть пустым!</string>
     <string name="notValidTimeOutP101">Отображение значений должно быть в диапазоне от 1 до 600</string>
     <string name="notValidTimeP101">Время ожидания должно быть в диапазоне от 200 до 5000</string>
-    <string name="notDriver">Нету драйвера!</string>
+    <string name="notDriver">Нет драйвера!</string>
     <string name="errorSettingPort">Для данного устройства такие настройки порта не корректны!</string>
     <string name="errorFindSpeedSerial">Поиск скорости не дал результата! Убедитесь что кабель подключен надежно и имеет контакты для связи с serial port!</string>
     <string name="notReadDevice">Вы еще не прочитали устройство!</string>
@@ -65,7 +65,7 @@
     <string name="fileError">По какой то причине файл не загрузился!</string>
     <string name="notFormatFile">Не тот формат файла! Нужно bin</string>
     <string name="noFileSave">Нет данных для сохранения!</string>
-    <string name="noConnected">У вас нету подключения!</string>
+    <string name="noConnected">У вас нет подключения!</string>
     <string name="nonPermissionsSaveFile">Не получено разрешения для сохранения!</string>
     <string name="nonPermissionsPos">Вы не дали разрешения на геопозицию поэтому эта опция вам не доступна!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
@@ -110,7 +110,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.7.69</string>
+    <string name="versionApp">Версия: 1.7.70</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -655,6 +655,7 @@
     <string name="paramsTitle">Параметры:</string>
     <string name="setPorsTitle">Настройки порта: </string>
     <string name="nameTitle">Имя</string>
+    <string name="nameNotValid">Вы не ввели имя для драйвера или ввели его не корректно!</string>
     <string name="numDevTitle">Номер прибора: </string>
     <string name="range1Title">Интервал</string>
     <string name="adminPasswordTitle">Пароль администратора</string>
@@ -667,6 +668,7 @@
     <string name="timeZero">00:00</string>
     <string name="ip">IP:</string>
     <string name="updateNameTitle">Похоже что шаблон с таким именем уже есть! Вы хотите обновить существующий или можете дать новое имя шаблону!</string>
+    <string name="updateNameTitleForDriver">Введите имя драйвера!</string>
     <string name="newNameTitle">Новое имя</string>
     <string name="update">Обновить</string>
     <string name="newName">Новое название</string>
@@ -717,6 +719,8 @@
     <string name="autodetectSettingsInterface">Авто определение</string>
     <string name="reference">Справка</string>
     <string name="infoReferenceRimAddress">По умолчанию адрес это последние 2 цифры заводского номера прибора</string>
+    <string name="addParams">Дополнительные параметры</string>
+    <string name="textDelDriver">Для удаления драйвера вам нужно выбрать его из списка и нажать кнопку удалить</string>
 
 
     <!--............................................................................-->

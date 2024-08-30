@@ -1323,9 +1323,10 @@ class UsbCommandsProtocol {
         // проверка на команду загрузки драйвера
         if (command == context.getString(R.string.commandSetDriverMode)) {
             if (context.currentDataByteAll.isEmpty() || context.currentDataByteAll[0] != 0x15.toByte()) {
-
+                /*
                 Log.d("XModemSender", context.currentDataByteAll[0].toString())
                 Log.d("XModemSender", context.currentDataByteAll.joinToString { "%02x".format(it) })
+                */
                 return false
             }
         }
