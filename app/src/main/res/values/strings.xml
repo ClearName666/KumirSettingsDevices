@@ -474,7 +474,7 @@
     <string name="commandGetPort1M32D">AT$PORT1?</string>
     <string name="commandGetPort2M32D">AT$PORT2?</string>
     <string name="commandGetProfile1M32D">AT$PROFILE1?</string>
-    <string name="commandGetProfile2M32D">AT$PROFILEusbDevices2?</string>
+    <string name="commandGetProfile2M32D">AT$PROFILE2?</string>
     <string name="commandGetSim1PinM32D">AT$SIM1PIN?</string>
     <string name="commandGetSim1ApnM32D">AT$SIM1APN?</string>
     <string name="commandGetSim1LoginM32D">AT$SIM1LOGIN?</string>

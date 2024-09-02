@@ -535,12 +535,14 @@ class Usb(private val context: Context) {
                             end@while (flagAtCommand) {
                                 while (flagAtCommandYesNo) {
                                     Thread.sleep(TIMEOUT_MOVE_AT)
-                                    if (checkConnectToDevice() && flagAtCommand && flagAtCommandYesNo) {
-                                        writeDevice(at, false)
-                                        Log.d("atSand", at)
-                                        flagIgnorRead = true
-                                        Thread.sleep(TIMEOUT_IGNORE_AT)
-                                        flagIgnorRead = false
+                                    if (checkConnectToDevice() ) {
+                                        if (flagAtCommand && flagAtCommandYesNo) {
+                                            writeDevice(at, false)
+                                            Log.d("atSand", at)
+                                            flagIgnorRead = true
+                                            Thread.sleep(TIMEOUT_IGNORE_AT)
+                                            flagIgnorRead = false
+                                        }
                                     } else { // нету подключение вылет из потока
                                         break@end
                                     }
@@ -548,6 +550,7 @@ class Usb(private val context: Context) {
                                 Thread.sleep(TIMEOUT_MOVE_AT / 30)
                             }
 
+                            Log.d("threadInfo", "AT поток удален ")
                         }
 
                         threadAtCommand.start()
