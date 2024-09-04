@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.kumir.settingupdevices.MainActivity
+import com.kumir.settingupdevices.R
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -39,6 +40,10 @@ interface PmDao {
             }
         } else {
             insert(pm)
+        }
+
+        context.runOnUiThread {
+            context.showAlertDialog(context.getString(R.string.sucPresetSaveDataBase))
         }
     }
 }

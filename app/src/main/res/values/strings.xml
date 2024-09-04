@@ -110,7 +110,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.7.70</string>
+    <string name="versionApp">Версия: 1.7.71</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -673,6 +673,8 @@
     <string name="update">Обновить</string>
     <string name="newName">Новое название</string>
     <string name="grafick">График</string>
+    <string name="grafickSim1">График 1 Sim</string>
+    <string name="grafickSim2">График 2 Sim</string>
     <string name="m32d">КУМИР M32D</string>
     <string name="simCard1Title">1 сим карта</string>
     <string name="simCard2Title">2 сим карта</string>

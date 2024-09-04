@@ -101,6 +101,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
                     1 -> {
                         binding.recyclerItemnonPackg.visibility = View.GONE
                         binding.lineChart.visibility = View.VISIBLE
+                        binding.textDialogExitDiag.visibility = View.GONE
                     }
                 }
             }
@@ -356,6 +357,8 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
                 }
             }
         }
+
+        binding.textDialogExitDiag.visibility = View.GONE
     }
 
 

@@ -6,6 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.material.tabs.TabLayout
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.databinding.FragmentDiagM32DBinding
@@ -24,6 +30,15 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
 
     // флаг прошивкаи 2 или 1 сим карт
     private var flagSim2: Boolean = true
+
+
+    // для графика данных
+    val entriesSim1 = ArrayList<Entry>()
+    val entriesSim2 = ArrayList<Entry>()
+
+    // текущий уровень сигнала у бащвой станции
+    var curentPkgNumbersim1: Int = 0
+    var curentPkgNumbersim2: Int = 0
 
 
     companion object {
@@ -58,6 +73,40 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
         }
 
 
+        // установка даных в tab layout
+        binding.tabPresets.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                when (tab.position) {
+                    0 -> {
+                        binding.scrollDiag.visibility = View.VISIBLE
+                        binding.lineChartSim1.visibility = View.GONE
+                        binding.lineChartSim2.visibility = View.GONE
+                    }
+                    1 -> {
+                        binding.scrollDiag.visibility = View.GONE
+                        binding.lineChartSim1.visibility = View.VISIBLE
+                        binding.lineChartSim2.visibility = View.GONE
+                    }
+                    2 -> {
+                        binding.scrollDiag.visibility = View.GONE
+                        binding.lineChartSim1.visibility = View.GONE
+                        binding.lineChartSim2.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // No-op
+            }
+        })
+
+        // установка в 0 графиков
+        lineChartSim1("0", "0")
+
         return binding.root
     }
 
@@ -77,7 +126,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
                 //usbCommandsProtocol.threadDiag.interrupt()
                 usbCommandsProtocol.flagWorkDiag = false
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
 
         // очещение буфера данных
@@ -148,6 +197,12 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             // выводим градацию сигнала
             try {
                 val signalInt: Int = operator.substringAfter("-").substringBefore("dBm").toInt()
+
+                // вывод информации в график
+                curentPkgNumbersim1++
+
+                lineChartSim1(curentPkgNumbersim1.toString(), (-signalInt).toString())
+
                 if (signalInt > SIGNAL_1) {
                     binding.imageSignalSim1.setBackgroundResource(R.drawable.signal_1)
                 } else if (signalInt > SIGNAL_2) {
@@ -184,9 +239,17 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
                 binding.imageOperatorSim2.setBackgroundResource(R.drawable.tele2_svgrepo_com)
             }
 
+
+
             // выводим градацию сигнала
             try {
                 val signalInt: Int = operator.substringAfter("-").substringBefore("dBm").toInt()
+
+                // вывод информации в график
+                curentPkgNumbersim2++
+
+                lineChartSim2(curentPkgNumbersim2.toString(), (-signalInt).toString())
+
                 if (signalInt > SIGNAL_1) {
                     binding.imageSignalSim2.setBackgroundResource(R.drawable.signal_1)
                 } else if (signalInt > SIGNAL_2) {
@@ -250,6 +313,83 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             showAlertDialog(getString(R.string.errorCodeNone))
         }
     }
+
+
+
+    private fun extractFirstIntFromString(input: String): Int? {
+        val regex = Regex("-?\\d+")
+        val match = regex.find(input)
+        return match?.value?.toInt()
+    }
+
+    private fun lineChartSim1(x: String, y: String) {
+
+        val xInt = extractFirstIntFromString(x)
+        val yInt = extractFirstIntFromString(y)
+
+        // Создание данных для графика
+        entriesSim1.add(Entry(xInt?.toFloat()!!, yInt?.toFloat()!!))
+
+        if (entriesSim1.size > 20) {
+            entriesSim1.removeAt(0)
+        }
+
+        val dataSet = LineDataSet(entriesSim1, "Сигнал") // создаем набор данных с меткой
+        dataSet.color = ContextCompat.getColor(requireContext(), R.color.lineColor) // устанавливаем цвет линии
+        dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.valueTextColor) // устанавливаем цвет текста значений
+
+        // Настройка стиля точек
+        dataSet.setDrawCircles(true)
+        dataSet.setDrawCircleHole(false)
+        dataSet.circleRadius = 2f
+        dataSet.setCircleColor(ContextCompat.getColor(requireContext(), R.color.lineColor))
+
+        val lineData = LineData(dataSet)
+        binding.lineChartSim1.data = lineData
+
+        // Настройка описания
+        val description = Description()
+        description.text = "График сигнала!"
+        binding.lineChartSim1.description = description
+
+        // Обновление графика
+        binding.lineChartSim1.invalidate() // перерисовать график
+    }
+
+    private fun lineChartSim2(x: String, y: String) {
+
+        val xInt = extractFirstIntFromString(x)
+        val yInt = extractFirstIntFromString(y)
+
+        // Создание данных для графика
+        entriesSim2.add(Entry(xInt?.toFloat()!!, yInt?.toFloat()!!))
+
+        if (entriesSim2.size > 20) {
+            entriesSim2.removeAt(0)
+        }
+
+        val dataSet = LineDataSet(entriesSim2, "Сигнал") // создаем набор данных с меткой
+        dataSet.color = ContextCompat.getColor(requireContext(), R.color.lineColor) // устанавливаем цвет линии
+        dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.valueTextColor) // устанавливаем цвет текста значений
+
+        // Настройка стиля точек
+        dataSet.setDrawCircles(true)
+        dataSet.setDrawCircleHole(false)
+        dataSet.circleRadius = 2f
+        dataSet.setCircleColor(ContextCompat.getColor(requireContext(), R.color.lineColor))
+
+        val lineData = LineData(dataSet)
+        binding.lineChartSim2.data = lineData
+
+        // Настройка описания
+        val description = Description()
+        description.text = "График сигнала!"
+        binding.lineChartSim2.description = description
+
+        // Обновление графика
+        binding.lineChartSim2.invalidate() // перерисовать график
+    }
+
 
 
 }

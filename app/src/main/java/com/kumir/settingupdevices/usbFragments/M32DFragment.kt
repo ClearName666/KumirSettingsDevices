@@ -11,6 +11,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.databinding.FragmentM32DBinding
@@ -27,6 +31,9 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     override val usbCommandsProtocol = UsbCommandsProtocol()
 
     private var NAME_TYPE_DEVICE = "KUMIR-M32D READY"
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -781,7 +788,7 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             context.workFonDarkMenu()
         }
 
-        if (binding.inputAPN.visibility == View.VISIBLE) {
+        if (binding.layoutSim1.visibility == View.VISIBLE) {
             // подставление данных в поля
             binding.inputAPN.setText(priset.apn)
             binding.inputSim1Knet.setText(priset.server1)
@@ -963,5 +970,4 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         return true
     }
-
 }
