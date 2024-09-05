@@ -43,6 +43,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         binding.spinnerServer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 setPresetSpinnerServer(position)
+                updateViewPort(binding.spinnerSelectActivPort.selectedItemPosition)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -53,24 +54,7 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         // изменения блакировки изменения настроек портов
         binding.spinnerSelectActivPort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-
-                // если режим кумир нет
-                if (binding.spinnerServer.selectedItemPosition != 0) {
-                    when(position) {
-                        0 -> {
-                            binding.port1DisActivFon.visibility = View.GONE
-                            binding.port2DisActivFon.visibility = View.VISIBLE
-                        }
-                        1 -> {
-                            binding.port1DisActivFon.visibility = View.VISIBLE
-                            binding.port2DisActivFon.visibility = View.GONE
-                        }
-                    }
-                } else {
-                    binding.port1DisActivFon.visibility = View.GONE
-                    binding.port2DisActivFon.visibility = View.GONE
-                }
-
+                updateViewPort(position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -195,9 +179,10 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                             binding.inputTextLoginGPRS.text.toString(),
                             binding.inputPasswordGPRS.text.toString()
                         )
+                        binding.inputNameSavePreset.setText("")
                     }
                 }
-                binding.inputNameSavePreset.setText("")
+
             } else {
                 showAlertDialog(getString(R.string.nonNamePreset))
             }
@@ -212,6 +197,27 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         }
 
         return binding.root
+    }
+
+
+
+    private fun updateViewPort(position: Int) {
+        // если режим кумир нет
+        if (binding.spinnerServer.selectedItemPosition != 0) {
+            when(position) {
+                0 -> {
+                    binding.port1DisActivFon.visibility = View.GONE
+                    binding.port2DisActivFon.visibility = View.VISIBLE
+                }
+                1 -> {
+                    binding.port1DisActivFon.visibility = View.VISIBLE
+                    binding.port2DisActivFon.visibility = View.GONE
+                }
+            }
+        } else {
+            binding.port1DisActivFon.visibility = View.GONE
+            binding.port2DisActivFon.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {

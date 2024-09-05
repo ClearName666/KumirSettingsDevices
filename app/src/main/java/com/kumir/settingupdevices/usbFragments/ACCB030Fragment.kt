@@ -110,9 +110,10 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                             binding.inputTextLoginGPRS.text.toString(),
                             binding.inputPasswordGPRS.text.toString()
                         )
+                        binding.inputNameSavePreset.setText("")
                     }
                 }
-                binding.inputNameSavePreset.setText("")
+
             } else {
                 showAlertDialog(getString(R.string.nonNamePreset))
             }

@@ -515,7 +515,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
 
                 if (ab != null) {
                     itemsAbonents.add(
-                        ItemAbanent(ab.substringAfter("ABONENT: ").substringBefore("\n"),
+                        ItemAbanent(ab.substringAfter("ABONENT: ").substringBefore("\n").trim(),
                             ab.substringAfter("ABNAME: ").substringBefore("\n"),
                             "",
                             ab.substringAfter("ABDRIVER: ").substringBefore("\n"),

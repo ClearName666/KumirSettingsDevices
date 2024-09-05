@@ -78,11 +78,11 @@ class SettingsFragment : Fragment() {
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             if (getFileNameFromUri(uri, true).endsWith(".ini")) {
-                contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
+                contextMain.showAlertDialog(getString(R.string.nonIniFile))
                 fileName = getFileNameFromUri(it)
                 readIniFileContent(it)
             } else {
-                contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
+                // contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
             }
         }
     }

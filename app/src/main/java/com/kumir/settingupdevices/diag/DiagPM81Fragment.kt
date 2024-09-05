@@ -81,6 +81,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         const val DEFFAULT_KEY_NET: String = "7586-100000-000003"
         const val LOCATION_PERMISSION_REQUEST_CODE: Int = 200
         const val DIR_POS_DATA_DEFAULTE: String = "/posData"
+        const val DEFAULT_POSITION_RADIO: Int = 1
     }
 
 
@@ -143,10 +144,12 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         // стандартный ключ доступа в сеть
         binding.inputKeyNet.setText(DEFFAULT_KEY_NET)
 
+
         // проверяем валиность введенных данных
         surveillanceInputText()
 
         createAdapters()
+
 
         lineChart("0", "0")
 
@@ -333,6 +336,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         if (!flagStartDiag) {
             val validDataSettingsDevice = ValidDataSettingsDevice()
             if (validDataSettingsDevice.serverValid(binding.inputKeyNet.text.toString()) || binding.inputKeyNet.text.toString().length <= 60) {
+
                 val context: Context = requireContext()
 
                 if (context is MainActivity) {

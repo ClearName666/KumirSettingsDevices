@@ -7,27 +7,49 @@
         android:layout_height="match_parent"
         tools:context=".diag.DiagPM81Fragment">
 
-    <TextView
-        android:id="@+id/textDialogExitDiag"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabPresets"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/exitDiagRestart"
-        android:textColor="@color/textColor"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerItemnonPackg"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerItemOperators"
-        app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
-        app:layout_constraintTop_toBottomOf="@+id/tabPresets" />
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/fonElement"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerItemnonFindBaseStations"
+        app:tabSelectedTextColor="#8532AF"
+        app:tabTextColor="@color/textColor">
 
-        <Spinner
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/packgTitle" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grafick" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fonMenu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/fonElement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageFilePositionData">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Spinner
         android:id="@+id/spinnerRange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:background="@android:drawable/btn_dropdown"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayoutKeyNet"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutKeyNet" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lineSettingsPort1"
@@ -77,24 +99,25 @@
             app:layout_constraintStart_toEndOf="@+id/serinerNumber"
             app:layout_constraintTop_toBottomOf="@+id/lineSet" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/line2Set"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="3dp"
-            android:background="@color/fon2Element"
-            app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
-            tools:layout_editor_absoluteX="0dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/line2Set"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="3dp"
+        android:background="@color/fon2Element"
+        app:layout_constraintTop_toBottomOf="@+id/textVersionFirmware"
+        tools:layout_editor_absoluteX="0dp">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerItemnonFindBaseStations"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
+        android:maxHeight="150dp"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,12 +133,10 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/spinnerRange"
+        app:layout_constraintBottom_toTopOf="@+id/imageFilePositionData"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabPresets"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/tabPresets" />
 
     <Button
         android:id="@+id/buttonDiagStart"
@@ -132,13 +153,12 @@
         android:id="@+id/textTitlenonFindBaseStations"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="@string/BaseStationsTitle"
         android:textColor="@color/textColor"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerRange" />
 
     <ProgressBar
         android:id="@+id/progressBarBaseStations"
@@ -158,7 +178,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/spinnerRange"
+        app:layout_constraintBottom_toBottomOf="@+id/textDialogExitDiag"
         app:layout_constraintEnd_toEndOf="@+id/recyclerItemnonFindBaseStations"
         app:layout_constraintStart_toStartOf="@+id/recyclerItemnonFindBaseStations"
         app:layout_constraintTop_toBottomOf="@+id/tabPresets" />
@@ -178,14 +198,15 @@
 
     <Button
         android:id="@+id/buttonOldSet"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/dangerous"
         android:text="@string/oldSetPlaceTitleButton"
         android:textColor="@color/background"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonDiagStart" />
+        app:layout_constraintEnd_toStartOf="@+id/buttonDiagStart"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <com.github.mikephil.charting.charts.LineChart
@@ -197,46 +218,18 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/spinnerRange"
+        app:layout_constraintBottom_toTopOf="@+id/imageFilePositionData"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabPresets"
-        app:layout_constraintVertical_bias="0.621" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabPresets"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/fonElement"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerItemnonFindBaseStations"
-        app:tabSelectedTextColor="#8532AF"
-        app:tabTextColor="@color/textColor">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/packgTitle" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/grafick" />
-
-    </com.google.android.material.tabs.TabLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tabPresets" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayoutKeyNet"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonDiagStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line2Set">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputKeyNet"
@@ -249,14 +242,38 @@
 
     <ImageView
         android:id="@+id/imageFilePositionData"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/download_minimalistic_svgrepo_com__1_"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDiagStart"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textImportToGeo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/exportToGeo"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toBottomOf="@+id/imageFilePositionData"
+        app:layout_constraintEnd_toStartOf="@+id/imageFilePositionData"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageFilePositionData"
+        app:layout_constraintVertical_bias="0.531" />
+
+    <TextView
+        android:id="@+id/textDialogExitDiag"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clickable="true"
-        android:src="@drawable/download_minimalistic_svgrepo_com__1_"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonOldSet"
+        android:gravity="center"
+        android:text="@string/exitDiagRestart"
+        android:textColor="@color/textColor"
+        app:layout_constraintBottom_toTopOf="@+id/textImportToGeo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutKeyNet"
-        android:contentDescription="@string/todo" />
+        app:layout_constraintTop_toBottomOf="@+id/tabPresets" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

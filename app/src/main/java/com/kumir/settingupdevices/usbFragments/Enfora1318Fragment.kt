@@ -108,9 +108,10 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                             binding.inputPassword.text.toString(),
                             binding.inputTimeOut.text.toString(),
                             binding.inputSizeBuffer.text.toString())
+                        binding.inputNameSavePreset.setText("")
                     }
                 }
-                binding.inputNameSavePreset.setText("")
+
             } else {
                 showAlertDialog(getString(R.string.nonNamePreset))
             }

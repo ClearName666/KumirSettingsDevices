@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.model.recyclerModel.ItemBaseStation
@@ -34,7 +35,9 @@ class ItemBaseStationAdapter (val context: Context,
             if (currentItem.main) { // если главная базовая станция то перекрашиваем в зеленый
                 holder.textBSS.text = context.getString(R.string.BSS) + " " + currentItem.bss
                 holder.textSNR.text = context.getString(R.string.SNR) + " " + currentItem.snr
-                holder.main.background.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+
+                val sucColor = ContextCompat.getColor(context, R.color.sucColor)
+                holder.main.background.setColorFilter(sucColor, PorterDuff.Mode.SRC_ATOP)
             } else {
                 holder.textBSS.text = context.getString(R.string.BSS) + " " + currentItem.bss
                 holder.textSNR.text = context.getString(R.string.SNR) + " " + currentItem.snr

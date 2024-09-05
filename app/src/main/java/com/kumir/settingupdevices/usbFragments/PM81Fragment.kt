@@ -113,9 +113,10 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
                             binding.inputPowerCures.text.toString(),
                             binding.spinnerRange.selectedItemPosition
                         )
+                        binding.inputNameSavePreset.setText("")
                     }
                 }
-                binding.inputNameSavePreset.setText("")
+
             } else {
                 showAlertDialog(getString(R.string.nonNamePreset))
             }
@@ -459,6 +460,21 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         if (!validAll()) return
 
+        // проверка на
+        /*
+           3) at$mode=MONITOR
+            - если поля AT$BAND, AT$NETKEY не изменялись (по умолчанию), то тогда не записывать новые значения в РМ81
+            - если поля AT$BAND, AT$NETKEY изменялись, то AT$BAND=значение, AT$NETKEY=значение.
+        */
+        if (binding.spinnerServer.selectedItem.toString() == getString(R.string.devmodeMONITOR) &&
+            binding.inputNetKey.text.toString() == netKey &&
+            (binding.spinnerRange.selectedItemPosition + 1).toString() == band &&
+            mode == getString(R.string.devmodeMONITOR)) {
+
+            showAlertDialog(getString(R.string.noneValidRecordMONITOR))
+            return
+        }
+
         var parityPort1 = "N"
         when(binding.spinnerSelectParityPort1.selectedItemPosition) {
             0 -> parityPort1  = "N"
@@ -608,21 +624,6 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
         } else if (!validDataSettingsDevice.validPM81KeyNet(binding.inputNetKey.text.toString())) {
             showAlertDialog(getString(R.string.errorNETKEY))
-            return false
-        }
-
-        // проверка на
-        /*
-           3) at$mode=MONITOR
-            - если поля AT$BAND, AT$NETKEY не изменялись (по умолчанию), то тогда не записывать новые значения в РМ81
-            - если поля AT$BAND, AT$NETKEY изменялись, то AT$BAND=значение, AT$NETKEY=значение.
-        */
-        if (binding.spinnerServer.selectedItem.toString() == getString(R.string.devmodeMONITOR) &&
-            binding.inputNetKey.text.toString() == netKey &&
-            (binding.spinnerRange.selectedItemPosition + 1).toString() == band &&
-            mode == getString(R.string.devmodeMONITOR)) {
-
-            showAlertDialog(getString(R.string.noneValidRecordMONITOR))
             return false
         }
 
