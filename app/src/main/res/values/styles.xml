@@ -4,4 +4,5 @@
         <item name="android:thumbTint">@color/blue_switch_thumb_color</item> <!-- Цвет переключателя -->
         <item name="android:trackTint">@color/blue_switch_track_color</item> <!-- Цвет фона переключателя -->
     </style>
+
 </resources>

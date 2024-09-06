@@ -110,7 +110,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.7.72</string>
+    <string name="versionApp">Версия: 1.8.72</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -724,6 +724,7 @@
     <string name="addParams">Дополнительные параметры</string>
     <string name="textDelDriver">Для удаления драйвера вам нужно выбрать его из списка и нажать кнопку удалить</string>
     <string name="exportToGeo">Выгрузить файл с  сигналом и геопозициями в "Загрузки"</string>
+    <string name="temsApp">Темы приложения</string>
 
 
     <!--............................................................................-->

@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -75,6 +76,11 @@ class SettingsFragment : Fragment() {
         private const val REQUEST_CODE_PERMISSIONS: Int = 200
     }
 
+    private fun setTheme(themeId: Int) {
+        setTheme(themeId)
+        recreate(requireActivity()) // Перезапускаем Activity для применения новой темы
+    }
+
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             if (getFileNameFromUri(uri, true).endsWith(".ini")) {
@@ -111,6 +117,7 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSettingsBinding.inflate(inflater)
+
 
         val contextMain_: Context = requireContext()
         if (contextMain_ is MainActivity) {

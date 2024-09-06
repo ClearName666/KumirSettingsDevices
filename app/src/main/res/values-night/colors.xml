@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background">#606060</color>
+    <color name="textColor">#FFFFFF</color>
+
+    <color name="fon2Element">#49B2FF</color>
+    <color name="fon5Element">#49B2FF</color>
+    <color name="fun3Element">#49B2FF</color>
+    <color name="fon4Element">#49B2FF</color>
+    <color name="fonElement">#7F7F7F</color>
+    <color name="sucColor">#A658FF58</color>
+    <color name="currentColor">#A6FF69FD</color>
+
+    <color name="fonDarkMenu">#4B212121</color>
+    <color name="dangerous">#FF5959</color>
+
+    <color name="blue_switch_thumb_color">#49B2FF</color> <!-- Цвет переключателя (бегунок) -->
+    <color name="blue_switch_track_color">#111920</color> <!-- Цвет фона переключателя -->
+
+    <color name="lineColor">#EE00FF</color>
+    <color name="lineColorMain">#FF0000</color>
+    <color name="valueTextColor">#AFAFAF</color> <!-- Черный -->
+
+
+</resources>
