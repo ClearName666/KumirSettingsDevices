@@ -370,8 +370,13 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         substringAfter("\",\"")?.substringBefore("\""))
 
         if (settingMap[getString(R.string.commandGetLoginPasswordEnforaM31)]?.contains("0") == false) {
-            binding.inputLogin.setText(loginPassword?.get(0) ?: "")
-            binding.inputPassword.setText(loginPassword?.get(1) ?: "")
+            try {
+                binding.inputLogin.setText(loginPassword?.get(0) ?: "")
+                binding.inputPassword.setText(loginPassword?.get(1) ?: "")
+            } catch (_: Exception) {
+                binding.inputLogin.setText("")
+                binding.inputPassword.setText("")
+            }
         }
 
 
@@ -384,9 +389,15 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
         )
 
 
-        binding.inputServer2.setText(settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
-        substringAfter("02, 1,")?.substringBefore("\n")?.replace(" ", "")?.
-        substringAfter("\"")?.substringBefore("\""))
+        val pattern = """02,\s*(\d+),""".toRegex()
+        val extractedValue = settingMap[getString(R.string.commandServer2EnforaOrM31)]?.let { input ->
+            pattern.find(input)?.groupValues?.get(1)?.let { number ->
+                input.substringAfter("02, $number,").substringBefore("\n")
+                    .replace(" ", "").substringAfter("\"").substringBefore("\"")
+            }
+        }
+        binding.inputServer2.setText(extractedValue)
+
         binding.inputTimeOut.setText(settingMap[getString(R.string.commandGetPadTimeout)]?.replace(" ", ""))
         binding.inputSizeBuffer.setText(settingMap[getString(R.string.commandGetPadBlockSize)]?.replace(" ", ""))
 
@@ -427,7 +438,7 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                     "\nserver 1: ${binding.inputServer1.text.toString()}" +
                     "\nserver 2: ${binding.inputServer2.text.toString()}" +
                     "\ntcp port: ${settingMap[getString(R.string.commandGetTcpPortEnforaM31)]}" +
-                    "\nтак же пароль и логен возможно не пусты "
+                    "\nтак же пароль и логин возможно не пусты "
             )
 
             return

@@ -108,13 +108,13 @@
                     android:id="@+id/textSpeedPortCurrent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/speedTitle"
                     android:textColor="@color/textColor"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/spinnerSpeedCurrent"
                     app:layout_constraintStart_toStartOf="@+id/spinnerSpeed"
-                    app:layout_constraintTop_toBottomOf="@+id/lineCurrentSettings" />
+                    app:layout_constraintTop_toBottomOf="@+id/switchSearchSpeed" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lineCurrentSettings"
@@ -155,6 +155,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/namePresetTitle"
+                        android:maxLength="20"
                         android:textColor="@color/textColor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -446,6 +447,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@android:drawable/btn_dropdown"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textSelectMeteringDevice" />
@@ -483,7 +485,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/lineSettingsPort1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/switchSearchSpeed" />
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectParityCurrent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/DisActivPort1SetiingsPriset"
@@ -547,12 +549,12 @@
                     android:id="@+id/switchSearchSpeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/autodetectSettingsInterface"
                     android:textColor="@color/textColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStopBitCurrent" />
+                    app:layout_constraintTop_toBottomOf="@+id/textCurentSettings" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

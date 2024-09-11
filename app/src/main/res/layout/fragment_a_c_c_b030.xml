@@ -518,6 +518,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/namePresetTitle"
+                            android:maxLength="20"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 

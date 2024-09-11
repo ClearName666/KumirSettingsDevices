@@ -58,6 +58,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/namePresetTitle"
+                            android:maxLength="20"
                             android:textColor="@color/textColor" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,7 +203,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="@string/timeoutTitle"
+                        android:text="@string/timeoutTitle31AndEnfora"
                         android:textColor="@color/textColor"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/inputServer2Layout" />

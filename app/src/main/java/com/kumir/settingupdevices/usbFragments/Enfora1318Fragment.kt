@@ -416,9 +416,15 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             )
 
 
-        binding.inputServer2.setText(settingMap[getString(R.string.commandServer2EnforaOrM31)]?.
-            substringAfter("02, 1,")?.substringBefore("\n")?.replace(" ", "")?.
-        substringAfter("\"")?.substringBefore("\""))
+        val pattern = """02,\s*(\d+),""".toRegex()
+        val extractedValue = settingMap[getString(R.string.commandServer2EnforaOrM31)]?.let { input ->
+            pattern.find(input)?.groupValues?.get(1)?.let { number ->
+                input.substringAfter("02, $number,").substringBefore("\n")
+                    .replace(" ", "").substringAfter("\"").substringBefore("\"")
+            }
+        }
+        binding.inputServer2.setText(extractedValue)
+
         binding.inputTimeOut.setText(settingMap[getString(R.string.commandGetPadTimeout)]?.replace(" ", ""))
         binding.inputSizeBuffer.setText(settingMap[getString(R.string.commandGetPadBlockSize)]?.replace(" ", ""))
 

@@ -90,7 +90,7 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
     override fun printSettingDevice(settingMap: Map<String, String>) {
         // вывод сериного номера
         val serialNumber: String = getString(R.string.serinerNumber) + "\n" +
-                settingMap[getString(R.string.commandGetSerialNum)]
+                settingMap[getString(R.string.commandGetSerialNum)]?.replace("\"", "")
         binding.serinerNumber.text = serialNumber
 
         // вывод версионного номера
@@ -103,9 +103,12 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         binding.textVersionFirmware.text = versionProgram
 
         // оператор связи
-        val operationGSM: String = getString(R.string.communicationOperatorTitle) +
-                settingMap[getString(R.string.commandGetOperatirGSM)]?.substringAfter("\"")?.substringBefore("\"")
-        binding.textCommunicationOperator.text = operationGSM
+        if (settingMap[getString(R.string.commandGetOperatirGSM)]?.substringAfter("\"")?.substringBefore("\"")?.contains("0") == false) {
+            val operationGSM: String = getString(R.string.communicationOperatorTitle) +
+                    settingMap[getString(R.string.commandGetOperatirGSM)]?.substringAfter("\"")?.substringBefore("\"")
+            binding.textCommunicationOperator.text = operationGSM
+        }
+
 
         flagPermissionChackSignal = true
     }
@@ -140,7 +143,7 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
             return
         }
 
-        // ули ошибка равна 99 то 0
+        // ecли ошибка равна 99 то 0
         var errorInt: Double = 0.0
         try {
             errorInt = errors.replace(" ", "").toDouble()

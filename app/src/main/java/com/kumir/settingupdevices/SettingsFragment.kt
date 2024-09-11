@@ -76,18 +76,18 @@ class SettingsFragment : Fragment() {
         private const val REQUEST_CODE_PERMISSIONS: Int = 200
     }
 
-    private fun setTheme(themeId: Int) {
+    /*private fun setTheme(themeId: Int) {
         setTheme(themeId)
         recreate(requireActivity()) // Перезапускаем Activity для применения новой темы
-    }
+    }*/
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             if (getFileNameFromUri(uri, true).endsWith(".ini")) {
-                contextMain.showAlertDialog(getString(R.string.nonIniFile))
                 fileName = getFileNameFromUri(it)
                 readIniFileContent(it)
             } else {
+                contextMain.showAlertDialog(getString(R.string.nonIniFile))
                 // contextMain.showAlertDialog(getString(R.string.nonIniFile) + " Ваш путь: $it")
             }
         }

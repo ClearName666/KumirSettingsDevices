@@ -31,8 +31,8 @@ class ModemDataW(val context: Context) {
             flagCustom = true
         }
 
-        if (flagCustom && data[context.getString(R.string.commandGetUsernamePassword)]?.
-                contains(loginPassword) == false && loginPassword.isNotEmpty()) {
+        if (flagCustom/* && data[context.getString(R.string.commandGetUsernamePassword)]?.
+                contains(loginPassword) == false && loginPassword.isNotEmpty()*/) {
 
             dataWrite[context.getString(R.string.commandSetConfigurePPPWithLogin)] = "1"
             dataWrite[context.getString(R.string.commandSetUsernamePassword)] =
@@ -45,7 +45,7 @@ class ModemDataW(val context: Context) {
         }
 
         // сервер 1 -----------------------------------------
-        if (data[context.getString(R.string.commandServer1EnforaOrM31)]?.
+        if (flagCustom || data[context.getString(R.string.commandServer1EnforaOrM31)]?.
             contains(server1) == false) {
 
             if (!flagCustom) {
@@ -58,7 +58,7 @@ class ModemDataW(val context: Context) {
         }
 
         // сервер 2 ------------------------------------------
-        if (data[context.getString(R.string.commandServer2EnforaOrM31)]?.
+        if (flagCustom || data[context.getString(R.string.commandServer2EnforaOrM31)]?.
             contains(server1) == false || data[context.getString(R.string.commandServer2EnforaOrM31)]?.contains(server2) == false) {
 
             // добавление команд сброса AT$FRIEND
@@ -78,7 +78,7 @@ class ModemDataW(val context: Context) {
         }
 
         // apn
-        if (data[context.getString(R.string.commandGetApnEnforaM31)]?.
+        if (flagCustom || data[context.getString(R.string.commandGetApnEnforaM31)]?.
             contains(apn) == false) {
 
             if (!flagCustom) {
@@ -131,7 +131,7 @@ class ModemDataW(val context: Context) {
         }
 
         // AT$PADBLK
-        if (data[context.getString(R.string.commandGetPadBlockSize)]?.
+        if (flagCustom || data[context.getString(R.string.commandGetPadBlockSize)]?.
             contains(sizeBuffer) == false) {
 
             if (!flagCustom) {
@@ -144,7 +144,7 @@ class ModemDataW(val context: Context) {
         }
 
         // AT$PADTO
-        if (data[context.getString(R.string.commandGetPadTimeout)]?.
+        if (flagCustom || data[context.getString(R.string.commandGetPadTimeout)]?.
             contains(timeOut) == false) {
 
             if (!flagCustom) {

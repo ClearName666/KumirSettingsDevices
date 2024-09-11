@@ -419,6 +419,12 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
         } else {
+            drawablImageDownLoad?.let {
+                val wrappedDrawable = DrawableCompat.wrap(it)
+                DrawableCompat.setTint(wrappedDrawable, Color.RED)
+                binding.imageDownLoad.setImageDrawable(wrappedDrawable)
+            }
+
             binding.imageDownLoad.setOnClickListener {
                 writeSettingStart()
             }
@@ -457,7 +463,16 @@ class RimFragment : Fragment(), UsbFragment, DataShowInterface {
                         // отправка адреса для того что бы посмотреть ответит ли кто то
                         if (context.usb.checkConnectToDevice())
                             context.usb.writeDevice("", false, byteArrayOf(address), false)
-                        else return@Thread
+                        else {
+                            // закрытие меню
+                            context.runOnUiThread {
+                                binding.loadMenuProgress.visibility = View.GONE
+                                binding.fonLoadMenu.visibility = View.GONE
+                            }
+
+                            usbCommandsProtocol.flagWorkWrite = false
+                            return@Thread
+                        }
                         // ожидание ответа
                         val startTime = System.currentTimeMillis()
                         while (System.currentTimeMillis() - startTime < MAX_TIME_WAIT_SEARCH_SPEED_ANSWER) {

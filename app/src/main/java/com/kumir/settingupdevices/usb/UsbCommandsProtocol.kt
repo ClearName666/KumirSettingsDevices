@@ -43,7 +43,7 @@ class UsbCommandsProtocol {
 
     companion object {
         const val WAITING_FOR_THE_TEAMS_RESPONSE: Long = 90
-        const val WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED: Long = 100
+        const val WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED: Long = 150
 
         const val MAX_CNT_EXPECTATION_SAND: Int = 30
         const val MAX_RATIO_EXPECTATION_NEW_SPEED: Int = 15
@@ -1216,7 +1216,7 @@ class UsbCommandsProtocol {
         for (bitData in BITDATA_INDEX_MIN..BITDATA_INDEX_MAX) {
             for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
                 for (parity in PARITY_INDEX_MIN..PARITY_INDEX_MAX) {
-                    for (speed in SPEED_INDEX_MIN..SPEED_INDEX_MAX) {
+                    for (speed in SPEED_INDEX_MAX downTo SPEED_INDEX_MIN) {
                         // прверка есть ли подлючение
                         if (context.usb.checkConnectToDevice()) {
                             context.usb.onSelectUumBit(bitData == 0)
@@ -1232,7 +1232,7 @@ class UsbCommandsProtocol {
                             }
 
                             // отправка тестовой команды
-                            context.usb.writeDevice(context.getString(R.string.commandSpeedFind), false)
+                            context.usb.writeDevice(context.getString(R.string.commandSpeedFind), true)
 
                             // дополнительная задержка в случае если скорость слишком мала
                             val sleepForMinSpeed = if (speed < 5) (MAX_RATIO_EXPECTATION_NEW_SPEED - speed + 1) else 1
@@ -1351,7 +1351,8 @@ class UsbCommandsProtocol {
 
 
     private fun formatDataCommandsNormolize(data: String): String {
-        return data.substringAfter(": ").substringBefore("\n").dropLast(1)
+        if (!data.contains(":")) return ""
+        return data.substringAfter(":").substringBefore("\n").trim()
     }
 
 }
