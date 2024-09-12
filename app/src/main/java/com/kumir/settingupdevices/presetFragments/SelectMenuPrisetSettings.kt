@@ -29,7 +29,9 @@ class SelectMenuPrisetSettings(val context: PrisetFragment<Priset>) : Fragment()
 
 
         // дбавление  присеты
-        val itemPresetsView: List<ItemPrisetsView> = PrisetsValue.prisets.keys.map { ItemPrisetsView(it) }
+        val itemPresetsView: List<ItemPrisetsView> = PrisetsValue.prisets.keys
+            .filter { it.trim().isNotBlank()  }
+            .map { ItemPrisetsView(it) }
 
         val itemPresetsAdapter = ItemPrisetsAdapter(requireContext(), context, itemPresetsView)
         showElements.prisetItem.adapter = itemPresetsAdapter

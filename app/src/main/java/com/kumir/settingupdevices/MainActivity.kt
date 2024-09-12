@@ -96,6 +96,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     lateinit var presetEnforaDao: EnforaDao
     lateinit var presetPmDao: PmDao
 
+    // флаг для контроля нужно ли использовать другуой текст для диалога с сохранением шаблона
+    var flagLoadPreset: Boolean = false
+
     // список с устройств с котрыми можно работать
     private val devicesTypsAll: String =
         "KUMIR-К21К23 READY" +
@@ -949,7 +952,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     binding.fonMenu.visibility = View.GONE
                     binding.updateName.visibility = View.GONE
 
-                    showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    if (flagLoadPreset) {
+                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
+
+                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                        flagLoadPreset = false
+                    } else {
+                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    }
                 } else {
                     showAlertDialog(getString(R.string.notValidUpdateName))
                 }
@@ -1000,7 +1010,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     binding.fonMenu.visibility = View.GONE
                     binding.updateName.visibility = View.GONE
 
-                    showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    if (flagLoadPreset) {
+                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
+
+                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                        flagLoadPreset = false
+                    } else {
+                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    }
                 } else {
                     showAlertDialog(getString(R.string.notValidUpdateName))
                 }
@@ -1057,7 +1074,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     binding.fonMenu.visibility = View.GONE
                     binding.updateName.visibility = View.GONE
 
-                    showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    if (flagLoadPreset) {
+                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
+
+                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                        flagLoadPreset = false
+                    } else {
+                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                    }
                 } else {
                     showAlertDialog(getString(R.string.notValidUpdateName))
                 }

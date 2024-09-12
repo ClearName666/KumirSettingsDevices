@@ -58,6 +58,7 @@
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
+    <string name="sucPresetLoadDataBase">Загрузка прошла успешно!</string>
     <string name="nonPathSaveFile">Некорректный путь!</string>
     <string name="noSaveFiles">Файлы не удалось сохранить!</string>корректны
     <string name="noSaveFilesTime">Файлы не удалось сохранить! Похоже что телефон заглючил и долго получал данные с БД!</string>
@@ -109,7 +110,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.8.73</string>
+    <string name="versionApp">Версия: 1.8.74</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>

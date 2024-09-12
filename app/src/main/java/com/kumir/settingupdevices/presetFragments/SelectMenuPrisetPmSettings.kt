@@ -11,7 +11,9 @@ import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.adapters.itemPrisetsAdapter.ItemPrisetsPmAdapter
 import com.kumir.settingupdevices.dataBasePreset.Pm
 import com.kumir.settingupdevices.databinding.FragmentSelectMenuPrisetPmSettingsBinding
+import com.kumir.settingupdevices.model.recyclerModel.ItemPresetsEnforaView
 import com.kumir.settingupdevices.model.recyclerModel.ItemPresetsPmView
+import com.kumir.settingupdevices.settings.PresetsEnforaValue
 import com.kumir.settingupdevices.settings.PrisetsPmValue
 import com.kumir.settingupdevices.usbFragments.PrisetFragment
 
@@ -29,7 +31,9 @@ class SelectMenuPrisetPmSettings(val context: PrisetFragment<Pm>) : Fragment() {
 
 
         // дбавление  присеты
-        val itemPresetsView: List<ItemPresetsPmView> = PrisetsPmValue.presets.keys.map { ItemPresetsPmView(it) }
+        val itemPresetsView: List<ItemPresetsPmView> = PrisetsPmValue.presets.keys
+            .filter { it.trim().isNotBlank() }
+            .map { ItemPresetsPmView(it) }
 
         val itemPresetsPmAdapter = ItemPrisetsPmAdapter(requireContext(), context, itemPresetsView)
         showElements.prisetItem.adapter = itemPresetsPmAdapter

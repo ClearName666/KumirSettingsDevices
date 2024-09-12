@@ -30,7 +30,9 @@ class SelectMenuPrisetEnforaSettings(val context: PrisetFragment<Enfora>) : Frag
 
 
         // дбавление  присеты
-        val itemPresetsView: List<ItemPresetsEnforaView> = PresetsEnforaValue.presets.keys.map { ItemPresetsEnforaView(it) }
+        val itemPresetsView: List<ItemPresetsEnforaView> = PresetsEnforaValue.presets.keys
+            .filter { it.trim().isNotBlank() }
+            .map { ItemPresetsEnforaView(it) }
 
         val itemPresetsAdapter = ItemPrisetsEnforaAdapter(requireContext(), context, itemPresetsView)
         showElements.prisetItem.adapter = itemPresetsAdapter

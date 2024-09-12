@@ -658,6 +658,7 @@ class SettingsFragment : Fragment() {
             val preset = Preset(0, fileName, mode, apn, eServer, tcpPort, login, password)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
+                    contextMain.flagLoadPreset = true
                     contextMain.presetDao.upsert(preset, requireContext() as MainActivity)
                     contextMain.runOnUiThread {
                         // добавление в оперативнку
@@ -686,6 +687,7 @@ class SettingsFragment : Fragment() {
             val preset = Preset(0, fileName, 0, apn, eServer, tcpPort, login, password)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
+                    contextMain.flagLoadPreset = true
                     contextMain.presetDao.upsert(preset, requireContext() as MainActivity)
                     contextMain.runOnUiThread {
                         // добавление в оперативнку
@@ -715,6 +717,7 @@ class SettingsFragment : Fragment() {
             val preset = Pm(0, fileName, mode, accessKey, power, bandI)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
+                    contextMain.flagLoadPreset = true
                     contextMain.presetPmDao.upsert(preset, requireContext() as MainActivity)
                     contextMain.runOnUiThread {
                         // добавление в оперативнку
