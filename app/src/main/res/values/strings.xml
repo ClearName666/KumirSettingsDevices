@@ -76,6 +76,8 @@
     <string name="delFileYesNo">Вы уверены что хотите удалить шаблон </string>
     <string name="delAbonent">Вы уверены что хотите удалить абонента - </string>
     <string name="readAlready">Вы уже прочли устройство</string>
+    <string name="errorLoadStm">Произошла ошибка при загрузки прошивки в модем!</string>
+    <string name="pleaseResetStm203">Для продолжения перезагрузите устройство и нажмите кнопку что бы уведомить о перезагрузки!</string>
 
     <string name="errorValidPole">Не все поля введены валидно!</string>
     <string name="errorValidAPN">Длина APN не должна превышать 63 символа</string>
@@ -110,7 +112,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.8.74</string>
+    <string name="versionApp">Версия: 1.9.75</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -126,6 +128,8 @@
     <string name="m31">КУМИР M31</string>
     <string name="k21_k23">КУМИР K21/K23</string>
     <string name="m32">КУМИР M32</string>
+    <string name="m32Version3">КУМИР М32 версия 3</string>
+    <string name="m32Version4">КУМИР М32 версия 4</string>
     <string name="m32lite">КУМИР M32Lite</string>
     <string name="a61">КУМИР A61</string>
     <string name="pm81">КУМИР PM81</string>
@@ -250,6 +254,7 @@
     <string name="speed_38400">38400</string>
     <string name="speed_57600">57600</string>
     <string name="speed_115200">115200</string>
+    <string name="speed_230400">230400</string>
 
 
     <!--Протоколы-->
@@ -727,6 +732,10 @@
     <string name="textDelDriver">Для удаления драйвера вам нужно выбрать его из списка и нажать кнопку удалить</string>
     <string name="exportToGeo">Выгрузить файл с  сигналом и геопозициями в "Загрузки"</string>
     <string name="temsApp">Темы приложения</string>
+    <string name="stmInfo">Для того что бы прошить устройство, выберете его из списка устройств и укажите скорость!</string>
+    <string name="programs">Прошивки</string>
+    <string name="stm203InfoLoading">Загрузка, если у вас STM203 то дополнительно нужно будет перезагрузить контроллер, об жтом будет сигнализировать кнопка снизу, когда она появиться!</string>
+    <string name="rebootingStmButton">Я перезагрузил!</string>
 
 
     <!--............................................................................-->

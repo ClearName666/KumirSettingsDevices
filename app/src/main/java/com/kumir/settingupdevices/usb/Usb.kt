@@ -35,7 +35,7 @@ class Usb(private val context: Context) {
     }
 
     val speedList: ArrayList<Int> = arrayListOf(
-        300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
+        300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400) // скорости в бодах
 
     // переводы строк
     private var lineFeed = "\r"

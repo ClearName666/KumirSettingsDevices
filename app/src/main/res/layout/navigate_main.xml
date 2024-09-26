@@ -860,6 +860,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:clickable="true"
+                            android:onClick="onClickRim"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/M32DSettings">
@@ -897,7 +898,7 @@
                             android:background="@color/fon2Element"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/SnsorDT112">
+                            app:layout_constraintTop_toBottomOf="@+id/StmLoader">
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -995,6 +996,61 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo12"
                                 app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo12"
                                 app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo12" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/StmLoader"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:onClick="onClickStmLoader"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/lineStmLoader">
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+
+                            <TextView
+                                android:id="@+id/textPrograms"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:text="@string/programs"
+                                android:textColor="@color/textColor"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo13"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo13"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo13" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/textStmLoaderTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/programs"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/SnsorDT112" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/lineStmLoader"
+                            android:layout_width="0dp"
+                            android:layout_height="2dp"
+                            android:background="@color/fon2Element"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textStmLoaderTitle">
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

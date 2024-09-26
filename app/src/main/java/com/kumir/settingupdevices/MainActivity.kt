@@ -58,6 +58,7 @@ import com.kumir.settingupdevices.sensors.SensorDT112Fragment
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbDeviceDescriptor
 import com.kumir.settingupdevices.usbFragments.Enfora1318Fragment
+import com.kumir.settingupdevices.usbFragments.FirmwareSTMFragment
 import com.kumir.settingupdevices.usbFragments.K21K23Fragment
 import com.kumir.settingupdevices.usbFragments.M31Fragment
 import com.kumir.settingupdevices.usbFragments.M32DFragment
@@ -736,6 +737,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     }
 
+    fun onClickStmLoader(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val stmLoaderFragment = FirmwareSTMFragment(this)
+        createSettingFragment(stmLoaderFragment)
+    }
+
 
     fun onSettings(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
@@ -902,6 +910,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // Открываем менб изменения имени
         binding.fonMenu.visibility = View.VISIBLE
         binding.updateName.visibility = View.VISIBLE
+
+
 
         if (preset != null) {
             // обновление данных
