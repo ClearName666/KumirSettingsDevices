@@ -55,11 +55,11 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
 
 
         val ID1_STM_BYTES_STM205: ByteArray = byteArrayOf(
-            0x04.toByte(),
+            0x79.toByte(),
             0x11.toByte(),
-            0x00.toByte(),
-            0x00.toByte(),
-            0x00.toByte(),
+            0x04.toByte(),
+            0x01.toByte(),
+            0x79.toByte(),
         )
         val ID2_STM_BYTES_STM205: ByteArray = byteArrayOf(
             0x2B.toByte(),
@@ -107,7 +107,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
     // записьь прошивки
     @OptIn(ExperimentalStdlibApi::class)
     fun loadFile(fileBootLoader: File, fileProgram: File, addressBootLoader: Int, addressProgram: Int, sizeBootLoader: Int, sizeProgram: Int, loadInterface: LoadInterface,
-                 flag203: Boolean = false,  firmwareSTMFragment: FirmwareSTMFragment? = null): Boolean {
+                 flag205: Boolean = false, firmwareSTMFragment: FirmwareSTMFragment? = null): Boolean {
         usbCommandsProtocol.flagWorkWrite = true
 
         Log.d("loadFileStm", "Инициализация")
@@ -127,8 +127,8 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             return false
         }
 
-        // ожидание перезагрузки в случае если контроллер stm203
-        if (flag203) {
+        // ожидание перезагрузки в случае если контроллер stm205
+        if (flag205) {
             contextMain.runOnUiThread {
                 firmwareSTMFragment?.needResetPlease() // требование о том что нужно перезкгрузить модем
             }
@@ -138,6 +138,15 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
                 Thread.sleep(TIMEOUT_STEP_CHECK_RESET)
             }
             flagResetOk = false
+
+            // инициализация
+            if (!init()) {
+                contextMain.runOnUiThread {
+                    loadInterface.errorSend()
+                }
+                usbCommandsProtocol.flagWorkWrite = false
+                return false
+            }
         }
 
         Log.d("loadFileStm", "Разблокировка записи")
@@ -149,8 +158,8 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             return false
         }
 
-        // ожидание перезагрузки в случае если контроллер stm203
-        if (flag203) {
+        // ожидание перезагрузки в случае если контроллер stm205
+        if (flag205) {
             contextMain.runOnUiThread {
                 firmwareSTMFragment?.needResetPlease() // требование о том что нужно перезкгрузить модем
             }
@@ -160,6 +169,15 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
                 Thread.sleep(TIMEOUT_STEP_CHECK_RESET)
             }
             flagResetOk = false
+
+            // инициализация
+            if (!init()) {
+                contextMain.runOnUiThread {
+                    loadInterface.errorSend()
+                }
+                usbCommandsProtocol.flagWorkWrite = false
+                return false
+            }
         }
 
         // чтение версии bootloader
@@ -169,13 +187,13 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
 
         Log.d("loadFileStm", "Получение flash")
         // проверка влезит ли бут лоадер
-        val flash = 100000 // readFlesh(readPid())--------------------------------------------------иправить
+        val flash = readFlesh(readPid())
         Log.d("loadFileStm", "Получен flash: $flash")
 
         Log.d("loadFileStm", "Проверяем что прошивка влезит в flash")
         if (flash > sizeBootLoader) {
             Log.d("loadFileStm", "Отчистка контроллера")
-            if (!clearFlash()) {
+            if (!clearFlash(flag205)) {
                 contextMain.runOnUiThread {
                     loadInterface.errorSend()
                 }
@@ -207,7 +225,19 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
                 }
                 Log.d("loadFileStm", "Отправка program завершена")
 
+            } else {
+                contextMain.runOnUiThread {
+                    loadInterface.errorSend()
+                }
+                usbCommandsProtocol.flagWorkWrite = false
+                return false
             }
+        } else {
+            contextMain.runOnUiThread {
+                loadInterface.errorSend()
+            }
+            usbCommandsProtocol.flagWorkWrite = false
+            return false
         }
 
 
@@ -275,7 +305,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
 
         // Шаг 1: Отправляем команду записи
         val writeCommand = byteArrayOf(0x31.toByte(), 0xCE.toByte())
-        sendPack(writeCommand)
+        if (sendPack(writeCommand).isEmpty()) return false
 
         // Шаг 2: Отправляем адрес в обратном порядке
         val addressBytes = byteArrayOf(
@@ -285,15 +315,15 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             address.toByte()
         )
         val addressXor = calculateXor(addressBytes)
-        sendPack(addressBytes + byteArrayOf(addressXor))
+        if (sendPack(addressBytes + byteArrayOf(addressXor)).isEmpty()) return false
 
         // Шаг 3: Отправляем блок данных
         val length = (dataBlock.size - 1).toByte() // Длина блока (на 1 меньше)
         val dataXor = calculateXor(byteArrayOf(length) + dataBlock)
-        sendPack(byteArrayOf(length) + dataBlock + byteArrayOf(dataXor))
+        return sendPack(byteArrayOf(length) + dataBlock + byteArrayOf(dataXor)).isNotEmpty()
 
         // Шаг 4: Проверка записанных данных (опционально)
-        return true // verifyData(addressBytes, dataBlock)
+        // verifyData(addressBytes, dataBlock)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -404,7 +434,6 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         )
 
         if (waitForResponce() && contextMain.currentDataByteAll.size == 5) {
-            usbCommandsProtocol.flagWorkWrite = false
             // определяем какой stm
             val dataSand = contextMain.currentDataByteAll.reversedArray()
             return when {
@@ -531,7 +560,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         contextMain.usb.writeDevice(
             "",
             false,
-            flashAddress.reversedArray(),
+            (flashAddress  + calculateXor(flashAddress)).reversedArray(),
             false
         )
 
@@ -543,7 +572,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         contextMain.usb.writeDevice(
             "",
             false,
-            byteArrayOf(0x02.toByte()) + calculateXor(flashAddress),
+            (byteArrayOf(0x02.toByte()) + calculateXor(byteArrayOf(0x02.toByte()))).reversedArray(),
             false
         )
 
@@ -560,36 +589,41 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
     }
 
     // глобальная отчистка
-    private fun clearFlash(): Boolean {
+    private fun clearFlash(flag205: Boolean = false): Boolean {
 
-        // несколько попыток разблокировать
-        for (i in 0..3) {
-            contextMain.currentDataByteAll = byteArrayOf()
-
-            contextMain.usb.writeDevice(
-                "",
-                false,
-                byteArrayOf(0x43.toByte(), 0xBC.toByte()),
-                false
-            )
-
-            if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
+        if (!flag205) {
+            // несколько попыток разблокировать
+            for (i in 0..3) {
                 contextMain.currentDataByteAll = byteArrayOf()
 
                 contextMain.usb.writeDevice(
                     "",
                     false,
-                    byteArrayOf(0xFF.toByte(), 0x00.toByte()),
+                    byteArrayOf(0x43.toByte(), 0xBC.toByte()),
                     false
                 )
 
                 if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
-                    return true
-                }
-            }
+                    contextMain.currentDataByteAll = byteArrayOf()
 
+                    contextMain.usb.writeDevice(
+                        "",
+                        false,
+                        byteArrayOf(0xFF.toByte(), 0x00.toByte()),
+                        false
+                    )
+
+                    if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
+                        return true
+                    }
+                }
+
+            }
+            return false
+        } else {
+            return true
         }
-        return false
+
     }
 
 }

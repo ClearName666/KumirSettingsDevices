@@ -112,7 +112,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.75</string>
+    <string name="versionApp">Версия: 1.9.76</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -734,7 +734,7 @@
     <string name="temsApp">Темы приложения</string>
     <string name="stmInfo">Для того что бы прошить устройство, выберете его из списка устройств и укажите скорость!</string>
     <string name="programs">Прошивки</string>
-    <string name="stm203InfoLoading">Загрузка, если у вас STM203 то дополнительно нужно будет перезагрузить контроллер, об жтом будет сигнализировать кнопка снизу, когда она появиться!</string>
+    <string name="stm203InfoLoading">Загрузка, если у вас STM205 то дополнительно нужно будет перезагрузить контроллер, об жтом будет сигнализировать кнопка снизу, когда она появиться!</string>
     <string name="rebootingStmButton">Я перезагрузил!</string>
 
 
