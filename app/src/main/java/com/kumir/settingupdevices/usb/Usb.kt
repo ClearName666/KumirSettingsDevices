@@ -357,6 +357,7 @@ class Usb(private val context: Context) {
                             (message + lineFeed).toByteArray()
                         }
 
+                    Log.d("loadFileStm", "write: ${bytesToSend.toHexString()} size = ${bytesToSend.size}")
                     Log.d("usbData", "write: ${bytesToSend.toHexString()} size = ${bytesToSend.size}")
                     Log.d("usbData", "write_message: $message")
 
@@ -476,6 +477,8 @@ class Usb(private val context: Context) {
                                 } else {
                                     flagSandAtOk = String(bytes, Charsets.UTF_8).contains("OK")
                                 }
+
+                                Log.d("loadFileStm", "read: ${bytes.toHexString()}")
 
                                 Log.d("usbData", "read: ${bytes.toHexString()}")
                             }
