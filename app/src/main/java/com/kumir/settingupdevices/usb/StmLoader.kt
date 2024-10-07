@@ -5,6 +5,7 @@ import com.kumir.settingupdevices.LoadInterface
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.usbFragments.FirmwareSTMFragment
 import java.io.File
+import java.util.Arrays
 import kotlin.experimental.xor
 
 enum class Stm {
@@ -46,11 +47,11 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             0x00.toByte(),
         )
         val ID4_STM_BYTES_STM103: ByteArray = byteArrayOf(
-            0x04.toByte(),
+            0x79.toByte(),
             0x30.toByte(),
-            0x00.toByte(),
-            0x00.toByte(),
-            0x00.toByte(),
+            0x04.toByte(),
+            0x01.toByte(),
+            0x79.toByte(),
         )
 
 
@@ -200,9 +201,9 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         val flash = readFlesh(stm)
         Log.d("loadFileStm", "Получен flash: $flash")
         Log.d("loadFileStm", "Проверяем что прошивка влезит в flash")
-        if (flash > sizeBootLoader || stm == Stm.STM103) { // в будущем поправить исключение для stm203
+        if (flash > sizeBootLoader) {
             Log.d("loadFileStm", "Отчистка контроллера")
-            if (!clearFlash(stm)) {
+            if (!clearFlash(flash)) {
                 contextMain.runOnUiThread {
                     loadInterface.errorSend()
                 }
@@ -210,7 +211,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
                 return false
             } else {
                 // инициализация
-                if (!init()) {
+                if (flash > 1023 && !init()) {
                     contextMain.runOnUiThread {
                         loadInterface.errorSend()
                     }
@@ -232,7 +233,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             Log.d("loadFileStm", "Отправка bootloader завершена")
 
             // если прошивка влезает то зашиваем ее
-            if (flash - sizeBootLoader > sizeProgram || stm == Stm.STM103) { // в будущем поправить исключение для stm203
+            if (flash - sizeBootLoader > sizeProgram) {
                 Log.d("loadFileStm", "Отправка program")
                 if (!writeFileToController(fileProgram, addressProgram, loadInterface)) {
                     contextMain.runOnUiThread {
@@ -318,7 +319,6 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
     }
 
     private fun writeBlockToController(address: Int, dataBlock: ByteArray): Boolean {
-
         if (!contextMain.usb.checkConnectToDevice()) return false
 
         // Шаг 1: Отправляем команду записи
@@ -341,9 +341,53 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         val length = (dataBlock.size - 1).toByte() // Длина блока (на 1 меньше)
         val dataXor = calculateXor(byteArrayOf(length) + dataBlock)
         byteArray = sendPack(byteArrayOf(length) + dataBlock + byteArrayOf(dataXor))
-        return byteArray.isNotEmpty() && byteArray[0] == ACK
+        return byteArray.isNotEmpty() && byteArray[0] == ACK && checkDataSand(address, dataBlock)
 
     }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun checkDataSand(address: Int, dataBlock: ByteArray): Boolean {
+        // Шаг 1: Отправляем команду записи
+        val writeCommand = byteArrayOf(0x11.toByte(), 0xEE.toByte())
+        var byteArray: ByteArray = sendPack(writeCommand)
+        if (byteArray.isEmpty() || byteArray[0] != ACK) return false
+
+        // Шаг 2: Отправляем адрес в обратном порядке
+        val addressBytes = byteArrayOf(
+            (address shr 24).toByte(),
+            (address shr 16).toByte(),
+            (address shr 8).toByte(),
+            address.toByte()
+        )
+        val addressXor = calculateXor(addressBytes)
+        byteArray = sendPack(addressBytes + byteArrayOf(addressXor))
+        if (byteArray.isEmpty() || byteArray[0] != ACK) return false
+
+        contextMain.currentDataByteAll = byteArrayOf()
+
+        // отправляем сколько байт мне нужно считать а так же кс по всем отправленным данным
+        contextMain.usb.writeDevice(
+            "",
+            false,
+            (byteArrayOf(0xFF.toByte()) + calculateXor(
+                byteArrayOf(0x11.toByte(), 0xEE.toByte()) +
+                        (addressBytes.reversedArray()  + calculateXor(addressBytes)) +
+                        byteArrayOf(0xFF.toByte())
+            )),
+            false
+        )
+
+        return try {
+            if (!waitForResponce(5)) false
+            val currentData = contextMain.currentDataByteAll.drop(1).toByteArray()
+
+            for (i in currentData.indices) {
+                if (currentData[i] != dataBlock[i]) false
+            }
+            true
+        } catch (e: Exception) { false }
+    }
+
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun sendPack(packet: ByteArray): ByteArray {
@@ -371,13 +415,6 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         return byteArrayOf()
     }
 
-    private fun verifyData(address: ByteArray, originalData: ByteArray): Boolean {
-        val readCommand = byteArrayOf(0x11.toByte(), 0xEE.toByte()) + address + byteArrayOf(calculateXor(address))
-        val response = sendPack(readCommand)
-
-        // Проверяем, что ответ совпадает с исходными данными
-        return response.copyOfRange(1, originalData.size + 1).contentEquals(originalData)
-    }
 
     // Функция для расчёта XOR всех байтов
     private fun calculateXor(data: ByteArray): Byte {
@@ -394,9 +431,9 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
 
     // ждем данные в ответ
     @OptIn(ExperimentalStdlibApi::class)
-    private fun waitForResponce(slowly: Long = 1): Boolean {
+    private fun waitForResponce(slowly: Long = 1, dalay: Int = 1): Boolean {
         val startTime = System.currentTimeMillis()
-        while (System.currentTimeMillis() - startTime < TIMEOUT) {
+        while (System.currentTimeMillis() - startTime < TIMEOUT * dalay) {
 
             if (!contextMain.usb.checkConnectToDevice(reconnect = false))
                 return false
@@ -561,6 +598,10 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
     // чтения размера flash памяти
     @OptIn(ExperimentalStdlibApi::class)
     private fun readFlesh(stm: Stm): Int {
+
+        // исключение из правил для 205
+        if (stm == Stm.STM205) return 1024
+
         contextMain.currentDataByteAll = byteArrayOf()
 
         // отправляем команду для чтения памяти
@@ -623,45 +664,18 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
 
         return try {
             if (!waitForResponce(5)) 0
-            var flashInt: Int = contextMain.currentDataByteAll[1].toInt()
-            flashInt = (flashInt shl 8) or contextMain.currentDataByteAll[2].toInt()
+            var flashInt: Int = contextMain.currentDataByteAll[2].toInt()
+            flashInt = (flashInt shl 8) or contextMain.currentDataByteAll[1].toInt()
             flashInt
         } catch (e: Exception) { 0 }
 
     }
 
     // глобальная отчистка
-    private fun clearFlash(stm: Stm): Boolean {
+    private fun clearFlash(flashSize: Int): Boolean {
 
-
-        // не STM205
-        if (stm != Stm.STM205) {
-            contextMain.currentDataByteAll = byteArrayOf()
-
-            // Шаг 1: Разблокировка
-            contextMain.usb.writeDevice(
-                "",
-                false,
-                byteArrayOf(0x43.toByte(), 0xBC.toByte()),
-                false
-            )
-
-            if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
-                contextMain.currentDataByteAll = byteArrayOf()
-
-                // Отправка второго ключа для завершения разблокировки
-                contextMain.usb.writeDevice(
-                    "",
-                    false,
-                    byteArrayOf(0xFF.toByte(), 0x00.toByte()),
-                    false
-                )
-
-                if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
-                    return true
-                }
-            }
-        } else  { // STM205
+        // большой обьем памяти
+        if (flashSize > 1023) {
             contextMain.currentDataByteAll = byteArrayOf()
 
             // Шаг 1: Разблокировка
@@ -687,9 +701,33 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             )
 
             // ждем отчищения
-            Thread.sleep(TIMEOUT_STEP_CLEAR_MEMORY)
-            /* || contextMain.currentDataByteAll[0] != ACK*/
-            return waitForResponce()
+            return waitForResponce(dalay = 7) // 7 это увеличинное время для того что бы программа не поняла что тип так долго нет ответа и продолжала ждать
+        } else  { // малый обьем
+            contextMain.currentDataByteAll = byteArrayOf()
+
+            // Шаг 1: Разблокировка
+            contextMain.usb.writeDevice(
+                "",
+                false,
+                byteArrayOf(0x43.toByte(), 0xBC.toByte()),
+                false
+            )
+
+            if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
+                contextMain.currentDataByteAll = byteArrayOf()
+
+                // Отправка второго ключа для завершения разблокировки
+                contextMain.usb.writeDevice(
+                    "",
+                    false,
+                    byteArrayOf(0xFF.toByte(), 0x00.toByte()),
+                    false
+                )
+
+                if (waitForResponce() && contextMain.currentDataByteAll[0] == ACK) {
+                    return true
+                }
+            }
         }
         return false
     }

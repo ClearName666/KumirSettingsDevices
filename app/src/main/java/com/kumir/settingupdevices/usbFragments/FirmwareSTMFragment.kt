@@ -123,17 +123,32 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
 
 
                 // в зависемости от остоятельств запускаем в том или ином режиме
-                if (!stmLoader.loadFile(
-                        bootloaderFile, programFile,
-                        0x08000000, 0x08008000,
-                        (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
-                        this,
-                        binding.spinnerDevice.selectedItemPosition == 1,
-                        if (binding.spinnerDevice.selectedItemPosition == 1) this else null
-                )
-                ) {
-                    Log.d("loadFileStm", "Не успешно")
+                if (binding.spinnerDevice.selectedItemPosition == 0) {
+                    if (!stmLoader.loadFile(
+                            bootloaderFile, programFile,
+                            0x08000000, 0x08080000,
+                            (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
+                            this,
+                            binding.spinnerDevice.selectedItemPosition == 1,
+                            if (binding.spinnerDevice.selectedItemPosition == 1) this else null
+                        )
+                    ) {
+                        Log.d("loadFileStm", "Не успешно")
+                    }
+                } else {
+                    if (!stmLoader.loadFile(
+                            bootloaderFile, programFile,
+                            0x08000000, 0x08008000,
+                            (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
+                            this,
+                            binding.spinnerDevice.selectedItemPosition == 1,
+                            if (binding.spinnerDevice.selectedItemPosition == 1) this else null
+                        )
+                    ) {
+                        Log.d("loadFileStm", "Не успешно")
+                    }
                 }
+
             } catch (e: Exception) {
                 closeMenuProgress()
                 Log.e("loadFileStm", e.message.toString())
@@ -152,8 +167,8 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
         val inputStream: InputStream? =
             if (numberDev == 2 && bootLoader) resources.openRawResource(R.raw.kumir_m32_lite_boot)
             else if (numberDev == 2 && !bootLoader) resources.openRawResource(R.raw.kumir_m32_lite_7_1_1_5260)
-            else if (numberDev == 0 && bootLoader) resources.openRawResource(R.raw.kumir_m32c_7_1_5_6411_boot)
-            else if (numberDev == 0 && !bootLoader) resources.openRawResource(R.raw.kumir_m32c_7_1_5_6411)
+            else if (numberDev == 0 && bootLoader) resources.openRawResource(R.raw.kumir_m32_7_1_1_6291_boot)
+            else if (numberDev == 0 && !bootLoader) resources.openRawResource(R.raw.kumir_m32_7_1_1_6291)
             else if (numberDev == 1 && bootLoader) resources.openRawResource(R.raw.kumir_m32d_7_2_6_6409_boot)
             else if (numberDev == 1 && !bootLoader) resources.openRawResource(R.raw.kumir_m32d_7_2_6_6409)
             else null
