@@ -32,6 +32,8 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
     private lateinit var stmLoader: StmLoader
     private lateinit var binding: FragmentFirmwareSTMBinding
 
+    var flagCancellation: Boolean = false
+
     override fun onDestroyView() {
         contextMain.usb.onSerialSpeed(9) // 115200
         contextMain.usb.onSerialParity(0) // none
@@ -57,6 +59,11 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
         // клик на то что перезкгрузил
         binding.buttonReboot.setOnClickListener {
             onClickResetButton()
+        }
+
+        // клик на кнопку отмены
+        binding.buttonCancellation.setOnClickListener {
+            onClickCancellation()
         }
 
         stmLoader = StmLoader(usbCommandsProtocol, requireContext() as MainActivity)
@@ -109,6 +116,7 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
         // открываем загрузочное меню
         binding.fonLoading.visibility = View.VISIBLE
         binding.loading.visibility = View.VISIBLE
+        binding.infoLoading.visibility = View.VISIBLE
 
 
         // поток для записи
@@ -118,6 +126,14 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
             try {
                 val bootloaderFile = getTempFileFromAssets(requireContext(), binding.spinnerDevice.selectedItemPosition, true)
                 val programFile = getTempFileFromAssets(requireContext(), binding.spinnerDevice.selectedItemPosition, false)
+
+                // вывод версии прошивки
+                contextMain.runOnUiThread {
+                    showVersionProgram(if (binding.spinnerDevice.selectedItemPosition == 1) "7_2_6_6409"
+                    else if (binding.spinnerDevice.selectedItemPosition == 2) "7_1_1_5260" else
+                    "7_1_1_6291")
+                }
+
 
                 Log.d("loadFileStm", "Файлы получены: $bootloaderFile, $programFile \n Начало установки файлов")
 
@@ -130,7 +146,7 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
                             (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
                             this,
                             binding.spinnerDevice.selectedItemPosition == 1,
-                            if (binding.spinnerDevice.selectedItemPosition == 1) this else null
+                            this
                         )
                     ) {
                         Log.d("loadFileStm", "Не успешно")
@@ -142,7 +158,7 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
                             (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
                             this,
                             binding.spinnerDevice.selectedItemPosition == 1,
-                            if (binding.spinnerDevice.selectedItemPosition == 1) this else null
+                            this
                         )
                     ) {
                         Log.d("loadFileStm", "Не успешно")
@@ -230,9 +246,14 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
         binding.progressBarLoading.progress = prgress
     }
 
+    // закрытие меню загрузки прошивки
     override fun closeMenuProgress() {
         binding.fonLoading.visibility = View.GONE
         binding.loading.visibility = View.GONE
+        binding.infoLoading.visibility = View.GONE
+
+        // возвращяем текст обратно
+        binding.textCurrentTask.text = getString(R.string.currentTask)
     }
 
     override fun errorSend() {
@@ -240,7 +261,10 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
         loadingProgress(0)
         binding.buttonReboot.visibility = View.GONE
 
-        showAlertDialog(getString(R.string.errorLoadStm))
+        if (!flagCancellation)
+            showAlertDialog(getString(R.string.errorLoadStm))
+        else
+            flagCancellation = false
 
     }
 
@@ -251,9 +275,31 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
     }
 
     // нажатие на кнопку что бы уведомить о перезагрузки
-    fun onClickResetButton()  {
+    private fun onClickResetButton()  {
         stmLoader.flagResetOk = true
         binding.buttonReboot.visibility = View.GONE
+    }
+
+    // метод для отмены операции зашивания
+    private fun onClickCancellation() {
+        flagCancellation = true
+    }
+
+    fun currentTaskFlash(text: String) {
+        binding.textCurrentTask.text = text
+    }
+
+    // вывод версии bootloader
+    fun showBootLoaderVersion(versionBootLoader: String) {
+        binding.infoLayoutStm.visibility = View.VISIBLE
+        binding.textVersionBootLoader.text = getString(R.string.versionBootloader) + " \n" +
+                versionBootLoader
+    }
+
+    fun showVersionProgram(versionProgram: String) {
+        binding.infoLayoutStm.visibility = View.VISIBLE
+        binding.textThisVersionProgram.text = getString(R.string.loadProgramVersion) + "\n" +
+                versionProgram
     }
 
 

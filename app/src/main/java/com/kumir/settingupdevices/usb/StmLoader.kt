@@ -18,6 +18,8 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
     // флаг уведомления о том что устройство перезкгружено
     var flagResetOk: Boolean = false
 
+    lateinit var stmFragment: FirmwareSTMFragment
+
     companion object {
         const val ACK: Byte = 0x79.toByte()
         const val NACK: Byte = 0x1F.toByte()
@@ -110,24 +112,43 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
     // записьь прошивки
     @OptIn(ExperimentalStdlibApi::class)
     fun loadFile(fileBootLoader: File, fileProgram: File, addressBootLoader: Int, addressProgram: Int, sizeBootLoader: Int, sizeProgram: Int, loadInterface: LoadInterface,
-                 flag205: Boolean = false, firmwareSTMFragment: FirmwareSTMFragment? = null): Boolean {
+                 flag205: Boolean = false, firmwareSTMFragment: FirmwareSTMFragment): Boolean {
         usbCommandsProtocol.flagWorkWrite = true
         val stm: Stm
 
+        stmFragment = firmwareSTMFragment
+
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Инициализация")
+        }
+
+
         Log.d("loadFileStm", "Инициализация")
-        if (!init()) {
+        if (!init()) { // доп проверка для проверки на отмену
             contextMain.runOnUiThread {
                 loadInterface.errorSend()
             }
             usbCommandsProtocol.flagWorkWrite = false
             return false
         } else {
+
+            //  вывод данных об этапе прошивки
+            contextMain.runOnUiThread {
+                firmwareSTMFragment.currentTaskFlash("Получение PID")
+            }
+
             stm = readPid()
         }
 
 
 
-        Log.d("loadFileStm", "Разблокировка чтения")
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Разблокировака чтения")
+        }
+
+        Log.d("loadFileStm", "Разблокировака чтения")
         if (!unblockRead(stm)) {
             contextMain.runOnUiThread {
                 loadInterface.errorSend()
@@ -136,10 +157,15 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             return false
         }
 
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Ожидание физической перезагрузки")
+        }
+
         // ожидание перезагрузки в случае если контроллер stm205
         if (flag205) {
             contextMain.runOnUiThread {
-                firmwareSTMFragment?.needResetPlease() // требование о том что нужно перезкгрузить модем
+                firmwareSTMFragment.needResetPlease() // требование о том что нужно перезкгрузить модем
             }
 
             // надо добавить проверку в случае чего -----------------------------------------------------------------------
@@ -158,7 +184,12 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             }
         }
 
-        Log.d("loadFileStm", "Разблокировка записи")
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Разблокировака записи")
+        }
+
+        Log.d("loadFileStm", "Разблокировака записи")
         if (!unblockWrite(stm)) {
             contextMain.runOnUiThread {
                 loadInterface.errorSend()
@@ -167,10 +198,15 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             return false
         }
 
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Ожидание физической перезагрузки")
+        }
+
         // ожидание перезагрузки в случае если контроллер stm205
         if (flag205) {
             contextMain.runOnUiThread {
-                firmwareSTMFragment?.needResetPlease() // требование о том что нужно перезкгрузить модем
+                firmwareSTMFragment.needResetPlease() // требование о том что нужно перезкгрузить модем
             }
 
             // надо добавить проверку в случае чего -----------------------------------------------------------------------
@@ -189,20 +225,40 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             }
         }
 
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Получение версии прошивки BootLoader")
+        }
+
         // чтение версии bootloader
-        // Log.d("loadFileStm", "Получение версии прошивки BootLoader")
-        // val versionBootLoader = readBootLoader()
-        // Log.d("loadFileStm", "Версия прошивки BootLoader: ${versionBootLoader.toHexString()}")
+        Log.d("loadFileStm", "Получение версии прошивки BootLoader")
+        val versionBootLoader = readBootLoader()
+        Log.d("loadFileStm", "Версия прошивки BootLoader: ${versionBootLoader.toHexString()}")
+
+
+
 
         Log.d("loadFileStm", "Получение flash")
+        //  вывод данных об этапе прошивки
+        contextMain.runOnUiThread {
+            firmwareSTMFragment.currentTaskFlash("Получение flash")
 
+            // так же выводим информацию о bootloader
+            firmwareSTMFragment.showBootLoaderVersion(versionBootLoader.toHexString())
+        }
 
         // проверка влезит ли бут лоадер
         val flash = readFlesh(stm)
         Log.d("loadFileStm", "Получен flash: $flash")
-        Log.d("loadFileStm", "Проверяем что прошивка влезит в flash")
+        Log.d("loadFileStm", "Проверяем что прошивка влезет в flash")
         if (flash > sizeBootLoader) {
-            Log.d("loadFileStm", "Отчистка контроллера")
+            Log.d("loadFileStm", "Очистка контроллера")
+
+            //  вывод данных об этапе прошивки
+            contextMain.runOnUiThread {
+                firmwareSTMFragment.currentTaskFlash("Очистка контроллера")
+            }
+
             if (!clearFlash(flash)) {
                 contextMain.runOnUiThread {
                     loadInterface.errorSend()
@@ -219,10 +275,16 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
                     return false
                 }
             }
-            Log.d("loadFileStm", "Отчистка завершина")
+            Log.d("loadFileStm", "Очистка завершена")
 
 
             Log.d("loadFileStm", "Отправка bootloader")
+
+            //  вывод данных об этапе прошивки
+            contextMain.runOnUiThread {
+                firmwareSTMFragment.currentTaskFlash("Отправка bootloader")
+            }
+
             if (!writeFileToController(fileBootLoader, addressBootLoader, loadInterface)) {
                 contextMain.runOnUiThread {
                     loadInterface.errorSend()
@@ -235,6 +297,12 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
             // если прошивка влезает то зашиваем ее
             if (flash - sizeBootLoader > sizeProgram) {
                 Log.d("loadFileStm", "Отправка program")
+
+                //  вывод данных об этапе прошивки
+                contextMain.runOnUiThread {
+                    firmwareSTMFragment.currentTaskFlash("Отправка program")
+                }
+
                 if (!writeFileToController(fileProgram, addressProgram, loadInterface)) {
                     contextMain.runOnUiThread {
                         loadInterface.errorSend()
@@ -435,7 +503,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < TIMEOUT * dalay) {
 
-            if (!contextMain.usb.checkConnectToDevice(reconnect = false))
+            if (!contextMain.usb.checkConnectToDevice(reconnect = false) || stmFragment.flagCancellation)
                 return false
 
             // проверка буфера ответа
@@ -463,17 +531,7 @@ class StmLoader(private val usbCommandsProtocol: UsbCommandsProtocol, private va
         )
 
         // ждем ответ и смотрим что там
-        if (waitForResponce()) {
-            return true
-            /*return if (contextMain.currentDataByteAll[0] == ACK) {
-                true
-            } else if (contextMain.currentDataByteAll[0] == NACK) {
-                true
-            } else {
-                false
-            }*/
-        }
-        return false
+        return waitForResponce()
     }
 
     @OptIn(ExperimentalStdlibApi::class)

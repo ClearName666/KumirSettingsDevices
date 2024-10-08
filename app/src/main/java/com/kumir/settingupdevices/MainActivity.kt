@@ -879,7 +879,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                     // Новый фрагент
                     transaction.replace(binding.fragmentContaineContent.id, fragment)
-                    transaction.commit()
+                    transaction.commitNow()
 
                     if (fragment is UsbFragment) {
                         curentFragmentComProtocol = fragment.usbCommandsProtocol
@@ -891,7 +891,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                 // Новый фрагент
                 transaction.replace(binding.fragmentContaineContent.id, fragment)
-                transaction.commit()
+                transaction.commitNow()
 
                 if (fragment is UsbFragment) {
                     curentFragmentComProtocol = fragment.usbCommandsProtocol

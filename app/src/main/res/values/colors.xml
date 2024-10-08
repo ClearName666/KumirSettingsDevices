@@ -5,23 +5,23 @@
     <color name="background">#FFFFFF</color>
     <color name="textColor">#FF000000</color>
 
-    <color name="fon2Element">#005695</color>
-    <color name="fon5Element">#005695</color>
-    <color name="fun3Element">#005695</color>
-    <color name="fon4Element">#005695</color>
-    <color name="fonElement">#C3C3C3</color>
-    <color name="sucColor">#A6008000</color>
-    <color name="currentColor">#A67B0079</color>
+    <color name="fon2Element">#A3D8FF</color>
+    <color name="fon5Element">#A3D8FF</color>
+    <color name="fun3Element">#A3D8FF</color>
+    <color name="fon4Element">#A3D8FF</color>
+    <color name="fonElement">#FFFFFF</color>
+    <color name="sucColor">#A658FF58</color>
+    <color name="currentColor">#A6FF69FD</color>
 
     <color name="fonDarkMenu">#A64F4F4F</color>
-    <color name="dangerous">#880000</color>
+    <color name="dangerous">#FF5959</color>
 
-    <color name="blue_switch_thumb_color">#115E9A</color> <!-- Цвет переключателя (бегунок) -->
+    <color name="blue_switch_thumb_color">#49B2FF</color> <!-- Цвет переключателя (бегунок) -->
     <color name="blue_switch_track_color">#111920</color> <!-- Цвет фона переключателя -->
 
     <color name="lineColor">#EE00FF</color>
     <color name="lineColorMain">#FF0000</color>
-    <color name="valueTextColor">#000000</color> <!-- Черный -->
+    <color name="valueTextColor">#AFAFAF</color> <!-- Черный -->
 
 
 </resources>

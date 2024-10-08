@@ -2,18 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background">#606060</color>
+    <color name="background">#000000</color>
     <color name="textColor">#FFFFFF</color>
 
-    <color name="fon2Element">#49B2FF</color>
-    <color name="fon5Element">#49B2FF</color>
-    <color name="fun3Element">#49B2FF</color>
-    <color name="fon4Element">#49B2FF</color>
-    <color name="fonElement">#7F7F7F</color>
+    <color name="fon2Element">#6992AF</color>
+    <color name="fon5Element">#6992AF</color>
+    <color name="fun3Element">#6992AF</color>
+    <color name="fon4Element">#6992AF</color>
+    <color name="fonElement">#222222</color>
     <color name="sucColor">#A658FF58</color>
     <color name="currentColor">#A6FF69FD</color>
 
-    <color name="fonDarkMenu">#4B212121</color>
+    <color name="fonDarkMenu">#A64F4F4F</color>
     <color name="dangerous">#FF5959</color>
 
     <color name="blue_switch_thumb_color">#49B2FF</color> <!-- Цвет переключателя (бегунок) -->

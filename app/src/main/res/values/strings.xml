@@ -112,7 +112,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.78</string>
+    <string name="versionApp">Версия: 1.9.79</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -736,6 +736,10 @@
     <string name="programs">Прошивки</string>
     <string name="stm203InfoLoading">Загрузка, если у вас STM205 то дополнительно нужно будет перезагрузить контроллер, об жтом будет сигнализировать кнопка снизу, когда она появиться!</string>
     <string name="rebootingStmButton">Я перезагрузил!</string>
+    <string name="currentTask">Текущяя задача</string>
+    <string name="info">Информация</string>
+    <string name="versionBootloader">версия BootLoader:</string>
+    <string name="loadProgramVersion">Зашиваемая прошивка:</string>
 
 
     <!--............................................................................-->
