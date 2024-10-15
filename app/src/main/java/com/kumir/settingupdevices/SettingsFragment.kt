@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.OpenableColumns
@@ -83,7 +84,7 @@ class SettingsFragment : Fragment() {
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            if (getFileNameFromUri(uri, true).endsWith(".ini")) {
+            if (getFileNameFromUri(uri, true).contains(".ini")) {
                 fileName = getFileNameFromUri(it)
                 readIniFileContent(it)
             } else {
@@ -167,7 +168,7 @@ class SettingsFragment : Fragment() {
         }
         binding.imageDischarge.setOnClickListener {
             if (ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 ActivityCompat.requestPermissions(
                     requireActivity(), arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     REQUEST_CODE)
@@ -575,7 +576,27 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    // логика проверки разрешения
     private fun chackPermissionMember(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // API version >= 29 (Android 10, 11, ...)
+            return true
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // API version >= 23 (Android 6, 7, ...)
+            if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // Permissions are not granted, request them
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_CODE_PERMISSIONS
+                )
+                return false
+            }
+        }
+        // для более древних API не требуется проверки
+        return true
+    }
+    /*private fun chackPermissionMember(): Boolean {
         return if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -589,7 +610,7 @@ class SettingsFragment : Fragment() {
         } else {
             true
         }
-    }
+    }*/
     //------------------------------------------------------------------------
 
 
@@ -1045,6 +1066,10 @@ class SettingsFragment : Fragment() {
             contextMain.showAlertDialog(getString(R.string.errorValidPassword))
             return false
         }
+        if (binding.inputSaveName.text.toString().trim().isEmpty()) {
+            contextMain.showAlertDialog(getString(R.string.errorEmptyNamePreset))
+            return false
+        }
 
         return true
     }
@@ -1089,6 +1114,10 @@ class SettingsFragment : Fragment() {
             contextMain.showAlertDialog(getString(R.string.errorValidAPNEnfora))
             return false
         }
+        if (binding.inputSaveName.text.toString().trim().isEmpty()) {
+            contextMain.showAlertDialog(getString(R.string.errorEmptyNamePreset))
+            return false
+        }
 
         return true
     }
@@ -1111,6 +1140,10 @@ class SettingsFragment : Fragment() {
 
         } else if (!validDataSettingsDevice.validPM81KeyNet(binding.inputSaveKeyNet.text.toString())) {
             contextMain.showAlertDialog(getString(R.string.errorNETKEY))
+            return false
+        }
+        if (binding.inputSaveName.text.toString().trim().isEmpty()) {
+            contextMain.showAlertDialog(getString(R.string.errorEmptyNamePreset))
             return false
         }
 

@@ -37,6 +37,8 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
     ): View {
         binding = FragmentM32Binding.inflate(inflater)
 
+        controlSpinnerForGoodValue()
+
         createAdapters()
 
         // мониторинг изменений режима работы
@@ -197,6 +199,185 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         }
 
         return binding.root
+    }
+
+
+    // эксперементальный метод для устранения бага с возможностью изменить статические значения
+    private fun controlSpinnerForGoodValue() {
+
+        binding.spinnerSpeed.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort1MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerSpeed.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition - 1].speed)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+        binding.spinnerSelectParityPort1.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort1MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerSelectParityPort1.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition - 1].parity)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+        binding.spinnerSelectStopBitPort1.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort1MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerSelectStopBitPort1.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition - 1].stopBit)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+
+
+        binding.spinnerBitDataPort1.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort1MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerBitDataPort1.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition - 1].bitData)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+
+
+        binding.spinnerSpeedPort2.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort2MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerSpeedPort2.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition - 1].speed)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+        binding.spinnerSelectParityPort2.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort2MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerSelectParityPort2.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition - 1].parity)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+        binding.spinnerSelectStopBitPort2.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort2MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerSelectStopBitPort2.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition - 1].stopBit)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
+
+
+        binding.spinnerBitDataPort2.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val context: Context = requireContext() as MainActivity
+
+                    if (binding.spinnerSelectPort2MeteringDevice.selectedItemPosition != 0 && context is MainActivity) {
+                        binding.spinnerBitDataPort2.setSelection(context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition - 1].bitData)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
     }
 
 

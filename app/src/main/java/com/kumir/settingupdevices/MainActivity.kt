@@ -652,6 +652,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             val pm81Diag = DiagPM81Fragment("KUMIR-RM81A READY")
             createSettingFragment(pm81Diag)
         } else {
+            requestLocationPermissions()
             showAlertDialog(getString(R.string.nonPermissionsPos))
         }
     }

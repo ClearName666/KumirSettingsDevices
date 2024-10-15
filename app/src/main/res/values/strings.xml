@@ -68,7 +68,7 @@
     <string name="noFileSave">Нет данных для сохранения!</string>
     <string name="noConnected">У вас нет подключения!</string>
     <string name="nonPermissionsSaveFile">Не получено разрешения для сохранения!</string>
-    <string name="nonPermissionsPos">Вы не дали разрешения на геопозицию поэтому эта опция вам не доступна!</string>
+    <string name="nonPermissionsPos">Вы не дали разрешения на геопозицию поэтому эта опция вам не доступна! Ее надо включить! Если вы не увидели окно с разрешением это вам нужно сделать в настрйоках, О ПРИЛОЖЕНИИ, И РАЗРЕШИТЬ ИСПОЛЬЗОВАНИЕ ГЕОПОЗИЦИИ!</string>
     <string name="nonEmptyData">Не все обязательные поля были заполнены!!!</string>
     <string name="nonConnectAdapter">ВЫ НЕ ПОДКЛЮЧЕНЫ К USB АДАПТЕРУ!!! ПОДКЛЮЧИТЕСЬ ПОЖАЛУЙСТА</string>
     <string name="nonIniFile">Выберите ini файл!</string>
@@ -84,6 +84,9 @@
     <string name="errorValidIPDNS">Длина Адреса сервера не должна превышать 63 символа</string>
     <string name="errorValidLogin">Длина логина не должна превышать 63 символа</string>
     <string name="errorValidPassword">Длина пароля не должна превышать 63 символа</string>
+
+
+    <string name="errorEmptyNamePreset">Название не может быть пустым!</string>
     <string name="errorValidPasswordRim">Длина пароля должна состоять из 6 символов</string>
     <string name="errorValidAddressRim">Адрес должен быть в диапазоне от 0 до 255</string>
     <string name="errorValidSim">Пин код для sim должен состоять из 4 цифр</string>
@@ -95,7 +98,7 @@
     <string name="errorNETKEY">Ключ доступа к сети не должно превышать 60 символов</string>
     <string name="errorSizeBuffer">Размер буфера должен быть в диапазоне от 0 до 65535</string>
     <string name="errorRussionChar">Нельзя использовать символы отличные от (0..9, abcd..z, -, .)!</string>
-    <string name="errorTimeOutEnfora">Таймаут должен быть в диапазоне от 3 до 1472</string>
+    <string name="errorTimeOutEnfora">Время ожидание должно быть в диапазоне от 3 до 1472</string>
     <string name="errorLoginPassworsd">Проблемы с логином или паролем, проверьте есть ли в них пробелы запятые или возможно одно из полей не было заполнино!</string>
     <string name="noneValidRecordMONITOR">Настройки не были изменены. Запись не требуется</string>
     <string name="errorValidServer">Некорректный формат 1–го или 2–го сервера. Правильный формат записи (0-255).(0-255).(0-255).(0-255)</string>
@@ -112,7 +115,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.79</string>
+    <string name="versionApp">Версия: 1.9.80</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
