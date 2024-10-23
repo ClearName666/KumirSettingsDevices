@@ -105,6 +105,8 @@
     <string name="errorValidServerCore">Некорректный формат IP адрес сервера диспетчера Правильный формат записи (0–255).(0-255).(0-255).(0-255)</string>
     <string name="errorValidAPNEnfora">Длина APN не должена привышать 128 символов</string>
     <string name="errorValidNumberPhone">Не корректный номер телефона! Введите в формате +70000000000</string>
+    <string name="errorMalfunction">Устройство НЕ исправно! Присутствуют ошибки.</string>
+    <string name="sucNotMalfunction">🟩🟩Устройство исправно!🟩🟩</string>
 
     <string name="sucLoadRim">Настройки успешно записаны в рим!</string>
     <string name="errorLoadRim">Настройки по какой-то причине НЕ ЗАПИСАНЫ!</string>
@@ -115,7 +117,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.80</string>
+    <string name="versionApp">Версия: 1.9.81</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -607,6 +609,7 @@
     <string name="sizeBufferTitle">Размер буфера в байтах</string>
     <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
     <string name="startDiagTitle">Начать диагностику</string>
+    <string name="endDiagTitle">Завершить диагностику</string>
     <string name="operatorTitle">Оператор связи:</string>
     <string name="BSS">Базовая станция:</string>
     <string name="SNR">Уровень сигнала:</string>
@@ -636,6 +639,8 @@
     <string name="nonFindBaseStations">Станции не найдены</string>
     <string name="dataLoading">Данные...</string>
     <string name="dataTitle">Данные</string>
+    <string name="diagMain">Основная диагностика</string>
+
     <string name="m32_m32litePresetTitle">Шаблоны M32, M32Lite</string>
     <string name="enforaPresetTitle">Шаблоны Enfora</string>
     <string name="pmPresetTitle">Шаблоны PM81</string>

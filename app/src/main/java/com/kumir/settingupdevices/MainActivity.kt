@@ -1,6 +1,7 @@
 package com.kumir.settingupdevices
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -72,6 +73,15 @@ import com.kumir.testappusb.settings.ConstUsbSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import android.widget.Toast
+
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
@@ -116,6 +126,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         const val TIMEOUT_TOWAIT_RESTART_DEVICE: Int = 29 // 30 - 1 секудны
         const val NORM_LENGHT_DATA_START = 5
         const val TIMEOUT_RECONNECT = 1000L
+
+        const val REQUEST_KOD_GEO: Int = 2
+        const val REQUEST_KOD_PUSH: Int = 3
 
     }
 
@@ -216,6 +229,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 }
             }
         }
+        if (requestCode == REQUEST_KOD_GEO) {
+            // проверяем есть ли разрешение на отправку пуш уведомлений
+            checkPermissionPush()
+        } else if (requestCode == REQUEST_KOD_PUSH) {
+            // отправляем приветственное уведомление
+            startNotificationWorker()
+        }
     }
 
     private val usbReceiver = object : BroadcastReceiver() {
@@ -278,9 +298,33 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             if (!checkLocationPermissions()) {
                 requestLocationPermissions()
             }
+
+            // проверяем есть ли разрешение на отправку пуш уведомлений
+            //checkPermissionPush()
+            // код теперь внутри обработчика разрешений
         }
     }
 
+
+    private fun checkPermissionPush() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
+            } else {
+                // ОТПРАВЛЯЕМ ПУШ УВЕДОМЛЕНИЕ И ЗАПУСКАЕМ ФОНОВЫЙ ПРОЦЕСС
+                startNotificationWorker()
+            }
+        } else {
+            // Для более старых версий Android
+            startNotificationWorker()
+        }
+    }
+
+    // запуск фоновой активности для отправки пуш уведомлений
+    private fun startNotificationWorker() {
+        val notificationWork = OneTimeWorkRequest.Builder(NotificationWorker::class.java).build()
+        WorkManager.getInstance(this).enqueue(notificationWork)
+    }
 
     private fun loadInfoDataBase() {
 
@@ -355,7 +399,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(ACCESS_FINE_LOCATION),
-            0
+            REQUEST_KOD_GEO
         )
     }
 

@@ -78,43 +78,79 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:id="@+id/scrollDiag"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainScrollLayoutDiag"
         android:layout_width="0dp"
         android:layout_height="130dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="5dp"
-        android:background="@color/fon4Element"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lineSettingsData">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <ScrollView
+            android:id="@+id/scrollDiag"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/fon4Element"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textDiag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:text="@string/dataLoading"
-                android:textColor="@color/background" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/progressBarData"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/textDiag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/dataLoading"
+                    android:textColor="@color/background" />
 
-        </LinearLayout>
-    </ScrollView>
+            </LinearLayout>
+        </ScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/touchListenerDiagForDifarmate"
+            android:layout_width="140dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/scrollDiag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/touchBackgraund"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_marginBottom="1dp"
+                android:background="@drawable/rounded_background_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBarData"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textTitleOperators"
+        app:layout_constraintEnd_toEndOf="@+id/lineSettingsData"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textDataDiag" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerItemOperators"
@@ -123,9 +159,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
         android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDiagStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1">
@@ -140,7 +175,7 @@
         android:text="@string/startDiagTitle"
         android:textColor="@color/background"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerItemOperators"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -148,13 +183,13 @@
         android:id="@+id/textTitleOperators"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:text="@string/operatorsTitle"
         android:textColor="@color/textColor"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators"
-        app:layout_constraintTop_toBottomOf="@+id/scrollDiag" />
+        app:layout_constraintTop_toBottomOf="@+id/mainScrollLayoutDiag" />
 
     <TextView
         android:id="@+id/textDialogExitDiag"
@@ -194,19 +229,33 @@
 
     <Switch
         android:id="@+id/switchAdvancedOperators"
+        style="@style/BlueSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/BlueSwitch"
+        android:thumbTint="@color/textColor"
         app:layout_constraintBottom_toBottomOf="@+id/textTitleOperators"
         app:layout_constraintStart_toStartOf="@+id/recyclerItemOperators" />
+
+    <Switch
+        android:id="@+id/switchActivityLogData"
+        style="@style/BlueSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:thumbTint="@color/textColor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/lineSettingsData"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textDataDiag"
+        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
 
     <TextView
         android:id="@+id/textDataDiag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dataTitle"
+        android:text="@string/diagMain"
         android:textColor="@color/textColor"
         android:textSize="18dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line2Set" />
@@ -221,5 +270,29 @@
         app:layout_constraintBottom_toBottomOf="@+id/textTitleOperators"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textTitleOperators" />
+
+    <TextView
+        android:id="@+id/textStateMalfunction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/errorMalfunction"
+        android:textColor="@color/lineColorMain"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineSettingsData" />
+
+    <TextView
+        android:id="@+id/textStateNotMalfunction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/sucNotMalfunction"
+        android:textColor="@color/sucColor"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineSettingsData" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

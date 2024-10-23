@@ -1,11 +1,15 @@
 package com.kumir.settingupdevices.diag
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kumir.settingupdevices.MainActivity
@@ -38,10 +42,13 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     // поток для работы анимации
     private var animJob: Job? = null
 
+    // флаг который говорит о том что устройство не исправно
+    private var flagErrorCurrentDev: Boolean = false
+
 
     companion object {
-        const val DROP_START_FOR_DATA: Int = 2
-        const val DROP_END_FOR_DATA: Int = 2
+        // const val DROP_START_FOR_DATA: Int = 2
+        const val DROP_END_FOR_DATA: Int = 3
 
         // задержка для анимации загрузки операторов
         const val TIMEOUT_ANIM_LOADING_OPERATORS: Long = 1000
@@ -53,6 +60,52 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDiagBinding.inflate(inflater)
+
+        // Установим обработчик касаний
+        val displayMetrics = resources.displayMetrics
+        val screenHeight = displayMetrics.heightPixels
+        val maxHeight = screenHeight / 2  // Максимум до половины экрана
+
+        binding.touchListenerDiagForDifarmate.setOnTouchListener(object : View.OnTouchListener {
+            var initialY = 0f
+            var initialHeight = 0
+
+            @SuppressLint("ClickableViewAccessibility")
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                when (event.action) {
+                    // анимация для того что бы увеличивать и уменьшать то за что мы зацепляемся
+                    /*MotionEvent.ACTION_DOWN -> {
+                        // Сохраним начальные значения и запустим анимацию увеличения
+                        initialY = event.rawY
+                        initialHeight = binding.touchListenerDiagForDifarmate.height
+                        animateLayout(binding.touchListenerDiagForDifarmate, 1.0f, 1.2f) // Увеличим до 120% от исходного размера
+                        return true
+                    }*/
+                    MotionEvent.ACTION_DOWN -> {
+                        // Сохраним начальное положение пальца и высоту лэйаута
+                        initialY = event.rawY
+                        initialHeight = binding.mainScrollLayoutDiag.height
+                        return true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        // Рассчитаем разницу перемещения
+                        val deltaY = event.rawY - initialY
+
+                        // Установим новую высоту лэйаута
+                        val newHeight = initialHeight + deltaY.toInt()
+                        if (newHeight > 200 && newHeight < maxHeight) { // Минимальная высота (можно задать свое значение)
+                            val layoutParams = binding.mainScrollLayoutDiag.layoutParams
+                            layoutParams.height = newHeight
+                            binding.mainScrollLayoutDiag.layoutParams = layoutParams
+                        }
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+
+
 
         // вывод названия типа устройства
         val context: Context = requireContext()
@@ -90,8 +143,26 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
             }
         }
 
+        // свич для вывода лога
+        binding.switchActivityLogData.setOnCheckedChangeListener { _, isChecked ->
+            binding.mainScrollLayoutDiag.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+
         return binding.root
     }
+
+    // Анимация изменения размера
+    /*private fun animateLayout(view: View, fromScale: Float, toScale: Float) {
+        val scaleAnimation = ScaleAnimation(
+            fromScale, toScale,  // X от-до
+            fromScale, toScale,  // Y от-до
+            Animation.RELATIVE_TO_SELF, 0.5f,  // Точка поворота по X - центр
+            Animation.RELATIVE_TO_SELF, 0.5f   // Точка поворота по Y - центр
+        )
+        scaleAnimation.duration = 200  // Продолжительность анимации 200ms
+        scaleAnimation.fillAfter = true  // Сохранение конечного состояния после завершения анимации
+        view.startAnimation(scaleAnimation)
+    }*/
 
     /*override fun onStart() {
         super.onStart()
@@ -101,7 +172,42 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
     }*/
 
     override fun onDestroyView() {
+        endDiag()
+        super.onDestroyView()
+    }
 
+    // визуальное завершение диагностики
+    private fun endViewDiag() {
+
+        // возврат на исходную видемость 
+        binding.mainScrollLayoutDiag.visibility = View.GONE
+        binding.progressBarData.visibility = View.GONE
+        binding.progressBarOperators.visibility = View.GONE
+        binding.textNonFindOperators.visibility = View.GONE
+        binding.textStateMalfunction.visibility = View.GONE
+        binding.textStateNotMalfunction.visibility = View.GONE
+        binding.switchActivityLogData.visibility = View.GONE
+
+        // убераем все что навключал пользователь
+        binding.switchActivityLogData.isChecked = false
+
+        binding.textDialogExitDiag.visibility = View.VISIBLE
+        binding.textDialogExitDiag.visibility = View.VISIBLE
+
+        // меням все текста на исходные
+        binding.textTimer.text = getString(R.string.timeZero)
+        binding.serinerNumber.text = getString(R.string.serinerNumber)
+        binding.textVersionFirmware.text = getString(R.string.versionProgram)
+        binding.buttonDiagStart.text = getString(R.string.startDiagTitle)
+
+        // убераем все что нашлось у прошлого модема
+        val itemOperatorAdapter = ItemOperatorAdapter(requireContext(), listOf())
+        binding.recyclerItemOperators.adapter = itemOperatorAdapter
+        binding.recyclerItemOperators.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    // программное завершение диагностики
+    private fun endDiag() {
         // закратие анимации загрузки операторов
         animJob?.cancel()
 
@@ -121,7 +227,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
             context.curentData = ""
         }
 
-        super.onDestroyView()
+        flagStartDiag = false
     }
 
     // запсук диагностики
@@ -132,6 +238,9 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
             if (context is MainActivity) {
                 context.showTimerDialogDiag(this, nameDeviace)
             }
+        } else {
+            endDiag()
+            endViewDiag()
         }
     }
 
@@ -179,13 +288,49 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
 
 
     override fun printAllInfo(info: String) {
+        binding.switchActivityLogData.visibility = View.VISIBLE
         binding.progressBarData.visibility = View.GONE
+        flagErrorCurrentDev = false
+
+        // выводим все логи о том что неисправно и что все окей
+        val masDataValue = info.split("\n")
+        val masErrorValue: MutableList<String> = mutableListOf()
+        var infoInFlagsGreenRed = ""
+        for (value in masDataValue) {
+            if (value.length > 1) {  // минимум 2 символа для того что бы отсеивать мусор
+                infoInFlagsGreenRed += if (value.contains("ERROR")) {
+                    flagErrorCurrentDev = true
+                    masErrorValue.add("\uD83D\uDFE5 $value \n")
+                    ""
+                } else {
+                    "\uD83D\uDFE9 $value \n"
+                }
+            }
+        }
+
+        // добавляем в начало ошибки
+        for (value in masErrorValue) {
+            infoInFlagsGreenRed = value + infoInFlagsGreenRed
+        }
 
         // насло с ок и заканичается на CELLSCAN
-        binding.textDiag.text = info.substringAfter(getString(R.string.okSand)).
-                substringBefore(getString(R.string.endDiagBeginning)).drop(DROP_START_FOR_DATA).dropLast(
+        binding.textDiag.text = infoInFlagsGreenRed./*substringAfter(getString(R.string.okSand)).*/
+                substringBefore(getString(R.string.endDiagBeginning))/*.drop(DROP_START_FOR_DATA)*/.dropLast(
             DROP_END_FOR_DATA
         )
+
+        // если есть ошибка то выводим диалог
+        if (flagErrorCurrentDev) {
+            binding.mainScrollLayoutDiag.visibility = View.VISIBLE
+            binding.textStateMalfunction.visibility = View.VISIBLE
+            binding.textStateNotMalfunction.visibility = View.GONE
+            binding.switchActivityLogData.isChecked = true
+        } else {
+            binding.mainScrollLayoutDiag.visibility = View.GONE
+            binding.textStateMalfunction.visibility = View.GONE
+            binding.textStateNotMalfunction.visibility = View.VISIBLE
+            binding.switchActivityLogData.isChecked = false
+        }
     }
 
     override fun printAllOperator(allOperators: String) {
@@ -320,7 +465,8 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
             this, this)
         flagStartDiag = true
 
-        binding.buttonDiagStart.visibility = View.GONE
+        // binding.buttonDiagStart.visibility = View.GONE
+        binding.buttonDiagStart.text = getString(R.string.endDiagTitle)
 
         // выводим прогресс бары
         binding.progressBarData.visibility = View.VISIBLE
