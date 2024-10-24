@@ -423,6 +423,12 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
 
     }
 
+    override fun noConnect() {
+        endDiag()
+        endViewDiag()
+        showAlertDialog(getString(R.string.Disconnected))
+    }
+
     // перевод кaнала в частоту
     fun arfcnToFrequency(arfcn: Int): Pair<Double, Double>? {
         return when {

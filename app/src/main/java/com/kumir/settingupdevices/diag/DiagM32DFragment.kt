@@ -1,12 +1,15 @@
 package com.kumir.settingupdevices.diag
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -14,7 +17,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.material.tabs.TabLayout
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
+import com.kumir.settingupdevices.adapters.itemOperatorAdapter.ItemOperatorAdapter
 import com.kumir.settingupdevices.databinding.FragmentDiagM32DBinding
+import com.kumir.settingupdevices.diag.DiagFragment.Companion
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbDiag
 
@@ -41,6 +46,9 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
     var curentPkgNumbersim2: Int = 0
 
 
+    // флаг который говорит о том что устройство не исправно
+    private var flagErrorCurrentDev: Boolean = false
+
     companion object {
         const val DROP_START_FOR_DATA: Int = 2
         const val DROP_END_FOR_DATA: Int = 2
@@ -60,6 +68,51 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDiagM32DBinding.inflate(inflater)
+
+
+        // Установим обработчик касаний
+        val displayMetrics = resources.displayMetrics
+        val screenHeight = displayMetrics.heightPixels
+        val maxHeight = screenHeight / 2  // Максимум до половины экрана
+
+        binding.touchListenerDiagForDifarmate.setOnTouchListener(object : View.OnTouchListener {
+            var initialY = 0f
+            var initialHeight = 0
+
+            @SuppressLint("ClickableViewAccessibility")
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                when (event.action) {
+                    // анимация для того что бы увеличивать и уменьшать то за что мы зацепляемся
+                    /*MotionEvent.ACTION_DOWN -> {
+                        // Сохраним начальные значения и запустим анимацию увеличения
+                        initialY = event.rawY
+                        initialHeight = binding.touchListenerDiagForDifarmate.height
+                        animateLayout(binding.touchListenerDiagForDifarmate, 1.0f, 1.2f) // Увеличим до 120% от исходного размера
+                        return true
+                    }*/
+                    MotionEvent.ACTION_DOWN -> {
+                        // Сохраним начальное положение пальца и высоту лэйаута
+                        initialY = event.rawY
+                        initialHeight = binding.mainLayoutTabData.height
+                        return true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        // Рассчитаем разницу перемещения
+                        val deltaY = event.rawY - initialY
+
+                        // Установим новую высоту лэйаута
+                        val newHeight = initialHeight + deltaY.toInt()
+                        if (newHeight > 200 && newHeight < maxHeight) { // Минимальная высота (можно задать свое значение)
+                            val layoutParams = binding.mainLayoutTabData.layoutParams
+                            layoutParams.height = newHeight
+                            binding.mainLayoutTabData.layoutParams = layoutParams
+                        }
+                        return true
+                    }
+                }
+                return false
+            }
+        })
 
         // вывод названия типа устройства
         val context: Context = requireContext()
@@ -118,22 +171,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
     }
 
     override fun onDestroyView() {
-
-        // отключение систем проверки сигнала и выход из потока
-        try {
-            // отключения потока прочитки сигнала если он включен
-            if (usbCommandsProtocol.flagWorkDiag) {
-                //usbCommandsProtocol.threadDiag.interrupt()
-                usbCommandsProtocol.flagWorkDiag = false
-            }
-        } catch (_: Exception) {}
-
-
-        // очещение буфера данных
-        val context: Context = requireContext()
-        if (context is MainActivity) {
-            context.curentData = ""
-        }
+        endDiag()
 
         super.onDestroyView()
     }
@@ -146,19 +184,102 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             if (context is MainActivity) {
                 context.showTimerDialogDiag(this, nameDeviace)
             }
+        } else {
+            endDiag()
+            endViewDiag()
         }
+    }
+
+    // программное завершение диагностики
+    private fun endDiag() {
+
+        // отключение систем проверки сигнала и выход из потока
+        try {
+            // отключения потока прочитки сигнала если он включен
+            if (usbCommandsProtocol.flagWorkDiag) {
+                //usbCommandsProtocol.threadDiag.interrupt()
+                usbCommandsProtocol.flagWorkDiag = false
+            }
+        } catch (e: Exception) {}
+
+
+        // очещение буфера данных
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.curentData = ""
+        }
+
+        flagStartDiag = false
+    }
+
+    // визуальное завершение диагностики
+    private fun endViewDiag() {
+
+        // возврат на исходную видемость
+        binding.progressBarData.visibility = View.GONE
+        binding.progressBarOperators.visibility = View.GONE
+        binding.textStateMalfunction.visibility = View.GONE
+        binding.textStateNotMalfunction.visibility = View.GONE
+
+
+        // меням все текста на исходные
+        binding.serinerNumber.text = getString(R.string.serinerNumber)
+        binding.textVersionFirmware.text = getString(R.string.versionProgram)
+        binding.buttonDiagStart.text = getString(R.string.startDiagTitle)
+        binding.textDiag.text = getString(R.string.dataLoading)
+
+        // убераем все cсим карты
+        binding.Sim1Layout.visibility = View.GONE
+        binding.Sim2Layout.visibility = View.GONE
+
+        // завершаем графики
+        entriesSim1.clear()
+        entriesSim2.clear()
+        lineChartSim1("0", "0")
+        lineChartSim2("0", "0")
     }
 
 
 
     override fun printAllInfo(info: String) {
         binding.progressBarData.visibility = View.GONE
+        flagErrorCurrentDev = false
+
+        // выводим все логи о том что неисправно и что все окей
+        val masDataValue = info.split("\n")
+        val masErrorValue: MutableList<String> = mutableListOf()
+        var infoInFlagsGreenRed = ""
+        for (value in masDataValue) {
+            if (value.length > 1) {  // минимум 2 символа для того что бы отсеивать мусор
+                infoInFlagsGreenRed += if (value.contains("ERROR")) {
+                    flagErrorCurrentDev = true
+                    masErrorValue.add("\uD83D\uDFE5 $value \n")
+                    ""
+                } else {
+                    "\uD83D\uDFE9 $value \n"
+                }
+            }
+        }
+
+        // добавляем в начало ошибки
+        for (value in masErrorValue) {
+            infoInFlagsGreenRed = value + infoInFlagsGreenRed
+        }
 
         // насло с ок и заканичается на CELLSCAN
-        binding.textDiag.text = info.substringAfter(getString(R.string.okSand)).
-        substringBefore(getString(R.string.endDiagBeginning)).drop(DROP_START_FOR_DATA).dropLast(
-            DROP_END_FOR_DATA
+        binding.textDiag.text = infoInFlagsGreenRed./*substringAfter(getString(R.string.okSand)).*/
+        substringBefore(getString(R.string.endDiagBeginning))/*.drop(DROP_START_FOR_DATA)*/.dropLast(
+            DiagFragment.DROP_END_FOR_DATA
         )
+
+        // если есть ошибка то выводим диалог
+        if (flagErrorCurrentDev) {
+            binding.textStateMalfunction.visibility = View.VISIBLE
+            binding.textStateNotMalfunction.visibility = View.GONE
+        } else {
+            binding.textStateMalfunction.visibility = View.GONE
+            binding.textStateNotMalfunction.visibility = View.VISIBLE
+        }
     }
 
     override fun printAllOperator(allOperators: String) {
@@ -182,7 +303,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             // отображения картиночки
             if (operator.contains("MegaFon")) {
                 binding.imageOperatorSim1.setBackgroundResource(R.drawable.megafon_logo_wine)
-            } else if (operator.contains("MOTIV")) {
+            } else if (operator.contains("MOTIV") || operator.contains("Tele2") ) {
                 binding.imageOperatorSim1.setBackgroundResource(R.drawable.tele2_svgrepo_com)
             } else if (operator.contains("MTS")) {
                 binding.imageOperatorSim1.setBackgroundResource(R.drawable.mts__network_provider__logo_wine)
@@ -227,7 +348,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             // отображения картиночки
             if (operator.contains("MegaFon")) {
                 binding.imageOperatorSim2.setBackgroundResource(R.drawable.megafon_logo_wine)
-            } else if (operator.contains("MOTIV")) {
+            } else if (operator.contains("MOTIV") || operator.contains("Tele2") ) {
                 binding.imageOperatorSim2.setBackgroundResource(R.drawable.tele2_svgrepo_com)
             } else if (operator.contains("MTS")) {
                 binding.imageOperatorSim2.setBackgroundResource(R.drawable.mts__network_provider__logo_wine)
@@ -236,7 +357,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             } else if (operator.contains("ROSTELECOM")) {
                 binding.imageOperatorSim2.setBackgroundResource(R.drawable.rostelecom)
             } else {
-                binding.imageOperatorSim2.setBackgroundResource(R.drawable.tele2_svgrepo_com)
+                binding.imageOperatorSim2.setBackgroundResource(R.drawable.error_svgrepo_com)
             }
 
 
@@ -275,6 +396,13 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
         flagViewDiag = false
     }
 
+    override fun noConnect() {
+        endDiag()
+        endViewDiag()
+
+        showAlertDialog(getString(R.string.Disconnected))
+    }
+
 
     private fun showAlertDialog(text: String) {
         val context: Context = requireContext()
@@ -290,11 +418,12 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             this, this)
         flagStartDiag = true
 
-        binding.buttonDiagStart.visibility = View.GONE
+        // binding.buttonDiagStart.visibility = View.GONE
 
         // выводим прогресс бары
         binding.progressBarData.visibility = View.VISIBLE
         binding.progressBarOperators.visibility = View.VISIBLE
+        binding.buttonDiagStart.text = getString(R.string.endDiagTitle)
 
     }
 

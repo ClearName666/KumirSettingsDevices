@@ -495,6 +495,23 @@ class UsbCommandsProtocol {
                 // отключение ат команд
                 context.usb.flagAtCommandYesNo = false
 
+                // поток для контроля подключения во время диагностики
+                val threadControlConnect = Thread {
+                    while (context.usb.checkConnectToDevice()) {
+                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+
+                        // если диагностика закнчена то немедленно выходм
+                        if (!flagWorkDiag) break
+                    }
+
+                    // если при выходи поток все еще работает то значит ошибка
+                    if (flagWorkDiag) {
+                        context.runOnUiThread {
+                            usbDiag.noConnect()
+                        }
+                    }
+                }
+                threadControlConnect.start()
 
                 var serialNumber = ""
                 var vesionProgram = ""

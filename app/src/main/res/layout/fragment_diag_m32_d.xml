@@ -7,14 +7,38 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".diag.DiagM32DFragment">
 
+    <TextView
+        android:id="@+id/textStateNotMalfunction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sucNotMalfunction"
+        android:textColor="@color/sucColor"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textStateMalfunction" />
+
+    <TextView
+        android:id="@+id/textStateMalfunction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="@string/errorMalfunction"
+        android:textColor="@color/lineColorMain"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line2Set" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabPresets"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:backgroundTint="@color/fonElement"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line2Set"
+        app:layout_constraintTop_toTopOf="@+id/textStateMalfunction"
         app:tabSelectedTextColor="#8532AF"
         app:tabTextColor="@color/textColor">
 
@@ -36,17 +60,6 @@ tools:context=".diag.DiagM32DFragment">
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lineSettingsPort1"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/fon2Element"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainLayoutTabData">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/lineSet"
     android:layout_width="match_parent"
     android:layout_height="2dp"
@@ -95,7 +108,7 @@ tools:context=".diag.DiagM32DFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainLayoutTabData"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabPresets">
@@ -103,7 +116,7 @@ tools:context=".diag.DiagM32DFragment">
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/lineChartSim1"
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="0dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
@@ -117,7 +130,7 @@ tools:context=".diag.DiagM32DFragment">
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/lineChartSim2"
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="0dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
@@ -131,7 +144,7 @@ tools:context=".diag.DiagM32DFragment">
         <ScrollView
             android:id="@+id/scrollDiag"
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="0dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
@@ -158,16 +171,40 @@ tools:context=".diag.DiagM32DFragment">
                     android:text="@string/dataLoading"
                     android:textColor="@color/background" />
 
-                <ProgressBar
-                    android:id="@+id/progressBarData"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:visibility="gone" />
-
             </LinearLayout>
         </ScrollView>
+
+        <ProgressBar
+            android:id="@+id/progressBarData"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/touchListenerDiagForDifarmate"
+            android:layout_width="140dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/touchBackgraund"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_marginBottom="11dp"
+                android:background="@drawable/rounded_background_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
@@ -187,31 +224,30 @@ tools:context=".diag.DiagM32DFragment">
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/buttonDiagStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lineSettingsPort1" />
+        app:layout_constraintTop_toBottomOf="@+id/mainLayoutTabData" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Sim2Layout"
-        android:layout_width="180dp"
-        android:layout_height="190dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/rounded_background2"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Sim1Layout">
+        app:layout_constraintStart_toEndOf="@+id/Sim1Layout"
+        app:layout_constraintTop_toTopOf="@+id/Sim1Layout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cintainerimgSignal2"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/rounded_background3"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textOperatorSim2"
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
@@ -241,26 +277,26 @@ tools:context=".diag.DiagM32DFragment">
             android:id="@+id/textSignalSim2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
             android:text="Signal"
             android:textColor="@color/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/cintainerimgSignal2"
+            app:layout_constraintEnd_toEndOf="@+id/cintainerimgSignal2"
+            app:layout_constraintStart_toStartOf="@+id/cintainerimgSignal2" />
 
         <TextView
             android:id="@+id/textOperatorSim2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text="Operator"
             android:textColor="@color/textColor"
-            app:layout_constraintBottom_toTopOf="@+id/textSignalSim2"
-            app:layout_constraintStart_toStartOf="@+id/textSignalSim2" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageOperatorSim2" />
 
         <ImageView
             android:id="@+id/imageOperatorSim2"
-            android:layout_width="90dp"
-            android:layout_height="80dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toTopOf="@+id/textOperatorSim2"
             app:layout_constraintEnd_toStartOf="@+id/cintainerimgSignal2"
             app:layout_constraintStart_toStartOf="parent"
@@ -269,23 +305,21 @@ tools:context=".diag.DiagM32DFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Sim1Layout"
-        android:layout_width="180dp"
-        android:layout_height="190dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/rounded_background2"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/lineSettingsPort1">
+        app:layout_constraintTop_toBottomOf="@+id/mainLayoutTabData">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cintainerimgSignal"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/rounded_background3"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textOperatorSim1"
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
@@ -315,26 +349,26 @@ tools:context=".diag.DiagM32DFragment">
             android:id="@+id/textSignalSim1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
             android:text="Signal"
             android:textColor="@color/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/cintainerimgSignal"
+            app:layout_constraintEnd_toEndOf="@+id/cintainerimgSignal"
+            app:layout_constraintStart_toStartOf="@+id/cintainerimgSignal" />
 
         <TextView
             android:id="@+id/textOperatorSim1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text="Operator"
             android:textColor="@color/textColor"
-            app:layout_constraintBottom_toTopOf="@+id/textSignalSim1"
-            app:layout_constraintStart_toStartOf="@+id/textSignalSim1" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageOperatorSim1" />
 
         <ImageView
             android:id="@+id/imageOperatorSim1"
-            android:layout_width="90dp"
-            android:layout_height="80dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toTopOf="@+id/textOperatorSim1"
             app:layout_constraintEnd_toStartOf="@+id/cintainerimgSignal"
             app:layout_constraintStart_toStartOf="parent"
