@@ -82,6 +82,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.kumir.settingupdevices.sensors.SensorPipeBlockageV1_01
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
@@ -782,6 +783,16 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     }
 
+    fun onClickSensorPipeBlockage(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        binding.textNameDevice.text = getString(R.string.sensorPipeBlockage)
+
+        val sensorPipeBlockageV1_01 = SensorPipeBlockageV1_01(this)
+        createSettingFragment(sensorPipeBlockageV1_01, true)
+
+    }
+
     fun onClickStmLoader(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -799,6 +810,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(settings, true)
 
     }
+
+
 
     // сохрание настроек присета в базу данных
     fun onClickSavePreset(

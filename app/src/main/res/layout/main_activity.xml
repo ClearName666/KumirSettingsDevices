@@ -1252,15 +1252,49 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/SnsorDT112"
+                            android:id="@+id/SensorPipeBlockage"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:clickable="true"
-                            android:onClick="onClickSensorDT112"
+                            android:onClick="onClickSensorPipeBlockage"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/lineSensors">
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+
+                            <TextView
+                                android:id="@+id/textPipeBlockage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:text="@string/sensorPipeBlockage"
+                                android:textColor="@color/textColor"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo14"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo14"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo14" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/SnsorDT112"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:onClick="onClickSensorDT112"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/SensorPipeBlockage">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo12"

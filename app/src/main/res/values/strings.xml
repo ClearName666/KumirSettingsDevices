@@ -117,7 +117,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.82</string>
+    <string name="versionApp">Версия: 1.9.83</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -632,6 +632,7 @@
     <string name="presetTitle">Создать шаблон</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="settingsTitle">Настройки</string>
+    <string name="value">Значение</string>
     <string name="presetsTitle">Шаблоны</string>
     <string name="nonPresetData">Нет записей</string>
     <string name="loadCastomSet">Пользовательские настройки</string>
@@ -723,6 +724,7 @@
     <string name="delete">Удалить</string>
     <string name="Sensors">Датчики</string>
     <string name="sensorDT112">ДТ112</string>
+    <string name="sensorPipeBlockage">Сенсор засора \nтрубы v1.01</string>
     <string name="search">Поиск</string>
     <string name="automaticUpdateTemp">Для автоматического обновления значений датчиков выставите этот флаг</string>
     <string name="startScaner">Начать сканирование</string>
@@ -748,6 +750,10 @@
     <string name="info">Информация</string>
     <string name="versionBootloader">версия BootLoader:</string>
     <string name="loadProgramVersion">Зашиваемая прошивка:</string>
+    <string name="threshold">Threshold</string>
+    <string name="rawvalue">RawValue</string>
+    <string name="rawstate">RawState</string>
+    <string name="state">State</string>
 
 
     <!--............................................................................-->

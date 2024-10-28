@@ -219,7 +219,7 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
                 // ждем получения данных
                 expectationDataOneWite()
 
-                // выполнение в фоновом потоке
+                // выполнение в ui потоке
                 (context as Activity).runOnUiThread {
                     // проверка данных
                     if (oneWire.listOneWireAddres.isEmpty()) {
