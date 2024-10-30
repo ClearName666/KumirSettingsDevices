@@ -1,14 +1,19 @@
 package com.kumir.settingupdevices.sensors
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.icons.materialIcon
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
+import com.kumir.settingupdevices.adapters.ItemSensorPipeBlockageAdapter.ItemSensorPipeBlockageAdapter
 import com.kumir.settingupdevices.databinding.FragmentSensorPipeBlockageV101Binding
+import com.kumir.settingupdevices.model.recyclerModel.ItemSensorPipeBlockage
 import com.kumir.settingupdevices.usb.OneWire
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
@@ -22,7 +27,7 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
     lateinit var binding: FragmentSensorPipeBlockageV101Binding
 
     private lateinit var oneWire: OneWire
-    private var flagWorkDiag: Boolean = false
+    var flagWorkDiag: Boolean = false
 
     var flagСancellation = false
 
@@ -44,24 +49,19 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
         // кнопка для нечала диагностики
         binding.buttonStartDiag.setOnClickListener {
             if (!flagWorkDiag) {
-                flagWorkDiag = true
-                startReadData()
-                binding.buttonStartDiag.text = getString(R.string.endDiagTitle)
+                if (!usbCommandsProtocol.flagWorkDiag) {
+                    flagWorkDiag = true
+                    startReadData()
+                    binding.buttonStartDiag.text = getString(R.string.endDiagTitle)
 
-                // запускаем анимацию загрузки
-                binding.progressBarWorkDiag.visibility = View.VISIBLE
+                    // запускаем анимацию загрузки
+                    binding.progressBarWorkDiag.visibility = View.VISIBLE
+                } else {
+                    showAlertDialog(getString(R.string.expectationPlease))
+                }
+
             } else {
-                binding.buttonStartDiag.text = getString(R.string.startDiagTitle)
-                flagWorkDiag = false
-
-                // завершаем анимацию загрузки
-                binding.progressBarWorkDiag.visibility = View.GONE
-
-                // обратно возвращяем текст вместо значений
-                binding.thresholdValueText.text = getString(R.string.value)
-                binding.rawStateValueText.text = getString(R.string.value)
-                binding.rawValueValueText.text = getString(R.string.value)
-                binding.stateValueText.text = getString(R.string.value)
+                endDiag()
             }
         }
 
@@ -82,7 +82,9 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
         super.onDestroyView()
     }
 
-    fun printInfo(byteData: ByteArray) {
+    fun printInfo(byteData: ByteArray, index: Int) {
+
+
 
         // ожидаемая структыра данных
         /*{
@@ -93,36 +95,82 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
           } SCPDATA;
         */
 
-        if (byteData.size == 8) {
-            val threshold: Int = ((byteData[1].toInt() and 0xFF) shl 8) or (byteData[0].toInt() and 0xFF)
-            val rawValue: Int = ((byteData[3].toInt() and 0xFF) shl 8) or (byteData[2].toInt() and 0xFF)
-            val rawState: Int = ((byteData[5].toInt() and 0xFF) shl 8) or (byteData[4].toInt() and 0xFF)
-            val state: Int = ((byteData[7].toInt() and 0xFF) shl 8) or (byteData[6].toInt() and 0xFF)
-
-            binding.thresholdValueText.text = threshold.toString()
-            binding.rawValueValueText.text = rawValue.toString()
 
 
-            // состояния
-            if (rawState == TRUE_DATA) {
-                binding.rawStateValueText.text = getString(R.string.Yes)
+        // только если диагностика продолжается
+        if (flagWorkDiag) {
+            if (byteData.size == 8) {
+                // распарсиваем данне
+                val threshold: Int =
+                    ((byteData[1].toInt() and 0xFF) shl 8) or (byteData[0].toInt() and 0xFF)
+                val rawValue: Int =
+                    ((byteData[3].toInt() and 0xFF) shl 8) or (byteData[2].toInt() and 0xFF)
+                val rawState: Int =
+                    ((byteData[5].toInt() and 0xFF) shl 8) or (byteData[4].toInt() and 0xFF)
+                val state: Int =
+                    ((byteData[7].toInt() and 0xFF) shl 8) or (byteData[6].toInt() and 0xFF)
+
+                // обновляем данные в листе с данными об показаниях сенсоров
+                oneWire.listOneWirePipeSensorsAddress[index] = ItemSensorPipeBlockage(
+                    threshold,
+                    rawValue,
+                    rawState == TRUE_DATA,
+                    state == TRUE_DATA,
+                    oneWire.listOneWirePipeSensorsAddress[index].address
+                    )
+
+
+                // если датчик 1 то делаем одиночный вывод
+                if (oneWire.listOneWirePipeSensorsAddress.size != 1) {
+
+                    // активация одиночного лайаута
+                    binding.oneSensor.visibility = View.VISIBLE
+                    binding.moreSensors.visibility = View.GONE
+
+                    // выводим данные
+                    binding.thresholdValueText.text = threshold.toString()
+                    binding.rawValueValueText.text = rawValue.toString()
+
+
+                    // состояния
+                    if (rawState == TRUE_DATA) {
+                        binding.rawStateValueText.text = getString(R.string.Yes)
+                        binding.layoutRawState.setBackgroundResource(R.drawable.error_rounded_background)
+                    } else {
+                        binding.rawStateValueText.text = getString(R.string.No)
+                        binding.layoutRawState.setBackgroundResource(R.drawable.rounded_background2)
+                    }
+
+                    if (state == TRUE_DATA) {
+                        binding.stateValueText.text = getString(R.string.Yes)
+                        binding.layoutState.setBackgroundResource(R.drawable.error_rounded_background)
+
+                    } else {
+                        binding.stateValueText.text = getString(R.string.No)
+                        binding.layoutState.setBackgroundResource(R.drawable.rounded_background2)
+
+                    }
+
+                    // для множественного вывода
+                } else {
+                    // активация многочисленного лайаута
+                    binding.oneSensor.visibility = View.GONE
+                    binding.moreSensors.visibility = View.VISIBLE
+
+                    val itemSensorPipeBlockageAdapter = ItemSensorPipeBlockageAdapter(contextMain, oneWire.listOneWirePipeSensorsAddress)
+                    binding.recyclerViewSensorsPipeBlockage.adapter = itemSensorPipeBlockageAdapter
+                    binding.recyclerViewSensorsPipeBlockage.layoutManager = LinearLayoutManager(requireContext())
+                }
             } else {
-                binding.rawStateValueText.text = getString(R.string.No)
+                error()
             }
-
-            if (state == TRUE_DATA) {
-                binding.stateValueText.text = getString(R.string.Yes)
-            } else {
-                binding.stateValueText.text = getString(R.string.No)
-            }
-        } else {
-            error()
         }
 
     }
 
     fun error(msg: String = "") {
         showAlertDialog(getString(R.string.errorCodeNone) + msg)
+        endDiag()
     }
 
 
@@ -140,11 +188,7 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
             expectationDataOneWite()
 
             // бесконечно опрашиваем пока не закончиим диагностику
-            while (flagWorkDiag) {
-                Thread.sleep(TIME_DIAG_DATA_SPLIT)
-                if (!usbCommandsProtocol.flagWorkRead) // по завершению прошлого запуска делаем новый
-                    oneWire.getDataPipeBlockage(contextMain, usbCommandsProtocol, this)
-            }
+            oneWire.getDataPipeBlockage(contextMain, usbCommandsProtocol, this)
 
         }.start()
     }
@@ -168,7 +212,36 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
         }
     }
 
+    // завершение диагностикии
+    private fun endDiag() {
+        // завершение
+        binding.buttonStartDiag.text = getString(R.string.startDiagTitle)
+        flagWorkDiag = false
 
+        // завершаем анимацию загрузки
+        binding.progressBarWorkDiag.visibility = View.GONE
+
+        // обратно возвращяем текст вместо значений
+        binding.thresholdValueText.text = getString(R.string.value)
+        binding.rawStateValueText.text = getString(R.string.value)
+        binding.rawValueValueText.text = getString(R.string.value)
+        binding.stateValueText.text = getString(R.string.value)
+
+        binding.layoutRawState.setBackgroundResource(R.drawable.rounded_background2)
+        binding.layoutState.setBackgroundResource(R.drawable.rounded_background2)
+
+        // очещяем многочисленные выводы
+        val itemSensorPipeBlockageAdapter = ItemSensorPipeBlockageAdapter(contextMain, mutableListOf())
+        binding.recyclerViewSensorsPipeBlockage.adapter = itemSensorPipeBlockageAdapter
+        binding.recyclerViewSensorsPipeBlockage.layoutManager = LinearLayoutManager(requireContext())
+
+        // выводим одиночный вывод данных потому что он главный
+        binding.oneSensor.visibility = View.VISIBLE
+        binding.moreSensors.visibility = View.GONE
+    }
+
+
+    // на слуучай отключения кабеля
     override fun lockFromDisconnected(connect: Boolean) {
         if (!connect) {
             // кнопка для начала диагностики (выводит диалог о том что не успешно)
@@ -176,27 +249,25 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
 
-            // завершение
-            binding.buttonStartDiag.text = getString(R.string.startDiagTitle)
-            flagWorkDiag = false
-
-            // завершаем анимацию загрузки
-            binding.progressBarWorkDiag.visibility = View.GONE
+            endDiag()
         } else {
-            // кнопка для начала диагностики
-            if (!flagWorkDiag) {
-                flagWorkDiag = true
-                startReadData()
-                binding.buttonStartDiag.text = getString(R.string.endDiagTitle)
+            // кнопка для нечала диагностики
+            binding.buttonStartDiag.setOnClickListener {
+                if (!flagWorkDiag) {
+                    if (!usbCommandsProtocol.flagWorkDiag) {
+                        flagWorkDiag = true
+                        startReadData()
+                        binding.buttonStartDiag.text = getString(R.string.endDiagTitle)
 
-                // запускаем анимацию загрузки
-                binding.progressBarWorkDiag.visibility = View.VISIBLE
-            } else {
-                binding.buttonStartDiag.text = getString(R.string.startDiagTitle)
-                flagWorkDiag = false
+                        // запускаем анимацию загрузки
+                        binding.progressBarWorkDiag.visibility = View.VISIBLE
+                    } else {
+                        showAlertDialog(getString(R.string.expectationPlease))
+                    }
+                } else {
+                    endDiag()
 
-                // завершаем анимацию загрузки
-                binding.progressBarWorkDiag.visibility = View.GONE
+                }
             }
         }
     }

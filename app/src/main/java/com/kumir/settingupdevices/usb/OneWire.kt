@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.model.recyclerModel.ItemSensorID
+import com.kumir.settingupdevices.model.recyclerModel.ItemSensorPipeBlockage
 import com.kumir.settingupdevices.model.recyclerModel.StSearchOneWire
 import com.kumir.settingupdevices.sensors.OneWireInterfacePower
 import com.kumir.settingupdevices.sensors.RealUpdateTempInterface
@@ -166,6 +167,7 @@ class OneWire(val usb: Usb, private val context: Context) {
 
     // лист для хранения адресов на линии
     var listOneWireAddres = mutableListOf<ItemSensorID>()
+    var listOneWirePipeSensorsAddress = mutableListOf<ItemSensorPipeBlockage>()
     private val listOneWireAddresHex: MutableList<ByteArray> = mutableListOf()
 
     // хранит температуры всех датчиков
@@ -218,6 +220,7 @@ class OneWire(val usb: Usb, private val context: Context) {
         // отчистка прошлых данных
         listOneWireAddres.clear()
         listOneWireAddresHex.clear()
+        listOneWirePipeSensorsAddress.clear()
 
         Thread {
             usb.onSerialRTS(1)
@@ -248,6 +251,7 @@ class OneWire(val usb: Usb, private val context: Context) {
                         if (listOneWireAddres.none { it.sensorID == strAddress }) {
                             numberAddress = 10
                             listOneWireAddres.add(ItemSensorID(strAddress, -300F))
+                            listOneWirePipeSensorsAddress.add(ItemSensorPipeBlockage(0, 0, false, false, strAddress))
                             //val addressAdd = address
                             listOneWireAddresHex.add(address.copyOf())
                         }
@@ -265,6 +269,7 @@ class OneWire(val usb: Usb, private val context: Context) {
                     if (!usb.checkConnectToDevice() || context.currentDataByteAll.isEmpty() ||
                         sensorDT112Fragment!!.flagСancellation) {
                         listOneWireAddres.clear()
+                        listOneWirePipeSensorsAddress.clear()
                         listOneWireAddresHex.clear()
                         break
                     }
@@ -272,6 +277,7 @@ class OneWire(val usb: Usb, private val context: Context) {
                     if (!usb.checkConnectToDevice() || context.currentDataByteAll.isEmpty() ||
                         sensorPipeBlockageV1_01.flagСancellation) {
                         listOneWireAddres.clear()
+                        listOneWirePipeSensorsAddress.clear()
                         listOneWireAddresHex.clear()
                         break
                     }
@@ -460,56 +466,60 @@ class OneWire(val usb: Usb, private val context: Context) {
         usbCommandsProtocol.flagWorkOneWire = true
 
         Thread {
-            usb.onSerialRTS(1)
 
-            // команда на измерение температуры
-            owReset(context)
+            while (sensorPipeBlockageV1_01.flagWorkDiag) {
+                usb.onSerialRTS(1)
 
-            sendSleepDataReceive(context, COMMAND_SKIP_CC.reversedArray())
-            sendSleepDataReceive(context, COMMAND_START_DATA_44.reversedArray())
+                // команда на измерение температуры
+                owReset(context)
 
-            Thread.sleep(TIME_DATA_PIPE_BLOCKAGE)
+                sendSleepDataReceive(context, COMMAND_SKIP_CC.reversedArray())
+                sendSleepDataReceive(context, COMMAND_START_DATA_44.reversedArray())
 
-
-            var curent_index = 0
-            var flagSuc = false
-
-            // перебор всех адресов для данных датчика засора трубы
-            for (address in listOneWireAddresHex) {
-                if (!usb.checkConnectToDevice() || context.currentDataByteAll.isEmpty()) break
-
-                // чтение данных
-                for (io in 1..3) { // 3 попытки
-
-                    selectSensor(address)
-
-                    flagSuc = false
-
-                    sendSleepDataReceive(context, GET_DATA_PIPE_BLOCKAGE_SENSOR_BE.reversedArray())
-
-                    sendSleepDataReceive(context, GET_DATA_SENSOR_PIPE_BLOCKEGE_BITS)
+                Thread.sleep(TIME_DATA_PIPE_BLOCKAGE)
 
 
-                    val sendByteArr = convertToArrByte(context.currentDataByteAll)
+                var curent_index = 0
+                var flagSuc = false
 
-                    // проверка что данные получены правельно и не повреждены
-                    if (sendByteArr.size == 8 && !(sendByteArr.all { it == sendByteArr[0] })) {
-                        context.runOnUiThread {
-                            sensorPipeBlockageV1_01.printInfo(sendByteArr)
+                // перебор всех адресов для данных датчика засора трубы
+                for (address in listOneWireAddresHex) {
+                    if (!usb.checkConnectToDevice() || context.currentDataByteAll.isEmpty()) break
+
+                    // чтение данных
+                    for (io in 1..3) { // 3 попытки
+
+                        selectSensor(address)
+
+                        flagSuc = false
+
+                        sendSleepDataReceive(context, GET_DATA_PIPE_BLOCKAGE_SENSOR_BE.reversedArray())
+
+                        sendSleepDataReceive(context, GET_DATA_SENSOR_PIPE_BLOCKEGE_BITS)
+
+
+                        val sendByteArr = convertToArrByte(context.currentDataByteAll)
+
+                        // проверка что данные получены правельно и не повреждены
+                        if (sendByteArr.size == 8 && !(sendByteArr.all { it == sendByteArr[0] })) {
+                            val current_thread_index: Int = curent_index
+                            context.runOnUiThread {
+                                sensorPipeBlockageV1_01.printInfo(sendByteArr, current_thread_index)
+                            }
+                            flagSuc = true
+                            break
                         }
-                        flagSuc = true
+                    }
+
+                    // смотрим нету ли ошибок
+                    if (!flagSuc) {
+                        context.runOnUiThread {
+                            sensorPipeBlockageV1_01.error()
+                        }
                         break
                     }
+                    curent_index++
                 }
-
-                // смотрим нету ли ошибок
-                if (!flagSuc) {
-                    context.runOnUiThread {
-                        sensorPipeBlockageV1_01.error()
-                    }
-                    break
-                }
-                curent_index++
             }
 
             usb.onSerialRTS(0)
@@ -641,7 +651,12 @@ class OneWire(val usb: Usb, private val context: Context) {
             // Берем подмассив из 8 элементов или меньше, если оставшихся элементов меньше 8
             val chunk = byteArray.copyOfRange(i, (i + 8).coerceAtMost(byteArray.size))
 
-            retByteArray[i / 8] = convertToByte(chunk)
+            try {
+                retByteArray[i / 8] = convertToByte(chunk)
+            } catch (_: Exception) {
+                return byteArrayOf()
+            }
+
         }
 
         return retByteArray
