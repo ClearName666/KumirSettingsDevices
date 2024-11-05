@@ -1,13 +1,11 @@
 package com.kumir.settingupdevices.sensors
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.icons.materialIcon
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
@@ -30,6 +28,10 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
     var flagWorkDiag: Boolean = false
 
     var flagСancellation = false
+    var flagKolibrovka = false
+    var flagEditThracholdForKolibrovka: Boolean = false
+
+    var valueThracholdForKolibrovka: Int = 500
 
     companion object {
         const val TIME_DIAG_DATA_SPLIT: Long = 500
@@ -46,6 +48,16 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
 
         binding = FragmentSensorPipeBlockageV101Binding.inflate(inflater)
 
+        // кнопка для колибровки
+        binding.buttonKolibrovka.setOnClickListener {
+            flagKolibrovka = true
+        }
+
+        // кнопка для назначения колибровачного значения
+        binding.buttonEditThrachold.setOnClickListener {
+            flagEditThracholdForKolibrovka = true
+        }
+
         // кнопка для нечала диагностики
         binding.buttonStartDiag.setOnClickListener {
             if (!flagWorkDiag) {
@@ -53,6 +65,7 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
                     flagWorkDiag = true
                     startReadData()
                     binding.buttonStartDiag.text = getString(R.string.endDiagTitle)
+
 
                     // запускаем анимацию загрузки
                     binding.progressBarWorkDiag.visibility = View.VISIBLE
@@ -84,8 +97,6 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
 
     fun printInfo(byteData: ByteArray, index: Int) {
 
-
-
         // ожидаемая структыра данных
         /*{
             u16 Threshold;
@@ -95,7 +106,9 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
           } SCPDATA;
         */
 
-
+        // активация вохможности калибровки
+        binding.buttonKolibrovka.visibility = View.VISIBLE
+        binding.buttonEditThrachold.visibility = View.VISIBLE
 
         // только если диагностика продолжается
         if (flagWorkDiag) {
@@ -121,7 +134,7 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
 
 
                 // если датчик 1 то делаем одиночный вывод
-                if (oneWire.listOneWirePipeSensorsAddress.size != 1) {
+                if (oneWire.listOneWirePipeSensorsAddress.size == 1) {
 
                     // активация одиночного лайаута
                     binding.oneSensor.visibility = View.VISIBLE
@@ -216,6 +229,10 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
     private fun endDiag() {
         // завершение
         binding.buttonStartDiag.text = getString(R.string.startDiagTitle)
+
+        binding.buttonEditThrachold.visibility = View.GONE
+        binding.buttonKolibrovka.visibility = View.GONE
+
         flagWorkDiag = false
 
         // завершаем анимацию загрузки

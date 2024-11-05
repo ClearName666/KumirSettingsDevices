@@ -131,6 +131,12 @@ class ValidDataSettingsDevice {
         return str == decodedString
     }
 
+    // проверка на то что строка хекс
+    fun isValidHex(str: String): Boolean {
+        val hexRegex = Regex("^[0-9a-fA-F]+$")
+        return hexRegex.matches(str)
+    }
+
     // проверка на аски символы
     fun isAscii(input: String): Boolean {
         if (!input.matches("^\\p{ASCII}*$".toRegex())) return false

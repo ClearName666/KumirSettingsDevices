@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.kumir.settingupdevices.MainActivity
+import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.model.recyclerModel.ItemSensorID
 import com.kumir.settingupdevices.model.recyclerModel.ItemSensorPipeBlockage
 import com.kumir.settingupdevices.model.recyclerModel.StSearchOneWire
@@ -138,6 +139,30 @@ class OneWire(val usb: Usb, private val context: Context) {
             0xC0.toByte(),
             0xFF.toByte(),
             0xFF.toByte(),
+
+            0xFF.toByte(),
+            0xFF.toByte(),
+            0xFF.toByte(),
+            0xC0.toByte()
+        )
+
+        val COMMAND_KOLIBROVKA_SENSOR_PIPE_BLOCKAGE = byteArrayOf(
+            0xC0.toByte(),
+            0xFF.toByte(),
+            0xFF.toByte(),
+            0xC0.toByte(),
+
+            0xFF.toByte(),
+            0xC0.toByte(),
+            0xC0.toByte(),
+            0xFF.toByte()
+        )
+
+        val COMMAND_SET_THRACHOLD_SENSOR_PIPE_BLOCKAGE = byteArrayOf(
+            0xC0.toByte(),
+            0xFF.toByte(),
+            0xC0.toByte(),
+            0xC0.toByte(),
 
             0xFF.toByte(),
             0xFF.toByte(),
@@ -470,14 +495,33 @@ class OneWire(val usb: Usb, private val context: Context) {
             while (sensorPipeBlockageV1_01.flagWorkDiag) {
                 usb.onSerialRTS(1)
 
-                // команда на измерение температуры
+                // команда на измерение значения с датчика
                 owReset(context)
 
                 sendSleepDataReceive(context, COMMAND_SKIP_CC.reversedArray())
+
+                // если назначина колибровка то прежде колибруем
+                if (sensorPipeBlockageV1_01.flagKolibrovka) {
+                    setPipeThracholdKolibrovka(context)
+                    sensorPipeBlockageV1_01.flagKolibrovka = false
+
+                    // выводим успех
+                    context.runOnUiThread {
+                        context.showAlertDialog(context.getString(R.string.suckolibrovkaThrashold))
+                    }
+                } else if (sensorPipeBlockageV1_01.flagEditThracholdForKolibrovka) {
+                    setThracholdPipeBlockage(context, sensorPipeBlockageV1_01.valueThracholdForKolibrovka)
+                    sensorPipeBlockageV1_01.flagEditThracholdForKolibrovka = false
+
+                    // выводим успех
+                    context.runOnUiThread {
+                        context.showAlertDialog(context.getString(R.string.sucEditThrashold))
+                    }
+                }
+
                 sendSleepDataReceive(context, COMMAND_START_DATA_44.reversedArray())
 
                 Thread.sleep(TIME_DATA_PIPE_BLOCKAGE)
-
 
                 var curent_index = 0
                 var flagSuc = false
@@ -527,6 +571,25 @@ class OneWire(val usb: Usb, private val context: Context) {
             usbCommandsProtocol.flagWorkOneWire = false
             usbCommandsProtocol.flagWorkRead = false
         }.start()
+    }
+
+    // фцнкция для колибровки
+   private fun setPipeThracholdKolibrovka(context: MainActivity) {
+        // отправляем команду на колибровку
+        sendSleepDataReceive(context, COMMAND_KOLIBROVKA_SENSOR_PIPE_BLOCKAGE.reversedArray())
+
+        Thread.sleep(TIME_DATA_PIPE_BLOCKAGE)
+    }
+
+    // функция для своеноравной установки Thrachold
+    private fun setThracholdPipeBlockage(context: MainActivity, thrachold: Int) {
+        // COMMAND_SET_THRACHOLD_SENSOR_PIPE_BLOCKAGE
+        // команда + 2 байта данных и 2 байта инверсии
+        sendSleepDataReceive(context, COMMAND_SET_THRACHOLD_SENSOR_PIPE_BLOCKAGE.reversedArray() +
+                convertToByteArray(byteArrayOf(thrachold.toByte(), (thrachold shr 8).toByte(), thrachold.toByte().inv(), (thrachold shr 8).toByte().inv())
+        ))
+
+        Thread.sleep(TIME_DATA)
     }
 
 

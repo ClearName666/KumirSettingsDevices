@@ -96,6 +96,19 @@
             app:layout_constraintStart_toStartOf="@+id/imagedischarge"
             app:layout_constraintTop_toBottomOf="@+id/imagedischarge" />
 
+        <Button
+            android:id="@+id/buttonEndDiag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/textColor"
+            android:text="@string/endDiagTitle"
+            android:textColor="@color/background"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
@@ -418,10 +431,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/adminPasswordTitle"
-                        android:maxLength="6"
+                        android:maxLength="12"
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/fon2Element" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <CheckBox
+                    android:id="@+id/checkBoxHex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HEX" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutInputAdress"

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kumir.settingupdevices.EditDelIntrface
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.model.recyclerModel.ItemAbanent
+import java.nio.charset.Charset
 
 
 class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbanent>,val editDel: EditDelIntrface<ItemAbanent>
@@ -35,6 +36,12 @@ class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbane
         holder.textDriver.text = context.getString(R.string.driverTitle) + " " + item.driver
         holder.textSettingsRS485.text = context.getString(R.string.setPorsTitle) + " " + item.port
         holder.textParams.text = context.getString(R.string.paramsTitle) + " " + item.values
+
+        /*val nameInWin1251 = item.name.toByteArray(Charsets.ISO_8859_1)
+        val decodedName = String(nameInWin1251, Charset.forName("windows-1251"))
+
+        // Устанавливаем текст
+        holder.textName.text = context.getString(R.string.nameTitle) + " " + decodedName*/
 
         // кнопка изменения
         holder.butEdit.setOnClickListener {

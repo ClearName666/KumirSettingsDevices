@@ -789,7 +789,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         binding.textNameDevice.text = getString(R.string.sensorPipeBlockage)
 
         val sensorPipeBlockageV1_01 = SensorPipeBlockageV1_01(this)
-        createSettingFragment(sensorPipeBlockageV1_01, true)
+        createSettingFragment(sensorPipeBlockageV1_01)
 
     }
 

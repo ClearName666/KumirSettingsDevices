@@ -32,8 +32,9 @@ import com.kumir.settingupdevices.usb.XModemSender
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.nio.charset.Charset
 
-class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, LoadInterface {
+class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, LoadInterface {
 
     private lateinit var binding: FragmentP101Binding
 
@@ -64,6 +65,8 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
 
     // хранит текущее наименование драйвера которое хочет записать пользователь
     var nameCurrentLoadDriver = ""
+
+
 
     companion object {
         private const val DEFFAULT_NUM_DEVICE: String = "234"
@@ -161,6 +164,12 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
         }
 
 
+        // назначения кнопки для завершения диагностики
+        binding.buttonEndDiag.setOnClickListener {
+            endDiag()
+            endViewDiag()
+        }
+
         // назначения клика на меню выбора названия имени
         val validDataSettingsDevice = ValidDataSettingsDevice()
         binding.buttonSetName.setOnClickListener {
@@ -239,6 +248,72 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
 
         return binding.root
     }
+
+
+    // хавершение диагностики
+    private fun endDiag() {
+        listKeyAbanents = mutableSetOf()
+        flagRead = false
+        flagReAbanents = false
+        flagLoadDriver = false
+        flagReconnect = false
+        itemDrivers = mutableSetOf()
+        itemsAbonents.clear()
+        currentAbanent = null
+        fileName = ""
+        nameDriver = "driver"
+        nameCurrentLoadDriver = ""
+
+
+        // нажатие на кнопку получить абанентов
+        binding.buttonAddAbanent.setOnClickListener {
+            getAbonents()
+        }
+
+        binding.buttonLoadFile.setOnClickListener {
+            selectFile() // выбор файла для загрузки драйвера
+        }
+    }
+
+    // завершаем диагностику (отображение)
+    private fun endViewDiag() {
+        binding.buttonAddAbanent.text = getString(R.string.readAbanents)
+        binding.buttonAddAbanent.visibility = View.GONE
+
+        val itemAbonnentAdapter = ItemAbanentAdapter(requireContext(), mutableListOf(), this)
+        binding.recyclerView.adapter = itemAbonnentAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+
+        binding.serinerNumber.text = getString(R.string.serinerNumber)
+        binding.textDriverVersion.text = getString(R.string.driverTitle)
+        binding.textVersionFirmware.text = getString(R.string.versionProgram)
+        binding.textSizeMember.text = getString(R.string.sizeMemberTitle)
+
+        binding.textRead.visibility = View.VISIBLE
+        binding.imagedischarge.visibility = View.VISIBLE
+        binding.buttonEndDiag.visibility = View.GONE
+
+
+        binding.buttonLoadFile.visibility = View.GONE
+        binding.buttonLoadFile.text = getString(R.string.loadDriver)
+
+        binding.buttonDriversDel.visibility = View.GONE
+
+        binding.inputPassword.setText("")
+        binding.inputAdress.setText("")
+        binding.inputValues.setText("")
+        binding.inputName.setText("")
+        binding.inputRange.setText("")
+        binding.inputKey.setText("")
+        binding.inputNumDevice.setText("")
+        binding.inputSetName.setText("")
+        binding.inputTimeOut.setText("")
+
+        binding.checkBoxHex.isChecked = false
+
+    }
+
 
     private fun getAbonents() {
         val command: MutableList<String> = mutableListOf()
@@ -459,10 +534,9 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
             // кнопка загрузки драйвера
             binding.buttonLoadFile.visibility = View.VISIBLE
 
-            // делаем так что бы больше незя было прочитать устройство и нарушить алгаритм исполнения
-            binding.imagedischarge.setOnClickListener {
-                showAlertDialog(getString(R.string.readAlready))
-            }
+            binding.textRead.visibility = View.GONE
+            binding.imagedischarge.visibility = View.GONE
+            binding.buttonEndDiag.visibility = View.VISIBLE
             // ------------------------------------------------------------
 
             // верийный номер и версия прошибки
@@ -591,7 +665,9 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
 
             var values: String = "a=t;"
             if (binding.inputPassword.text.toString().isNotEmpty()) {
-                values += "p=${binding.inputPassword.text}a;"
+                // тип пароля
+                val passwordType = if (binding.checkBoxHex.isChecked) "h" else "a";
+                values += "p=${binding.inputPassword.text}$passwordType;"
             }
             if (binding.inputAdress.text.toString().isNotEmpty()) {
                 values += "n=${binding.inputAdress.text};"
@@ -663,7 +739,9 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
         var values = "a=f;"
         if (binding.switchAddParams.isChecked) values = "a=t;"
         if (binding.inputPassword.text.toString().isNotEmpty()) {
-            values += "p=${binding.inputPassword.text}a;"
+            // тип пароля
+            val passwordType = if (binding.checkBoxHex.isChecked) "h" else "a";
+            values += "p=${if (binding.checkBoxHex.isChecked) binding.inputPassword.text.toString().lowercase() else binding.inputPassword.text}$passwordType;"
         }
         if (binding.inputAdress.text.toString().isNotEmpty()) {
             values += "n=${binding.inputAdress.text};"
@@ -699,6 +777,15 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
 
     }
 
+
+    /*private fun utf8ToWin1251(input: String): String {
+        // Преобразуем строку в байты UTF-8
+        val utf8Bytes = input.toByteArray(Charsets.UTF_8)
+
+        // Преобразуем байты из UTF-8 в строку в кодировке Windows-1251
+        return String(utf8Bytes, Charset.forName("Windows-1251"))
+    }*/
+
     override fun lockFromDisconnected(connect: Boolean) {
         // текстрки для кнопок
         val drawablImageDischarge = ContextCompat.getDrawable(requireContext(), R.drawable.discharge)
@@ -716,10 +803,10 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
 
             //--------------------------------------------------------------------------------------
 
-            // убераем возмоэность читать и записывать
-            binding.imagedischarge.setOnClickListener {
-                showAlertDialog(getString(R.string.Usb_NoneConnect))
-            }
+            // далеем возможность завершить диагностику
+            binding.textRead.visibility = View.GONE
+            binding.imagedischarge.visibility = View.GONE
+            binding.buttonEndDiag.visibility = View.VISIBLE
 
             binding.buttonDriversDel.visibility = View.GONE
             binding.buttonAddAbanent.visibility = View.GONE
@@ -755,8 +842,11 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
     private fun validAll(): Boolean {
         val validDataSettingsDevice = ValidDataSettingsDevice()
         if (!validDataSettingsDevice.validPasswordP101(binding.inputPassword.text.toString()) &&
-            binding.inputPassword.text.toString().isNotEmpty()) {
+            binding.inputPassword.text.toString().isNotEmpty() && !binding.checkBoxHex.isChecked) {
             showAlertDialog(getString(R.string.notValidPasswordP101))
+            return false
+        } else if (binding.checkBoxHex.isChecked && !validDataSettingsDevice.isValidHex(binding.inputPassword.text.toString()) && binding.inputPassword.text.toString().length < 12) {
+            showAlertDialog(getString(R.string.notValidPasswordP101Hex))
             return false
         }
         if (!validDataSettingsDevice.validRangeP101(binding.inputRange.text.toString()) ||
@@ -907,7 +997,13 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
                 binding.inputRange.setText(ports[4].trim())
                 binding.inputTimeOut.setText(ports[5].trim())
 
-                binding.spinnerSpeed.setSelection(formatDataProtocol.getSpeedIndax(ports[0] + 2))
+                // установка флага о том что установлен hex пароль
+                binding.checkBoxHex.isChecked = data.values.substringAfter("p=").substringBefore(";").length > 7 // 7 парог после которого идет хекс пароль
+
+
+
+                // установка данных в спинер
+                binding.spinnerSpeed.setSelection(formatDataProtocol.getSpeedIndax(ports[0]) - 2)
                 binding.spinnerBitData.setSelection(formatDataProtocol.formatBitData(ports[1]))
                 binding.spinnerParity.setSelection(formatDataProtocol.formatPatity(ports[2]))
                 binding.spinnerStopBit.setSelection(formatDataProtocol.formatStopBit(ports[3]))
@@ -927,7 +1023,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
                 a=t (t, f) - отображать дополнительные параметры или нет, по умолчанию: f
                 t=10 - задержка (в секундах) для отображения значений,
                        по умолчанию: 10 секунд.
-        */
+            */
 
             // выводим информацииюю об пареметрах
 
@@ -936,7 +1032,7 @@ class P101Fragment() : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Lo
                     data.values.substringAfter("d=").substringBefore(";").trim()
                 )
             } else {
-                binding.inputNumDevice.setText(DEFFAULT_NUM_DEVICE)
+                binding.inputNumDevice.setText(data.numDevice)
             }
 
             if (data.values.contains("p=")) {

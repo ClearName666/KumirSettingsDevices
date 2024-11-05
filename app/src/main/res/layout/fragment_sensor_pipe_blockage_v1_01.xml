@@ -72,6 +72,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <Button
+                android:id="@+id/buttonKolibrovka"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/textColor"
+                android:text="@string/kolibrovka"
+                android:textColor="@color/background"
+                android:textSize="8sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonEditThrachold" />
+
+            <Button
+                android:id="@+id/buttonEditThrachold"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/textColor"
+                android:text="@string/editThrashold"
+                android:textColor="@color/background"
+                android:textSize="8sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/textThreshold"
                 android:layout_width="wrap_content"

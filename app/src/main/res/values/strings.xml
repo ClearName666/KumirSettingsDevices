@@ -20,6 +20,7 @@
     <string name="notValidData">Похоже, что полученные данные не корректны!</string>
     <string name="notAnonents">На этом устройстве нет записанных абонентов!</string>
     <string name="notValidPasswordP101">Пароль не должен содержать символы отличные от ASCII, должен состоять из 6 символов!</string>
+    <string name="notValidPasswordP101Hex">Пароль не должен содержать символы отличные от HEX, должен состоять из 12 символов!</string>
     <string name="notValidRangeP101">Интервал должен быть в диапазоне от 10 до 200</string>
     <string name="notIdDeviceP101">Номер прибора может быть только: 234, 236, 204, 230</string>
     <string name="notValidNameP101">Имя не может быть пустым и не должно содержать символов отличных от CP1251</string>
@@ -118,7 +119,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.84</string>
+    <string name="versionApp">Версия: 1.9.85</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -755,6 +756,10 @@
     <string name="rawvalue">RawValue</string>
     <string name="rawstate">RawState</string>
     <string name="state">State</string>
+    <string name="kolibrovka">Кaлибровка</string>
+    <string name="editThrashold">Назначить thrashold</string>
+    <string name="sucEditThrashold">Успешно назначен thrashold</string>
+    <string name="suckolibrovkaThrashold">Успешно откaлиброван thrashold</string>
 
 
     <!--............................................................................-->
