@@ -575,6 +575,7 @@ class OneWire(val usb: Usb, private val context: Context) {
 
     // фцнкция для колибровки
    private fun setPipeThracholdKolibrovka(context: MainActivity) {
+
         // отправляем команду на колибровку
         sendSleepDataReceive(context, COMMAND_KOLIBROVKA_SENSOR_PIPE_BLOCKAGE.reversedArray())
 
@@ -584,10 +585,14 @@ class OneWire(val usb: Usb, private val context: Context) {
     // функция для своеноравной установки Thrachold
     private fun setThracholdPipeBlockage(context: MainActivity, thrachold: Int) {
         // COMMAND_SET_THRACHOLD_SENSOR_PIPE_BLOCKAGE
+
+
+        Log.d("loadFileStm", "начало отправки команды")
         // команда + 2 байта данных и 2 байта инверсии
         sendSleepDataReceive(context, COMMAND_SET_THRACHOLD_SENSOR_PIPE_BLOCKAGE.reversedArray() +
                 convertToByteArray(byteArrayOf(thrachold.toByte(), (thrachold shr 8).toByte(), thrachold.toByte().inv(), (thrachold shr 8).toByte().inv())
         ))
+        Log.d("loadFileStm", "конец отправки команды")
 
         Thread.sleep(TIME_DATA)
     }

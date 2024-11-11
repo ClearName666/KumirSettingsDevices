@@ -82,6 +82,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.kumir.settingupdevices.adapters.auto.AutoFindDeviceFragment
 import com.kumir.settingupdevices.sensors.SensorPipeBlockageV1_01
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
@@ -117,7 +118,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         "KUMIR-M32 READY" +
         "KUMIR-M32LITE READY" +
         "KUMIR-RM81A READY" +
-        "KUMIR-VZLET_ASSV030 READY"
+        "KUMIR-VZLET_ASSV030 READY" +
+        "KUMIR-M32D READY"
 
     // текущий фрагмент
     var curentFragmentComProtocol: UsbCommandsProtocol? = null
@@ -531,6 +533,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     // ----------------клики в раскрывающимся меню-------------------
 
+    // автоматический поиск модемов м32 м32лайт м32д
+    fun onClickAutoFindDevice(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val autoFindDevice = AutoFindDeviceFragment(this)
+        createSettingFragment(autoFindDevice)
+    }
+
     // раскрывающаяся понель
     fun onClickEnforma1318(view: View) {
         if (binding.Enforma1318Settings.visibility == View.GONE) {
@@ -614,11 +624,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
     fun onClickM32Settings(view: View) {
+        onStartM32Settings(false)
+    }
+    fun onStartM32Settings(autoFlag: Boolean = false) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val m32 = M32Fragment()
+        val m32 = M32Fragment(autoFlag)
         createSettingFragment(m32)
     }
+
     fun onClickM32Diag(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -643,11 +657,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
     fun onClickM32DSettings(view: View) {
+        onStartM32DSettings()
+    }
+    fun onStartM32DSettings(autoFlag: Boolean = false) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val m32d = M32DFragment()
+        val m32d = M32DFragment(autoFlag)
         createSettingFragment(m32d)
     }
+
     fun onClickM32DDiag(view: View) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
@@ -663,9 +681,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         createSettingFragment(diag)
     }*/
     fun onClickM32Lite(view: View) {
+        onStartM32Lite(false)
+    }
+    fun onStartM32Lite(autoFlag: Boolean = false) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val m32Lite = M32LiteFragment()
+        val m32Lite = M32LiteFragment(autoFlag)
         createSettingFragment(m32Lite)
     }
 
@@ -1282,6 +1303,72 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                                 } else {
                                     showAlertDialog(getString(R.string.notDeviceTypeApp))
                                 }
+                            }
+                        }
+
+
+                        timeLeft = 0
+                        alertDialog.dismiss()
+                    }
+                    handler.postDelayed(this, 1000)
+                } else {
+                    alertDialog.dismiss() // Закрыть диалог после завершения отсчета
+                }
+            }
+        }
+
+        alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .setNegativeButton("Отмена") { dialog, which ->
+                handler.removeCallbacks(updateRunnable) // Остановить Runnable при отмене
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+        handler.postDelayed(updateRunnable, 1000)  // Начать обратный отсчёт
+    }
+
+    // функция для автоматического определения устройства
+    fun showTimerDialogAutoFindDevice() {
+
+        // очищение данных
+        curentData = ""
+
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_timer, null)
+        val timerTextView = dialogView.findViewById<TextView>(R.id.timer_text)
+
+        val handler = Handler(Looper.getMainLooper())
+        lateinit var alertDialog: AlertDialog  // Используем lateinit для поздней инициализации
+
+        val startTime = TIMEOUT_TOWAIT_RESTART_DEVICE  // начальное время в секундах
+        var timeLeft = startTime
+
+        val updateRunnable = object : Runnable {
+            override fun run() {
+
+                val timerText: String = getString(R.string.restartDevicePlease).dropLast(2) +
+                        if (timeLeft > 9) timeLeft.toString() else "0$timeLeft" // для того что бы если число
+                // от 1 до 9 то добавлялся 0 типа 03 04 07 и тп
+
+                timerTextView.text = timerText
+
+                if (timeLeft > 0) {
+                    timeLeft--
+
+                    if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
+
+                        // проверка на соответсвие девайса
+                        if (curentData.contains("KUMIR-M32 READY")) {
+                            onStartM32Settings(true)
+                        } else if (curentData.contains("KUMIR-M32LITE READY")) {
+                            onStartM32Lite(true)
+                        } else if (curentData.contains("KUMIR-M32D READY")) {
+                            onStartM32DSettings(true)
+                        } else {
+                            runOnUiThread {
+                                showAlertDialog(getString(R.string.notDeviceM32))
                             }
                         }
 

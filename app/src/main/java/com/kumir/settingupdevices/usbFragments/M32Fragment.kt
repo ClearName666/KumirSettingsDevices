@@ -20,7 +20,7 @@ import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
 
 
-class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
+class M32Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     override val usbCommandsProtocol = UsbCommandsProtocol()
 
@@ -196,6 +196,10 @@ class M32Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
+        }
+
+        if (autoFlag) {
+            readSettingStart()
         }
 
         return binding.root

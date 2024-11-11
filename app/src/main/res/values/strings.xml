@@ -39,6 +39,7 @@
     <string name="notReadPortDevice">Не удалось получить порты устройства</string>
     <string name="notDeviceType">Вы перепутали устройство у вас - </string>
     <string name="notDeviceTypeApp">Поступил неизвестный идентификатор! Выключите ваше устройство и попробуйте еще раз! Убедитесь что он поддерживаемый!</string>
+    <string name="notDeviceM32">Ваше устройство не похоже на серию m32 проверьте его!</string>
     <string name="errorSendDataWrite"> - ошибка записи! Остальные данные не были сохранены!</string>
     <string name="errorSpeed">Неполадка переключения скоростей!</string>
     <string name="errorSendDataRead"> - ошибка чтения</string>
@@ -119,7 +120,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.85</string>
+    <string name="versionApp">Версия: 1.9.86</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -309,6 +310,7 @@
     <string name="LevelSignalTitle">Уровень сигнала: </string>
     <string name="errorsSignalTitle">Ошибки сигнала: </string>
     <string name="errorNotFindSpeedRim">Не удалось найти скорость, проверьте верно ли вы указали адрес и протокол!</string>
+    <string name="errorNotValue">Введенное значение не верно!</string>
     <string name="ipAdressTitle">IP-адрес</string>
 
 
@@ -760,6 +762,9 @@
     <string name="editThrashold">Назначить thrashold</string>
     <string name="sucEditThrashold">Успешно назначен thrashold</string>
     <string name="suckolibrovkaThrashold">Успешно откaлиброван thrashold</string>
+    <string name="InfoEditthrachold">Введите желаймый Thrachold</string>
+    <string name="autoFindDevice">Автоопределение</string>
+    <string name="determine">Определить</string>
 
 
     <!--............................................................................-->

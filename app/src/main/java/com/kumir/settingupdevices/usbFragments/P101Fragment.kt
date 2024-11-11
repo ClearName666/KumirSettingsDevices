@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -148,6 +149,15 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     }
 
 
+    override fun onDestroyView() {
+        val context: Context = requireContext()
+        if (context is MainActivity) {
+            context.usb.onSerialSpeed(9)
+            context.usb.flagCode1251 = false
+        }
+
+        super.onDestroyView()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -161,6 +171,8 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.printDeviceTypeName(getString(R.string.controller_p_101))
+
+            context.usb.flagCode1251 = true
         }
 
 
@@ -773,18 +785,17 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
         // переподключения перед отправкой команды
         (requireContext() as MainActivity).usb.reconnectCDC()
         usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false,
-            flagRead=true)
+            flagRead=true, flagCode1251=true)
 
     }
 
 
-    /*private fun utf8ToWin1251(input: String): String {
+    private fun utf8ToWin1251(input: String): ByteArray {
         // Преобразуем строку в байты UTF-8
-        val utf8Bytes = input.toByteArray(Charsets.UTF_8)
+        val utf8Bytes = input.toByteArray(Charset.forName("Windows-1251"))
 
-        // Преобразуем байты из UTF-8 в строку в кодировке Windows-1251
-        return String(utf8Bytes, Charset.forName("Windows-1251"))
-    }*/
+        return utf8Bytes
+    }
 
     override fun lockFromDisconnected(connect: Boolean) {
         // текстрки для кнопок

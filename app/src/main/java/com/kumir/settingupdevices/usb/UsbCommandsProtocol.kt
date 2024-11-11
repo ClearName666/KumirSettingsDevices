@@ -230,7 +230,7 @@ class UsbCommandsProtocol {
 
     fun writeSettingDevice(data: Map<String, String>, context: Context, usbFragment: UsbFragment,
                             saveFlag: Boolean = true, longSleepX: Int = 1, flagExit: Boolean = false,
-                           flagRead: Boolean = false) {
+                           flagRead: Boolean = false, flagCode1251: Boolean = false) {
 
         Thread {
 
@@ -267,7 +267,7 @@ class UsbCommandsProtocol {
                         val dataSend: String = key + value
 
                         // если неудачно отправили то выход
-                        if (!context.usb.writeDevice(dataSend, false)) {
+                        if (!context.usb.writeDevice(dataSend, false, flagCode1251=flagCode1251)) {
                             flagError = true
                             break@out
                         }
@@ -348,11 +348,11 @@ class UsbCommandsProtocol {
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)*/
 
                     // сохранение данных AT$SAVE
-                    context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false)
+                    context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false, flagCode1251=flagCode1251)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
 
                     if (flagExit) {
-                        context.usb.writeDevice(context.getString(R.string.commandExitSettingsMode), false)
+                        context.usb.writeDevice(context.getString(R.string.commandExitSettingsMode), false, flagCode1251=flagCode1251)
                         Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
                     }
 

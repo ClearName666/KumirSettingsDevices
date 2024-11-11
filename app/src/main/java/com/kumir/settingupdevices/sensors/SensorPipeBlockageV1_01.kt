@@ -55,7 +55,26 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
 
         // кнопка для назначения колибровачного значения
         binding.buttonEditThrachold.setOnClickListener {
-            flagEditThracholdForKolibrovka = true
+            binding.menuEditThrashold.visibility = View.VISIBLE
+            binding.fonMenuEditThrashold.visibility = View.VISIBLE
+        }
+
+        binding.buttonSaveThrashold.setOnClickListener {
+            try {
+                valueThracholdForKolibrovka = binding.inputThrashold.text.toString().toInt()
+
+                flagEditThracholdForKolibrovka = true
+                binding.menuEditThrashold.visibility = View.GONE
+                binding.fonMenuEditThrashold.visibility = View.GONE
+                binding.inputThrashold.setText("")
+            } catch (e: Exception) {
+                showAlertDialog(getString(R.string.errorNotValue))
+            }
+        }
+
+        binding.fonMenuEditThrashold.setOnClickListener {
+            binding.menuEditThrashold.visibility = View.GONE
+            binding.fonMenuEditThrashold.visibility = View.GONE
         }
 
         // кнопка для нечала диагностики
@@ -106,12 +125,13 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
           } SCPDATA;
         */
 
-        // активация вохможности калибровки
-        binding.buttonKolibrovka.visibility = View.VISIBLE
-        binding.buttonEditThrachold.visibility = View.VISIBLE
-
         // только если диагностика продолжается
         if (flagWorkDiag) {
+
+            // активация вохможности калибровки
+            binding.buttonKolibrovka.visibility = View.VISIBLE
+            binding.buttonEditThrachold.visibility = View.VISIBLE
+
             if (byteData.size == 8) {
                 // распарсиваем данне
                 val threshold: Int =
@@ -255,6 +275,10 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
         // выводим одиночный вывод данных потому что он главный
         binding.oneSensor.visibility = View.VISIBLE
         binding.moreSensors.visibility = View.GONE
+
+        // закрываем вохможность настроить трешхолд
+        binding.buttonKolibrovka.visibility = View.GONE
+        binding.buttonEditThrachold.visibility = View.GONE
     }
 
 

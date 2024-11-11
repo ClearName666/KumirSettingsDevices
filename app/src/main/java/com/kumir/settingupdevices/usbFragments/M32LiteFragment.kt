@@ -20,7 +20,7 @@ import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
 
 
-class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
+class M32LiteFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private lateinit var binding: FragmentM32LiteBinding
 
@@ -126,6 +126,10 @@ class M32LiteFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
+        }
+
+        if (autoFlag) {
+            readSettingStart()
         }
 
         return binding.root

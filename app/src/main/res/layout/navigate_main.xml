@@ -81,6 +81,43 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/autoFindDeevice"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:onClick="onClickAutoFindDevice"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/lineDevices">
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo20"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+
+                            <TextView
+                                android:id="@+id/textAutoFindDevice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="17dp"
+                                android:text="@string/autoFindDevice"
+                                android:textColor="@color/textColor"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo20"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo20"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo20" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/Enforma1318"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -90,7 +127,7 @@
                             android:onClick="onClickEnforma1318"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/lineDevices">
+                            app:layout_constraintTop_toBottomOf="@+id/autoFindDeevice">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo"

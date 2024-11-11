@@ -15,6 +15,7 @@ import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
 import com.kumir.settingupdevices.R
 import com.kumir.testappusb.settings.ConstUsbSettings
 import java.io.IOException
+import java.nio.charset.Charset
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -57,6 +58,8 @@ class Usb(private val context: Context) {
     private var flagActivThreadChaeckConnection: Boolean = false
 
 
+
+    var flagCode1251 = false
     var flagAtCommandYesNo: Boolean = false
 
     private var flagAtCommand: Boolean = true
@@ -344,7 +347,7 @@ class Usb(private val context: Context) {
 
     // отправка данных в сериал порт
     @OptIn(ExperimentalStdlibApi::class)
-    fun writeDevice(message: String, flagPrint: Boolean = true, byteArray: ByteArray? = null, flagCheckSum: Boolean = true): Boolean {
+    fun writeDevice(message: String, flagPrint: Boolean = true, byteArray: ByteArray? = null, flagCheckSum: Boolean = true, flagCode1251: Boolean = false): Boolean {
         return if (usbSerialDevice != null) {
             executorUsb.execute {
                 try {
@@ -354,7 +357,10 @@ class Usb(private val context: Context) {
                             if (flagCheckSum) calculateChecksum(byteArray)
                             else byteArray
                         } else {
-                            (message + lineFeed).toByteArray()
+                            if (!flagCode1251)
+                                (message + lineFeed).toByteArray()
+                            else
+                                (message + lineFeed).toByteArray(Charset.forName("Windows-1251"))
                         }
 
                     Log.d("loadFileStm", "write: ${bytesToSend.toHexString()} size = ${bytesToSend.size}")
@@ -473,7 +479,11 @@ class Usb(private val context: Context) {
                         if (it.open()) {
                             val readCallback = UsbReadCallback { bytes ->
                                 if (!flagIgnorRead) {
-                                    printUIThread(String(bytes, Charsets.UTF_8), bytes)
+                                    printUIThread(String(bytes,
+                                        if (!flagCode1251)
+                                            Charsets.UTF_8
+                                        else
+                                            Charset.forName("Windows-1251")), bytes)
                                 } else {
                                     flagSandAtOk = String(bytes, Charsets.UTF_8).contains("OK")
                                 }

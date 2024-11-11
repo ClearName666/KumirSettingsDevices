@@ -25,7 +25,7 @@ import com.kumir.settingupdevices.usb.UsbFragment
 import com.google.android.material.tabs.TabLayout
 
 
-class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
+class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private lateinit var binding: FragmentM32DBinding
     override val usbCommandsProtocol = UsbCommandsProtocol()
@@ -186,6 +186,10 @@ class M32DFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         }
 
         createAdapters()
+
+        if (autoFlag) {
+            readSettingStart()
+        }
 
         return binding.root
     }
