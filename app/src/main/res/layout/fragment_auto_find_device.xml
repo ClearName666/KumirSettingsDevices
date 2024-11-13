@@ -7,6 +7,8 @@
         android:layout_height="match_parent"
         tools:context=".diag.DiagPM81Fragment">
 
+
+
     <TextView
         android:id="@+id/textInfoAutoFindDevice"
         android:layout_width="wrap_content"
@@ -15,8 +17,8 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="100dp"
         android:gravity="center"
-        android:text="Автоопределение работает на модемах m32, m32Lite, m32d"
-        android:textColor="@color/lineColorMain"
+        android:text="@string/autoWorkFor"
+        android:textColor="@color/warning"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

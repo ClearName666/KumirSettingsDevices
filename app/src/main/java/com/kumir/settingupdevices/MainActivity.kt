@@ -82,7 +82,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import com.kumir.settingupdevices.adapters.auto.AutoFindDeviceFragment
+import com.kumir.settingupdevices.auto.AutoFindDeviceFragment
 import com.kumir.settingupdevices.sensors.SensorPipeBlockageV1_01
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
@@ -706,11 +706,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
     fun onClickPM81Settings(view: View) {
+        onStartPM81Settings(false)
+    }
+    fun onStartPM81Settings(autoFlag: Boolean = false) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val pm81 = PM81Fragment()
+        val pm81 = PM81Fragment(autoFlag)
         createSettingFragment(pm81)
     }
+
     fun onClickPM81Diag(view: View) {
         if (checkLocationPermissions()) {
             binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
@@ -740,11 +744,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
     fun onClickACCB030CoreSettings(view: View) {
+        onStartACCB030CoreSettings(false)
+    }
+    fun onStartACCB030CoreSettings(autoFlag: Boolean = false) {
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
-        val accbo30Core = ACCB030CoreFragment()
+        val accbo30Core = ACCB030CoreFragment(autoFlag)
         createSettingFragment(accbo30Core)
     }
+
     fun onClickACCB030CoreDiag(view: View) {
         showAlertDialog(getString(R.string.errorCodeNone))
     }
@@ -1366,7 +1374,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                             onStartM32Lite(true)
                         } else if (curentData.contains("KUMIR-M32D READY")) {
                             onStartM32DSettings(true)
-                        } else {
+                        } else if (curentData.contains("KUMIR-RM81A READY")) {
+                            onStartPM81Settings(true)
+                        } else if (curentData.contains("KUMIR-VZLET_ASSV030 READY")) {
+                            onStartACCB030CoreSettings(true)
+                        }  else {
                             runOnUiThread {
                                 showAlertDialog(getString(R.string.notDeviceM32))
                             }

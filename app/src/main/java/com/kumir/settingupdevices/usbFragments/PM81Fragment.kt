@@ -20,7 +20,7 @@ import com.kumir.settingupdevices.modems.SettingsPm
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
 
-class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
+class PM81Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragment<Pm> {
 
     private lateinit var binding: FragmentPM81Binding
 
@@ -142,6 +142,10 @@ class PM81Fragment : Fragment(), UsbFragment, PrisetFragment<Pm> {
         }
         binding.imageDownLoad.setOnClickListener {
             showAlertDialog(getString(R.string.nonWriteSetting))
+        }
+
+        if (autoFlag) {
+            readSettingStart()
         }
 
         return binding.root

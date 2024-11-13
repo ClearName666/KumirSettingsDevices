@@ -47,7 +47,8 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
         if (context is MainActivity) {
             oneWire = OneWire(context.usb, context)
 
-
+            // вывод названия типа устройства
+            context.printDeviceTypeName(getString(R.string.sensorDT112))
         }
 
 
@@ -69,8 +70,12 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
         binding.checkBoxOnline.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 binding.switchTemp.isChecked = true
-            else
+            else{
                 flagСancellation = true
+                binding.progressBarActivableDiag.visibility = View.GONE
+                binding.textScanerButton.text = getString(R.string.startScaner)
+            }
+
         }
         binding.switchTemp.setOnCheckedChangeListener { _, isChacked ->
             if (binding.checkBoxOnline.isChecked && !isChacked)
@@ -187,13 +192,25 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
 
     private fun error(msg: String = "") {
         showAlertDialog(getString(R.string.errorCodeNone) + msg)
+        binding.progressBarActivableDiag.visibility = View.GONE
     }
 
 
     private fun getSensorsIDAndPrint() {
 
         // защита от двойного нажатия
-        if (flagWorkScan) return
+        if (flagWorkScan) {
+            flagСancellation = true
+            binding.progressBarActivableDiag.visibility = View.GONE
+            binding.checkBoxOnline.isChecked = false
+            binding.textScanerButton.text = getString(R.string.startScaner)
+            return
+        }
+
+        if (binding.checkBoxOnline.isChecked) {
+            binding.progressBarActivableDiag.visibility = View.VISIBLE
+        }
+
         flagWorkScan = true
         flagСancellation = false
         val context: Context = requireContext()
@@ -257,6 +274,10 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
                     } else {
                         // закрытие меню загрузки
                         closeMenuLoadUIThread()
+
+                        // если циклическое опрашивание то выставляем название кнопки на завершение
+                        if (binding.checkBoxOnline.isChecked)
+                            binding.textScanerButton.text = getString(R.string.endDiagTitle)
 
                         // бесконечно пока флаг включен опрашиваем датчики
                         while (binding.checkBoxOnline.isChecked) {
@@ -324,6 +345,10 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
             binding.layoutButtonScanerStart.setOnClickListener {
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
+
+            // завершаем все анимации
+            binding.textScanerButton.text = getString(R.string.startScaner)
+            binding.progressBarActivableDiag.visibility = View.GONE
         } else {
             // кнопка для начала диагностики
             binding.layoutButtonScanerStart.setOnClickListener {

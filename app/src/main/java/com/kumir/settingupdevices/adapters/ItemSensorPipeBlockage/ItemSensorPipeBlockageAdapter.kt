@@ -60,6 +60,7 @@ class ItemSensorPipeBlockageAdapter (val context: Context,
         holder.rawValue.text = rawValue
         holder.rawState.text = rawState
         holder.state.text = state
+        holder.address.text = currentItem.address
     }
 
     class ItemSensorPipeBlockageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -68,6 +69,7 @@ class ItemSensorPipeBlockageAdapter (val context: Context,
         val rawValue: TextView = itemView.findViewById(R.id.textRawValueItem)
         val rawState: TextView = itemView.findViewById(R.id.textRawStateItem)
         val state: TextView = itemView.findViewById(R.id.textStateItem)
+        val address: TextView = itemView.findViewById(R.id.textAddress)
     }
 
 }

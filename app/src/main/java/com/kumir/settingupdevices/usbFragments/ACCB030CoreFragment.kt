@@ -20,7 +20,7 @@ import com.kumir.settingupdevices.model.recyclerModel.Priset
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
 
-class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
+class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
     private lateinit var binding: FragmentACCB030CoreBinding
 
@@ -177,6 +177,11 @@ class ACCB030CoreFragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         if (context is MainActivity && !context.usb.checkConnectToDevice()) {
             lockFromDisconnected(false)
         }
+
+        if (autoFlag) {
+            readSettingStart()
+        }
+
 
         return binding.root
     }

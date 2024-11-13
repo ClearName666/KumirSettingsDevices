@@ -120,7 +120,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.86</string>
+    <string name="versionApp">Версия: 1.9.87</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -310,6 +310,7 @@
     <string name="LevelSignalTitle">Уровень сигнала: </string>
     <string name="errorsSignalTitle">Ошибки сигнала: </string>
     <string name="errorNotFindSpeedRim">Не удалось найти скорость, проверьте верно ли вы указали адрес и протокол!</string>
+    <string name="errorTypeSensor">Аддресс не сответствует данному устройству! Проверьте точно ли у вас нужный датчик!</string>
     <string name="errorNotValue">Введенное значение не верно!</string>
     <string name="ipAdressTitle">IP-адрес</string>
 
@@ -728,7 +729,7 @@
     <string name="delete">Удалить</string>
     <string name="Sensors">Датчики</string>
     <string name="sensorDT112">ДТ112</string>
-    <string name="sensorPipeBlockage">Сенсор засора \nтрубы v1.01</string>
+    <string name="sensorPipeBlockage"> Датчик контроля\n стока ДКС21</string>
     <string name="search">Поиск</string>
     <string name="automaticUpdateTemp">Для автоматического обновления значений датчиков выставите этот флаг</string>
     <string name="startScaner">Начать сканирование</string>
@@ -754,17 +755,18 @@
     <string name="info">Информация</string>
     <string name="versionBootloader">версия BootLoader:</string>
     <string name="loadProgramVersion">Зашиваемая прошивка:</string>
-    <string name="threshold">Threshold</string>
-    <string name="rawvalue">RawValue</string>
-    <string name="rawstate">RawState</string>
-    <string name="state">State</string>
+    <string name="threshold">Порог</string>
+    <string name="rawvalue">Текущее значение</string>
+    <string name="rawstate">Текущее состояние</string>
+    <string name="state">Долгое состояние</string>
     <string name="kolibrovka">Кaлибровка</string>
-    <string name="editThrashold">Назначить thrashold</string>
-    <string name="sucEditThrashold">Успешно назначен thrashold</string>
-    <string name="suckolibrovkaThrashold">Успешно откaлиброван thrashold</string>
-    <string name="InfoEditthrachold">Введите желаймый Thrachold</string>
+    <string name="editThrashold">Назначить порог</string>
+    <string name="sucEditThrashold">Успешно назначен порог</string>
+    <string name="suckolibrovkaThrashold">Успешно откaлиброван порог</string>
+    <string name="InfoEditthrachold">Введите желаймый порог</string>
     <string name="autoFindDevice">Автоопределение</string>
     <string name="determine">Определить</string>
+    <string name="autoWorkFor">Автоопределение работает на модемах m32, m32Lite, m32d</string>
 
 
     <!--............................................................................-->

@@ -184,6 +184,17 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
 
                     }
 
+                    // выводим адресс
+                    try {
+                        binding.textAddressOne.text = oneWire.listOneWirePipeSensorsAddress[0].address
+
+                        if (!oneWire.listOneWirePipeSensorsAddress[0].address.startsWith("85")) {
+                            showAlertDialog(getString(R.string.errorTypeSensor))
+                            endDiag()
+                        }
+                    } catch (_: Exception) {}
+
+
                     // для множественного вывода
                 } else {
                     // активация многочисленного лайаута
@@ -279,6 +290,8 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
         // закрываем вохможность настроить трешхолд
         binding.buttonKolibrovka.visibility = View.GONE
         binding.buttonEditThrachold.visibility = View.GONE
+
+        binding.textAddressOne.text = ""
     }
 
 

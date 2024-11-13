@@ -1,4 +1,4 @@
-package com.kumir.settingupdevices.adapters.auto
+package com.kumir.settingupdevices.auto
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,9 +20,18 @@ class AutoFindDeviceFragment(val mainContext: MainActivity) : Fragment() {
     ): View {
         binding = FragmentAutoFindDeviceBinding.inflate(inflater)
 
+        // вывод названия типа устройства
+        mainContext.printDeviceTypeName(getString(R.string.autoFindDevice))
+
+
         binding.buttonStartAutoFindDevice.setOnClickListener {
-            mainContext.showTimerDialogAutoFindDevice()
+            if (mainContext.usb.checkConnectToDevice())
+                mainContext.showTimerDialogAutoFindDevice()
+            else
+                mainContext.showAlertDialog(getString(R.string.Usb_NoneConnect))
         }
+
+
 
         return binding.root
     }

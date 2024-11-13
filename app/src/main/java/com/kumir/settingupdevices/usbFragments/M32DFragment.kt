@@ -194,6 +194,17 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         return binding.root
     }
 
+    override fun onDestroyView() {
+        val context: Context = requireContext()
+
+        // выключение ат команд
+        if (context is MainActivity) {
+            context.usb.flagAtCommandYesNo = false
+        }
+
+        super.onDestroyView()
+    }
+
 
     // эксперементальный метод для устранения бага с возможностью изменить статические значения
     private fun controlSpinnerForGoodValue() {
