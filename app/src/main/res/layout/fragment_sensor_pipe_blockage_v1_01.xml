@@ -19,10 +19,35 @@
         app:layout_constraintStart_toEndOf="@+id/buttonStartDiag"
         app:layout_constraintTop_toTopOf="@+id/buttonStartDiag" />
 
+    <Button
+        android:id="@+id/buttonEditThracholdMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/textColor"
+        android:text="@string/editThrashold"
+        android:textColor="@color/background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonStartDiag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moreSensors" />
+
+    <Button
+        android:id="@+id/buttonKolibrovkaMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/textColor"
+        android:text="@string/kolibrovka"
+        android:textColor="@color/background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonStartDiag"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moreSensors" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/moreSensors"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="50dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/buttonStartDiag"
         app:layout_constraintEnd_toEndOf="parent"

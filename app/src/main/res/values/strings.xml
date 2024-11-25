@@ -120,7 +120,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.87</string>
+    <string name="versionApp">Версия: 1.9.88</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -767,7 +767,18 @@
     <string name="autoFindDevice">Автоопределение</string>
     <string name="determine">Определить</string>
     <string name="autoWorkFor">Автоопределение работает на модемах m32, m32Lite, m32d</string>
+    <string name="autoWorkForOneWire">Автоопределение работает на сенсорах DT112, ДКС2</string>
+    <string name="errorNoDevice">Устройства не обнуружены!</string>
+    <string name="errorNoTypeDevice">Устройство не известно!</string>
+    <string name="checkUpdate">Проверка обновлений</string>
 
+
+
+
+    <string name="errorUpdateStmServer">Ошибка связи с сервером!</string>
+    <string name="errorUpdateStmFile">Ошибка с файломи!</string>
+    <string name="errorUpdateStmDataValid">Ошибка формата данных!</string>
+    <string name="errorUpdateStmDataServerError">Сервер выдал ошибку!</string>
 
     <!--............................................................................-->
 

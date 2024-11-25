@@ -1,5 +1,6 @@
 package com.kumir.settingupdevices.usbFragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -7,22 +8,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import com.google.common.base.Charsets
 import com.kumir.settingupdevices.LoadInterface
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.databinding.FragmentFirmwareSTMBinding
-import com.kumir.settingupdevices.usb.Stm
 import com.kumir.settingupdevices.usb.StmLoader
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.io.use
 
 
 class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), UsbFragment,
@@ -32,6 +35,21 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
 
     private lateinit var stmLoader: StmLoader
     private lateinit var binding: FragmentFirmwareSTMBinding
+
+
+    val listDeviceModel: List<String> = listOf(
+        "m32_c",
+        "m32_lite",
+        "m32_d"
+    )
+
+    companion object {
+        const val URL_SERVER: String = "http://192.168.0.13"
+
+    }
+
+    // коды ошибок
+    enum class ErrorUpdate {SERVER, FILES, VALID, SERVER_ERROR}
 
     var flagCancellation: Boolean = false
 
@@ -70,10 +88,286 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
         stmLoader = StmLoader(usbCommandsProtocol, requireContext() as MainActivity)
 
 
+        // проверка обновлений на сервере кумир
+        binding.buttonCheckUpdate.setOnClickListener {
+            updateProgramsStm()
+        }
+
         createAdapters()
 
         return binding.root
     }
+
+    //------------------------------------НОВЫЙ ФУНКЦИОНАЛ------------------------------------------
+
+    // функция для запуска потока обновления
+    @SuppressLint("CommitPrefEdits")
+    private fun updateProgramsStm() {
+        binding.loadingMenuUpdate.visibility = View.VISIBLE
+        Thread {
+            // получаем список со всем файломи которые у нас есть
+            val listFilesInInternalStorage = listFilesInInternalStorage(contextMain)
+            val listUpdateFile: MutableSet<String> = mutableSetOf()
+            val listDelFiles: MutableList<String> = mutableListOf()
+            val mapVersionFile: MutableMap<String, String> = mutableMapOf()
+
+            // проверка обновления для прошивки m32
+            for (device in listDeviceModel) {
+                val version = sendPostRequest("get_version", device)
+                if (version != null) {
+                    try {
+                        // прверка все ли хорошо
+                        if (version[0] == 0x00.toByte()) {
+
+                            var flagPresence = true
+                            // поулчаем из байт данных версию в строке за сиключением 1 байта ошибки
+                            val versionNew = version.drop(1).toByteArray().toString(Charsets.UTF_8)
+
+                            for (fileName in listFilesInInternalStorage) {
+                                if (fileName.contains(device.replace("_", ""))) {
+                                    // проверка на соответствие версии
+                                    if (fileName.contains(device.replace("_", "")) &&
+                                        versionNew == fileName.substringAfter("kumir_").substringBefore(".bin")) {
+                                        listDelFiles.add(fileName)
+                                        flagPresence = false
+                                    }
+                                }
+                            }
+
+                            // файл не найден (обновляем)
+                            if (flagPresence) {
+                                listUpdateFile.add(device)
+                                mapVersionFile[device] = versionNew
+                            }
+                        } else {
+                            contextMain.runOnUiThread {
+                                binding.loadingMenuUpdate.visibility = View.GONE
+                                errorPost(ErrorUpdate.VALID)
+                            }
+                            continue
+                        }
+                    } catch (_: Exception) {
+                        contextMain.runOnUiThread {
+                            binding.loadingMenuUpdate.visibility = View.GONE
+                            errorPost(ErrorUpdate.SERVER)
+                        }
+                        continue
+                    }
+                } else {
+                    contextMain.runOnUiThread {
+                        binding.loadingMenuUpdate.visibility = View.GONE
+                        errorPost(ErrorUpdate.SERVER)
+                    }
+                    continue
+                }
+            }
+
+            // обновление всего что нужно
+            for (device in listUpdateFile) {
+                val programBootFileByte = sendPostRequest("get_boot", device)
+                val programFlashFileByte = sendPostRequest("get_flash", device)
+
+                // прверяем пришли ли даннные
+                if (programBootFileByte != null && programFlashFileByte != null){
+                    try {
+                        // проверяем нету ли ошибок при отпрвки
+                        if (programBootFileByte[0] == 0x00.toByte() && programFlashFileByte[0] == 0x00.toByte()) {
+
+                            val fileVersionName = mapVersionFile[device]
+                            if (fileVersionName != null) {
+
+                                // сохраняем данные о адресе
+                                try {
+                                    val sharedPreferences = contextMain.getSharedPreferences("addressPrefs", Context.MODE_PRIVATE)
+                                    val editor = sharedPreferences.edit()
+
+                                    val addressBoot = bytesToIntLittleEndian(programBootFileByte, 1, 4)
+                                    val addressFlash = bytesToIntLittleEndian(programFlashFileByte, 1, 4)
+
+                                    editor.putInt("${device}_boot", addressBoot) // Сохраняем значение boot
+                                    editor.putInt(device, addressFlash) // Сохраняем значение flash
+                                } catch (_: Exception) {
+                                    Log.e("errorMemory", "По какой то причине данне об адесе не смогли получиться из за чего было выбрано значение по умолчанию")
+                                }
+
+                                // сгенерированное название про версии для флеш и для бут
+                                val fileNameFlash = "kumir_${device.replace("_", "")}_$fileVersionName.bin"
+                                val fileNameBoot = "kumir_${device.replace("_", "")}_${fileVersionName}_boot.bin"
+
+                                // записываем новые прошивки во внутренную память
+                                // только если они не пустые
+                                var flagSuc = false
+                                if (programFlashFileByte.size > 15) {
+                                    flagSuc = writeFileToInternalStorage(
+                                        contextMain,
+                                        fileNameFlash,
+                                        programFlashFileByte.drop(6).toByteArray()
+                                    )
+
+                                }
+                                if (programBootFileByte.size > 15) {
+                                    flagSuc = writeFileToInternalStorage(
+                                        contextMain,
+                                        fileNameBoot,
+                                        programBootFileByte.drop(6).toByteArray()
+                                    )
+                                }
+
+                                // удаляем все старые файлы
+                                if (flagSuc)
+                                    for (fileDel in listDelFiles)
+                                        deleteFileFromInternalStorage(contextMain, fileDel)
+
+                            } else {
+                                contextMain.runOnUiThread {
+                                    binding.loadingMenuUpdate.visibility = View.GONE
+                                    errorPost(ErrorUpdate.SERVER)
+                                }
+                                continue
+                            }
+
+                        } else {
+                            contextMain.runOnUiThread {
+                                binding.loadingMenuUpdate.visibility = View.GONE
+                                errorPost(ErrorUpdate.SERVER_ERROR)
+                            }
+                            continue
+                        }
+
+                    } catch (_: Exception) {
+                        contextMain.runOnUiThread {
+                            binding.loadingMenuUpdate.visibility = View.GONE
+                            errorPost(ErrorUpdate.SERVER)
+                        }
+                        continue
+                    }
+                }
+            }
+            contextMain.runOnUiThread {
+                binding.loadingMenuUpdate.visibility = View.GONE
+            }
+        }.start()
+    }
+
+    // функция для преборазования адресса в инт
+    fun bytesToIntLittleEndian(bytes: ByteArray, startIndex: Int, endIndex: Int): Int {
+        var result = 0
+        var shift = 0
+
+        for (i in startIndex..endIndex) {
+            result = result or (bytes[i].toInt() and 0xFF shl shift)
+            shift += 8
+        }
+        return result
+    }
+
+    // функция для обработки ошибок при обнавлении
+    private fun errorPost(codeError: ErrorUpdate) {
+        when (codeError) {
+            ErrorUpdate.SERVER -> showAlertDialog(getString(R.string.errorUpdateStmServer))
+            ErrorUpdate.FILES -> showAlertDialog(getString(R.string.errorUpdateStmFile))
+            ErrorUpdate.VALID -> showAlertDialog(getString(R.string.errorUpdateStmDataValid))
+            ErrorUpdate.SERVER_ERROR -> showAlertDialog(getString(R.string.errorUpdateStmDataServerError))
+        }
+    }
+
+    // чтение из файла
+    private fun readFileFromInternalStorage(context: Context, fileName: String): File {
+        val file = File(context.filesDir, fileName)
+        return file
+    }
+
+    // получение названия файла для прошивки
+    private fun parseStringFromBytes(programFileByte: ByteArray): String? {
+        if (programFileByte.size < 7) {
+            return null // Недостаточно данных в массиве
+        }
+
+        val length = programFileByte[5].toInt() and 0xFF // Беззнаковое преобразование
+        val startIndex = 6
+
+        if (programFileByte.size < startIndex + length) {
+            return null // Недостаточно байтов для строки
+        }
+
+        val byteArrayForString = programFileByte.copyOfRange(startIndex, startIndex + length)
+        return byteArrayForString.toString(Charsets.UTF_8) // Преобразование в строку
+    }
+
+    // функция для получения списка файлов с внутреннего хранилищя (прошивки)
+    private fun listFilesInInternalStorage(context: Context): List<String> {
+        val directory = context.filesDir // Директория внутреннего хранилища
+        val files = directory.listFiles() // Получаем список файлов в директории
+
+        return files?.map { it.name } ?: emptyList() // Возвращаем список названий файлов
+    }
+
+
+    // функция для записи файлы
+    private fun writeFileToInternalStorage(context: Context, fileName: String, content: ByteArray): Boolean {
+        return try {
+            val file = File(context.filesDir, fileName)
+            file.writeBytes(content) // Записываем данные в файл
+            true // Успешная запись
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false // Ошибка записи
+        }
+    }
+
+    // функция для удаления файла
+    private fun deleteFileFromInternalStorage(context: Context, fileName: String?): Boolean {
+        return try {
+            if (fileName == null) false
+
+            val file = File(context.filesDir, fileName!!)
+            if (file.exists()) {
+                file.delete() // Удаляем файл
+            } else {
+                false // Файл не найден
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false // Ошибка удаления
+        }
+    }
+
+    // функция для запроса
+    private fun sendPostRequest(operation: String, devName: String): ByteArray? {
+        val url = URL(URL_SERVER)
+        var connection: HttpURLConnection? = null
+        return try {
+            // Открываем соединение
+            connection = url.openConnection() as HttpURLConnection
+
+            connection.apply {
+                requestMethod = "POST"
+                doOutput = true
+                doInput = true
+                setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+                setRequestProperty("Accept", "*/*")
+            }
+
+            // Формируем тело запроса
+            val postData = "operation=$operation&dev_name=$devName"
+            connection.outputStream.use { output ->
+                output.write(postData.toByteArray(Charsets.UTF_8))
+                output.flush()
+            }
+
+            // Читаем ответ
+            val responseStream = connection.inputStream
+            responseStream.readBytes()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        } finally {
+            connection?.disconnect()
+        }
+    }
+
+
+    //----------------------------------------------------------------------------------------------
 
 
 
@@ -142,30 +436,16 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
 
 
                 // в зависемости от остоятельств запускаем в том или ином режиме
-                if (binding.spinnerDevice.selectedItemPosition == 0) {
-                    if (!stmLoader.loadFile(
-                            bootloaderFile, programFile,
-                            0x08000000, 0x08080000,
-                            (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
-                            this,
-                            binding.spinnerDevice.selectedItemPosition == 1,
-                            this
-                        )
-                    ) {
-                        Log.d("loadFileStm", "Не успешно")
-                    }
-                } else {
-                    if (!stmLoader.loadFile(
-                            bootloaderFile, programFile,
-                            0x08000000, 0x08008000,
-                            (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
-                            this,
-                            binding.spinnerDevice.selectedItemPosition == 1,
-                            this
-                        )
-                    ) {
-                        Log.d("loadFileStm", "Не успешно")
-                    }
+                if (!stmLoader.loadFile(
+                        bootloaderFile, programFile,
+                        getAddressProgram(true), getAddressProgram(false),
+                        (bootloaderFile.length().toInt() / 1024), (programFile.length().toInt() / 1024),
+                        this,
+                        binding.spinnerDevice.selectedItemPosition == 1,
+                        this
+                    )
+                ) {
+                    Log.d("loadFileStm", "Не успешно")
                 }
 
             } catch (e: Exception) {
@@ -181,7 +461,126 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
     }
 
 
+    private fun getCurrentDevice(): String? {
+        val positionDevice =  binding.spinnerDevice.selectedItemPosition
+
+        return when (positionDevice) {
+            0 -> "m32c"
+            1 -> "m32d"
+            2 -> "m32_lite"
+            else -> null
+        }
+    }
+
+    private fun getAddressProgram(boot: Boolean): Int {
+
+        try {
+            val device = getCurrentDevice()
+            if (device != null) {
+                val sharedPreferences = contextMain.getSharedPreferences("addressPrefs", Context.MODE_PRIVATE)
+                val address = sharedPreferences.getInt(if (boot) device + "_boot" else device, 0)
+                if (address != 0) return address
+            }
+        } catch (_: Exception) {
+            Log.e("errorMemory", "По какой то причине данне об адесе не смогли получиться из за чего было выбрано значение по умолчанию")
+        }
+
+
+
+        return if (binding.spinnerDevice.selectedItemPosition == 0) {
+            if (boot) 0x08000000
+            else 0x08080000
+        } else {
+            if (boot) 0x08000000
+            else 0x08008000
+        }
+    }
+
+
     private fun getTempFileFromAssets(context: Context, numberDev: Int, bootLoader: Boolean): File {
+
+
+        // первым делом изщем во внутренних файлах
+        val listFilesInInternalStorage = listFilesInInternalStorage(contextMain)
+        if (listFilesInInternalStorage.isNotEmpty()) {
+            when (numberDev) {
+                0 -> {
+                    for (fileName in listFilesInInternalStorage) {
+                        if (!bootLoader && fileName.contains("m32c") && !fileName.contains("_boot")) {
+                            val tempFile = File.createTempFile("file", null, context.cacheDir)
+
+                            // Записываем данные из InputStream во временный файл
+                            FileOutputStream(tempFile).use { output ->
+                                val readFileFromInternalStorage = readFileFromInternalStorage(contextMain, fileName)
+                                readFileFromInternalStorage.inputStream().copyTo(output)
+                            }
+                            return tempFile
+                        }
+                        if (bootLoader && fileName.contains("m32c") && fileName.contains("_boot")) {
+                            val tempFile = File.createTempFile("file", null, context.cacheDir)
+
+                            // Записываем данные из InputStream во временный файл
+                            FileOutputStream(tempFile).use { output ->
+                                val readFileFromInternalStorage = readFileFromInternalStorage(contextMain, fileName)
+                                readFileFromInternalStorage.inputStream().copyTo(output)
+                            }
+                            return tempFile
+                        }
+                    }
+                }
+                1 -> {
+                    for (fileName in listFilesInInternalStorage) {
+                        if (!bootLoader && fileName.contains("m32d") && !fileName.contains("_boot")) {
+                            val tempFile = File.createTempFile("file", null, context.cacheDir)
+
+                            // Записываем данные из InputStream во временный файл
+                            FileOutputStream(tempFile).use { output ->
+                                val readFileFromInternalStorage = readFileFromInternalStorage(contextMain, fileName)
+                                readFileFromInternalStorage.inputStream().copyTo(output)
+                            }
+                            return tempFile
+                        }
+                        if (bootLoader && fileName.contains("m32d") && fileName.contains("_boot")) {
+                            val tempFile = File.createTempFile("file", null, context.cacheDir)
+
+                            // Записываем данные из InputStream во временный файл
+                            FileOutputStream(tempFile).use { output ->
+                                val readFileFromInternalStorage = readFileFromInternalStorage(contextMain, fileName)
+                                readFileFromInternalStorage.inputStream().copyTo(output)
+                            }
+                            return tempFile
+                        }
+                    }
+                }
+                2 -> {
+                    for (fileName in listFilesInInternalStorage) {
+                        if (!bootLoader && fileName.contains("m32_lite") && !fileName.contains("_boot")) {
+                            val tempFile = File.createTempFile("file", null, context.cacheDir)
+
+                            // Записываем данные из InputStream во временный файл
+                            FileOutputStream(tempFile).use { output ->
+                                val readFileFromInternalStorage = readFileFromInternalStorage(contextMain, fileName)
+                                readFileFromInternalStorage.inputStream().copyTo(output)
+                            }
+                            return tempFile
+                        }
+                        if (bootLoader && fileName.contains("m32_lite") && fileName.contains("_boot")) {
+                            val tempFile = File.createTempFile("file", null, context.cacheDir)
+
+                            // Записываем данные из InputStream во временный файл
+                            FileOutputStream(tempFile).use { output ->
+                                val readFileFromInternalStorage = readFileFromInternalStorage(contextMain, fileName)
+                                readFileFromInternalStorage.inputStream().copyTo(output)
+                            }
+                            return tempFile
+                        }
+                    }
+                }
+                else -> {}
+            }
+        }
+
+
         // Открываем файл из assets
         val inputStream: InputStream? =
             if (numberDev == 2 && bootLoader) resources.openRawResource(R.raw.kumir_m32_lite_boot)

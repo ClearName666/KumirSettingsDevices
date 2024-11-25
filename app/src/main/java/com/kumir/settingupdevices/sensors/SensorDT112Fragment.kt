@@ -277,7 +277,9 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
 
                         // если циклическое опрашивание то выставляем название кнопки на завершение
                         if (binding.checkBoxOnline.isChecked)
-                            binding.textScanerButton.text = getString(R.string.endDiagTitle)
+                            (context as Activity).runOnUiThread {
+                                binding.textScanerButton.text = getString(R.string.endDiagTitle)
+                            }
 
                         // бесконечно пока флаг включен опрашиваем датчики
                         while (binding.checkBoxOnline.isChecked) {

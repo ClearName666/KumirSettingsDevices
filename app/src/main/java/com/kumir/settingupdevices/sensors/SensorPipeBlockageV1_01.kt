@@ -53,8 +53,19 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
             flagKolibrovka = true
         }
 
+        // кнопка для колибровки много
+        binding.buttonKolibrovkaMore.setOnClickListener {
+            flagKolibrovka = true
+        }
+
         // кнопка для назначения колибровачного значения
         binding.buttonEditThrachold.setOnClickListener {
+            binding.menuEditThrashold.visibility = View.VISIBLE
+            binding.fonMenuEditThrashold.visibility = View.VISIBLE
+        }
+
+        // кнопка для назначения колибровачного значения много
+        binding.buttonEditThracholdMore.setOnClickListener {
             binding.menuEditThrashold.visibility = View.VISIBLE
             binding.fonMenuEditThrashold.visibility = View.VISIBLE
         }
@@ -188,7 +199,7 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
                     try {
                         binding.textAddressOne.text = oneWire.listOneWirePipeSensorsAddress[0].address
 
-                        if (!oneWire.listOneWirePipeSensorsAddress[0].address.startsWith("85")) {
+                        if (!oneWire.listOneWirePipeSensorsAddress[0].address.endsWith("85")) {
                             showAlertDialog(getString(R.string.errorTypeSensor))
                             endDiag()
                         }
@@ -200,6 +211,10 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
                     // активация многочисленного лайаута
                     binding.oneSensor.visibility = View.GONE
                     binding.moreSensors.visibility = View.VISIBLE
+
+                    // кнопки для колибровки
+                    binding.buttonKolibrovkaMore.visibility = View.VISIBLE
+                    binding.buttonEditThracholdMore.visibility = View.VISIBLE
 
                     val itemSensorPipeBlockageAdapter = ItemSensorPipeBlockageAdapter(contextMain, oneWire.listOneWirePipeSensorsAddress)
                     binding.recyclerViewSensorsPipeBlockage.adapter = itemSensorPipeBlockageAdapter
@@ -290,6 +305,9 @@ class SensorPipeBlockageV1_01(val contextMain: MainActivity) : Fragment(), UsbFr
         // закрываем вохможность настроить трешхолд
         binding.buttonKolibrovka.visibility = View.GONE
         binding.buttonEditThrachold.visibility = View.GONE
+
+        binding.buttonKolibrovkaMore.visibility = View.GONE
+        binding.buttonEditThracholdMore.visibility = View.GONE
 
         binding.textAddressOne.text = ""
     }

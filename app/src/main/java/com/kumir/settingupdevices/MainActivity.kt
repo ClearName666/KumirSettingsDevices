@@ -83,6 +83,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.kumir.settingupdevices.auto.AutoFindDeviceFragment
+import com.kumir.settingupdevices.auto.AutoFindOneWireFragment
 import com.kumir.settingupdevices.sensors.SensorPipeBlockageV1_01
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
@@ -801,6 +802,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         val rim = RimFragment()
         createSettingFragment(rim)
+    }
+
+
+    // функция для автоматического посика датчика
+    fun onClickAutoFindOneWire(view: View) {
+        binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
+
+        val autoFindOneWire = AutoFindOneWireFragment(this)
+        createSettingFragment(autoFindOneWire)
     }
 
     // проверка датчиков (сетка)

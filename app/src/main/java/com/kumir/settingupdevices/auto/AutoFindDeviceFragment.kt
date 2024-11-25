@@ -31,8 +31,6 @@ class AutoFindDeviceFragment(val mainContext: MainActivity) : Fragment() {
                 mainContext.showAlertDialog(getString(R.string.Usb_NoneConnect))
         }
 
-
-
         return binding.root
     }
 }

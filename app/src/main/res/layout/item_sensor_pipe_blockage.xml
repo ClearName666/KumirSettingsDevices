@@ -23,21 +23,17 @@
             android:text="@string/state"
             android:textColor="@color/black"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textRawStateItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textRawValueItem"
-            app:layout_constraintTop_toTopOf="@+id/textRawStateItem" />
+            app:layout_constraintStart_toStartOf="@+id/textRawStateItem"
+            app:layout_constraintTop_toBottomOf="@+id/textRawStateItem" />
 
         <TextView
             android:id="@+id/textRawStateItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
             android:text="@string/rawstate"
             android:textColor="@color/black"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textThresholdItem"
             app:layout_constraintTop_toBottomOf="@+id/textThresholdItem" />
 
@@ -73,6 +69,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textRawStateItem" />
+            app:layout_constraintTop_toBottomOf="@+id/textStateItem" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

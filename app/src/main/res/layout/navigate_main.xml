@@ -1001,15 +1001,49 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/SensorPipeBlockage"
+                            android:id="@+id/AutoFindOnwWire"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:clickable="true"
+                            android:onClick="onClickAutoFindOneWire"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/lineSensors">
+
+                            <TextView
+                                android:id="@+id/textAutoFindOneWire"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:text="@string/autoFindDevice"
+                                android:textColor="@color/textColor"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo23"
+                                app:layout_constraintStart_toEndOf="@+id/imageDevoceLogo23"
+                                app:layout_constraintTop_toTopOf="@+id/imageDevoceLogo23" />
+
+                            <ImageView
+                                android:id="@+id/imageDevoceLogo23"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:contentDescription="@string/todo"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/devidelogo" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/SensorPipeBlockage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
                             android:onClick="onClickSensorPipeBlockage"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/lineSensors">
+                            app:layout_constraintTop_toBottomOf="@+id/AutoFindOnwWire">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo14"
