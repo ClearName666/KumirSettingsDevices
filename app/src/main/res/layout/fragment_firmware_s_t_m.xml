@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".usbFragments.FirmwareSTMFragment">
 
+    <Button
+        android:id="@+id/buttonCheckUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/checkUpdate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInfo" />
+
     <TextView
         android:id="@+id/textSpeed"
         android:layout_width="wrap_content"
@@ -281,16 +291,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/buttonCheckUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/checkUpdate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loadingMenuUpdate"

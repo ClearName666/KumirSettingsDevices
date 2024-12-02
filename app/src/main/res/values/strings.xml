@@ -312,6 +312,7 @@
     <string name="errorNotFindSpeedRim">Не удалось найти скорость, проверьте верно ли вы указали адрес и протокол!</string>
     <string name="errorTypeSensor">Аддресс не сответствует данному устройству! Проверьте точно ли у вас нужный датчик!</string>
     <string name="errorNotValue">Введенное значение не верно!</string>
+    <string name="notDataSave">Нету данных для сохранения!</string>
     <string name="ipAdressTitle">IP-адрес</string>
 
 

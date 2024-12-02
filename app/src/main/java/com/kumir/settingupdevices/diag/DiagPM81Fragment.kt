@@ -132,12 +132,16 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
         // скачивание позиций с данными
         binding.imageFilePositionData.setOnClickListener {
-            val generationFiles = GenerationFiles()
+            if (dataPosSignal.isNotEmpty()) {
+                val generationFiles = GenerationFiles()
 
-            if (!generationFiles.createFile(dataPosSignal, "dataPos.txt", requireContext(),
-                    Environment.DIRECTORY_DOWNLOADS + DIR_POS_DATA_DEFAULTE))
-                showAlertDialog(getString(R.string.noSaveFiles)) else {
-                showAlertDialog(getString(R.string.yesSaveFiles))
+                if (!generationFiles.createFile(dataPosSignal, "dataPos.txt", requireContext(),
+                        Environment.DIRECTORY_DOWNLOADS + DIR_POS_DATA_DEFAULTE))
+                    showAlertDialog(getString(R.string.noSaveFiles)) else {
+                    showAlertDialog(getString(R.string.yesSaveFiles))
+                }
+            } else {
+                showAlertDialog(getString(R.string.notDataSave))
             }
         }
 
