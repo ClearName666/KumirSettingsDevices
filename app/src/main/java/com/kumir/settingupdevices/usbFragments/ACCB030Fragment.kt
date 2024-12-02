@@ -100,7 +100,7 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
-            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+            if (binding.inputNameSavePreset.text.toString().trim().isNotEmpty()) {
                 if (context is MainActivity) {
                     if (validAll()) {
                         context.onClickSavePreset(

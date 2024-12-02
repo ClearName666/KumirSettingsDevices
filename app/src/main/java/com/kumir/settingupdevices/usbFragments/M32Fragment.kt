@@ -169,7 +169,7 @@ class M32Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragme
 
         // сохранения пресета настроек
         binding.buttonSavePreset.setOnClickListener {
-            if (binding.inputNameSavePreset.text.toString().isNotEmpty()) {
+            if (binding.inputNameSavePreset.text.toString().trim().isNotEmpty()) {
                 if (context is MainActivity) {
                     if (validAll()) {
                         context.onClickSavePreset(

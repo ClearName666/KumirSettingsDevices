@@ -44,7 +44,7 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
     )
 
     companion object {
-        const val URL_SERVER: String = "http://192.168.0.13"
+        const val URL_SERVER: String = "http://192.168.0.29"
 
     }
 
@@ -119,23 +119,25 @@ class FirmwareSTMFragment(private val contextMain: MainActivity): Fragment(), Us
                         // прверка все ли хорошо
                         if (version[0] == 0x00.toByte()) {
 
-                            var flagPresence = true
+                            var flagPresence = false
+                            var flagPresenceDeviceVersion = false
                             // поулчаем из байт данных версию в строке за сиключением 1 байта ошибки
                             val versionNew = version.drop(1).toByteArray().toString(Charsets.UTF_8)
 
                             for (fileName in listFilesInInternalStorage) {
+
                                 if (fileName.contains(device.replace("_", ""))) {
                                     // проверка на соответствие версии
-                                    if (fileName.contains(device.replace("_", "")) &&
-                                        versionNew == fileName.substringAfter("kumir_").substringBefore(".bin")) {
+                                    if (!fileName.contains(versionNew)) {
                                         listDelFiles.add(fileName)
-                                        flagPresence = false
+                                        flagPresence = true
                                     }
+                                    flagPresenceDeviceVersion = true
                                 }
                             }
 
-                            // файл не найден (обновляем)
-                            if (flagPresence) {
+                            // файл не найден или его надо обновить (обновляем)
+                            if (flagPresence || !flagPresenceDeviceVersion) {
                                 listUpdateFile.add(device)
                                 mapVersionFile[device] = versionNew
                             }

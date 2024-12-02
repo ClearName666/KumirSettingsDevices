@@ -642,6 +642,13 @@ class UsbCommandsProtocol {
                         if (timeMaxIndex == 0) {
                             break
                         }
+                        // тестововая часть кода
+                        if (timeMaxIndex % 10 == 0) {
+                            val dataInfo: String = context.curentData
+                            (context as Activity).runOnUiThread {
+                                usbDiag.printAllInfo(dataInfo)
+                            }
+                        }
                         Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
                         timeMaxIndex++
                     }
