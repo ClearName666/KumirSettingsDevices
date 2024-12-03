@@ -815,26 +815,8 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             //--------------------------------------------------------------------------------------
 
             // далеем возможность завершить диагностику
-            binding.textRead.visibility = View.GONE
-            binding.imagedischarge.visibility = View.GONE
-            binding.buttonEndDiag.visibility = View.VISIBLE
-
-            binding.buttonDriversDel.visibility = View.GONE
-            binding.buttonAddAbanent.visibility = View.GONE
-            binding.buttonLoadFile.visibility = View.GONE
-
-            // кнопка для установки дарайвера
-            binding.buttonLoadFile.text = getString(R.string.loadDriver)
-            binding.buttonLoadFile.setOnClickListener {
-                selectFile() // выбор файла для загрузки драйвера
-            }
-
-            // нажатие на кнопку получить абанентов
-            binding.buttonAddAbanent.setOnClickListener {
-                getAbonents()
-            }
-
-            flagRead = false
+            endDiag()
+            endViewDiag()
 
         } else {
             drawablImageDischarge?.let {
@@ -1009,7 +991,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
                 binding.inputTimeOut.setText(ports[5].trim())
 
                 // установка флага о том что установлен hex пароль
-                binding.checkBoxHex.isChecked = data.values.substringAfter("p=").substringBefore(";").length > 7 // 7 парог после которого идет хекс пароль
+                binding.checkBoxHex.isChecked = data.values.substringAfter("p=").substringBefore(";").endsWith("h")// 7 парог после которого идет хекс пароль
 
 
 

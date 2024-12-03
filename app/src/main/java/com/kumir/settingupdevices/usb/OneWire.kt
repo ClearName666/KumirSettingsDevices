@@ -257,12 +257,11 @@ class OneWire(val usb: Usb, private val context: Context) {
             var address: ByteArray
 
             // пока есть устройства опраиваем
-            //var addresCnt = 0
+            var addresCntNull = 0
             var numberAddress = 10
 
 
             while (numberAddress > 0) {
-                //addresCnt++
                 address = owSearchNext(context, sensorDT112Fragment, stSearch, sensorPipeBlockageV1_01)
 
                 if (address.isNotEmpty()) {
@@ -291,6 +290,16 @@ class OneWire(val usb: Usb, private val context: Context) {
                         Log.d("dataOneWire", "Произошла ошибка")
                         break
                     }
+                } else {
+                    addresCntNull++
+                }
+
+                // проверка ошибочных пустых адресов если больше 10 значет на линии никого нет
+                if (addresCntNull > 10) {
+                    listOneWireAddres.clear()
+                    listOneWirePipeSensorsAddress.clear()
+                    listOneWireAddresHex.clear()
+                    break
                 }
 
                 // проверка если подключение разорвано

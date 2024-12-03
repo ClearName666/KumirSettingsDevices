@@ -113,8 +113,8 @@ class AutoFindOneWireFragment(val mainContext: MainActivity) : Fragment(), UsbFr
             } catch (_: Exception) {
                 // завершаем визуально
                 mainContext.runOnUiThread {
-                    binding.fonLoadMenu.visibility = View.VISIBLE
-                    binding.loadMenuProgress.visibility = View.VISIBLE
+                    binding.fonLoadMenu.visibility = View.GONE
+                    binding.loadMenuProgress.visibility = View.GONE
                     mainContext.showAlertDialog(getString(R.string.errorNoDevice))
                 }
             }

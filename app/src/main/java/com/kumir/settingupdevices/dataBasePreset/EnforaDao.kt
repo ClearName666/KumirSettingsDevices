@@ -40,16 +40,15 @@ interface EnforaDao {
             }
         } else {
             insert(enfora)
-        }
+            context.runOnUiThread {
+                if (context.flagLoadPreset) {
+                    context.showAlertDialog(context.getString(R.string.sucPresetLoadDataBase))
 
-        context.runOnUiThread {
-            if (context.flagLoadPreset) {
-                context.showAlertDialog(context.getString(R.string.sucPresetLoadDataBase))
-
-                // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
-                context.flagLoadPreset = false
-            } else {
-                context.showAlertDialog(context.getString(R.string.sucPresetSaveDataBase))
+                    // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                    context.flagLoadPreset = false
+                } else {
+                    context.showAlertDialog(context.getString(R.string.sucPresetSaveDataBase))
+                }
             }
         }
     }
