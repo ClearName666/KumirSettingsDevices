@@ -3,6 +3,8 @@ package com.kumir.settingupdevices.usbFragments
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +25,7 @@ import com.kumir.settingupdevices.model.recyclerModel.Priset
 import com.kumir.settingupdevices.usb.UsbCommandsProtocol
 import com.kumir.settingupdevices.usb.UsbFragment
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.textfield.TextInputEditText
 
 
 class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragment<Priset> {
@@ -191,7 +194,93 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             readSettingStart()
         }
 
+        setupInputValidation()
+
         return binding.root
+    }
+
+    private fun setupInputValidation() {
+        // Карта для связи input с layout
+        val inputMap = mapOf(
+            binding.InputSim1TCP1 to binding.layoutInputSim1TCP1,
+            binding.InputSim1TCP2 to binding.layoutInputSim1TCP2,
+            binding.InputSim1TCP3 to binding.layoutInputSim1TCP3,
+            binding.InputSim1TCP4 to binding.layoutInputSim1TCP4,
+
+            binding.InputSim2TCP1 to binding.layoutInputSim2TCP1,
+            binding.InputSim2TCP2 to binding.layoutInputSim2TCP2,
+            binding.InputSim2TCP3 to binding.layoutInputSim2TCP3,
+            binding.InputSim2TCP4 to binding.layoutInputSim2TCP4,
+
+            binding.inputSim1Knet to binding.layoutInputTextKnet,
+            binding.inputSim1Sntp to binding.layoutSim1Sntp,
+
+            binding.inputSim2Knet to binding.layoutInputTextKnet2,
+            binding.inputSim2Sntp to binding.layoutSim2Sntp,
+
+            binding.inputAPN to binding.inputAPNLayout,
+            binding.inputTextLoginGPRS to binding.inputTextLoginGPRSLayout,
+            binding.inputPasswordGPRS to binding.inputPasswordGPRSLayout,
+
+            binding.inputAPN2 to binding.inputAPNLayout2,
+            binding.inputTextLoginGPRS2 to binding.inputTextLoginGPRSLayout2,
+            binding.inputPasswordGPRS2 to binding.inputPasswordGPRSLayout2,
+
+            binding.inputTimeOutKeeplive to binding.inputTimeOutKeepliveLayout,
+            binding.inputTimeoutConnection to binding.inputTimeoutConnectionLayout,
+        )
+
+        // Настраиваем слушатели для каждого input
+        inputMap.forEach { (editText, layout) ->
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val inputText = s?.toString() ?: ""
+                    if (isValidInput(editText, inputText)) {
+                        layout.error = null // Убираем ошибку
+                    } else {
+                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                    }
+                }
+            })
+        }
+    }
+
+    // Функция для проверки валидности
+    private fun isValidInput(editText: TextInputEditText, inputText: String): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        return when (editText.id) {
+            R.id.inputAPN -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputTextLoginGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputPasswordGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+
+            R.id.inputAPN2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputTextLoginGPRS2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputPasswordGPRS2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+
+            R.id.inputTimeOutKeeplive -> validDataSettingsDevice.keepaliveValid(inputText.replace("\\s+".toRegex(), ""))
+            R.id.inputTimeoutConnection -> validDataSettingsDevice.ctimeoutValid(inputText.replace("\\s+".toRegex(), ""))
+
+            R.id.InputSim1TCP1 -> validDataSettingsDevice.validSim1tcp1(inputText)
+            R.id.InputSim1TCP2 -> validDataSettingsDevice.validSim1tcp2(inputText)
+            R.id.InputSim1TCP3 -> validDataSettingsDevice.validSim1tcp3(inputText)
+            R.id.InputSim1TCP4 -> validDataSettingsDevice.validSim1tcp4(inputText)
+
+            R.id.InputSim2TCP1 -> validDataSettingsDevice.validSim2tcp1(inputText)
+            R.id.InputSim2TCP2 -> validDataSettingsDevice.validSim2tcp2(inputText)
+            R.id.InputSim2TCP3 -> validDataSettingsDevice.validSim2tcp3(inputText)
+            R.id.InputSim2TCP4 -> validDataSettingsDevice.validSim2tcp4(inputText)
+
+            R.id.inputSim1Knet -> validDataSettingsDevice.validSim1knet(inputText)
+            R.id.inputSim2Knet -> validDataSettingsDevice.validSim2knet(inputText)
+
+            R.id.inputSim1Sntp -> validDataSettingsDevice.validSim1sntp(inputText)
+            R.id.inputSim2Sntp -> validDataSettingsDevice.validSim2sntp(inputText)
+
+            else -> true
+        }
     }
 
     override fun onDestroyView() {

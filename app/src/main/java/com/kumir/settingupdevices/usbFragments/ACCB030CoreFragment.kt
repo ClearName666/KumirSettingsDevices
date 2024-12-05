@@ -3,6 +3,8 @@ package com.kumir.settingupdevices.usbFragments
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.textfield.TextInputEditText
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.databinding.FragmentACCB030CoreBinding
@@ -182,9 +185,61 @@ class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, Pris
             readSettingStart()
         }
 
+        setupInputValidation()
 
         return binding.root
     }
+
+    private fun setupInputValidation() {
+        // Карта для связи input с layout
+        val inputMap = mapOf(
+            binding.inputIPDNS to binding.inputIPDNSLayout,
+            binding.inputAPN to binding.inputAPNLayout,
+            binding.inputTextLoginGPRS to binding.inputTextLoginGPRSLayout,
+            binding.inputPasswordGPRS to binding.inputPasswordGPRSLayout,
+            binding.inputTimeOutKeeplive to binding.inputTimeOutKeepliveLayout,
+            binding.inputTimeoutConnection to binding.inputTimeoutConnectionLayout,
+            binding.inputNumberPhoneDis to binding.inputNumberPhoneDisLayout,
+            binding.inputGSMOper to binding.inputGSMOperLayout,
+            binding.inputMaxTimeCall to binding.inputMaxTimeCallLayout
+        )
+
+        // Настраиваем слушатели для каждого input
+        inputMap.forEach { (editText, layout) ->
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val inputText = s?.toString() ?: ""
+                    if (isValidInput(editText, inputText)) {
+                        layout.error = null // Убираем ошибку
+                    } else {
+                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                    }
+                }
+            })
+        }
+    }
+
+    // Функция для проверки валидности
+    private fun isValidInput(editText: TextInputEditText, inputText: String): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+        return when (editText.id) {
+            R.id.inputIPDNS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputAPN -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputTextLoginGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputPasswordGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputTimeOutKeeplive -> validDataSettingsDevice.keepaliveValid(inputText.replace("\\s+".toRegex(), ""))
+            R.id.inputTimeoutConnection -> validDataSettingsDevice.ctimeoutValid(inputText.replace("\\s+".toRegex(), ""))
+            R.id.inputTCP -> validDataSettingsDevice.tcpPortValid(inputText.replace("\\s+".toRegex(), ""))
+            R.id.inputNumberPhoneDis -> validDataSettingsDevice.isValidPhoneNumber(inputText)
+            R.id.inputGSMOper -> validDataSettingsDevice.validServer(inputText)
+            R.id.inputMaxTimeCall -> validDataSettingsDevice.validTimeAbonent(inputText)
+            else -> true
+        }
+    }
+
 
     // эксперементальный метод для устранения бага с возможностью изменить статические значения
     private fun controlSpinnerForGoodValue() {
