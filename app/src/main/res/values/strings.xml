@@ -54,6 +54,8 @@
     <string name="errorSetModePreset">Невозможно установить режим работы из шаблона т к он отсутствует!</string>
     <string name="nonSelectDriver">Вы не выбрали драйвер</string>
     <string name="errorSandDriver">Драйвер не удалось отправить, возможно были проблемы с подключением или можем вышел из режима загрузки драйвера!</string>
+    <string name="coreProgramDialogText">Переключите П1:1 в положение OFF, </string>
+    <string name="coreProgramClueText">Не забудьте переключить П1:1 в положение ON, </string>
     <string name="sand">Отправка</string>
 
 
@@ -120,7 +122,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.90</string>
+    <string name="versionApp">Версия: 1.9.91</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>

@@ -80,6 +80,7 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         val context: Context = requireContext()
         if (context is MainActivity) {
             context.printDeviceTypeName(getString(R.string.accb030Firmware))
+            context.additionallyTextTimerDialog = getString(R.string.coreProgramDialogText)
         }
 
         binding.DisActivPort1SetiingsPriset.setOnClickListener {
@@ -291,6 +292,7 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
+            context.additionallyTextTimerDialog = ""
         }
 
         super.onDestroyView()
@@ -581,6 +583,13 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             binding.imageDownLoad.setOnClickListener {
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
+
+            var contextMain = requireContext()
+            if (contextMain is MainActivity) {
+                contextMain.flagCoreOrProgramACCB030 = false
+                showAlertDialog(getString(R.string.coreProgramClueText))
+            }
+
         } else {
             drawablImageDischarge?.let {
                 val wrappedDrawable = DrawableCompat.wrap(it)
@@ -595,6 +604,11 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
             binding.imageDownLoad.setOnClickListener {
                 showAlertDialog(getString(R.string.notReadDevice))
+            }
+
+            var contextMain = requireContext()
+            if (contextMain is MainActivity) {
+                contextMain.flagCoreOrProgramACCB030 = true
             }
         }
     }

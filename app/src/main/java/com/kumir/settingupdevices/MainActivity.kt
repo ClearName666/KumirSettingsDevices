@@ -105,6 +105,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // flag Для контроля передачи информации
     var flagThreadSerialCommands: Boolean = false
 
+
+    // дополнительный текст для диалога в купир ядро и прошивка
+    var additionallyTextTimerDialog: String = ""
+    var flagCoreOrProgramACCB030: Boolean = false
+
     // база данных
     lateinit var presetDao: PresetDao
     lateinit var presetEnforaDao: EnforaDao
@@ -748,10 +753,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         onStartACCB030CoreSettings(false)
     }
     fun onStartACCB030CoreSettings(autoFlag: Boolean = false) {
+
+
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val accbo30Core = ACCB030CoreFragment(autoFlag)
         createSettingFragment(accbo30Core)
+        flagCoreOrProgramACCB030 = true
     }
 
     fun onClickACCB030CoreDiag(view: View) {
@@ -775,10 +783,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
     fun onClickACCB030Settings(view: View) {
+
         binding.drawerMenuSelectTypeDevice.closeDrawer(GravityCompat.START)
 
         val accbo30 = ACCB030Fragment()
         createSettingFragment(accbo30)
+        flagCoreOrProgramACCB030 = true
     }
     fun onClickACCB030Diag(view: View) {
 
@@ -961,6 +971,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     private fun createSettingFragment(fragment: Fragment, flagChack: Boolean = false) {
+
+        // в прошивке и ядре выводить окно с диалогом напоминалкой о переключении П1:1 в on
+        if (flagCoreOrProgramACCB030) {
+            showAlertDialog(getString(R.string.coreProgramClueText))
+            flagCoreOrProgramACCB030 = false
+        }
+
+
         if (usb.checkConnectToDevice() || flagChack) {
 
             if (curentFragmentComProtocol != null) {
@@ -1288,7 +1306,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         val updateRunnable = object : Runnable {
             override fun run() {
 
-                val timerText: String = getString(R.string.restartDevicePlease).dropLast(2) +
+                val timerText: String = additionallyTextTimerDialog + getString(R.string.restartDevicePlease).dropLast(2) +
                         if (timeLeft > 9) timeLeft.toString() else "0$timeLeft" // для того что бы если число
                                                                                  // от 1 до 9 то добавлялся 0 типа 03 04 07 и тп
 

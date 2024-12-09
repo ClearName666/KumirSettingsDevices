@@ -170,8 +170,8 @@ class ValidDataSettingsDevice {
 
     fun validTimeAbonent(abTime: String): Boolean {
         return try {
-            !(abTime.toInt() >= TIME_AB_MAX ||
-                    abTime.toInt() <= TIME_AB_MIN)
+            !(abTime.toInt() > TIME_AB_MAX ||
+                    abTime.toInt() < TIME_AB_MIN)
         } catch (e: Exception) {
             false
         }
