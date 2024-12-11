@@ -13,10 +13,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.databinding.FragmentM32DBinding
@@ -36,7 +32,41 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
     private var NAME_TYPE_DEVICE = "KUMIR-M32D READY"
 
 
+    private val mapTimeZoneAndPseudonym = mapOf(
+        "EET-2" to 0,
+        "MSK-3" to 1,
+        "SAMT-4" to 2,
+        "YEKT-5" to 3,
+        "OMST-6" to 4,
+        "KRAT-7" to 5,
+        "NOVT-7" to 6,
+        "IRK-8" to 7,
+        "YAKT-9" to 8,
+        "VLAT-10" to 9,
+        "MAGT-11" to 10,
+        "SAKT-11" to 11,
+        "SRET-11" to 12,
+        "ANAT-12" to 13,
+        "PETT-12" to 14
+    )
 
+    private val listTimeZoneAndPseudonym = listOf(
+        "EET-2",
+        "MSK-3",
+        "SAMT-4",
+        "YEKT-5",
+        "OMST-6",
+        "KRAT-7",
+        "NOVT-7",
+        "IRK-8",
+        "YAKT-9",
+        "VLAT-10",
+        "MAGT-11",
+        "SAKT-11",
+        "SRET-11",
+        "ANAT-12",
+        "PETT-12"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -228,6 +258,9 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
             binding.inputTimeOutKeeplive to binding.inputTimeOutKeepliveLayout,
             binding.inputTimeoutConnection to binding.inputTimeoutConnectionLayout,
+
+            binding.inputTCPPortRS232 to binding.textInputLayoutTCPPort232,
+            binding.inputTCPPortRS485 to binding.textInputLayoutTCPPort485
         )
 
         // Настраиваем слушатели для каждого input
@@ -279,6 +312,8 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             R.id.inputSim1Sntp -> validDataSettingsDevice.validSim1sntp(inputText)
             R.id.inputSim2Sntp -> validDataSettingsDevice.validSim2sntp(inputText)
 
+            R.id.inputTCPPortRS232 -> validDataSettingsDevice.tcpPortValid(inputText)
+            R.id.inputTCPPortRS485 -> validDataSettingsDevice.tcpPortValid(inputText)
             else -> true
         }
     }
@@ -474,6 +509,26 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
     }
 
     private fun createAdapters() {
+
+        // адаптер для выбора регион временной зоны
+        val itemTimeZone = listOf(
+            getString(R.string.EET),
+            getString(R.string.MSK),
+            getString(R.string.SAMT),
+            getString(R.string.YEKT),
+            getString(R.string.OMST),
+            getString(R.string.KRAT),
+            getString(R.string.NOVT),
+            getString(R.string.IRK),
+            getString(R.string.YAKT),
+            getString(R.string.VLAT),
+            getString(R.string.MAGT),
+            getString(R.string.SAKT),
+            getString(R.string.SRET),
+            getString(R.string.ANAT),
+            getString(R.string.PETT),
+        )
+
         // адаптер для выбора режима работы модема
         val itemsSpinnerDevMode = listOf(
             getString(R.string.devModeKNET),
@@ -564,6 +619,8 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             getString(R.string.seven)
         )
 
+        val adapterTimeZone = ArrayAdapter(requireContext(),
+            R.layout.item_spinner, itemTimeZone)
         val adapter = ArrayAdapter(requireContext(),
             R.layout.item_spinner, itemsSpinnerDevMode)
         val adapterPortDeviceAccounting = ArrayAdapter(requireContext(),
@@ -579,6 +636,8 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
+        adapterTimeZone.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item)
         adapterPortDeviceAccounting.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
         adapterSelectSpeed.setDropDownViewResource(
@@ -590,6 +649,7 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         adapterSelectBitData.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item)
 
+        binding.spinnerSelectTimeZone.adapter = adapterTimeZone
         binding.spinnerServer.adapter = adapter
         binding.spinnerSelectPort1MeteringDevice.adapter = adapterPortDeviceAccounting
         binding.spinnerSelectPort2MeteringDevice.adapter = adapterPortDeviceAccounting
@@ -840,6 +900,13 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             binding.switchPinCodeSmsCard.isChecked = true
         }
 
+        // установка данных об временнй зоне
+        mapTimeZoneAndPseudonym[settingMap[getString(R.string.commandGetTzdataM32D)]]?.let {
+            binding.spinnerSelectTimeZone.setSelection(
+                it
+            )
+        }
+
         binding.inputSim1Knet.setText(settingMap[getString(R.string.commandGetSim1KnetM32D)])
         binding.inputSim1Sntp.setText(settingMap[getString(R.string.commandGetSim1SntpM32D)])
 
@@ -849,6 +916,9 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         binding.InputSim1TCP4.setText(settingMap[getString(R.string.commandGetSim1Tcp4M32D)])
 
 
+        // вывод настроек потров
+        binding.inputTCPPortRS232.setText(settingMap[getString(R.string.commandGetTCPport1)])
+        binding.inputTCPPortRS485.setText(settingMap[getString(R.string.commandGetTCPport2)])
 
 
         // общие настройки
@@ -890,7 +960,10 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             getString(R.string.commandGetSim2Tcp1M32D),
             getString(R.string.commandGetSim2Tcp2M32D),
             getString(R.string.commandGetSim2Tcp3M32D),
-            getString(R.string.commandGetSim2Tcp4M32D)
+            getString(R.string.commandGetSim2Tcp4M32D),
+            getString(R.string.commandGetTCPport1),
+            getString(R.string.commandGetTCPport2),
+
         )
 
 
@@ -932,10 +1005,12 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
                     parityPort2  + "," +
                     binding.spinnerSelectStopBitPort2.selectedItem.toString() +
                     ",200,2000",
-            getString(R.string.commandSetProfile1M32D) to context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].
-                priset.toString(),
-            getString(R.string.commandSetProfile2M32D) to context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition].
-                priset.toString(),
+            getString(R.string.commandSetProfile1M32D) to if (binding.spinnerSelectPort1MeteringDevice.selectedItemPosition != 0)
+                context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].priset.toString()
+                else "99",
+            getString(R.string.commandSetProfile2M32D) to if (binding.spinnerSelectPort2MeteringDevice.selectedItemPosition != 0)
+                context.portsDeviceSetting[binding.spinnerSelectPort2MeteringDevice.selectedItemPosition].priset.toString()
+                else "99",
             /*getString(R.string.commandSetSim1PinM32D) to "",*/
             getString(R.string.commandSetSim1ApnM32D) to binding.inputAPN.text.toString(),
             getString(R.string.commandSetSim1LoginM32D) to binding.inputTextLoginGPRS.text.toString(),
@@ -945,7 +1020,10 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             getString(R.string.commandSetSim1Tcp1M32D) to binding.InputSim1TCP1.text.toString(),
             getString(R.string.commandSetSim1Tcp2M32D) to binding.InputSim1TCP2.text.toString(),
             getString(R.string.commandSetSim1Tcp3M32D) to binding.InputSim1TCP3.text.toString(),
-            getString(R.string.commandSetSim1Tcp4M32D) to binding.InputSim1TCP4.text.toString()
+            getString(R.string.commandSetSim1Tcp4M32D) to binding.InputSim1TCP4.text.toString(),
+            getString(R.string.commandSetTimezoneData) to listTimeZoneAndPseudonym[binding.spinnerSelectTimeZone.selectedItemPosition],
+            getString(R.string.commandSetTcpport1M32D) to binding.inputTCPPortRS232.text.toString(),
+            getString(R.string.commandSetTcpport2M32D) to binding.inputTCPPortRS485.text.toString(),
         )
 
         if (binding.tabSims.visibility == View.VISIBLE) {
@@ -982,6 +1060,11 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             dataMap[getString(R.string.commandSetSim1PinM32D)] = getString(R.string.disabled)
         }
 
+        // установка TCP потров
+
+        binding.inputTCPPortRS232.setText(dataMap[getString(R.string.commandGetTCPport1)])
+        binding.inputTCPPortRS485.setText(dataMap[getString(R.string.commandGetTCPport2)])
+
 
 
         if (binding.switchPinCodeSmsCommand.isChecked) {
@@ -999,6 +1082,11 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
     private fun onClickReadSettingsDevice() {
         val context: Context = requireContext()
+
+        // отчищение полей для ввода паролья sim карты
+        binding.inputPinCodeCommand.setText("")
+        binding.inputPinCodeSmsCard.setText("")
+        binding.inputPinCodeSmsCard2.setText("")
 
         if (context is MainActivity) {
             context.showTimerDialog(this, NAME_TYPE_DEVICE)
@@ -1115,6 +1203,17 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             1 -> parityPort2  = "E"
             2 -> parityPort2  = "O"
         }
+
+        if (!validServis.tcpPortValid(binding.inputTCPPortRS232.text.toString())) {
+            showAlertDialog(getString(R.string.errorRS232TCPPort))
+            return false
+        }
+
+        if (!validServis.tcpPortValid(binding.inputTCPPortRS485.text.toString())) {
+            showAlertDialog(getString(R.string.errorRS485TCPPort))
+            return false
+        }
+
         if (!validServis.validDevmode(binding.spinnerServer.selectedItem.toString())) {
             showAlertDialog(getString(R.string.errorValidM32DMode))
             return false

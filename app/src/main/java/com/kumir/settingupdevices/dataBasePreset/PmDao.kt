@@ -34,7 +34,18 @@ interface PmDao {
 
     suspend fun upsert(pm: Pm, context: MainActivity) {
         val existingPm = getFirstByName(pm.name ?: "")
-        if (existingPm != null) {
+
+        val reservedName = listOf(
+            context.getString(R.string.priset1),
+            context.getString(R.string.priset2),
+            context.getString(R.string.priset3),
+            context.getString(R.string.priset4),
+            context.getString(R.string.priset5),
+        )
+
+        val flagPresence: Boolean = pm.name in reservedName
+
+        if (existingPm != null || flagPresence) {
             context.runOnUiThread {
                 context.menuUpdateName(null, pm, null)
             }

@@ -34,7 +34,18 @@ interface EnforaDao {
     // Новый метод upsert
     suspend fun upsert(enfora: Enfora, context: MainActivity) {
         val existingEnfora = getFirstByName(enfora.name ?: "")
-        if (existingEnfora != null) {
+
+        val reservedName = listOf(
+            context.getString(R.string.priset1),
+            context.getString(R.string.priset2),
+            context.getString(R.string.priset3),
+            context.getString(R.string.priset4),
+            context.getString(R.string.priset5),
+            )
+
+        val flagPresence: Boolean = enfora.name in reservedName
+
+        if (existingEnfora != null || flagPresence) {
             context.runOnUiThread {
                 context.menuUpdateName(null, null, enfora)
             }

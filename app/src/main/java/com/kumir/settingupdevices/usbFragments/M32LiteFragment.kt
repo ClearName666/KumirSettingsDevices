@@ -637,9 +637,9 @@ class M32LiteFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFr
         val context: Context = requireContext()
         if (context is MainActivity) {
             try {
-                dataMap[getString(R.string.commandSetProfile1)] =
-                    context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].
-                    priset.toString()
+                dataMap[getString(R.string.commandSetProfile1)] = if (binding.spinnerSelectPort1MeteringDevice.selectedItemPosition != 0)
+                    context.portsDeviceSetting[binding.spinnerSelectPort1MeteringDevice.selectedItemPosition].priset.toString()
+                else "99"
             } catch (e: Exception) {
                 showAlertDialog(getString(R.string.nonValidData))
                 return

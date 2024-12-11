@@ -1025,8 +1025,31 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // Открываем менб изменения имени
         binding.fonMenu.visibility = View.VISIBLE
         binding.updateName.visibility = View.VISIBLE
+        binding.buttonEditData.visibility = View.VISIBLE
 
 
+        // поверка для того что бы узнать что имя назначено то которое стоит по умолчанию
+        val reservedName = listOf(
+            getString(R.string.priset1),
+            getString(R.string.priset2),
+            getString(R.string.priset3),
+            getString(R.string.priset4),
+            getString(R.string.priset5),
+        )
+
+        if (preset != null) {
+            if (preset.name!! in reservedName) {
+                binding.buttonEditData.visibility = View.GONE
+            }
+        } else if (pm != null) {
+            if (pm.name!! in reservedName) {
+                binding.buttonEditData.visibility = View.GONE
+            }
+        } else if (enfora != null) {
+            if (enfora.name!! in reservedName) {
+                binding.buttonEditData.visibility = View.GONE
+            }
+        }
 
         if (preset != null) {
             // обновление данных

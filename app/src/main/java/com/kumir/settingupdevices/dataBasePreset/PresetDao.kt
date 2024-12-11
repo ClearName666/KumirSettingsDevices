@@ -36,7 +36,18 @@ interface PresetDao {
 
     suspend fun upsert(preset: Preset, context: MainActivity) {
         val existingPreset = getFirstByName(preset.name ?: "")
-        if (existingPreset != null) {
+
+        val reservedName = listOf(
+            context.getString(R.string.priset1),
+            context.getString(R.string.priset2),
+            context.getString(R.string.priset3),
+            context.getString(R.string.priset4),
+            context.getString(R.string.priset5),
+        )
+
+        val flagPresence: Boolean = preset.name in reservedName
+
+        if (existingPreset != null || flagPresence) {
             context.runOnUiThread {
                 context.menuUpdateName(preset, null, null)
             }

@@ -1138,6 +1138,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
                             android:layout_marginStart="40dp"
+                            android:layout_marginTop="30dp"
                             android:clickable="true"
                             android:onClick="onClickM32DDiag"
                             android:visibility="gone"
@@ -1166,7 +1167,7 @@
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="@+id/M32DDiag"
-                            app:layout_constraintTop_toBottomOf="@+id/M32DDiag">
+                            app:layout_constraintTop_toBottomOf="@+id/M32D">
 
                             <TextView
                                 android:id="@+id/textM32DSettings"
@@ -1188,7 +1189,7 @@
                             android:onClick="onClickRim"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/M32DSettings">
+                            app:layout_constraintTop_toBottomOf="@+id/M32DDiag">
 
                             <ImageView
                                 android:id="@+id/imageDevoceLogo11"

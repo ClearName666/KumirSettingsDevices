@@ -122,7 +122,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.91</string>
+    <string name="versionApp">Версия: 1.9.92</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -155,6 +155,8 @@
     <string name="write">Запись</string>
     <string name="noneTypeDevice">Не реализовано! В разработке</string>
     <string name="restartDevicePlease">Перезагрузите устройство!!! Ожидание перезагрузки! 00.00.30</string>
+    <string name="textTCPPortrs232">TCP порт для RS232</string>
+    <string name="textTCPPortrs485">TCP порт для RS485</string>
 
 
     <string name="disabled">DISABLED</string>
@@ -316,6 +318,25 @@
     <string name="errorNotValue">Введенное значение не верно!</string>
     <string name="notDataSave">Нету данных для сохранения!</string>
     <string name="ipAdressTitle">IP-адрес</string>
+
+
+
+    <!--регионы-->
+    <string name="EET">Калининград</string>
+    <string name="MSK">Москва</string>
+    <string name="SAMT">Самара</string>
+    <string name="YEKT">Екатеринбург</string>
+    <string name="OMST">Омск</string>
+    <string name="KRAT">Красноярск</string>
+    <string name="NOVT">Новосибирск</string>
+    <string name="IRK">Иркутск</string>
+    <string name="YAKT">Якутск</string>
+    <string name="VLAT">Владивосток</string>
+    <string name="MAGT">Магадан</string>
+    <string name="SAKT">Сахалин</string>
+    <string name="SRET">Среднеколымск</string>
+    <string name="ANAT">Анадырь</string>
+    <string name="PETT">Камчатка</string>
 
 
     <!--ВСЕ ЧТО ИДЕТ ДАЛЬШЕ СЕРВИСНОЕ НЕ ДЛЯ ОТОБРАЖЕНИЯ-->
@@ -489,6 +510,8 @@
     <string name="commandGetCtimeoutM32D">AT$CTIMEOUT?</string>
     <string name="commandGetSmspinM32D">AT$SMSPIN?</string>
     <string name="commandGetTzdataM32D">AT$TZDATA?</string>
+    <string name="commandGetTCPport1">AT$TCPPORT1?</string>
+    <string name="commandGetTCPport2">AT$TCPPORT2?</string>
     <string name="commandGetPort1M32D">AT$PORT1?</string>
     <string name="commandGetPort2M32D">AT$PORT2?</string>
     <string name="commandGetProfile1M32D">AT$PROFILE1?</string>
@@ -515,6 +538,11 @@
     <string name="commandGetSim2Tcp4M32D">AT$SIM2TCP4?</string>
     <string name="commandGetTcpport1M32D">AT$TCPPORT1?</string>
     <string name="commandGetTcpport2M32D">AT$TCPPORT2?</string>
+
+    <string name="commandGetTimeZone"></string>
+    <string name="commandGetTCP232"></string>
+    <string name="commandGetTCP485"></string>
+
     <string name="commandGetDefaultM32D">AT$DEFAULT</string>
     <string name="commandGetExitM32D">AT$EXIT</string>
     <string name="commandGetDiagM32D">AT$DIAG</string>
@@ -710,6 +738,8 @@
     <string name="tcp_4">TCP 4</string>
 
 
+    <string name="errorRS232TCPPort">Неверный TCP порт для RS232</string>
+    <string name="errorRS485TCPPort">Неверный TCP порт для RS485</string>
     <string name="errorValidM32DMode">Неверный режим работы</string>
     <string name="errorValidM32DAPN">Неверный APN для 1 или 2 симки</string>
     <string name="errorValidM32DLogin">Неверный логин для 1 или 2 симки</string>
