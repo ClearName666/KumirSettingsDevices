@@ -31,6 +31,11 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
     private var NAME_TYPE_DEVICE = "KUMIR-M32D READY"
 
+    // флаг присутствия пароля на сим карте
+    private var flagSim1Code = false
+    private var flagSim2Code = false
+    private var flagSmsCommand = false
+
 
     private val mapTimeZoneAndPseudonym = mapOf(
         "EET-2" to 0,
@@ -760,10 +765,13 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
                 if (settingMap[getString(R.string.commandGetSim2PinM32D)]?.
                     contains(getString(R.string.disabled)) == true){
                     binding.switchPinCodeSmsCard2.isChecked = false
+                    // флаг присутствия пароля на сим карте
+                    flagSim2Code = false
 
                     binding.inputPinCodeSmsCard2.setText("")
                 } else {
                     binding.switchPinCodeSmsCard2.isChecked = true
+                    flagSim2Code = true
                 }
 
                 binding.inputSim2Knet.setText(settingMap[getString(R.string.commandGetSim2KnetM32D)])
@@ -783,11 +791,12 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         if (settingMap[getString(R.string.commandGetSmspinM32D)]?.
             contains(getString(R.string.disabled)) == true) {
             binding.switchPinCodeSmsCommand.isChecked = false
+            flagSmsCommand = false
 
             binding.inputPinCodeCommand.setText("")
         } else {
             binding.switchPinCodeSmsCommand.isChecked = true
-
+            flagSmsCommand = true
         }
 
         // вывод режима работы
@@ -894,10 +903,12 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         if (settingMap[getString(R.string.commandGetSim1PinM32D)]?.
             contains(getString(R.string.disabled)) == true){
             binding.switchPinCodeSmsCard.isChecked = false
+            flagSim1Code = false
 
             binding.inputPinCodeSmsCard.setText("")
         } else {
             binding.switchPinCodeSmsCard.isChecked = true
+            flagSim1Code = true
         }
 
         // установка данных об временнй зоне
@@ -1227,11 +1238,23 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             showAlertDialog(getString(R.string.errorValidM32DCtimeOut))
             return false
         }
-        if (!validServis.validSmspin(binding.inputPinCodeCommand.text.toString()) &&
+        /*if (!validServis.validSmspin(binding.inputPinCodeCommand.text.toString()) &&
             binding.inputPinCodeCommand.text?.isNotEmpty() == true) {
             showAlertDialog(getString(R.string.errorValidM32DSmsPin))
             return false
+        }*/
+
+        if (binding.switchPinCodeSmsCommand.isChecked  && !validServis.validSmspin(binding.inputPinCodeCommand.text.toString()) && !flagSmsCommand) {
+            showAlertDialog(getString(R.string.errorValidM32DSmsPin))
+            return false
+        } else {
+            if (binding.switchPinCodeSmsCommand.isChecked && binding.inputPinCodeCommand.text.toString().isNotEmpty() && !validServis.validSmspin(binding.inputPinCodeCommand.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidM32DSmsPin))
+                return false
+            }
         }
+
+
         if (!validServis.validPort1(binding.spinnerSpeed.selectedItem.toString() + "," +
                     binding.spinnerBitDataPort1.selectedItem.toString() + "," +
                     parityPort1  + "," +
@@ -1249,11 +1272,14 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
             return false
         }
-        if (!validServis.validSim1pin(binding.inputPinCodeSmsCard.text.toString()) &&
-            binding.inputPinCodeSmsCard.text?.isNotEmpty() == true) {
-
+        if (binding.switchPinCodeSmsCard.isChecked  && !validServis.validSim1pin(binding.inputPinCodeSmsCard.text.toString()) && !flagSim1Code) {
             showAlertDialog(getString(R.string.errorValidM32DPinCode))
             return false
+        } else {
+            if (binding.switchPinCodeSmsCard.isChecked && binding.inputPinCodeSmsCard.text.toString().isNotEmpty() && !validServis.validSim1pin(binding.inputPinCodeSmsCard.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidM32DPinCode))
+                return false
+            }
         }
 
 
@@ -1339,12 +1365,22 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
                 return false
             }
 
-            if (!validServis.validSim2pin(binding.inputPinCodeSmsCard2.text.toString()) &&
+            if (binding.switchPinCodeSmsCard2.isChecked  && !validServis.validSim2pin(binding.inputPinCodeSmsCard2.text.toString()) && !flagSim2Code) {
+                showAlertDialog(getString(R.string.errorValidM32DPinCode))
+                return false
+            } else {
+                if (binding.switchPinCodeSmsCard2.isChecked && binding.inputPinCodeSmsCard2.text.toString().isNotEmpty() && !validServis.validSim2pin(binding.inputPinCodeSmsCard2.text.toString())) {
+                    showAlertDialog(getString(R.string.errorValidM32DPinCode))
+                    return false
+                }
+            }
+
+            /*if (binding.switchPinCodeSmsCard2.isChecked && !validServis.validSim2pin(binding.inputPinCodeSmsCard2.text.toString()) &&
                 binding.inputPinCodeSmsCard2.text?.isNotEmpty() == true) {
                 showAlertDialog(getString(R.string.errorValidM32DPinCode))
 
                 return false
-            }
+            }*/
             if (!validServis.validSim2apn(binding.inputAPN2.text.toString())) {
                 showAlertDialog(getString(R.string.errorValidM32DAPN))
 

@@ -46,6 +46,8 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
     var curentPkgNumbersim2: Int = 0
 
 
+
+
     // флаг который говорит о том что устройство не исправно
     private var flagErrorCurrentDev: Boolean = false
 
@@ -160,6 +162,20 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
         // установка в 0 графиков
         lineChartSim1("0", "0")
 
+        // изменения цвета текста у графиков
+        binding.lineChartSim1.xAxis.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChartSim1.axisLeft.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChartSim1.axisRight.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChartSim1.legend.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+
+
+        binding.lineChartSim2.xAxis.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChartSim2.axisLeft.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChartSim2.axisRight.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChartSim2.legend.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+
+
+
         return binding.root
     }
 
@@ -242,6 +258,11 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
 
 
     override fun printAllInfo(info: String) {
+
+        // исправления бага что график идет с 0
+        entriesSim1.clear()
+        entriesSim2.clear()
+
         binding.progressBarData.visibility = View.GONE
         flagErrorCurrentDev = false
 
@@ -256,7 +277,17 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
                     masErrorValue.add("\uD83D\uDFE5 $value \n")
                     ""
                 } else {
-                    "\uD83D\uDFE9 $value \n"
+                    try {
+                        if (value.contains("Battery") && value.substringAfter("V ").substringBefore("%").toInt() < 90) {
+                            flagErrorCurrentDev = true
+                            masErrorValue.add("\uD83D\uDFE5 $value \n")
+                            ""
+                        } else {
+                            "\uD83D\uDFE9 $value \n"
+                        }
+                    } catch (e: Exception) {
+                        "\uD83D\uDFE9 $value \n"
+                    }
                 }
             }
         }
@@ -273,13 +304,13 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
         )
 
         // если есть ошибка то выводим диалог
-        if (flagErrorCurrentDev) {
+        /*if (flagErrorCurrentDev) {
             binding.textStateMalfunction.visibility = View.VISIBLE
             binding.textStateNotMalfunction.visibility = View.GONE
         } else {
             binding.textStateMalfunction.visibility = View.GONE
             binding.textStateNotMalfunction.visibility = View.VISIBLE
-        }
+        }*/
     }
 
     override fun printAllOperator(allOperators: String) {
@@ -387,13 +418,8 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
     }
 
     override fun printError() {
-        binding.progressBarOperators.visibility = View.GONE
-
-        binding.Sim1Layout.visibility = View.GONE
-        binding.Sim2Layout.visibility = View.GONE
-
-        //  запрет показа операторов
-        flagViewDiag = false
+        endDiag()
+        endViewDiag()
     }
 
     override fun noConnect() {
@@ -453,6 +479,8 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
 
     private fun lineChartSim1(x: String, y: String) {
 
+
+
         val xInt = extractFirstIntFromString(x)
         val yInt = extractFirstIntFromString(y)
 
@@ -463,7 +491,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             entriesSim1.removeAt(0)
         }
 
-        val dataSet = LineDataSet(entriesSim1, "Сигнал") // создаем набор данных с меткой
+        val dataSet = LineDataSet(entriesSim1, "y - Сигнал, x - Итерация опроса") // создаем набор данных с меткой
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.lineColor) // устанавливаем цвет линии
         dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.valueTextColor) // устанавливаем цвет текста значений
 
@@ -497,7 +525,7 @@ class DiagM32DFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragm
             entriesSim2.removeAt(0)
         }
 
-        val dataSet = LineDataSet(entriesSim2, "Сигнал") // создаем набор данных с меткой
+        val dataSet = LineDataSet(entriesSim2, "y - Сигнал, x - Итерация опроса") // создаем набор данных с меткой
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.lineColor) // устанавливаем цвет линии
         dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.valueTextColor) // устанавливаем цвет текста значений
 

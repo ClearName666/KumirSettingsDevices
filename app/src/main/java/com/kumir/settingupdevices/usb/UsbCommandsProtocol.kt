@@ -626,6 +626,8 @@ class UsbCommandsProtocol {
                         // достигнуто ваксимальное время и нет ответа ошибка
                         (context as Activity).runOnUiThread {
                             context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+                            // вывод ошибок
+                            usbDiag.printError()
                         }
                         flagWorkDiag = false
                     }
@@ -633,6 +635,9 @@ class UsbCommandsProtocol {
                     if (!sandOkCommand(context, command)) {
                         (context as Activity).runOnUiThread {
                             context.showAlertDialog(context.getString(R.string.errorVersionModem))
+
+                            // вывод ошибок
+                            usbDiag.printError()
                         }
                     }
 
@@ -686,6 +691,11 @@ class UsbCommandsProtocol {
 
                         // отчистка данных
                         context.curentData = ""
+                    }
+                } else {
+                    context.runOnUiThread {
+                        // вывод ошибок
+                        usbDiag.printError()
                     }
                 }
 
