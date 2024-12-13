@@ -1,6 +1,5 @@
 package com.kumir.settingupdevices.usb
 
-import android.R.attr.data
 import android.app.Activity
 import android.content.Context
 import android.hardware.usb.UsbDevice
@@ -12,6 +11,7 @@ import com.felhr.usbserial.UsbSerialInterface
 import com.felhr.usbserial.UsbSerialInterface.UsbCTSCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbDSRCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
+import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.testappusb.settings.ConstUsbSettings
 import java.io.IOException
@@ -65,8 +65,10 @@ class Usb(private val context: Context) {
     private var flagAtCommand: Boolean = true
     private var flagReadDsrCts: Boolean = false
     private var flagIgnorRead: Boolean = false
+    private var flagCheckSandAtOk: Boolean = true
+    private var errorNumNoSandAt: Int = 0
 
-    private var flagSandAtOk: Boolean = false
+    /*private var flagSandAtOk: Boolean = false*/
 
     private var dsrState = false
     private var ctsState = false
@@ -485,7 +487,22 @@ class Usb(private val context: Context) {
                                         else
                                             Charset.forName("Windows-1251")), bytes)
                                 } else {
-                                    flagSandAtOk = String(bytes, Charsets.UTF_8).contains("OK")
+                                    flagCheckSandAtOk = true
+                                    /*flagSandAtOk = String(bytes, Charsets.UTF_8).contains("OK")*/
+
+                                    Log.d("atLog", String(bytes, Charsets.UTF_8))
+
+                                    // ответ на ае не ок
+                                    /*if (!flagSandAtOk) {
+                                        onClear()
+                                        flagAtCommandYesNo = false
+
+                                        if (context is MainActivity) {
+                                            context.runOnUiThread {
+                                                context.showAlertDialog(context.getString(R.string.errorAtCommand))
+                                            }
+                                        }
+                                    }*/
                                 }
 
                                 Log.d("loadFileStm", "read: ${bytes.toHexString()}")
@@ -550,10 +567,38 @@ class Usb(private val context: Context) {
                                     Thread.sleep(TIMEOUT_MOVE_AT)
                                     if (checkConnectToDevice() ) {
                                         if (flagAtCommand && flagAtCommandYesNo) {
+                                            // устанавливаем что ответа пока нету
+                                            flagCheckSandAtOk = false
+
                                             writeDevice(at, false)
                                             Log.d("atSand", at)
                                             flagIgnorRead = true
-                                            Thread.sleep(TIMEOUT_IGNORE_AT)
+
+                                            // задаржка так же с учетом скорости на которойц работает моджем 20 индекс увеличения времени по уменьшению скороси
+                                            Thread.sleep(TIMEOUT_IGNORE_AT * (20 / (ConstUsbSettings.speedIndex + 1)))
+
+                                            // ответ на ае не пришел то прибавляем количество ошибок в at команды
+                                            if (!flagCheckSandAtOk) {
+                                                errorNumNoSandAt++
+                                            } else {
+                                                errorNumNoSandAt = 0
+                                            }
+
+                                            // если больше 3 ошибок то выводим что потеряли связь
+                                            if (errorNumNoSandAt > 3) {
+                                                onClear()
+                                                flagAtCommandYesNo = false
+
+                                                if (context is MainActivity) {
+                                                    context.runOnUiThread {
+                                                        context.showAlertDialog(context.getString(R.string.errorAtCommand))
+                                                    }
+                                                }
+                                                errorNumNoSandAt = 0
+                                            }
+
+
+
                                             flagIgnorRead = false
                                         }
                                     } else { // нету подключение вылет из потока

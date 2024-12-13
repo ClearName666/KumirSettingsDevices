@@ -1338,6 +1338,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 if (timeLeft > 0) {
                     timeLeft--
 
+                    // проверка на подключение при обработки индитифицирующего номера
+                    if (!usb.checkConnectToDevice()) {
+                        timeLeft = 0
+                        alertDialog.dismiss()
+                    }
+
                     if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
 
                         // проверка на соответсвие девайса
@@ -1416,6 +1422,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 if (timeLeft > 0) {
                     timeLeft--
 
+                    // проверка на подключение при обработки индитифицирующего номера
+                    if (!usb.checkConnectToDevice()) {
+                        timeLeft = 0
+                        alertDialog.dismiss()
+                    }
+
                     if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
 
                         // проверка на соответсвие девайса
@@ -1485,6 +1497,12 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                 if (timeLeft > 0) {
                     timeLeft--
+
+                    // проверка на подключение при обработки индитифицирующего номера
+                    if (!usb.checkConnectToDevice()) {
+                        timeLeft = 0
+                        alertDialog.dismiss()
+                    }
 
                     if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
 

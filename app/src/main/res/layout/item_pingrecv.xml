@@ -6,69 +6,73 @@ android:id="@+id/ItemPingrecv"
 android:layout_width="match_parent"
 android:layout_height="wrap_content">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp"
-    android:background="@color/fun3Element"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutParams"
-        android:layout_width="wrap_content"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:background="@color/fun3Element"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/texttimeOutPackg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/timeOutPackg"
-            android:textColor="@color/background"
-            app:layout_constraintStart_toStartOf="@+id/textnumPackg"
-            app:layout_constraintTop_toBottomOf="@+id/textnumPackg" />
-
-        <TextView
             android:id="@+id/textnumPackg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@string/numPackg"
+            android:text="@string/numPackgChar"
             android:textColor="@color/background"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayoutParams"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textSignal"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutParams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/signelPackg"
-            android:textColor="@color/background"
-            app:layout_constraintStart_toStartOf="@+id/texttimeOutPackg"
-            app:layout_constraintTop_toBottomOf="@+id/texttimeOutPackg" />
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
+            <TextView
+                android:id="@+id/texttimeOutPackg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/timeOutPackg"
+                android:textColor="@color/background"
+                app:layout_constraintStart_toStartOf="@+id/textnumPackg"
+                app:layout_constraintTop_toBottomOf="@+id/textnumPackg" />
+
+            <TextView
+                android:id="@+id/textSignal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signelPackg"
+                android:textColor="@color/background"
+                app:layout_constraintStart_toStartOf="@+id/texttimeOutPackg"
+                app:layout_constraintTop_toBottomOf="@+id/texttimeOutPackg" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/imageSignal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutParams"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/constraintLayoutParams"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayoutParams"
+            app:srcCompat="@drawable/signal_1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/imageSignal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutParams"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayoutParams"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayoutParams"
-        app:srcCompat="@drawable/signal_1" />
-</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

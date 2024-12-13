@@ -201,11 +201,15 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
                             binding.inputNameSavePreset.text.toString(),
                             binding.spinnerServer.selectedItemPosition,
                             binding.inputAPN.text.toString(),
-                            "kumir.dv",
+                            if (binding.layoutSim1.visibility == View.VISIBLE)
+                                binding.inputSim1Knet.text.toString()
+                            else
+                                binding.inputSim2Knet.text.toString(),
                             "1",
                             binding.inputTextLoginGPRS.text.toString(),
                             binding.inputPasswordGPRS.text.toString()
                         )
+
                         binding.inputNameSavePreset.setText("")
                     }
                 }
@@ -1088,7 +1092,7 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         }
 
 
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
     }
 
     private fun onClickReadSettingsDevice() {

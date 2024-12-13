@@ -44,7 +44,7 @@ class ItemPingrecvAdapter (val context: Context,
                 holder.textSignal.text = ""
             }
 
-            holder.textnumPackg.text = context.getString(R.string.numPackg) + " " + currentItem.number
+            holder.textnumPackg.text = context.getString(R.string.numPackgChar) + " " + currentItem.number
             holder.texttimeOutPackg.text = context.getString(R.string.timeOutPackg) + " " + currentItem.timeout
 
             // выводим градацию сигнала

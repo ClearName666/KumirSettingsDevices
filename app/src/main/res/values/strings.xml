@@ -122,7 +122,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.92</string>
+    <string name="versionApp">Версия: 1.9.94</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -191,9 +191,9 @@
     <string name="devmodeMONITOR">MONITOR</string>
 
 
-    <string name="rangeMod1">1) 864 865МГц</string>
-    <string name="rangeMod2">2) 866 868МГц</string>
-    <string name="rangeMod3">3) 868.7 869.2МГц</string>
+    <string name="rangeMod1">1) 864 - 865МГц</string>
+    <string name="rangeMod2">2) 866 - 868МГц</string>
+    <string name="rangeMod3">3) 868.7 - 869.2МГц</string>
 
     <string name="deviceAccountingSPT941">СПТ-941</string>
     <string name="deviceAccountingSPT944">СПТ-944</string>
@@ -276,7 +276,7 @@
 
     <string name="rangeTitle">Диапазон</string>
     <string name="keyNetTitle">Ключ доступа к сети (макс. 60 симв.)</string>
-    <string name="powerCures">Мощность излучения(-16dBm .. 14bBm)</string>
+    <string name="powerCures">Мощность излучения (-16dBm .. 14bBm)</string>
     <string name="NetworkSettings">Настройки сетевого подключения</string>
     <string name="modeWork">Режим работы</string>
     <string name="apnTitle">APN (Имя точки доступа)</string>
@@ -317,6 +317,7 @@
     <string name="errorTypeSensor">Аддресс не сответствует данному устройству! Проверьте точно ли у вас нужный датчик!</string>
     <string name="errorNotValue">Введенное значение не верно!</string>
     <string name="notDataSave">Нету данных для сохранения!</string>
+    <string name="errorAtCommand">Похоже что устройство по какой то причине перестало отвечать!</string>
     <string name="ipAdressTitle">IP-адрес</string>
 
 
@@ -650,6 +651,7 @@
     <string name="BSS">Базовая станция:</string>
     <string name="SNR">Уровень сигнала:</string>
     <string name="numPackg">Номер пакета:</string>
+    <string name="numPackgChar">№</string>
     <string name="signelPackg">Сигнал:</string>
     <string name="timeOutPackg">Задержка: </string>
     <string name="operatorsTitle">Операторы связи</string>
@@ -688,6 +690,7 @@
     <string name="pachTitle">Путь для сохранения!</string>
     <string name="settingTitle">Настройка</string>
     <string name="diagTitle">Диагностика</string>
+    <string name="diagTitleM32D">Диагностика M32D</string>
     <string name="diagStopButton">Завершить диагностику</string>
     <string name="step1MainTitle">1) Подключите устройство к USB-порту с помощью адаптера КУМИР</string>
     <string name="step2MainTitle">2) Выберите свое устройство в боковом меню</string>

@@ -348,15 +348,24 @@ class UsbCommandsProtocol {
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)*/
 
                     // сохранение данных AT$SAVE
+                    context.curentData  = ""
                     context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false, flagCode1251=flagCode1251)
                     Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                    if (!context.curentData.contains(context.getString(R.string.okSand))) {
+                        (context as Activity).runOnUiThread {
+                            context.showAlertDialog(
+                                context.getString(R.string.commandSaveSettings) + context.getString(R.string.errorSendDataWrite)
+                            )
+                        }
 
-                    if (flagExit) {
-                        context.usb.writeDevice(context.getString(R.string.commandExitSettingsMode), false, flagCode1251=flagCode1251)
-                        Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                    } else {
+                        if (flagExit) {
+                            context.usb.writeDevice(context.getString(R.string.commandExitSettingsMode), false, flagCode1251=flagCode1251)
+                            Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
+                        }
+
+                        usbFragment.readSettingStart()
                     }
-
-                    usbFragment.readSettingStart()
                 }
 
                 if (flagRead) {
@@ -1145,7 +1154,7 @@ class UsbCommandsProtocol {
                     var dataLangth: Int = context.curentData.length
                     while (flagWorkDiagPm) {
                         timeUpdate++
-                        if (timeUpdate % 220 == 0) {  // каждые 50 сек проверка появилась ли что то
+                        if (timeUpdate % 80 == 0) {  // каждые 50 сек проверка появилась ли что то
                             if (context.curentData.length > dataLangth) {
                                 dataLangth = context.curentData.length
                                 break
