@@ -29,9 +29,9 @@ class ItemAbanentAdapter (val context: Context, private val list: List<ItemAbane
 
     override fun onBindViewHolder(holder: ItemAbanentViewHolder, position: Int) {
         val item = list[position]
-        holder.txtNumAbanent.text = context.getString(R.string.numberAbanentTitle) + " " + item.num
-        holder.textNumAbanent.text = context.getString(R.string.numberAbanentTitle) + " " + item.num
-        holder.textName.text = context.getString(R.string.nameTitle) + " " + item.name
+        holder.txtNumAbanent.text = context.getString(R.string.keyCardAbanent) + " " + item.num
+        holder.textNumAbanent.text = context.getString(R.string.keyCardAbanent) + " " + item.num
+        holder.textName.text = context.getString(R.string.nameTitleСolon) + " " + item.name
         holder.textNumDevice.text = context.getString(R.string.numDevTitle) + " " + item.numDevice
         holder.textDriver.text = context.getString(R.string.driverTitle) + " " + item.driver
         holder.textSettingsRS485.text = context.getString(R.string.setPorsTitle) + " " + item.port

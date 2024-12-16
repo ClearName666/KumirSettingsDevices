@@ -31,6 +31,10 @@ class M32LiteFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFr
 
     override val usbCommandsProtocol = UsbCommandsProtocol()
 
+    // флаг присутствия пароля на сим карте
+    private var flagSim1Code = false
+    private var flagSmsCommand = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -516,21 +520,24 @@ class M32LiteFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFr
         if (settingMap[getString(R.string.commandGetSimPin)]?.
             contains(getString(R.string.disabled)) == true){
             binding.switchPinCodeSmsCard.isChecked = false
+            flagSim1Code = false
 
             binding.inputPinCodeSmsCard.setText("")
         } else {
             binding.switchPinCodeSmsCard.isChecked = true
+            flagSim1Code = true
 
         }
 
         if (settingMap[getString(R.string.commandGetSmsPin)]?.
             contains(getString(R.string.disabled)) == true) {
             binding.switchPinCodeSmsCommand.isChecked = false
+            flagSmsCommand = false
 
             binding.inputPinCodeCommand.setText("")
         } else {
             binding.switchPinCodeSmsCommand.isChecked = true
-
+            flagSmsCommand = true
         }
 
         // работа со spiner (ражим работы)
@@ -735,11 +742,23 @@ class M32LiteFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFr
         val validDataSettingsDevice = ValidDataSettingsDevice()
 
         // проверка на русские символы в серверах и apn
-        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputAPN.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputTextLoginGPRS.text.toString()) ||
-            !validDataSettingsDevice.serverValid(binding.inputPasswordGPRS.text.toString())) {
-            showAlertDialog(getString(R.string.errorRussionChar))
+        if (!validDataSettingsDevice.serverValid(binding.inputIPDNS.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar) + "Поле - IPDNS")
+            return false
+        }
+
+        if (!validDataSettingsDevice.serverValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar) + "Поле - APN")
+            return false
+        }
+
+        if (!validDataSettingsDevice.serverValid(binding.inputTextLoginGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar) + "Поле - логин")
+            return false
+        }
+
+        if (!validDataSettingsDevice.serverValid(binding.inputPasswordGPRS.text.toString())) {
+            showAlertDialog(getString(R.string.errorRussionChar) + "Поле - пароль")
             return false
         }
 
@@ -785,21 +804,42 @@ class M32LiteFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFr
 
 
         // проверка на 4 символа пароля сим и смс кода
-        if (binding.switchPinCodeSmsCommand.isChecked) {
+
+        if (binding.switchPinCodeSmsCommand.isChecked  && !validDataSettingsDevice.validSmspin(binding.inputPinCodeCommand.text.toString()) && !flagSmsCommand) {
+            showAlertDialog(getString(R.string.errorValidM32DSmsPin))
+            return false
+        } else {
+            if (binding.switchPinCodeSmsCommand.isChecked && binding.inputPinCodeCommand.text.toString().isNotEmpty() && !validDataSettingsDevice.validSmspin(binding.inputPinCodeCommand.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidM32DSmsPin))
+                return false
+            }
+        }
+
+        /*if (binding.switchPinCodeSmsCommand.isChecked) {
             if (binding.inputPinCodeCommand.text?.isNotEmpty() != false &&
                 !validDataSettingsDevice.simPasswordValid(binding.inputPinCodeCommand.text.toString())) {
                 showAlertDialog(getString(R.string.errorValidSim))
                 return false
             }
+        }*/
+
+        if (binding.switchPinCodeSmsCard.isChecked  && !validDataSettingsDevice.validSim1pin(binding.inputPinCodeSmsCard.text.toString()) && !flagSim1Code) {
+            showAlertDialog(getString(R.string.errorValidM32DPinCode))
+            return false
+        } else {
+            if (binding.switchPinCodeSmsCard.isChecked && binding.inputPinCodeSmsCard.text.toString().isNotEmpty() && !validDataSettingsDevice.validSim1pin(binding.inputPinCodeSmsCard.text.toString())) {
+                showAlertDialog(getString(R.string.errorValidM32DPinCode))
+                return false
+            }
         }
 
-        if (binding.switchPinCodeSmsCard.isChecked) {
+        /*if (binding.switchPinCodeSmsCard.isChecked) {
             if (binding.inputPinCodeSmsCard.text?.isNotEmpty() != false &&
                 !validDataSettingsDevice.simPasswordValid(binding.inputPinCodeSmsCard.text.toString())) {
                 showAlertDialog(getString(R.string.errorValidSim))
                 return false
             }
-        }
+        }*/
 
         return true
     }

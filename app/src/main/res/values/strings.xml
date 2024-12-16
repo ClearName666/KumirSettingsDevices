@@ -24,6 +24,7 @@
     <string name="notValidRangeP101">Интервал должен быть в диапазоне от 10 до 200</string>
     <string name="notIdDeviceP101">Номер прибора может быть только: 234, 236, 204, 230</string>
     <string name="notValidNameP101">Имя не может быть пустым и не должно содержать символов отличных от CP1251</string>
+    <string name="noNumberDevice">Поле номер прибора не может быть пустым!</string>
     <string name="notKeyValidP101">Ключ не может быть пустым!</string>
     <string name="notAddressValidP101">Сетевой адрес не может быть пустым!</string>
     <string name="notValidTimeOutP101">Отображение значений должно быть в диапазоне от 1 до 600</string>
@@ -78,7 +79,7 @@
     <string name="nonIniFile">Выберите ini файл!</string>
     <string name="nonValidIniFile">Ваш файл ini не корректен!</string>
     <string name="delFileYesNo">Вы уверены что хотите удалить шаблон </string>
-    <string name="delAbonent">Вы уверены что хотите удалить абонента - </string>
+    <string name="delAbonent">Вы уверены что, хотите удалить абонента - </string>
     <string name="readAlready">Вы уже прочли устройство</string>
     <string name="errorLoadStm">Произошла ошибка при загрузки прошивки в модем!</string>
     <string name="pleaseResetStm203">Для продолжения перезагрузите устройство и нажмите кнопку что бы уведомить о перезагрузки!</string>
@@ -122,7 +123,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.94</string>
+    <string name="versionApp">Версия: 1.9.95</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -647,6 +648,7 @@
     <string name="selectPrisetSettings">Выберите шаблон настроек!</string>
     <string name="startDiagTitle">Начать диагностику</string>
     <string name="endDiagTitle">Завершить диагностику</string>
+    <string name="endSettings">Завершить настройку!</string>
     <string name="operatorTitle">Оператор связи:</string>
     <string name="BSS">Базовая станция:</string>
     <string name="SNR">Уровень сигнала:</string>
@@ -704,12 +706,14 @@
     <string name="sizeMemberTitle">Объём памяти:</string>
     <string name="addAbanentTitle">Добавить абонента</string>
     <string name="abonnentPresent">Такой абонент уже есть!</string>
-    <string name="readAbanents">Получить абонентов</string>
+    <string name="readAbanents">Загрузить абонентов</string>
     <string name="numberAbanentTitle">Абонент номер:</string>
+    <string name="keyCardAbanent">Ключ в карточек абонента:</string>
     <string name="keyTitlee">Ключ</string>
     <string name="paramsTitle">Параметры:</string>
     <string name="setPorsTitle">Настройки порта: </string>
     <string name="nameTitle">Имя</string>
+    <string name="nameTitleСolon">Имя:</string>
     <string name="nameNotValid">Вы не ввели имя для драйвера или ввели его не корректно!</string>
     <string name="numDevTitle">Номер прибора: </string>
     <string name="range1Title">Интервал</string>
@@ -725,6 +729,7 @@
     <string name="updateNameTitle">Похоже что шаблон с таким именем уже есть! Вы хотите обновить существующий или можете дать новое имя шаблону!</string>
     <string name="updateNameTitleForDriver">Введите имя драйвера!</string>
     <string name="newNameTitle">Новое имя</string>
+    <string name="loadName">Загрузить</string>
     <string name="update">Обновить</string>
     <string name="newName">Новое название</string>
     <string name="grafick">График</string>

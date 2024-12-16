@@ -834,6 +834,39 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
     private fun validAll(): Boolean {
         val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        if (binding.inputKey.text.toString().isEmpty()) {
+            showAlertDialog(getString(R.string.notKeyValidP101))
+            return false
+        }
+
+        if (!validDataSettingsDevice.validNameP101(binding.inputName.text.toString())) {
+            showAlertDialog(getString(R.string.notValidNameP101))
+            return false
+        }
+
+        if (itemDrivers.isEmpty()) {
+            showAlertDialog(getString(R.string.notDriver))
+
+            return false
+        }
+
+        if (binding.inputNumDevice.text.toString().isEmpty()) {
+            showAlertDialog(getString(R.string.noNumberDevice))
+            return false
+        }
+
+        if (!validDataSettingsDevice.validRangeP101(binding.inputRange.text.toString()) ||
+            binding.inputRange.text.toString().isEmpty()) {
+            showAlertDialog(getString(R.string.notValidRangeP101))
+            return false
+        }
+
+        if (!validDataSettingsDevice.validTimeP101(binding.inputTimeOut.text.toString())) {
+            showAlertDialog(getString(R.string.notValidTimeP101))
+            return false
+        }
+
         if (!validDataSettingsDevice.validPasswordP101(binding.inputPassword.text.toString()) &&
             binding.inputPassword.text.toString().isNotEmpty() && !binding.checkBoxHex.isChecked) {
             showAlertDialog(getString(R.string.notValidPasswordP101))
@@ -842,23 +875,13 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             showAlertDialog(getString(R.string.notValidPasswordP101Hex))
             return false
         }
-        if (!validDataSettingsDevice.validRangeP101(binding.inputRange.text.toString()) ||
-            binding.inputRange.text.toString().isEmpty()) {
-            showAlertDialog(getString(R.string.notValidRangeP101))
-            return false
-        }
+
         /*if (!validDataSettingsDevice.validIdDeviceP101(binding.inputNumDevice.text.toString())) {
             showAlertDialog(getString(R.string.notIdDeviceP101))
             return false
         }*/
-        if (!validDataSettingsDevice.validNameP101(binding.inputName.text.toString())) {
-            showAlertDialog(getString(R.string.notValidNameP101))
-            return false
-        }
-        if (binding.inputKey.text.toString().isEmpty()) {
-            showAlertDialog(getString(R.string.notKeyValidP101))
-            return false
-        }
+
+
         if (binding.inputAdress.text.toString().isEmpty()) {
             showAlertDialog(getString(R.string.notAddressValidP101))
             return false
@@ -868,16 +891,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             showAlertDialog(getString(R.string.notValidTimeOutP101))
             return false
         }
-        if (!validDataSettingsDevice.validTimeP101(binding.inputTimeOut.text.toString())) {
-            showAlertDialog(getString(R.string.notValidTimeP101))
-            return false
-        }
 
-        if (itemDrivers.isEmpty()) {
-            showAlertDialog(getString(R.string.notDriver))
-
-            return false
-        }
 
         if (currentAbanent == null && binding.inputKey.text.toString() in listKeyAbanents) {
             showAlertDialog(getString(R.string.abonnentPresent))
@@ -899,11 +913,16 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
     // перед удалением у полузователя буте справшиваться ч\хочет ли он удалить или нет
     override fun del(data: ItemAbanent) {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setMessage(getString(R.string.delAbonent) + data.name)
+        builder.setMessage(getString(R.string.delAbonent) + " " + data.name)
 
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             delAbonent(data)
             dialog.dismiss()
+        }
+
+        // Кнопка отмены
+        builder.setNegativeButton(getString(R.string.cancellation)) { dialog, _ ->
+            dialog.dismiss() // Просто закрываем диалог
         }
 
         val dialog = builder.create()
