@@ -350,8 +350,22 @@ class UsbCommandsProtocol {
                     // сохранение данных AT$SAVE
                     context.curentData  = ""
                     context.usb.writeDevice(context.getString(R.string.commandSaveSettings), false, flagCode1251=flagCode1251)
-                    Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE)
-                    if (!context.curentData.contains(context.getString(R.string.okSand))) {
+
+                    // вывод в загрузочное диалог информации
+                    (context as Activity).runOnUiThread {
+                        context.printInfoTermAndLoaging(context.getString(R.string.commandSaveSettings), prograss)
+                    }
+
+                    // система получения ответа и ожидание полной отправки данных
+                    expectationSand(context, iterableMaxPlusDef=200)
+
+                    // вывод в загрузочное диалог информации
+                    (context as Activity).runOnUiThread {
+                        context.printInfoTermAndLoaging(context.curentData, prograss)
+                    }
+
+
+                    if (!context.curentData.contains(context.getString(R.string.okSand)) && !context.curentData.contains(context.getString(R.string.commandSaveSettings))) {
                         (context as Activity).runOnUiThread {
                             context.showAlertDialog(
                                 context.getString(R.string.commandSaveSettings) + context.getString(R.string.errorSendDataWrite)
@@ -392,7 +406,7 @@ class UsbCommandsProtocol {
     }
 
     // метод для получения настроек устройства
-    fun readSignalEnfora(command: String, context: Context, diagSiagnalIntarface: DiagSiagnalIntarface) {
+    fun readSignalEnfora(command: String, context: Context, diagSiagnalIntarface: DiagSiagnalIntarface, command2: String? = null) {
         flagWorkChackSignal = true
 
 
@@ -446,6 +460,41 @@ class UsbCommandsProtocol {
 
                     // нормаизируем данняе и разделяем
                     val data: List<String> = formatDataCommandsNormolize(context.curentData).split(",")
+
+                    context.curentData = ""
+
+                    // получения данных по второй команды если она есть
+                    if (command2 != null) {
+                        // если неудачно отправили то выход
+                        if (!context.usb.writeDevice(command2, false)) {
+                            (context as Activity).runOnUiThread {
+                                // меняем текст кнопки
+                                if (flagWorkChackSignal)
+                                    diagSiagnalIntarface.onErrorStopChackSignal()
+                            }
+                            break@out
+                        }
+
+                        // система получения ответа и ожидание полной отправки данных
+                        if (!expectationSand(context)) {
+
+                            // достигнуто ваксимальное время и нет ответа ошибка
+                            (context as Activity).runOnUiThread {
+                                context.showAlertDialog(context.getString(R.string.errorTimeOutSand))
+
+                                // меняем текст кнопки
+                                if (flagWorkChackSignal)
+                                    diagSiagnalIntarface.onErrorStopChackSignal()
+                            }
+                            break@out
+                        }
+
+                        // вывод оператора связи
+                        (context as Activity).runOnUiThread {
+                            diagSiagnalIntarface.onViewCommand2(formatDataCommandsNormolize(context.curentData))
+                        }
+                    }
+
 
                     // после получения данных отправляем их на отображение
                     if (flagWorkChackSignal) {
@@ -1253,6 +1302,8 @@ class UsbCommandsProtocol {
 
     // поиск скорости
     private fun findSpeed(context: MainActivity): Boolean {
+        val formatDataProtocol = FormatDataProtocol()
+
         // ищем нужную скорость для общения
         for (bitData in BITDATA_INDEX_MIN..BITDATA_INDEX_MAX) {
             for (stopBit in STOPBIT_INDEX_MIN..STOPBIT_INDEX_MAX) {
@@ -1268,8 +1319,10 @@ class UsbCommandsProtocol {
                             // вывод в загрузочное диалог информации
                             (context as Activity).runOnUiThread {
                                 context.printInfoTermAndLoaging(
-                                    speed.toString() + parity.toString() +
-                                            stopBit.toString() + bitData.toString() + "\n", 0)
+                                    "${formatDataProtocol.getSpeedFromIndex(speed)}, " +
+                                        "${formatDataProtocol.formatBitDataFromIndex(bitData)}, " +
+                                        "${formatDataProtocol.formatParityFromIndex(parity)}, " +
+                                        "${formatDataProtocol.formatStopBitFromIndex(stopBit)}\n", 0)
                             }
 
                             // отправка тестовой команды
@@ -1280,7 +1333,7 @@ class UsbCommandsProtocol {
                             Thread.sleep(WAITING_FOR_THE_TEAMS_RESPONSE_FOR_SPEED * sleepForMinSpeed)
 
                             // если скорость найдена то выходим
-                            if (context.curentData.contains(context.getString(R.string.okSand))) {
+                            if (context.curentData.contains(":") ){
                                 return true
                             }
                         } else {
@@ -1295,11 +1348,11 @@ class UsbCommandsProtocol {
 
 
     // система получения ответа и ожидание полной отправки данных
-    private fun expectationSand(context: MainActivity, kTime: Int = 1, diag: Boolean = false): Boolean {
+    private fun expectationSand(context: MainActivity, kTime: Int = 1, diag: Boolean = false, iterableMaxPlusDef: Int = 1): Boolean {
 
 
         // Ожидание что устройство отправит хоть что то максимум ждет 500 мс
-        var maxCntIter: Int = MAX_CNT_EXPECTATION_SAND
+        var maxCntIter: Int = MAX_CNT_EXPECTATION_SAND + iterableMaxPlusDef
         while (context.curentData.isEmpty()) {
 
             // если режим диагностики то
@@ -1318,7 +1371,12 @@ class UsbCommandsProtocol {
         while (context.curentData.isNotEmpty()) {
 
             // формула tmpTimeout := (((1 * (8 + 2 + 1)) * 1000) / speed) + 10;
-            Thread.sleep((110000 / context.usb.speedList[ ConstUsbSettings.speedIndex ] + 10).toLong())
+            if (ConstUsbSettings.speedIndex == 6 || ConstUsbSettings.speedIndex == 7) {
+                Thread.sleep(250)
+            } else {
+                Thread.sleep((110000 / context.usb.speedList[ ConstUsbSettings.speedIndex ] + 10).toLong())
+            }
+
 
             // если режим диагностики то
             if (diag && !flagWorkDiag) {
@@ -1392,6 +1450,10 @@ class UsbCommandsProtocol {
 
 
     private fun formatDataCommandsNormolize(data: String): String {
+
+        if (!data.contains(":") && data.substringAfter("?").substringBefore("\n").trim().isNotEmpty())
+            return data.substringAfter("?").substringBefore("\n").trim()
+
         if (!data.contains(":")) return ""
         return data.substringAfter(":").substringBefore("\n").trim()
     }

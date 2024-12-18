@@ -553,7 +553,7 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
             // верийный номер и версия прошибки
             binding.serinerNumber.text = getString(R.string.serinerNumber) +
-                    "\n" + settingMap[getString(R.string.commandGetSerialNum)]
+                    "\n" + settingMap[getString(R.string.commandGetSerialNum)]?.replace("0000-00000", "")?.replace("-", "")
 
             binding.textVersionFirmware.text = getString(R.string.versionProgram) +
                     "\n" + settingMap[getString(R.string.commandGetVersionFirmware)]

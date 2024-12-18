@@ -64,7 +64,7 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         if (flagPermissionChackSignal) {
             if (!flagClickChackSignal) {
                 usbCommandsProtocol.readSignalEnfora(getString(R.string.commandGetLevelSignalAndErrors),
-                    requireContext(), this)
+                    requireContext(), this, getString(R.string.commandGetOperatirGSM))
                 binding.buttonChackSignal.text = getString(R.string.ActivChackSignalTitle)
 
                 flagClickChackSignal = true
@@ -161,6 +161,14 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
 
     override fun onPrintIP(ip: String) {
         binding.textIp.text = getString(R.string.ip) + " " + ip
+    }
+
+    override fun onViewCommand2(data: String) {
+        val operationGSM: String = getString(R.string.communicationOperatorTitle) + " " +
+            data.substringAfter("\"")?.substringBefore("\"")
+
+        binding.textCommunicationOperator.text = operationGSM
+        super.onViewCommand2(data)
     }
 
     override fun writeSettingStart() {}

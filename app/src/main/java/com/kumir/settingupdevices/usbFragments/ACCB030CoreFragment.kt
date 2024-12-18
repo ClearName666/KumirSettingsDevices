@@ -784,7 +784,7 @@ class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, Pris
             return false
         }
 
-        if (!validDataSettingsDevice.validServer(binding.inputGSMOper.text.toString())) {
+        if (!validDataSettingsDevice.validServer(binding.inputGSMOper.text.toString()) && binding.inputGSMOper.text.toString().isNotEmpty()) {
             showAlertDialog(getString(R.string.errorValidServerCore))
             return false
         }

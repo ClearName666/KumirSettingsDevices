@@ -1017,7 +1017,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="30dp"
-                                android:text="@string/autoFindDevice"
+                                android:text="@string/autoFindSensors"
                                 android:textColor="@color/textColor"
                                 android:textSize="16sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageDevoceLogo23"

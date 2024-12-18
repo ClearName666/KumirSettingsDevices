@@ -81,6 +81,9 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         if (context is MainActivity) {
             context.printDeviceTypeName(getString(R.string.accb030Firmware))
             context.additionallyTextTimerDialog = getString(R.string.coreProgramDialogText)
+
+            // установка повышенной задержки для модема прошивки т к он медленный
+            context.usb.TIMEOUT_IGNORE_AT = 700
         }
 
         binding.DisActivPort1SetiingsPriset.setOnClickListener {
@@ -153,6 +156,7 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         }
 
         setupInputValidation()
+
 
         return binding.root
     }
@@ -293,6 +297,9 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
         if (context is MainActivity) {
             context.usb.flagAtCommandYesNo = false
             context.additionallyTextTimerDialog = ""
+
+            // возврат обрано к исходным значениям задержки
+            context.usb.TIMEOUT_IGNORE_AT = 30
         }
 
         super.onDestroyView()
@@ -550,7 +557,7 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                     "stop=${formatDataProtocol.formatStopBitFromIndex(binding.spinnerSelectStopBitPort1.selectedItemPosition)}"
         )
 
-        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this)
+        usbCommandsProtocol.writeSettingDevice(dataMap, requireContext(), this, false)
     }
 
     override fun lockFromDisconnected(connect: Boolean) {

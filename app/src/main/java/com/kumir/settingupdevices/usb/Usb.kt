@@ -26,7 +26,6 @@ class Usb(private val context: Context) {
     companion object {
         const val TIMEOUT_CHECK_CONNECT: Long = 100 // таймаут для проверки подключения
         const val TIMEOUT_MOVE_AT: Long = 3000
-        const val TIMEOUT_IGNORE_AT: Long = 30
 
         // при попытки повторного подключения ...
         const val CNT_RECONNECT_DEVISE: Int = 700
@@ -37,6 +36,9 @@ class Usb(private val context: Context) {
 
     val speedList: ArrayList<Int> = arrayListOf(
         300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400) // скорости в бодах
+
+
+    var TIMEOUT_IGNORE_AT: Long = 30
 
     // переводы строк
     private var lineFeed = "\r"
@@ -507,7 +509,7 @@ class Usb(private val context: Context) {
 
                                 Log.d("loadFileStm", "read: ${bytes.toHexString()}")
 
-                                Log.d("usbData", "read: ${bytes.toHexString()}")
+                                Log.d("usbData", "read: ${String(bytes, Charsets.UTF_8)}")
                             }
 
                             // чтение cts
@@ -574,30 +576,30 @@ class Usb(private val context: Context) {
                                             Log.d("atSand", at)
                                             flagIgnorRead = true
 
-                                            // задаржка так же с учетом скорости на которойц работает моджем 20 индекс увеличения времени по уменьшению скороси
+                                            // задаржка так же с учетом скорости на которойц работает модем 20 индекс увеличения времени по уменьшению скороси
                                             Thread.sleep(TIMEOUT_IGNORE_AT * (20 / (ConstUsbSettings.speedIndex + 1)))
 
-                                            // ответ на ае не пришел то прибавляем количество ошибок в at команды
-                                            if (!flagCheckSandAtOk) {
-                                                errorNumNoSandAt++
-                                            } else {
-                                                errorNumNoSandAt = 0
-                                            }
-
-                                            // если больше 3 ошибок то выводим что потеряли связь
-                                            if (errorNumNoSandAt > 3) {
-                                                onClear()
-                                                flagAtCommandYesNo = false
-
-                                                if (context is MainActivity) {
-                                                    context.runOnUiThread {
-                                                        context.showAlertDialog(context.getString(R.string.errorAtCommand))
-                                                    }
+                                            if (flagAtCommandYesNo) {
+                                                // ответ на ае не пришел то прибавляем количество ошибок в at команды
+                                                if (!flagCheckSandAtOk) {
+                                                    errorNumNoSandAt++
+                                                } else {
+                                                    errorNumNoSandAt = 0
                                                 }
-                                                errorNumNoSandAt = 0
+
+                                                // если больше 3 ошибок то выводим что потеряли связь
+                                                if (errorNumNoSandAt > 3) {
+                                                    onClear()
+                                                    flagAtCommandYesNo = false
+
+                                                    if (context is MainActivity) {
+                                                        context.runOnUiThread {
+                                                            context.showAlertDialog(context.getString(R.string.errorAtCommand))
+                                                        }
+                                                    }
+                                                    errorNumNoSandAt = 0
+                                                }
                                             }
-
-
 
                                             flagIgnorRead = false
                                         }

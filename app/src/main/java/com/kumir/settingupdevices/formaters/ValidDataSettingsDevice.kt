@@ -164,6 +164,7 @@ class ValidDataSettingsDevice {
     }
 
     fun isValidPhoneNumber(phoneNumber: String): Boolean {
+        if (phoneNumber == "") return true
         val regex = Regex("^\\+7\\d{10}\$")
         return regex.matches(phoneNumber)
     }

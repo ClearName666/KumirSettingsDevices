@@ -123,7 +123,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.95</string>
+    <string name="versionApp">Версия: 1.9.96</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -770,7 +770,7 @@
     <string name="delete">Удалить</string>
     <string name="Sensors">Датчики</string>
     <string name="sensorDT112">ДТ112</string>
-    <string name="sensorPipeBlockage"> Датчик контроля\n стока ДКС21</string>
+    <string name="sensorPipeBlockage">ДКС21</string>
     <string name="search">Поиск</string>
     <string name="automaticUpdateTemp">Для автоматического обновления значений датчиков выставите этот флаг</string>
     <string name="startScaner">Начать сканирование</string>
@@ -805,11 +805,12 @@
     <string name="sucEditThrashold">Успешно назначен порог</string>
     <string name="suckolibrovkaThrashold">Успешно откaлиброван порог</string>
     <string name="InfoEditthrachold">Введите желаймый порог</string>
-    <string name="autoFindDevice">Автоопределение</string>
+    <string name="autoFindDevice">Автоопределение устройств</string>
+    <string name="autoFindSensors">Автоопределение датчиков</string>
     <string name="determine">Определить</string>
-    <string name="autoWorkFor">Автоопределение работает на модемах m32, m32Lite, m32d</string>
+    <string name="autoWorkFor">Автоопределение работает на устройствах m32, m32Lite, m32d</string>
     <string name="autoWorkForOneWire">Автоопределение работает на сенсорах DT112, ДКС2</string>
-    <string name="errorNoDevice">Устройства не обнуружены!</string>
+    <string name="errorNoDevice">Устройства не обнаружены!</string>
     <string name="errorNoTypeDevice">Устройство не известно!</string>
     <string name="checkUpdate">Проверка обновлений</string>
 
