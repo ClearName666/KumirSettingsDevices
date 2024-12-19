@@ -1313,6 +1313,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     fun showTimerDialog(usbFragment: UsbFragment, nameTypeDevice: String,
                         flagWrite: Boolean = false, clearData: Boolean = true) {
 
+        var errorsId = 0
+
         // очищение данных
         if (clearData)
             curentData = ""
@@ -1346,8 +1348,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                     if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
 
+                        var flagClose = false
                         // проверка на соответсвие девайса
                         if (curentData.contains(nameTypeDevice)) {
+
+                            flagClose = true
 
                             // прверка диагностика это или драгое
                             if (flagWrite) {
@@ -1359,21 +1364,31 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                                     usbFragment.readSettingStart()
                                 }
                             }
+
                         } else {
                             runOnUiThread {
                                 // если устройство известное то
                                 if (devicesTypsAll.contains(curentData.drop(2).dropLast(2))) {
                                     showAlertDialog(getString(R.string.notDeviceType) +
                                             "<" + curentData + ">")
+                                    flagClose = true
                                 } else {
-                                    showAlertDialog(getString(R.string.notDeviceTypeApp))
+                                    errorsId++
+                                    if (errorsId > 3) {
+                                        showAlertDialog(getString(R.string.notDeviceTypeApp))
+                                        flagClose = true
+                                    }
+
                                 }
+
                             }
                         }
 
+                        if (flagClose) {
+                            timeLeft = 0
+                            alertDialog.dismiss()
+                        }
 
-                        timeLeft = 0
-                        alertDialog.dismiss()
                     }
                     handler.postDelayed(this, 1000)
                 } else {
@@ -1398,6 +1413,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // функция для автоматического определения устройства
     fun showTimerDialogAutoFindDevice() {
 
+        var errorsId = 0
+
         // очищение данных
         curentData = ""
 
@@ -1430,26 +1447,41 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                     if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
 
+                        var flagClose = false
+
                         // проверка на соответсвие девайса
                         if (curentData.contains("KUMIR-M32 READY")) {
+                            flagClose = true
                             onStartM32Settings(true)
                         } else if (curentData.contains("KUMIR-M32LITE READY")) {
+                            flagClose = true
                             onStartM32Lite(true)
                         } else if (curentData.contains("KUMIR-M32D READY")) {
+                            flagClose = true
                             onStartM32DSettings(true)
                         } else if (curentData.contains("KUMIR-RM81A READY")) {
+                            flagClose = true
                             onStartPM81Settings(true)
                         } else if (curentData.contains("KUMIR-VZLET_ASSV030 READY")) {
+                            flagClose = true
                             onStartACCB030CoreSettings(true)
                         }  else {
-                            runOnUiThread {
-                                showAlertDialog(getString(R.string.notDeviceM32))
+                            errorsId++
+
+                            if (errorsId > 3) {
+                                flagClose = true
+                                runOnUiThread {
+                                    showAlertDialog(getString(R.string.notDeviceM32))
+                                }
                             }
+
                         }
 
+                        if (flagClose) {
+                            timeLeft = 0
+                            alertDialog.dismiss()
+                        }
 
-                        timeLeft = 0
-                        alertDialog.dismiss()
                     }
                     handler.postDelayed(this, 1000)
                 } else {
@@ -1474,6 +1506,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // для диагностики
     fun showTimerDialogDiag(diagFragmentInterface: DiagFragmentInterface, nameTypeDevice: String) {
 
+
+        var errorsId = 0
+
         // очищение данных
         curentData = ""
 
@@ -1506,8 +1541,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
                     if (curentData.isNotEmpty() && curentData.length > NORM_LENGHT_DATA_START) {
 
+                        var flagClose = false
+
                         // проверка на соответсвие девайса
                         if (curentData.contains(nameTypeDevice)) {
+                            flagClose = true
                             runOnUiThread {
                                  diagFragmentInterface.runDiag()
                             }
@@ -1517,15 +1555,24 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                                 if (devicesTypsAll.contains(curentData.drop(2).dropLast(2))) {
                                     showAlertDialog(getString(R.string.notDeviceType) +
                                             "<" + curentData + ">")
+                                    flagClose = true
                                 } else {
-                                    showAlertDialog(getString(R.string.notDeviceTypeApp))
+                                    errorsId++
+
+                                    if (errorsId > 3) {
+                                        flagClose = true
+                                        showAlertDialog(getString(R.string.notDeviceTypeApp))
+                                    }
+
                                 }
                             }
                         }
 
+                        if (flagClose) {
+                            timeLeft = 0
+                            alertDialog.dismiss()
+                        }
 
-                        timeLeft = 0
-                        alertDialog.dismiss()
                     }
                     handler.postDelayed(this, 1000)
                 } else {

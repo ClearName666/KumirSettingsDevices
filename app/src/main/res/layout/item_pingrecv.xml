@@ -50,8 +50,9 @@ android:layout_height="wrap_content">
                 android:layout_height="wrap_content"
                 android:text="@string/timeOutPackg"
                 android:textColor="@color/background"
-                app:layout_constraintStart_toStartOf="@+id/textnumPackg"
-                app:layout_constraintTop_toBottomOf="@+id/textnumPackg" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textSignal"

@@ -321,8 +321,8 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             R.id.inputSim1Sntp -> validDataSettingsDevice.validSim1sntp(inputText)
             R.id.inputSim2Sntp -> validDataSettingsDevice.validSim2sntp(inputText)
 
-            R.id.inputTCPPortRS232 -> validDataSettingsDevice.tcpPortValid(inputText)
-            R.id.inputTCPPortRS485 -> validDataSettingsDevice.tcpPortValid(inputText)
+            R.id.inputTCPPortRS232 -> validDataSettingsDevice.validTcpport1(inputText)
+            R.id.inputTCPPortRS485 -> validDataSettingsDevice.validTcpport2(inputText)
             else -> true
         }
     }
@@ -1219,12 +1219,12 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             2 -> parityPort2  = "O"
         }
 
-        if (!validServis.tcpPortValid(binding.inputTCPPortRS232.text.toString())) {
+        if (!validServis.validTcpport1(binding.inputTCPPortRS232.text.toString())) {
             showAlertDialog(getString(R.string.errorRS232TCPPort))
             return false
         }
 
-        if (!validServis.tcpPortValid(binding.inputTCPPortRS485.text.toString())) {
+        if (!validServis.validTcpport2(binding.inputTCPPortRS485.text.toString())) {
             showAlertDialog(getString(R.string.errorRS485TCPPort))
             return false
         }

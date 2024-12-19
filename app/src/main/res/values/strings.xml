@@ -123,7 +123,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.96</string>
+    <string name="versionApp">Версия: 1.9.97</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -419,7 +419,7 @@
     <string name="commandExitSettingsMode">AT$EXIT</string>
     <string name="commandRunDiagnostics">AT$DIAG</string>
     <string name="endDiagBeginning">CELLSCAN</string>
-    <string name="endDiagBeginningM32D">ICCID</string>
+    <string name="endDiagBeginningM32D">SIM1: [</string>
 
     <string name="commandGetNetKey">AT$NETKEY?</string>
     <string name="commandGetPower">AT$POWER?</string>

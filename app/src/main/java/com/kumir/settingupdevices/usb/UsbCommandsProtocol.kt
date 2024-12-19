@@ -707,6 +707,7 @@ class UsbCommandsProtocol {
                         }
                         // тестововая часть кода
                         val dataInfo: String = context.curentData
+
                         (context as Activity).runOnUiThread {
                             usbDiag.printAllInfo(dataInfo)
                         }
