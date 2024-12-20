@@ -190,6 +190,16 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             binding.inputAPN to binding.inputAPNLayout,
         )
 
+        // Карта для связи input с текстом ошибки
+        val inputMapText = mapOf(
+            binding.inputSizeBuffer to getString(R.string.errorSizeBuffer),
+            binding.inputTimeOut to getString(R.string.errorTimeOutEnfora),
+            binding.inputServer1 to getString(R.string.errorValidM32DRS232RS485),
+            binding.inputServer2 to getString(R.string.errorValidM32DRS232RS485),
+            binding.inputAPN to getString(R.string.errorValidAPNEnfora),
+        )
+
+
         // Настраиваем слушатели для каждого input
         inputMap.forEach { (editText, layout) ->
             editText.addTextChangedListener(object : TextWatcher {
@@ -201,7 +211,7 @@ class Enfora1318Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
                     if (isValidInput(editText, inputText)) {
                         layout.error = null // Убираем ошибку
                     } else {
-                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                        layout.error = inputMapText[editText] // Устанавливаем ошибку
                     }
                 }
             })

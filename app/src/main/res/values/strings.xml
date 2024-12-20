@@ -123,7 +123,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.97</string>
+    <string name="versionApp">Версия: 1.9.98</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -757,6 +757,14 @@
     <string name="errorValidM32DKnet">Неверный Knet для 1 или 2 симки</string>
     <string name="errorValidM32DSntp">Неверный Sntp для 1 или 2 симки</string>
     <string name="errorValidM32DTCP">Неверный какой то TCP для 1 или 2 симки</string>
+    <string name="errorValidM32DKeepliveFormat">Значения от 10 до 600</string>
+    <string name="errorValidM32DCtimeoutFormat">Значения от 1 до 4320</string>
+    <string name="errorValidM32DTCPPORTrs">Значения от 1 до 65535</string>
+    <string name="errorValidM32DRS232AndRS485">Значения должный быть от</string>
+    <string name="errorValidM32DTCPFormat">Формат ввода: RS[232 или 485]@[имя]</string>
+    <string name="errorValidM32DRS232RS485">Формат записи (0–255).(0-255).(0-255).(0-255)</string>
+    <string name="errorValidM32DKnetSntpApnFprmat">Формат ввода: доменное имя или ip адрес</string>
+    <string name="errorValidM32DPasswordAndLoginFormat">Допустимые символы: A-Z a-z . - 0-9</string>
     <string name="errorValidM32DKeeplive">Неверный Keeplive</string>
     <string name="errorValidM32DCtimeOut">Неверное время ожидания подключения</string>
     <string name="errorValidPortSim">Не верные настройки для порта</string>

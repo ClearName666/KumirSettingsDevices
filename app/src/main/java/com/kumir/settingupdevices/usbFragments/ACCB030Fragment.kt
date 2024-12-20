@@ -170,6 +170,14 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
             binding.inputPasswordGPRS to binding.inputPasswordGPRSLayout,
         )
 
+        // Карта для связи input с текстом ошибки
+        val inputMapText = mapOf(
+            binding.inputIPDNS to getString(R.string.errorRussionChar),
+            binding.inputAPN to getString(R.string.errorRussionChar),
+            binding.inputTextLoginGPRS to getString(R.string.errorRussionChar),
+            binding.inputPasswordGPRS to getString(R.string.errorRussionChar),
+        )
+
         // Настраиваем слушатели для каждого input
         inputMap.forEach { (editText, layout) ->
             editText.addTextChangedListener(object : TextWatcher {
@@ -181,7 +189,7 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
                     if (isValidInput(editText, inputText)) {
                         layout.error = null // Убираем ошибку
                     } else {
-                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                        layout.error = inputMapText[editText] // Устанавливаем ошибку
                     }
                 }
             })

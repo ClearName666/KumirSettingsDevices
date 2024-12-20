@@ -272,6 +272,39 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             binding.inputTCPPortRS485 to binding.textInputLayoutTCPPort485
         )
 
+        // Карта для связи input с ошибкой которая там есть D - предупреждение E - ошибка
+        val inputMapText = mapOf(
+            binding.InputSim1TCP1 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP2 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP3 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP4 to "D" + getString(R.string.errorValidM32DTCPFormat),
+
+            binding.InputSim2TCP1 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP2 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP3 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP4 to "D" + getString(R.string.errorValidM32DTCPFormat),
+
+            binding.inputSim1Knet to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+            binding.inputSim1Sntp to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+
+            binding.inputSim2Knet to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+            binding.inputSim2Sntp to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+
+            binding.inputAPN to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+            binding.inputTextLoginGPRS to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
+            binding.inputPasswordGPRS to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
+
+            binding.inputAPN2 to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+            binding.inputTextLoginGPRS2 to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
+            binding.inputPasswordGPRS2 to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
+
+            binding.inputTimeOutKeeplive to "E" + getString(R.string.errorValidM32DKeepliveFormat),
+            binding.inputTimeoutConnection to "E" + getString(R.string.errorValidM32DCtimeoutFormat),
+
+            binding.inputTCPPortRS232 to "E" + getString(R.string.errorValidM32DTCPPORTrs),
+            binding.inputTCPPortRS485 to "E" + getString(R.string.errorValidM32DTCPPORTrs),
+        )
+
         // Настраиваем слушатели для каждого input
         inputMap.forEach { (editText, layout) ->
             editText.addTextChangedListener(object : TextWatcher {
@@ -282,8 +315,13 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
                     val inputText = s?.toString() ?: ""
                     if (isValidInput(editText, inputText)) {
                         layout.error = null // Убираем ошибку
+                        layout.helperText = null
                     } else {
-                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                        if (inputMapText[editText]?.get(0) ?: 'D'  == 'E') {
+                            layout.error = inputMapText[editText]?.drop(1) // Устанавливаем ошибку
+                        } else {
+                            layout.helperText = inputMapText[editText]?.drop(1)
+                        }
                     }
                 }
             })
@@ -1077,8 +1115,8 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
         // установка TCP потров
 
-        binding.inputTCPPortRS232.setText(dataMap[getString(R.string.commandGetTCPport1)])
-        binding.inputTCPPortRS485.setText(dataMap[getString(R.string.commandGetTCPport2)])
+        //binding.inputTCPPortRS232.setText(dataMap[getString(R.string.commandGetTCPport1)])
+        //binding.inputTCPPortRS485.setText(dataMap[getString(R.string.commandGetTCPport2)])
 
 
 

@@ -205,6 +205,19 @@ class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, Pris
             binding.inputMaxTimeCall to binding.inputMaxTimeCallLayout
         )
 
+        // Карта для связи input с layout
+        val inputMapText = mapOf(
+            binding.inputIPDNS to getString(R.string.errorRussionChar),
+            binding.inputAPN to getString(R.string.errorRussionChar),
+            binding.inputTextLoginGPRS to getString(R.string.errorRussionChar),
+            binding.inputPasswordGPRS to getString(R.string.errorRussionChar),
+            binding.inputTimeOutKeeplive to getString(R.string.errorKEEPALIVE),
+            binding.inputTimeoutConnection to getString(R.string.errorCTIMEOUT),
+            binding.inputNumberPhoneDis to getString(R.string.errorValidNumberPhone),
+            binding.inputGSMOper to getString(R.string.errorValidServerCore),
+            binding.inputMaxTimeCall to getString(R.string.errorTimeCall)
+        )
+
         // Настраиваем слушатели для каждого input
         inputMap.forEach { (editText, layout) ->
             editText.addTextChangedListener(object : TextWatcher {
@@ -216,7 +229,7 @@ class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, Pris
                     if (isValidInput(editText, inputText)) {
                         layout.error = null // Убираем ошибку
                     } else {
-                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                        layout.error = inputMapText[editText] // Устанавливаем ошибку
                     }
                 }
             })
@@ -235,7 +248,7 @@ class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, Pris
             R.id.inputTimeoutConnection -> validDataSettingsDevice.ctimeoutValid(inputText.replace("\\s+".toRegex(), ""))
             R.id.inputTCP -> validDataSettingsDevice.tcpPortValid(inputText.replace("\\s+".toRegex(), ""))
             R.id.inputNumberPhoneDis -> validDataSettingsDevice.isValidPhoneNumber(inputText)
-            R.id.inputGSMOper -> validDataSettingsDevice.validServer(inputText)
+            R.id.inputGSMOper -> validDataSettingsDevice.validServer(inputText) || inputText.trim() == ""
             R.id.inputMaxTimeCall -> validDataSettingsDevice.validTimeAbonent(inputText)
             else -> true
         }

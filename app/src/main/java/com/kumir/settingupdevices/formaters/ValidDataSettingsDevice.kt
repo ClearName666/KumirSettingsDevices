@@ -118,8 +118,8 @@ class ValidDataSettingsDevice {
     fun validSim2tcp2(input: String): Boolean = patterns["sim2tcp2"]?.matches(input) ?: false
     fun validSim2tcp3(input: String): Boolean = patterns["sim2tcp3"]?.matches(input) ?: false
     fun validSim2tcp4(input: String): Boolean = patterns["sim2tcp4"]?.matches(input) ?: false
-    fun validTcpport1(input: String): Boolean = patterns["tcpport1"]?.matches(input) ?: false
-    fun validTcpport2(input: String): Boolean = patterns["tcpport2"]?.matches(input) ?: false
+    fun validTcpport1(input: String): Boolean = patterns["tcpport1"]?.matches(input) ?: false  && input != "0" && input.toInt() <= 0xffff
+    fun validTcpport2(input: String): Boolean = patterns["tcpport2"]?.matches(input) ?: false  && input != "0" && input.toInt() <= 0xffff
 
 
 

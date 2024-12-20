@@ -163,6 +163,12 @@ class PM81Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             binding.inputPowerCures to binding.inputPowerCuresLayout,
         )
 
+        // Карта для связи input с тестом ошибки
+        val inputMapText = mapOf(
+            binding.inputNetKey to getString(R.string.errorRussionChar),
+            binding.inputPowerCures to getString(R.string.errorPOWER),
+        )
+
         // Настраиваем слушатели для каждого input
         inputMap.forEach { (editText, layout) ->
             editText.addTextChangedListener(object : TextWatcher {
@@ -174,7 +180,7 @@ class PM81Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
                     if (isValidInput(editText, inputText)) {
                         layout.error = null // Убираем ошибку
                     } else {
-                        layout.error = "Ошибка: проверьте данные" // Устанавливаем ошибку
+                        layout.error = inputMapText[editText] // Устанавливаем ошибку
                     }
                 }
             })

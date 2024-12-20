@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.kumir.settingupdevices.EditDelIntrface
 import com.kumir.settingupdevices.LoadInterface
 import com.kumir.settingupdevices.MainActivity
@@ -258,7 +261,66 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
 
         createAdapters()
 
+        setupInputValidation()
+
         return binding.root
+    }
+
+    private fun setupInputValidation() {
+        // Карта для связи input с layout
+        val inputMap = mapOf(
+            binding.inputKey to binding.layoutInputKey,
+            binding.inputName to binding.layoutInputName,
+            binding.inputNumDevice to binding.layoutInputNumDevice,
+            binding.inputRange to binding.layoutInputRange,
+            binding.inputTimeOut to binding.layoutInputTimeOut,
+            binding.inputAdress to binding.layoutInputAdress,
+            binding.inputValues to binding.layoutInputValues
+        )
+
+        // Карта для связи input с layout
+        val inputMapText = mapOf(
+            binding.inputKey to getString(R.string.notKeyValidP101),
+            binding.inputName to getString(R.string.notValidNameP101),
+            binding.inputNumDevice to getString(R.string.noNumberDevice),
+            binding.inputRange to getString(R.string.notValidRangeP101),
+            binding.inputTimeOut to getString(R.string.notValidTimeP101),
+            binding.inputAdress to getString(R.string.notAddressValidP101),
+            binding.inputValues to getString(R.string.notValidTimeOutP101)
+        )
+
+        // Настраиваем слушатели для каждого input
+        inputMap.forEach { (editText, layout) ->
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val inputText = s?.toString() ?: ""
+                    if (isValidInput(editText, inputText)) {
+                        layout.error = null // Убираем ошибку
+                    } else {
+                        layout.error = inputMapText[editText] // Устанавливаем ошибку
+                    }
+                }
+            })
+        }
+    }
+
+    // Функция для проверки валидности
+    private fun isValidInput(editText: TextInputEditText, inputText: String): Boolean {
+        val validDataSettingsDevice = ValidDataSettingsDevice()
+
+        return when (editText.id) {
+            R.id.inputKey -> inputText.isNotEmpty()
+            R.id.inputName -> validDataSettingsDevice.validNameP101(inputText)
+            R.id.inputNumDevice -> inputText.isNotEmpty()
+            R.id.inputRange -> validDataSettingsDevice.validRangeP101(inputText) || inputText.isEmpty()
+            R.id.inputTimeOut -> validDataSettingsDevice.validTimeP101(inputText)
+            R.id.inputAdress -> inputText.isNotEmpty()
+            R.id.inputValues -> validDataSettingsDevice.validTimeOutP101(inputText)
+            else -> true
+        }
     }
 
 
