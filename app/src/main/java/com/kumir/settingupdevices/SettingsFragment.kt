@@ -253,22 +253,30 @@ class SettingsFragment : Fragment() {
                     if (validPreset()) {
                         lifecycleScope.launch {
                             try {
-                                // присеты m32
-                                contextMain.presetDao.updateById(
-                                    preset.id,
-                                    if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
-                                        name!! else binding.inputSaveName.text.toString(),
-                                    binding.spinnerSaveMode.selectedItemPosition,
-                                    binding.inputSaveAPN.text.toString(),
-                                    binding.inputSaveServer1.text.toString(),
-                                    binding.inputSavePort.text.toString(),
-                                    binding.inputSaveLogin.text.toString(),
-                                    binding.inputSavePassword.text.toString()
-                                )
-                                // успешно и закрываем
-                                (contextMain as Activity).runOnUiThread {
-                                    binding.editPresetSave.visibility = View.GONE
-                                    binding.darckFon.visibility = View.GONE
+                                val existingPreset = contextMain.presetDao.getFirstByName(binding.inputSaveName.text.toString())
+
+                                if (existingPreset == null || existingPreset.id == preset.id) {
+                                    // присеты m32
+                                    contextMain.presetDao.updateById(
+                                        preset.id,
+                                        if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
+                                            name!! else binding.inputSaveName.text.toString(),
+                                        binding.spinnerSaveMode.selectedItemPosition,
+                                        binding.inputSaveAPN.text.toString(),
+                                        binding.inputSaveServer1.text.toString(),
+                                        binding.inputSavePort.text.toString(),
+                                        binding.inputSaveLogin.text.toString(),
+                                        binding.inputSavePassword.text.toString()
+                                    )
+                                    // успешно и закрываем
+                                    (contextMain as Activity).runOnUiThread {
+                                        binding.editPresetSave.visibility = View.GONE
+                                        binding.darckFon.visibility = View.GONE
+                                    }
+                                } else {
+                                    (contextMain as Activity).runOnUiThread {
+                                        showAlertDialog(getString(R.string.nameUseUpdatePreset))
+                                    }
                                 }
                             } catch (_: Exception) {
                                 (contextMain as Activity).runOnUiThread {
@@ -315,23 +323,34 @@ class SettingsFragment : Fragment() {
                     if (validEnfora()) {
                         lifecycleScope.launch {
                             try {
-                                // присеты m32
-                                contextMain.presetEnforaDao.updateById(
-                                    enfora.id,
-                                    if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
-                                        name!! else binding.inputSaveName.text.toString(),
-                                    binding.inputSaveAPN.text.toString(),
-                                    binding.inputSaveLogin.text.toString(),
-                                    binding.inputSavePassword.text.toString(),
-                                    binding.inputSaveServer1.text.toString(),
-                                    binding.inputSaveServer2.text.toString(),
-                                    binding.inputSaveTimeout.text.toString(),
-                                    binding.inputSaveSizeBuffer.text.toString()
-                                )
-                                // успешно и закрываем
-                                (contextMain as Activity).runOnUiThread {
-                                    binding.editPresetSave.visibility = View.GONE
-                                    binding.darckFon.visibility = View.GONE
+
+                                val existingPreset = contextMain.presetEnforaDao.getFirstByName(binding.inputSaveName.text.toString())
+
+                                if (existingPreset == null || existingPreset.id == enfora.id) {
+                                    // присеты m32
+                                    contextMain.presetEnforaDao.updateById(
+                                        enfora.id,
+                                        if (binding.inputSaveName.text.toString().replace(" ", "")
+                                                .isEmpty()
+                                        )
+                                            name!! else binding.inputSaveName.text.toString(),
+                                        binding.inputSaveAPN.text.toString(),
+                                        binding.inputSaveLogin.text.toString(),
+                                        binding.inputSavePassword.text.toString(),
+                                        binding.inputSaveServer1.text.toString(),
+                                        binding.inputSaveServer2.text.toString(),
+                                        binding.inputSaveTimeout.text.toString(),
+                                        binding.inputSaveSizeBuffer.text.toString()
+                                    )
+                                    // успешно и закрываем
+                                    (contextMain as Activity).runOnUiThread {
+                                        binding.editPresetSave.visibility = View.GONE
+                                        binding.darckFon.visibility = View.GONE
+                                    }
+                                } else {
+                                    (contextMain as Activity).runOnUiThread {
+                                        showAlertDialog(getString(R.string.nameUseUpdatePreset))
+                                    }
                                 }
                             } catch (_: Exception) {
                                 (contextMain as Activity).runOnUiThread {
@@ -396,20 +415,31 @@ class SettingsFragment : Fragment() {
                     if (validPm()) {
                         lifecycleScope.launch {
                             try {
-                                // присеты m32
-                                contextMain.presetPmDao.updateById(
-                                    pm.id,
-                                    if (binding.inputSaveName.text.toString().replace(" ", "").isEmpty())
-                                        name!! else binding.inputSaveName.text.toString(),
-                                    binding.spinnerSaveMode.selectedItemPosition,
-                                    binding.inputSaveKeyNet.text.toString(),
-                                    binding.inputSavePower.text.toString(),
-                                    binding.spinnerSaveRenge.selectedItemPosition
-                                )
-                                // успешно и закрываем
-                                (contextMain as Activity).runOnUiThread {
-                                    binding.editPresetSave.visibility = View.GONE
-                                    binding.darckFon.visibility = View.GONE
+
+                                val existingPreset = contextMain.presetPmDao.getFirstByName(binding.inputSaveName.text.toString())
+
+                                if (existingPreset == null || existingPreset.id == pm.id) {
+                                    // присеты m32
+                                    contextMain.presetPmDao.updateById(
+                                        pm.id,
+                                        if (binding.inputSaveName.text.toString().replace(" ", "")
+                                                .isEmpty()
+                                        )
+                                            name!! else binding.inputSaveName.text.toString(),
+                                        binding.spinnerSaveMode.selectedItemPosition,
+                                        binding.inputSaveKeyNet.text.toString(),
+                                        binding.inputSavePower.text.toString(),
+                                        binding.spinnerSaveRenge.selectedItemPosition
+                                    )
+                                    // успешно и закрываем
+                                    (contextMain as Activity).runOnUiThread {
+                                        binding.editPresetSave.visibility = View.GONE
+                                        binding.darckFon.visibility = View.GONE
+                                    }
+                                } else {
+                                    (contextMain as Activity).runOnUiThread {
+                                        showAlertDialog(getString(R.string.nameUseUpdatePreset))
+                                    }
                                 }
                             } catch (_: Exception) {
                                 (contextMain as Activity).runOnUiThread {
@@ -435,6 +465,11 @@ class SettingsFragment : Fragment() {
 
         val validDataIniFile = ValidDataIniFile()
         val generationFiles = GenerationFiles()
+
+        // отчищяем прошлые данные для сохранения что бы их не пладить
+        listIniDataPreset.clear()
+        listIninDataPm.clear()
+
 
         var dataCntTypeSuc: Int = 0
         // получение данных из базы данных m32

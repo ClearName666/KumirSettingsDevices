@@ -1075,39 +1075,58 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 showAlertDialog(getString(R.string.sucPresetSaveDataBase))
             }
 
+
+            var flagErrorPreset = true
             // обновить имя
             binding.buttonNewName.setOnClickListener {
                 if (preset.name != binding.inputUpdateName.text.toString().trim() &&
                     binding.inputUpdateName.text.toString().trim().isNotEmpty()) {
                     lifecycleScope.launch {
                         withContext(Dispatchers.IO) {
-                            presetDao.insert(
-                                Preset(
-                                    0,
-                                    name = binding.inputUpdateName.text.toString(),
-                                    mode = preset.mode,
-                                    apn = preset.apn,
-                                    server = preset.server,
-                                    port = preset.port,
-                                    login = preset.login,
-                                    password = preset.password
+                            val existingPreset = presetDao.getFirstByName(binding.inputUpdateName.text.toString() ?: "")
+
+                            if (existingPreset == null) {
+                                presetDao.insert(
+                                    Preset(
+                                        0,
+                                        name = binding.inputUpdateName.text.toString(),
+                                        mode = preset.mode,
+                                        apn = preset.apn,
+                                        server = preset.server,
+                                        port = preset.port,
+                                        login = preset.login,
+                                        password = preset.password
+                                    )
                                 )
-                            )
+                                flagErrorPreset = false
+                            }
+
+                            // если нет ошибок то закрываем и говорим что все успешно
+                            if (!flagErrorPreset) {
+                                runOnUiThread {
+
+                                    // закрываем окно
+                                    binding.fonMenu.visibility = View.GONE
+                                    binding.updateName.visibility = View.GONE
+
+                                    if (flagLoadPreset) {
+                                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
+
+                                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                                        flagLoadPreset = false
+                                    } else {
+                                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                                    }
+
+                                }
+                            } else {
+                                runOnUiThread {
+                                    showAlertDialog(getString(R.string.nameUseUpdatePreset))
+                                }
+                            }
                         }
                     }
 
-                    // закрываем окно
-                    binding.fonMenu.visibility = View.GONE
-                    binding.updateName.visibility = View.GONE
-
-                    if (flagLoadPreset) {
-                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
-
-                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
-                        flagLoadPreset = false
-                    } else {
-                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                    }
                 } else {
                     showAlertDialog(getString(R.string.notValidUpdateName))
                 }
@@ -1135,37 +1154,55 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 showAlertDialog(getString(R.string.sucPresetSaveDataBase))
             }
 
+            var flagErrorPm = true
             // обновить имя
             binding.buttonNewName.setOnClickListener {
                 if (pm.name != binding.inputUpdateName.text.toString().trim() &&
                     binding.inputUpdateName.text.toString().trim().isNotEmpty()) {
                     lifecycleScope.launch {
                         withContext(Dispatchers.IO) {
-                            presetPmDao.insert(
-                                Pm(
-                                    0,
-                                    name = binding.inputUpdateName.text.toString(),
-                                    mode = pm.mode,
-                                    keyNet = pm.keyNet,
-                                    power = pm.power,
-                                    diopozone = pm.diopozone
+
+                            val existingPreset = presetPmDao.getFirstByName(binding.inputUpdateName.text.toString() ?: "")
+
+                            if (existingPreset == null) {
+                                presetPmDao.insert(
+                                    Pm(
+                                        0,
+                                        name = binding.inputUpdateName.text.toString(),
+                                        mode = pm.mode,
+                                        keyNet = pm.keyNet,
+                                        power = pm.power,
+                                        diopozone = pm.diopozone
+                                    )
                                 )
-                            )
+                                flagErrorPm = false
+                            }
+
+                            if (!flagErrorPm) {
+                                runOnUiThread {
+                                    // закрываем окно
+                                    binding.fonMenu.visibility = View.GONE
+                                    binding.updateName.visibility = View.GONE
+
+                                    if (flagLoadPreset) {
+                                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
+
+                                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                                        flagLoadPreset = false
+                                    } else {
+                                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                                    }
+                                }
+
+                            } else {
+                                runOnUiThread {
+                                    showAlertDialog(getString(R.string.nameUseUpdatePreset))
+                                }
+                            }
                         }
                     }
 
-                    // закрываем окно
-                    binding.fonMenu.visibility = View.GONE
-                    binding.updateName.visibility = View.GONE
 
-                    if (flagLoadPreset) {
-                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
-
-                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
-                        flagLoadPreset = false
-                    } else {
-                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
-                    }
                 } else {
                     showAlertDialog(getString(R.string.notValidUpdateName))
                 }
@@ -1196,39 +1233,54 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 showAlertDialog(getString(R.string.sucPresetSaveDataBase))
             }
 
+
+            var flagErrorEnfora = true
             // обновить имя
             binding.buttonNewName.setOnClickListener {
                 if (enfora.name != binding.inputUpdateName.text.toString().trim() &&
                     binding.inputUpdateName.text.toString().trim().isNotEmpty()) {
                     lifecycleScope.launch {
                         withContext(Dispatchers.IO) {
-                            presetEnforaDao.insert(
-                                Enfora(
-                                    0,
-                                    name = binding.inputUpdateName.text.toString(),
-                                    apn = enfora.apn,
-                                    login = enfora.login,
-                                    password = enfora.password,
-                                    server1 = enfora.server1,
-                                    server2 = enfora.server2,
-                                    timeout = enfora.timeout,
-                                    sizeBuffer = enfora.sizeBuffer
+                            val existingPreset = presetEnforaDao.getFirstByName(binding.inputUpdateName.text.toString() ?: "")
+
+                            if (existingPreset == null) {
+                                presetEnforaDao.insert(
+                                    Enfora(
+                                        0,
+                                        name = binding.inputUpdateName.text.toString(),
+                                        apn = enfora.apn,
+                                        login = enfora.login,
+                                        password = enfora.password,
+                                        server1 = enfora.server1,
+                                        server2 = enfora.server2,
+                                        timeout = enfora.timeout,
+                                        sizeBuffer = enfora.sizeBuffer
+                                    )
                                 )
-                            )
+                                flagErrorEnfora = false
+                            }
+
+                            if (!flagErrorEnfora) {
+                                runOnUiThread {
+                                    // закрываем окно
+                                    binding.fonMenu.visibility = View.GONE
+                                    binding.updateName.visibility = View.GONE
+
+                                    if (flagLoadPreset) {
+                                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
+
+                                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
+                                        flagLoadPreset = false
+                                    } else {
+                                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
+                                    }
+                                }
+                            } else {
+                                runOnUiThread {
+                                    showAlertDialog(getString(R.string.nameUseUpdatePreset))
+                                }
+                            }
                         }
-                    }
-
-                    // закрываем окно
-                    binding.fonMenu.visibility = View.GONE
-                    binding.updateName.visibility = View.GONE
-
-                    if (flagLoadPreset) {
-                        showAlertDialog(getString(R.string.sucPresetLoadDataBase))
-
-                        // выозврат флага вдруг он соит в позиции диалога с успешным сохранением
-                        flagLoadPreset = false
-                    } else {
-                        showAlertDialog(getString(R.string.sucPresetSaveDataBase))
                     }
                 } else {
                     showAlertDialog(getString(R.string.notValidUpdateName))

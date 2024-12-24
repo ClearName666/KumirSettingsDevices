@@ -61,6 +61,7 @@
 
 
     <string name="notValidUpdateName">Название не может быть пустым, название должно отличаться от существующего!</string>
+    <string name="nameUseUpdatePreset">Шаблон с таким названием уже существует! Введите другое!</string>
     <string name="errorRenameName">К сожалению в данной версии программы нельзя менять имя пользователя!</string>
     <string name="sucPresetSaveDataBase">Сохранение прошло успешно!</string>
     <string name="sucPresetLoadDataBase">Загрузка прошла успешно!</string>
@@ -123,7 +124,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.9.98</string>
+    <string name="versionApp">Версия: 1.9.99</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>
@@ -692,6 +693,9 @@
     <string name="pachTitle">Путь для сохранения!</string>
     <string name="settingTitle">Настройка</string>
     <string name="diagTitle">Диагностика</string>
+    <string name="diagTitleEnfora">Диагностика Enfora 1318</string>
+    <string name="diagTitleACCB030">Диагностика ACCB030</string>
+    <string name="diagTitleM32">Диагностика M32</string>
     <string name="diagTitleM32D">Диагностика M32D</string>
     <string name="diagStopButton">Завершить диагностику</string>
     <string name="step1MainTitle">1) Подключите устройство к USB-порту с помощью адаптера КУМИР</string>
@@ -816,7 +820,7 @@
     <string name="autoFindDevice">Автоопределение устройств</string>
     <string name="autoFindSensors">Автоопределение датчиков</string>
     <string name="determine">Определить</string>
-    <string name="autoWorkFor">Автоопределение работает на устройствах m32, m32Lite, m32d</string>
+    <string name="autoWorkFor">Автоопределение работает на устройствах M32, M32Lite, РМ81</string>
     <string name="autoWorkForOneWire">Автоопределение работает на сенсорах DT112, ДКС2</string>
     <string name="errorNoDevice">Устройства не обнаружены!</string>
     <string name="errorNoTypeDevice">Устройство не известно!</string>

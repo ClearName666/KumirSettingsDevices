@@ -29,7 +29,7 @@ class Enfora1318DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
         // вывод названия типа устройства
         val context: Context = requireContext()
         if (context is MainActivity) {
-            context.printDeviceTypeName(getString(R.string.diagTitle))
+            context.printDeviceTypeName(getString(R.string.diagTitleEnfora))
         }
 
         // клик по кнопки диагностики

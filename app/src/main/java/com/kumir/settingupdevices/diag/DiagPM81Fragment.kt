@@ -157,6 +157,12 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
 
         lineChart("0", "0")
 
+        // изменения цвета текста у графиков
+        binding.lineChart.xAxis.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChart.axisLeft.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChart.axisRight.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+        binding.lineChart.legend.textColor = ContextCompat.getColor(requireContext(), R.color.textColor)
+
         return binding.root
     }
 
@@ -208,6 +214,11 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
         val xInt = extractFirstIntFromString(x)
         val yInt = extractFirstIntFromString(y)
 
+        // если все вдруг началось с начала то отчищяем все
+        if (xInt == 1) {
+            entries.clear()
+        }
+
         // Создание данных для графика
         entries.add(Entry(xInt?.toFloat()!!, yInt?.toFloat()!!))
 
@@ -215,7 +226,7 @@ class DiagPM81Fragment(val nameDeviace: String) : Fragment(), UsbDiagPm, DiagFra
             entries.removeAt(0)
         }
 
-        val dataSet = LineDataSet(entries, "Сигнал") // создаем набор данных с меткой
+        val dataSet = LineDataSet(entries, "y - Сигнал, x - Номер пакета") // создаем набор данных с меткой
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.lineColor) // устанавливаем цвет линии
         dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.valueTextColor) // устанавливаем цвет текста значений
 

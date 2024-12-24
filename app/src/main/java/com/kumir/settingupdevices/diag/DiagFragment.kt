@@ -110,7 +110,7 @@ class DiagFragment(val nameDeviace: String) : Fragment(), UsbDiag, DiagFragmentI
         // вывод названия типа устройства
         val context: Context = requireContext()
         if (context is MainActivity) {
-            context.printDeviceTypeName(getString(R.string.diagTitle))
+            context.printDeviceTypeName(getString(R.string.diagTitleM32))
         }
 
         // назначение кликов

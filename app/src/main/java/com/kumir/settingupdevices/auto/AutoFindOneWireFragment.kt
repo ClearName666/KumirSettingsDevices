@@ -59,7 +59,7 @@ class AutoFindOneWireFragment(val mainContext: MainActivity) : Fragment(), UsbFr
         binding = FragmentUtoFindOneWireBinding.inflate(inflater)
 
         // вывод названия типа устройства
-        mainContext.printDeviceTypeName(getString(R.string.autoFindDevice))
+        mainContext.printDeviceTypeName(getString(R.string.autoFindSensors))
 
         binding.buttonStartAutoFindDevice.setOnClickListener {
             if (mainContext.usb.checkConnectToDevice()) {

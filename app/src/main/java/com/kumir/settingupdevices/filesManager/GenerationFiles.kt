@@ -88,12 +88,12 @@ class GenerationFiles() {
     private fun saveFileToDownloadFolderQ(fileName: String, fileContent: String, context: Context, dirMain: String) {
         val resolver = context.contentResolver
         val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName/*.replace(".ini", "")*/)
             put(MediaStore.MediaColumns.MIME_TYPE, "pplication/octet-strea")
             put(MediaStore.MediaColumns.RELATIVE_PATH, dirMain)
         }
 
-        val uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI/*MediaStore.Files.getContentUri("external")*/, contentValues)
         uri?.let {
             resolver.openOutputStream(it).use { outputStream ->
                 outputStream?.write(fileContent.toByteArray())
