@@ -337,4 +337,18 @@ class ValidDataSettingsDevice {
         return true
     }
 
+    fun apnValid(apn: String): Boolean {
+        return apn.isNotEmpty() &&
+            serverValid(apn) &&
+            !apn.endsWith(".gprs") &&
+            !apn.startsWith("LAC") &&
+            !apn.startsWith("RAC") &&
+            !apn.startsWith("SGSN") &&
+            !apn.startsWith("RNC") &&
+            !apn.startsWith(".") &&
+            !apn.endsWith(".") &&
+            !apn.startsWith("-") &&
+            !apn.endsWith("-")
+    }
+
 }

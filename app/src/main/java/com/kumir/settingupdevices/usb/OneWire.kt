@@ -20,7 +20,7 @@ import kotlin.experimental.xor
 class OneWire(val usb: Usb, private val context: Context) {
 
     companion object {
-        const val TIME_MAX_DEL_ONE_WIRE: Int = 100000
+        const val TIME_MAX_DEL_ONE_WIRE: Int = 1000
         const val SIZE_BUF_GET_TEMP: Int = 72 // 9 байт
         const val SIZE_BUF_GET_DATA_SENSOR_PIPE_BLOCKEGE: Int = 64 // 8 байт
         const val TIME_READ_TEMP: Long = 1200 // 1.2 сек
@@ -224,17 +224,12 @@ class OneWire(val usb: Usb, private val context: Context) {
         }")*/
 
         // ждем ответа
-        var time = 0
-        while (context.currentDataByteAll.isEmpty() && time <= TIME_MAX_DEL_ONE_WIRE) {
-            time++
-
-            Thread.sleep(0, 5)
+        val time = System.currentTimeMillis()
+        while (time - System.currentTimeMillis() <= TIME_MAX_DEL_ONE_WIRE && usb.checkConnectToDevice()) {
+            if (context.currentDataByteAll.size == byteArray.size) break
         }
-        //Thread.sleep(TIMEOUT_RECONNECT*5)
-        /*Log.d("dataOneWire", "выход time = $time получены данные: {${
-            context.currentDataByteAll.joinToString(separator = " ") { byte -> "%02X".format(byte) }
-        }}")*/
 
+        if (context.currentDataByteAll.size < byteArray.size) return false
 
         return context.currentDataByteAll.isNotEmpty()
     }
@@ -262,6 +257,10 @@ class OneWire(val usb: Usb, private val context: Context) {
 
 
             while (numberAddress > 0) {
+
+                // проверка соединения если нету то выходим
+                if (!usb.checkConnectToDevice()) break
+
                 address = owSearchNext(context, sensorDT112Fragment, stSearch, sensorPipeBlockageV1_01)
 
                 if (address.isNotEmpty()) {
@@ -291,7 +290,8 @@ class OneWire(val usb: Usb, private val context: Context) {
                         break
                     }
                 } else {
-                    addresCntNull++
+                    --numberAddress
+                    //addresCntNull++
                 }
 
                 // проверка ошибочных пустых адресов если больше 10 значет на линии никого нет
@@ -385,6 +385,9 @@ class OneWire(val usb: Usb, private val context: Context) {
             sendSleepDataReceive(context, COMMAND_SEARCH_ADDRESS_F0.reversedArray())
 
             do {
+                // если нету соединения то выходим
+                if (!usb.checkConnectToDevice()) return byteArrayOf()
+
                 // отправляем (FF,FF) и читаем что ответит устройства
                 if (sensorPipeBlockageV1_01 == null && sensorDT112Fragment == null) {
                     if (!sendSleepDataReceive(context, byteArrayOf(0xFF.toByte(), 0xFF.toByte())) ||

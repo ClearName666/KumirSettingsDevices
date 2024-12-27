@@ -228,7 +228,7 @@ class M32Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragme
         // Карта для связи input с текстом ошибки
         val inputMapText = mapOf(
             binding.inputIPDNS to getString(R.string.errorRussionChar),
-            binding.inputAPN to getString(R.string.errorRussionChar),
+            binding.inputAPN to getString(R.string.errorValidAPNFormat),
             binding.inputTextLoginGPRS to getString(R.string.errorRussionChar),
             binding.inputPasswordGPRS to getString(R.string.errorRussionChar),
             binding.inputTimeOutKeeplive to getString(R.string.errorKEEPALIVE),
@@ -261,7 +261,7 @@ class M32Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragme
         val validDataSettingsDevice = ValidDataSettingsDevice()
         return when (editText.id) {
             R.id.inputIPDNS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
-            R.id.inputAPN -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputAPN -> validDataSettingsDevice.apnValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputTextLoginGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputPasswordGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputTimeOutKeeplive -> validDataSettingsDevice.keepaliveValid(inputText.replace("\\s+".toRegex(), ""))
@@ -1089,8 +1089,8 @@ class M32Fragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragme
         }
 
         // проверки на вaлидность 63 символа
-        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputAPN.text.toString())) {
-            showAlertDialog(getString(R.string.errorValidAPN))
+        if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputAPN.text.toString()) || !validDataSettingsDevice.apnValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidAPNFormat))
             return false
         }
         if (!validDataSettingsDevice.charPROV_CHAR_MAXValid(binding.inputIPDNS.text.toString())) {

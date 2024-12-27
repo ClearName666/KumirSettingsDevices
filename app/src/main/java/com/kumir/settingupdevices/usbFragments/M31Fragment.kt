@@ -188,7 +188,7 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             binding.inputTimeOut to getString(R.string.errorTimeOutEnfora),
             binding.inputServer1 to getString(R.string.errorValidM32DRS232RS485),
             binding.inputServer2 to getString(R.string.errorValidM32DRS232RS485),
-            binding.inputAPN to getString(R.string.errorValidAPNEnfora),
+            binding.inputAPN to getString(R.string.errorValidAPNFormat),
         )
 
         // Настраиваем слушатели для каждого input
@@ -217,7 +217,7 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             R.id.inputTimeOut -> validDataSettingsDevice.padblkValid(inputText)
             R.id.inputServer1 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.validServer(inputText)
             R.id.inputServer2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.validServer(inputText)
-            R.id.inputAPN -> validDataSettingsDevice.validAPNEnfora(inputText)
+            R.id.inputAPN -> validDataSettingsDevice.apnValid(inputText)
             else -> true
         }
     }
@@ -791,8 +791,8 @@ class M31Fragment : Fragment(), UsbFragment, PrisetFragment<Enfora> {
             return false
         }
 
-        if (!validDataSettingsDevice.validAPNEnfora(binding.inputAPN.text.toString())) {
-            showAlertDialog(getString(R.string.errorValidAPNEnfora))
+        if (!validDataSettingsDevice.apnValid(binding.inputAPN.text.toString())) {
+            showAlertDialog(getString(R.string.errorValidAPNFormat))
             return false
         }
 

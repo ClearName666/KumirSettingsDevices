@@ -351,6 +351,13 @@ class SensorDT112Fragment : Fragment(), UsbFragment, RealUpdateTempInterface<Ite
             // завершаем все анимации
             binding.textScanerButton.text = getString(R.string.startScaner)
             binding.progressBarActivableDiag.visibility = View.GONE
+
+
+            // убераемчек бокс и выполняем все что должно быть полсе выполнения чек бокса
+            binding.checkBoxOnline.isChecked = false
+            flagСancellation = true
+            binding.progressBarActivableDiag.visibility = View.GONE
+            binding.textScanerButton.text = getString(R.string.startScaner)
         } else {
             // кнопка для начала диагностики
             binding.layoutButtonScanerStart.setOnClickListener {

@@ -769,6 +769,7 @@
     <string name="errorValidM32DRS232RS485">Формат записи (0–255).(0-255).(0-255).(0-255)</string>
     <string name="errorValidM32DKnetSntpApnFprmat">Формат ввода: доменное имя или ip адрес</string>
     <string name="errorValidM32DPasswordAndLoginFormat">Допустимые символы: A-Z a-z . - 0-9</string>
+    <string name="errorValidAPNFormat">У APN допустимые символы: A-Z a-z . - 0-9, не должен заканчиваться на .gprs, ., -, не должен начинаться с LAC, RAC, SGSN, RNC, ., -</string>
     <string name="errorValidM32DKeeplive">Неверный Keeplive</string>
     <string name="errorValidM32DCtimeOut">Неверное время ожидания подключения</string>
     <string name="errorValidPortSim">Не верные настройки для порта</string>

@@ -290,11 +290,11 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             binding.inputSim2Knet to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
             binding.inputSim2Sntp to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
 
-            binding.inputAPN to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+            binding.inputAPN to "E" + getString(R.string.errorValidAPNFormat),
             binding.inputTextLoginGPRS to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
             binding.inputPasswordGPRS to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
 
-            binding.inputAPN2 to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
+            binding.inputAPN2 to "E" + getString(R.string.errorValidAPNFormat),
             binding.inputTextLoginGPRS2 to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
             binding.inputPasswordGPRS2 to "E" + getString(R.string.errorValidM32DPasswordAndLoginFormat),
 
@@ -332,11 +332,11 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
     private fun isValidInput(editText: TextInputEditText, inputText: String): Boolean {
         val validDataSettingsDevice = ValidDataSettingsDevice()
         return when (editText.id) {
-            R.id.inputAPN -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputAPN -> validDataSettingsDevice.apnValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputTextLoginGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputPasswordGPRS -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
 
-            R.id.inputAPN2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
+            R.id.inputAPN2 -> validDataSettingsDevice.apnValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputTextLoginGPRS2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
             R.id.inputPasswordGPRS2 -> validDataSettingsDevice.serverValid(inputText) && validDataSettingsDevice.charPROV_CHAR_MAXValid(inputText)
 
@@ -1325,7 +1325,7 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
         }
 
 
-        if (!validServis.validSim1apn(binding.inputAPN.text.toString())) {
+        if (!validServis.apnValid(binding.inputAPN.text.toString())) {
             showAlertDialog(getString(R.string.errorValidM32DAPN))
             return false
         }
@@ -1423,7 +1423,7 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
                 return false
             }*/
-            if (!validServis.validSim2apn(binding.inputAPN2.text.toString())) {
+            if (!validServis.apnValid(binding.inputAPN2.text.toString())) {
                 showAlertDialog(getString(R.string.errorValidM32DAPN))
 
                 return false
