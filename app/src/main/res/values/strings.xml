@@ -112,6 +112,7 @@
     <string name="errorValidAPNEnfora">Длина APN не должена привышать 128 символов</string>
     <string name="errorValidNumberPhone">Не корректный номер телефона! Введите в формате +70000000000</string>
     <string name="errorMalfunction">Устройство НЕ исправно! Присутствуют ошибки.</string>
+    <string name="errorNoData">Часть данных с модема не пришло или пришло не правильно!</string>
     <string name="sucNotMalfunction">🟩🟩Устройство исправно!🟩🟩</string>
     <string name="expectationPlease">Пожалуйста подождите пока все предыдущие процессы завершаться!</string>
 
@@ -124,7 +125,7 @@
     <string name="mainActivityExitCheck">Вы уверены, что хотите выйти?</string>
     <string name="title_activity_main">main_activity</string>
     <string name="TextTitleMain">Настройка устройств</string>
-    <string name="versionApp">Версия: 1.10.0</string>
+    <string name="versionApp">Версия: 1.10.1</string>
     <string name="todo">TODO</string>
     <string name="TextHiMain">Для настройки устройства вам нужно:</string>
     <string name="selectedComPort">Выберите COM-порт</string>

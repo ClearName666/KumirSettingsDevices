@@ -274,15 +274,15 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
         // Карта для связи input с ошибкой которая там есть D - предупреждение E - ошибка
         val inputMapText = mapOf(
-            binding.InputSim1TCP1 to "D" + getString(R.string.errorValidM32DTCPFormat),
-            binding.InputSim1TCP2 to "D" + getString(R.string.errorValidM32DTCPFormat),
-            binding.InputSim1TCP3 to "D" + getString(R.string.errorValidM32DTCPFormat),
-            binding.InputSim1TCP4 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP1 to "E" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP2 to "E" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP3 to "E" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim1TCP4 to "E" + getString(R.string.errorValidM32DTCPFormat),
 
-            binding.InputSim2TCP1 to "D" + getString(R.string.errorValidM32DTCPFormat),
-            binding.InputSim2TCP2 to "D" + getString(R.string.errorValidM32DTCPFormat),
-            binding.InputSim2TCP3 to "D" + getString(R.string.errorValidM32DTCPFormat),
-            binding.InputSim2TCP4 to "D" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP1 to "E" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP2 to "E" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP3 to "E" + getString(R.string.errorValidM32DTCPFormat),
+            binding.InputSim2TCP4 to "E" + getString(R.string.errorValidM32DTCPFormat),
 
             binding.inputSim1Knet to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
             binding.inputSim1Sntp to "E" + getString(R.string.errorValidM32DKnetSntpApnFprmat),
@@ -930,6 +930,8 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
 
         } catch (e: NumberFormatException) {
             showAlertDialog(getString(R.string.notReadPortDevice))
+        } catch (e: Exception) {
+            showAlertDialog(getString(R.string.errorNoData))
         }
 
         // симка 1----------------------------------------------------------------------------------
