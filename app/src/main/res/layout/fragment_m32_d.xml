@@ -1096,6 +1096,7 @@ tools:context=".usbFragments.M32DFragment">
                         android:id="@+id/switchPinCodeSmsCard2"
                         android:layout_width="wrap_content"
                         android:layout_height="70dp"
+                        android:layout_marginTop="10dp"
                         android:text="@string/YesNo"
                         android:textColor="@color/textColor"
                         app:layout_constraintStart_toStartOf="parent"

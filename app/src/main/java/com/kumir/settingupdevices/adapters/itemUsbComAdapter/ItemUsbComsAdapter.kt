@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.kumir.settingupdevices.MainActivity
 import com.kumir.settingupdevices.R
 import com.kumir.settingupdevices.model.recyclerModel.ItemUsbComsView
 import com.kumir.settingupdevices.usb.UsbActivityInterface
@@ -39,6 +40,9 @@ class ItemUsbComsAdapter(
 
                 try {
                     device.let {
+                        if (context is MainActivity) {
+                            context.nameDeviceCurrentForAdapter = nameUsb
+                        }
                         if (context is UsbActivityInterface) {
                             //context.showDeviceName(nameUsb)
                             context.connectToUsbDevice(device!!)

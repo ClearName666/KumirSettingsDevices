@@ -1,7 +1,6 @@
 package com.kumir.settingupdevices
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -12,6 +11,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -27,7 +27,10 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.kumir.settingupdevices.presetFragments.SelectMenuPrisetSettings
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.kumir.settingupdevices.auto.AutoFindDeviceFragment
+import com.kumir.settingupdevices.auto.AutoFindOneWireFragment
 import com.kumir.settingupdevices.dataBasePreset.AppDatabase
 import com.kumir.settingupdevices.dataBasePreset.Enfora
 import com.kumir.settingupdevices.dataBasePreset.EnforaDao
@@ -41,23 +44,25 @@ import com.kumir.settingupdevices.diag.DiagFragment
 import com.kumir.settingupdevices.diag.DiagFragmentInterface
 import com.kumir.settingupdevices.diag.DiagM32DFragment
 import com.kumir.settingupdevices.diag.DiagPM81Fragment
+import com.kumir.settingupdevices.diag.Enfora1318DiagFragment
 import com.kumir.settingupdevices.model.recyclerModel.Priset
 import com.kumir.settingupdevices.ports.PortDeviceSetting
 import com.kumir.settingupdevices.presetFragments.SelectMenuPrisetEnforaSettings
 import com.kumir.settingupdevices.presetFragments.SelectMenuPrisetPmSettings
+import com.kumir.settingupdevices.presetFragments.SelectMenuPrisetSettings
+import com.kumir.settingupdevices.sensors.SensorDT112Fragment
+import com.kumir.settingupdevices.sensors.SensorPipeBlockageV1_01
 import com.kumir.settingupdevices.settings.DeviceAccountingPrisets
 import com.kumir.settingupdevices.settings.PresetsEnforaValue
 import com.kumir.settingupdevices.settings.PrisetsPmValue
 import com.kumir.settingupdevices.settings.PrisetsValue
 import com.kumir.settingupdevices.usb.Usb
 import com.kumir.settingupdevices.usb.UsbActivityInterface
+import com.kumir.settingupdevices.usb.UsbCommandsProtocol
+import com.kumir.settingupdevices.usb.UsbDeviceDescriptor
 import com.kumir.settingupdevices.usb.UsbFragment
 import com.kumir.settingupdevices.usbFragments.ACCB030CoreFragment
 import com.kumir.settingupdevices.usbFragments.ACCB030Fragment
-import com.kumir.settingupdevices.diag.Enfora1318DiagFragment
-import com.kumir.settingupdevices.sensors.SensorDT112Fragment
-import com.kumir.settingupdevices.usb.UsbCommandsProtocol
-import com.kumir.settingupdevices.usb.UsbDeviceDescriptor
 import com.kumir.settingupdevices.usbFragments.Enfora1318Fragment
 import com.kumir.settingupdevices.usbFragments.FirmwareSTMFragment
 import com.kumir.settingupdevices.usbFragments.K21K23Fragment
@@ -73,18 +78,7 @@ import com.kumir.testappusb.settings.ConstUsbSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.os.Build
-import android.widget.Toast
 
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import com.kumir.settingupdevices.auto.AutoFindDeviceFragment
-import com.kumir.settingupdevices.auto.AutoFindOneWireFragment
-import com.kumir.settingupdevices.sensors.SensorPipeBlockageV1_01
 
 class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
@@ -101,6 +95,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     //var curentDataByte: ByteArray = byteArrayOf()
     var currentDataByteAll: ByteArray = byteArrayOf() // все данные в кучи
     // var curentDataByteNonClear: ByteArray = byteArrayOf()
+
+    // название при подключении
+    var nameDeviceCurrentForAdapter: String = ""
 
     // flag Для контроля передачи информации
     var flagThreadSerialCommands: Boolean = false
@@ -252,12 +249,31 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         override fun onReceive(context: Context, intent: Intent) {
             if (usb.ACTION_USB_PERMISSION == intent.action) {
                 synchronized(this) {
-                    val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+                    var device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
 
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         device?.apply {
+                            connectToUsbDevice(device!!)
+                        }
+                    }
+
+                    // эксперементальная часть кода для устранения ошибки с тем что после согласия не получается сразу подключиться
+                    if (device == null) {
+                        val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
+                        val deviceList: HashMap<String, UsbDevice> = usbManager.deviceList
+                        device = deviceList[nameDeviceCurrentForAdapter]
+                        device?.apply {
                             connectToUsbDevice(device)
                         }
+
+                        // для устранения бага с тем что при активации подключение оно не происходит из за того что названия уже другое оно постоянно меняется
+                        if (deviceList.size == 1 && device == null) {
+                            for ((nameDevice, itemDevice) in deviceList) {
+                                connectToUsbDevice(itemDevice)
+                                nameDeviceCurrentForAdapter = nameDevice
+                            }
+                        }
+
                     }
                 }
             }
@@ -265,53 +281,51 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
 
-            val filter = IntentFilter(usb.ACTION_USB_PERMISSION)
-            registerReceiver(usbReceiver, filter)
+        val filter = IntentFilter(usb.ACTION_USB_PERMISSION)
+        registerReceiver(usbReceiver, filter)
 
-            binding = MainActivityBinding.inflate(layoutInflater)
-            setContentView(binding.root)
+        binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-            // Thread.setDefaultUncaughtExceptionHandler(CrashHandler(this))
-
-
-            // создание главного фрагмента (отображается при открытии)
-            val mainFragment = MainFragment()
-            val fragmentManager = supportFragmentManager
-            val transaction = fragmentManager.beginTransaction()
-            // Новый фрагент
-            transaction.replace(binding.fragmentContaineContent.id, mainFragment)
-            //transaction.addToBackStack("MainFragment")
-            transaction.commit()
-
-            loadInfoDataBase()
-
-            // смена настроек usb ---------------------------------------------------
-            ConstUsbSettings.speedIndex = 9 // скорость 115200
-
-            // usb.flagAtCommandYesNo = true
+        // Thread.setDefaultUncaughtExceptionHandler(CrashHandler(this))
 
 
-            // в случчае если девай подключен к usb то сразц подключиться к нему
-            val intent = intent
-            val usbDevice: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-            usbDevice?.let {
-                connectToUsbDevice(usbDevice)
-            }
+        // создание главного фрагмента (отображается при открытии)
+        val mainFragment = MainFragment()
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        // Новый фрагент
+        transaction.replace(binding.fragmentContaineContent.id, mainFragment)
+        //transaction.addToBackStack("MainFragment")
+        transaction.commit()
+
+        loadInfoDataBase()
+
+        // смена настроек usb ---------------------------------------------------
+        ConstUsbSettings.speedIndex = 9 // скорость 115200
+
+        // usb.flagAtCommandYesNo = true
 
 
-
-            // Проверяем, есть ли разрешения на доступ к местоположению
-            if (!checkLocationPermissions()) {
-                requestLocationPermissions()
-            }
-
-            // проверяем есть ли разрешение на отправку пуш уведомлений
-            //checkPermissionPush()
-            // код теперь внутри обработчика разрешений
+        // в случчае если девай подключен к usb то сразц подключиться к нему
+        val intent = intent
+        val usbDevice: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+        usbDevice?.let {
+            connectToUsbDevice(usbDevice)
         }
+
+
+
+        // Проверяем, есть ли разрешения на доступ к местоположению
+        if (!checkLocationPermissions()) {
+            requestLocationPermissions()
+        }
+
+        // проверяем есть ли разрешение на отправку пуш уведомлений
+        //checkPermissionPush()
+        // код теперь внутри обработчика разрешений
     }
 
 
@@ -462,6 +476,17 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // вункция для вывода имени устроства
     fun printDeviceTypeName(name: String) {
         binding.textNameDevice.text = name
+    }
+
+    // клик на кнопку для того что бы открыть подробную информацию о передачи данных мустройству
+    fun onClickMoreDetailes(view: View) {
+        if (binding.layoutConsole.visibility == View.GONE) {
+            binding.layoutConsole.visibility = View.VISIBLE
+            binding.textMoreDetailed.text = getString(R.string.minDetailed)
+        } else {
+            binding.layoutConsole.visibility = View.GONE
+            binding.textMoreDetailed.text = getString(R.string.moreDetailed)
+        }
     }
 
     // клик по кнопке выбора присета настроек
@@ -870,7 +895,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         server: String,
         port: String,
         login: String,
-        password: String
+        password: String,
     ) {
         if (name.isNotEmpty() && apn.isNotEmpty() && apn.isNotEmpty() && server.isNotEmpty() && port.isNotEmpty())
         {
@@ -907,7 +932,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         login: String,
         password: String,
         timeout: String,
-        sizeBuffer: String
+        sizeBuffer: String,
     ) {
         if (name.isNotEmpty() && apn.isNotEmpty() && apn.isNotEmpty() && server1.isNotEmpty() && timeout.isNotEmpty()
             && sizeBuffer.isNotEmpty())
@@ -943,7 +968,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         mode: Int,
         keyNet: String,
         power: String,
-        range: Int) {
+        range: Int,
+    ) {
         if (name.isNotEmpty() && keyNet.isNotEmpty() && power.isNotEmpty())
         {
             val preset = Pm(0, name, mode, keyNet, power, range)
@@ -1362,8 +1388,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     }
 
 
-    fun showTimerDialog(usbFragment: UsbFragment, nameTypeDevice: String,
-                        flagWrite: Boolean = false, clearData: Boolean = true) {
+    fun showTimerDialog(
+        usbFragment: UsbFragment, nameTypeDevice: String,
+        flagWrite: Boolean = false, clearData: Boolean = true,
+    ) {
 
         var errorsId = 0
 
