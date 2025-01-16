@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.3"
+agp = "8.8.0"
 drawerlayout = "1.2.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
@@ -22,7 +22,7 @@ firebaseCrashlyticsBuildtools = "3.0.2"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version.ref = "drawerlayout" }
-felHR85-UsbSerial = { module = "com.github.felHR85:UsbSerial", version.ref = "usbserialVersion" }
+usbserial = { module = "com.github.felHR85:UsbSerial", version.ref = "usbserialVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

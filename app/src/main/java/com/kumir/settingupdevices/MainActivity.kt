@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -323,12 +324,28 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             requestLocationPermissions()
         }
 
+        startVideoLoading()
+
         // проверяем есть ли разрешение на отправку пуш уведомлений
         //checkPermissionPush()
         // код теперь внутри обработчика разрешений
     }
 
+    private fun startVideoLoading() {
+        // Указать путь к видеофайлу
+        val videoPath = "android.resource://" + packageName + "/" + R.raw.cat
+        val videoUri = Uri.parse(videoPath)
 
+        binding.videoLoadingCat.setVideoURI(videoUri)
+
+        // Настройка бесконечного воспроизведения
+        binding.videoLoadingCat.setOnCompletionListener {
+            binding.videoLoadingCat.start() // Запуск видео заново
+        }
+
+        // Запуск видео
+        binding.videoLoadingCat.start()
+    }
     private fun checkPermissionPush() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

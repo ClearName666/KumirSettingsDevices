@@ -1259,6 +1259,24 @@ class M32DFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, PrisetFragm
             2 -> parityPort2  = "O"
         }
 
+        if (!validServis.serverValid(binding.inputTextLoginGPRS.text.toString()) ||
+            !validServis.charPROV_CHAR_MAXValid(binding.inputTextLoginGPRS.text.toString()) ||
+            !validServis.serverValid(binding.inputTextLoginGPRS2.text.toString()) ||
+            !validServis.charPROV_CHAR_MAXValid(binding.inputTextLoginGPRS2.text.toString())) {
+
+            showAlertDialog(getString(R.string.errorValidM32DLogin))
+            return false
+        }
+
+        if (!validServis.serverValid(binding.inputPasswordGPRS.text.toString()) ||
+            !validServis.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS.text.toString()) ||
+            !validServis.serverValid(binding.inputPasswordGPRS2.text.toString()) ||
+            !validServis.charPROV_CHAR_MAXValid(binding.inputPasswordGPRS2.text.toString())) {
+
+            showAlertDialog(getString(R.string.errorValidM32DPassword))
+            return false
+        }
+
         if (!validServis.validTcpport1(binding.inputTCPPortRS232.text.toString())) {
             showAlertDialog(getString(R.string.errorRS232TCPPort))
             return false

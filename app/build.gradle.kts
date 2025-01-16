@@ -57,7 +57,8 @@ android {
 }
 
 dependencies {
-    implementation("com.github.felHR85:UsbSerial:6.1.0")
+
+    implementation(libs.usbserial)
     implementation(libs.androidx.drawerlayout)
     implementation(libs.material.v180)
     implementation(libs.androidx.core.ktx)
