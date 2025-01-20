@@ -752,10 +752,14 @@ class ACCB030CoreFragment(val autoFlag: Boolean) : Fragment(), UsbFragment, Pris
                 showAlertDialog(getString(R.string.Usb_NoneConnect))
             }
 
+
             var contextMain = requireContext()
+
             if (contextMain is MainActivity) {
-                contextMain.flagCoreOrProgramACCB030 = false
-                showAlertDialog(getString(R.string.coreProgramClueText))
+                if (!contextMain.flagCheckConnectStartWindow) {
+                    contextMain.flagCoreOrProgramACCB030 = false
+                    showAlertDialog(getString(R.string.coreProgramClueText))
+                }
             }
         } else {
             drawablImageDischarge?.let {

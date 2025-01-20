@@ -157,7 +157,16 @@ class ACCB030DiagFragment : Fragment(), UsbFragment, DiagSiagnalIntarface {
 
     override fun writeSettingStart() {}
     override fun lockFromDisconnected(connect: Boolean) {
-
+        if (!connect) {
+            binding.buttonChackSignal.setOnClickListener {
+                (requireContext() as MainActivity).showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
+        } else {
+            // клик по кнопки диагностики
+            binding.buttonChackSignal.setOnClickListener {
+                onClickChackSignal()
+            }
+        }
     }
 
     override fun printSerifalNumber(serialNumber: String) {}

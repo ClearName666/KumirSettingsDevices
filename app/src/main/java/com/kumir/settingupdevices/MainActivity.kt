@@ -116,6 +116,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // флаг для контроля нужно ли использовать другуой текст для диалога с сохранением шаблона
     var flagLoadPreset: Boolean = false
 
+    // флаг для контроля того что проверка подключения шла при запуске окна
+    var flagCheckConnectStartWindow: Boolean = false
+
     // список с устройств с котрыми можно работать
     private val devicesTypsAll: String =
         "KUMIR-К21К23 READY" +
@@ -285,7 +288,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         super.onCreate(savedInstanceState)
 
         val filter = IntentFilter(usb.ACTION_USB_PERMISSION)
-        registerReceiver(usbReceiver, filter)
+        // registerReceiver(usbReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Android 12 (API 31) или выше
+            registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            // Версия Android ниже 12
+            registerReceiver(usbReceiver, filter)
+        }
 
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -1022,7 +1032,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
 
 
-        if (usb.checkConnectToDevice() || flagChack) {
+        /*if (usb.checkConnectToDevice() || flagChack) {*/
 
             if (curentFragmentComProtocol != null) {
                 if (curentFragmentComProtocol?.flagWorkDiag!! ||
@@ -1038,9 +1048,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                     // Новый фрагент
                     transaction.replace(binding.fragmentContaineContent.id, fragment)
                     transaction.commitNow()
+                    fragmentManager.executePendingTransactions()
+                    fragment.view?.post {
+                        if (fragment is UsbFragment) {
+                            curentFragmentComProtocol = fragment.usbCommandsProtocol
 
-                    if (fragment is UsbFragment) {
-                        curentFragmentComProtocol = fragment.usbCommandsProtocol
+                            flagCheckConnectStartWindow = true
+                            fragment.lockFromDisconnected(usb.checkConnectToDevice())
+                            flagCheckConnectStartWindow = false
+                        }
                     }
                 }
             } else {
@@ -1051,14 +1067,22 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 transaction.replace(binding.fragmentContaineContent.id, fragment)
                 transaction.commitNow()
 
-                if (fragment is UsbFragment) {
-                    curentFragmentComProtocol = fragment.usbCommandsProtocol
+                fragmentManager.executePendingTransactions()
+                fragment.view?.post {
+                    if (fragment is UsbFragment) {
+                        curentFragmentComProtocol = fragment.usbCommandsProtocol
+
+                        flagCheckConnectStartWindow = true
+                        fragment.lockFromDisconnected(usb.checkConnectToDevice())
+                        flagCheckConnectStartWindow = false
+
+                    }
                 }
             }
 
-        } else {
+        /*} else {
             showAlertDialog(getString(R.string.UsbNoneConnectDevice))
-        }
+        }*/
     }
 
 

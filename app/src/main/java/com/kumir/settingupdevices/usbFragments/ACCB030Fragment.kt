@@ -601,8 +601,10 @@ class ACCB030Fragment : Fragment(), UsbFragment, PrisetFragment<Priset> {
 
             var contextMain = requireContext()
             if (contextMain is MainActivity) {
-                contextMain.flagCoreOrProgramACCB030 = false
-                showAlertDialog(getString(R.string.coreProgramClueText))
+                if (!contextMain.flagCheckConnectStartWindow) {
+                    contextMain.flagCoreOrProgramACCB030 = false
+                    showAlertDialog(getString(R.string.coreProgramClueText))
+                }
             }
 
         } else {

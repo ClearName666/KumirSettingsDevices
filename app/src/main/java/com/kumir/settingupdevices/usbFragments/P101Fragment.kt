@@ -875,7 +875,10 @@ class P101Fragment : Fragment(), UsbFragment, EditDelIntrface<ItemAbanent>, Load
             }
 
             //--------------------------------------------------------------------------------------
-
+            // установка клика
+            binding.imagedischarge.setOnClickListener {
+                showAlertDialog(getString(R.string.Usb_NoneConnect))
+            }
             // далеем возможность завершить диагностику
             endDiag()
             endViewDiag()
