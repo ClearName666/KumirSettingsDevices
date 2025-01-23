@@ -356,6 +356,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         // Запуск видео
         binding.videoLoadingCat.start()
     }
+    private fun endVideoLoading() {
+        binding.videoLoadingCat.stopPlayback()
+    }
+
     private fun checkPermissionPush() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -1723,6 +1727,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             binding.textTerm.text = textTerm
 
             binding.progressBarLoading.progress = progression
+
+            if (progression == 100) {
+                binding.videoLoadingCat.visibility = View.GONE
+                binding.textSmileCat.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -1731,11 +1740,22 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         if (!flagThreadSerialCommands) {
             binding.fonLodingView.visibility =
                 if (flag) {
+                    // завершение видео для оптимизации
+                    startVideoLoading()
+
+
                     View.VISIBLE
                 }
                 else {
                     binding.progressBarLoading.progress = 0
                     binding.textTerm.text = getString(R.string.loadingTitle)
+
+                    // для следующего быстрого старта видео
+
+                    /*endVideoLoading()*/
+                    binding.videoLoadingCat.visibility = View.VISIBLE
+                    binding.textSmileCat.visibility = View.GONE
+
                     View.GONE
                 }
         }

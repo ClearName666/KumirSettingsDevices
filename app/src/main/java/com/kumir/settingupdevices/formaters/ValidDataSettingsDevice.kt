@@ -105,7 +105,7 @@ class ValidDataSettingsDevice {
     fun validSim1pin(input: String): Boolean = input.length == 4
     fun validSim1apn(input: String): Boolean = patterns["sim1apn"]?.matches(input) ?: false
     fun validSim1knet(input: String): Boolean = patterns["sim1knet"]?.matches(input) ?: false
-    fun validSim1sntp(input: String): Boolean = patterns["sim1sntp"]?.matches(input) ?: false
+    fun validSim1sntp(input: String): Boolean = input.isEmpty() || patterns["sim1sntp"]?.matches(input) ?: false
     fun validSim1tcp1(input: String): Boolean = patterns["sim1tcp1"]?.matches(input) ?: false || input.isEmpty()
     fun validSim1tcp2(input: String): Boolean = patterns["sim1tcp2"]?.matches(input) ?: false || input.isEmpty()
     fun validSim1tcp3(input: String): Boolean = patterns["sim1tcp3"]?.matches(input) ?: false || input.isEmpty()
@@ -113,7 +113,7 @@ class ValidDataSettingsDevice {
     fun validSim2pin(input: String): Boolean = input.length == 4
     fun validSim2apn(input: String): Boolean = patterns["sim2apn"]?.matches(input) ?: false
     fun validSim2knet(input: String): Boolean = patterns["sim2knet"]?.matches(input) ?: false
-    fun validSim2sntp(input: String): Boolean = patterns["sim2sntp"]?.matches(input) ?: false
+    fun validSim2sntp(input: String): Boolean = input.isEmpty() || patterns["sim2sntp"]?.matches(input) ?: false
     fun validSim2tcp1(input: String): Boolean = patterns["sim2tcp1"]?.matches(input) ?: false || input.isEmpty()
     fun validSim2tcp2(input: String): Boolean = patterns["sim2tcp2"]?.matches(input) ?: false || input.isEmpty()
     fun validSim2tcp3(input: String): Boolean = patterns["sim2tcp3"]?.matches(input) ?: false || input.isEmpty()
